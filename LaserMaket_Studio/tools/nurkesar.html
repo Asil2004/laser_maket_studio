@@ -1,0 +1,1862 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Nurkesar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Saira:wght@500;600;700&family=Oswald:wght@500&family=Lobster&family=Great+Vibes&family=Roboto+Slab:wght@500&family=Pacifico&display=swap">
+<style>
+/* Layout: tool rail | ish maydoni | sozlamalar paneli; pastda qatlam ranglari va holat qatori — stanok boshqaruv pulti kabi */
+:root{
+  --bg:#e4e8ec; --panel:#f6f7f9; --panel-2:#eaedf1; --line:#cbd2d9; --fg:#1b2128; --muted:#5a6571;
+  --accent:#b5620a; --accent-fg:#ffffff; --accent-soft:#f5e2cb;
+  --canvas:#d3d9df; --bed:#fcfcfa; --grid:#eceeef; --grid-major:#d2d7dc; --ruler:#eef1f4; --ruler-fg:#66717c;
+  --sel:#1d63c9; --danger:#c0392b; --ok:#2e7d46; --burn:#2a1d12;
+  --f-ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-label:"Saira","IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#13161a; --panel:#1a1e23; --panel-2:#21262c; --line:#2f363e; --fg:#e2e6ea; --muted:#8a95a0;
+  --accent:#f0a23a; --accent-fg:#1c1206; --accent-soft:#3b2b15;
+  --canvas:#0e1013; --bed:#1c2126; --grid:#232930; --grid-major:#313941; --ruler:#171b1f; --ruler-fg:#7f8a95;
+  --sel:#5a9dff; --danger:#ff6b5b; --ok:#5cc47a; --burn:#f1d7b4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13161a; --panel:#1a1e23; --panel-2:#21262c; --line:#2f363e; --fg:#e2e6ea; --muted:#8a95a0;
+  --accent:#f0a23a; --accent-fg:#1c1206; --accent-soft:#3b2b15;
+  --canvas:#0e1013; --bed:#1c2126; --grid:#232930; --grid-major:#313941; --ruler:#171b1f; --ruler-fg:#7f8a95;
+  --sel:#5a9dff; --danger:#ff6b5b; --ok:#5cc47a; --burn:#f1d7b4; color-scheme:dark}
+
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:13px/1.4 var(--f-ui);padding-inline:16px;padding-block:12px;box-sizing:border-box;overflow:hidden}
+*,*::before,*::after{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{height:100%;display:grid;gap:8px;
+  grid-template-columns:48px minmax(0,1fr) 340px;
+  grid-template-rows:auto minmax(0,1fr) auto auto;
+  grid-template-areas:"top top top" "tools stage side" "pal pal side" "status status status"}
+.top{grid-area:top;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.brand{font-family:var(--f-label);font-weight:700;letter-spacing:.14em;font-size:15px;display:flex;align-items:baseline;gap:8px;margin-right:6px}
+.brand i{font-style:normal;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);align-self:center}
+.brand small{font-family:var(--f-ui);font-weight:400;letter-spacing:.02em;color:var(--muted);font-size:12px}
+.grp{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:2px}
+.btn{border:0;background:transparent;padding:5px 10px;border-radius:4px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--panel-2)}
+.btn:disabled{opacity:.4;cursor:default;background:transparent}
+.btn.primary{background:var(--accent);color:var(--accent-fg);font-weight:600}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.on{background:var(--accent-soft);color:var(--fg)}
+.btn svg{width:16px;height:16px;flex:none}
+:focus-visible{outline:2px solid var(--sel);outline-offset:1px}
+.spacer{flex:1}
+
+.tools{grid-area:tools;display:flex;flex-direction:column;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:3px;align-self:start}
+.tool{width:40px;height:40px;border:0;border-radius:4px;background:transparent;cursor:pointer;display:grid;place-items:center;position:relative}
+.tool:hover{background:var(--panel-2)}
+.tool.on{background:var(--accent);color:var(--accent-fg)}
+.tool svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tool kbd{position:absolute;right:3px;bottom:1px;font:9px var(--f-mono);opacity:.6}
+.tools hr{border:0;border-top:1px solid var(--line);margin:3px 4px}
+
+.stage{grid-area:stage;position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--canvas);min-height:0}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.hint{position:absolute;left:30px;bottom:8px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:3px 8px;font-size:12px;color:var(--muted);pointer-events:none}
+.drop{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);border:2px dashed var(--accent);font-family:var(--f-label);font-size:18px;pointer-events:none}
+
+.palette{grid-area:pal;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.palette .lbl{font-family:var(--f-label);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.sw{width:30px;height:24px;border-radius:4px;border:1px solid var(--line);cursor:pointer;display:grid;place-items:center;font:600 10px var(--f-mono);color:#fff;text-shadow:0 0 2px #0008;padding:0}
+.sw.cur{outline:2px solid var(--fg);outline-offset:1px}
+.sw.used{box-shadow:inset 0 -4px 0 rgba(255,255,255,.55)}
+
+.side{grid-area:side;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;min-height:0}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;border:0;background:transparent;padding:9px 6px;cursor:pointer;font-family:var(--f-label);font-weight:600;letter-spacing:.06em;font-size:12px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent}
+.tab.on{color:var(--fg);border-bottom-color:var(--accent)}
+.pane{overflow:auto;padding:10px 12px 16px;flex:1;min-height:0}
+.sec{padding-block:8px;border-bottom:1px solid var(--line);display:grid;gap:8px}
+.sec:last-child{border-bottom:0}
+.sec h3{margin:0;font-family:var(--f-label);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.f{display:grid;gap:2px;min-width:0}
+.f>span{font-size:11px;color:var(--muted)}
+.f input,.f select,.f textarea,.inp{width:100%;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:5px 7px;font-variant-numeric:tabular-nums}
+.f input[type=number]{font-family:var(--f-mono);font-size:12px}
+.f input[type=range]{padding:0;border:0;background:transparent;accent-color:var(--accent)}
+textarea{resize:vertical;min-height:56px}
+.chk{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.chk input{accent-color:var(--accent)}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sbtn{border:1px solid var(--line);background:var(--panel-2);border-radius:4px;padding:5px 9px;cursor:pointer;white-space:nowrap}
+.sbtn:hover{border-color:var(--muted)}
+.sbtn:disabled{opacity:.45;cursor:default}
+.sbtn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:600}
+.sbtn.danger{color:var(--danger)}
+.sbtn.wide{flex:1}
+.muted{color:var(--muted)}
+.small{font-size:11.5px}
+.empty{color:var(--muted);padding:14px 2px;line-height:1.55}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+.lyr{display:grid;grid-template-columns:14px 1fr auto auto;gap:8px;align-items:center;padding:7px 8px;border:1px solid var(--line);border-radius:5px;cursor:pointer;background:var(--bg)}
+.lyr.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.lyr .dot{width:14px;height:14px;border-radius:3px}
+.lyr .nm{font-weight:600;min-width:0}
+.lyr .nm small{display:block;font-weight:400;color:var(--muted);font-size:11px;font-family:var(--f-mono)}
+.lyr .eye{border:0;background:transparent;cursor:pointer;padding:2px 4px;border-radius:3px;font-size:11px;color:var(--muted)}
+.lyr .eye.off{color:var(--danger);text-decoration:line-through}
+.lyrs{display:grid;gap:5px}
+.pill{font:600 10px var(--f-mono);padding:2px 6px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);letter-spacing:.04em}
+
+.status{grid-area:status;display:flex;flex-wrap:wrap;gap:4px 18px;font-size:12px;color:var(--muted);font-family:var(--f-mono);align-items:center}
+.status b{color:var(--fg);font-weight:500}
+.status .ex{font-family:var(--f-ui);color:var(--accent)}
+
+.console{height:130px;overflow:auto;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:6px;font:11.5px/1.45 var(--f-mono);white-space:pre-wrap;word-break:break-all}
+.console .err{color:var(--danger)}
+.console .me{color:var(--muted)}
+.jog{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,34px);gap:4px}
+.jog button{border:1px solid var(--line);background:var(--panel-2);border-radius:4px;cursor:pointer;font-size:14px}
+.jog button:disabled{opacity:.4;cursor:default}
+.state{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.state::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.state.ok::before{background:var(--ok)}
+.state.run::before{background:var(--accent)}
+.state.bad::before{background:var(--danger)}
+.anc{display:grid;grid-template-columns:repeat(3,18px);gap:3px;padding:4px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.anc button{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--muted);background:transparent;cursor:pointer;padding:0}
+.anc button.on{background:var(--accent);border-color:var(--accent)}
+.bar{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0}
+.note{background:var(--panel-2);border-radius:4px;padding:7px 9px;font-size:12px;line-height:1.5;color:var(--muted)}
+
+dialog{border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg);padding:0;width:min(1100px,calc(100vw - 32px));height:min(780px,calc(100vh - 32px));max-width:none;max-height:none}
+dialog::backdrop{background:#0008}
+dialog.keys{width:min(820px,calc(100vw - 32px));height:fit-content;max-height:calc(100vh - 32px)}
+.keys header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.keys h2{margin:0;font:600 15px var(--f-label);letter-spacing:.08em;text-transform:uppercase}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 24px;padding:6px 16px 16px}
+.kgrid h3{font:600 11px var(--f-label);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:12px 0 6px}
+.kgrid dl{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0;font-size:12.5px}
+.kgrid dt{align-self:start;font:500 11px var(--f-mono);background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px;justify-self:start;white-space:nowrap}
+.kgrid dd{margin:0;color:var(--muted)}
+.ctx{position:fixed;z-index:20;min-width:210px;background:var(--panel);border:1px solid var(--line);border-radius:7px;box-shadow:0 10px 30px #0003,0 2px 6px #0002;padding:4px;font-size:13px}
+.ctx button{display:flex;width:100%;justify-content:space-between;gap:16px;border:0;background:transparent;padding:6px 10px;border-radius:4px;cursor:pointer;text-align:left}
+.ctx button:hover:not(:disabled){background:var(--accent-soft)}
+.ctx button:disabled{opacity:.4;cursor:default}
+.ctx kbd{font:11px var(--f-mono);color:var(--muted)}
+.ctx hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
+.ctx .danger{color:var(--danger)}
+.pv{display:grid;grid-template-columns:minmax(0,1fr) 260px;grid-template-rows:auto minmax(0,1fr) auto;height:100%}
+.pv header{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.pv header h2{margin:0;font:600 15px var(--f-label);letter-spacing:.08em;text-transform:uppercase}
+.pvc{position:relative;background:var(--canvas);min-height:0}
+.pvc canvas{position:absolute;inset:0;width:100%;height:100%}
+.pvs{padding:12px 14px;border-left:1px solid var(--line);overflow:auto;display:grid;gap:10px;align-content:start}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;text-align:right;font-family:var(--f-mono)}
+.pvctl{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.pvctl input[type=range]{flex:1;min-width:140px;accent-color:var(--accent)}
+.warn{color:var(--danger);font-size:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:6px;font-size:13px;z-index:10;box-shadow:0 6px 20px #0004}
+
+@media (max-width:860px){
+  body{overflow:auto;height:auto}
+  html{height:auto}
+  .app{height:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 62vh auto auto auto;
+    grid-template-areas:"top" "tools" "stage" "pal" "side" "status"}
+  .tools{flex-direction:row;flex-wrap:wrap;align-self:stretch}
+  .tools hr{border-top:0;border-left:1px solid var(--line);margin:4px 2px}
+  .side{max-height:none}
+  .pane{overflow:visible}
+  .pv{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(260px,1fr) auto auto}
+  .pvs{border-left:0;border-top:1px solid var(--line);max-height:30vh}
+  .btn .t{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand"><i></i>NURKESAR <small>lazer studiya</small></div>
+    <div class="grp">
+      <button class="btn" id="bNew" title="Yangi loyiha"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2.5h6.5L15 6v11.5H5z"/><path d="M11 2.5V6.5h4"/><path d="M10 9.5v5M7.5 12h5"/></svg><span class="t" id="bNewT">Yangi</span></button>
+      <button class="btn" id="bOpen" title="Loyiha, SVG yoki rasm ochish (Ctrl+O)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5.5h5l1.5 1.5h8.5v9h-15z"/></svg><span class="t">Ochish</span></button>
+      <button class="btn" id="bSave" title="Loyihani .json qilib saqlash (Ctrl+S)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.5h10l3 3v10h-13z"/><path d="M6.5 3.5v4h6v-4M6.5 16.5v-5h7v5"/></svg><span class="t">Saqlash</span></button>
+    </div>
+    <div class="grp">
+      <button class="btn" id="bUndo" title="Bekor qilish (Ctrl+Z)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M7 5L3 9l4 4"/><path d="M3 9h9a5 5 0 010 10h-2"/></svg><span class="t">Bekor</span></button>
+      <button class="btn" id="bRedo" title="Qaytarish (Ctrl+Y)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M13 5l4 4-4 4"/><path d="M17 9H8a5 5 0 000 10h2"/></svg><span class="t">Qaytarish</span></button>
+    </div>
+    <div class="grp">
+      <button class="btn" id="bZoomOut" title="Kichraytirish (−)">−</button>
+      <button class="btn mono" id="bFit" title="Ish maydonini sigʻdirish (F)">100%</button>
+      <button class="btn" id="bZoomIn" title="Kattalashtirish (+)">+</button>
+      <button class="btn" id="bSnap" title="Setkaga yopishish">Setka 1 mm</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="grp">
+      <button class="btn" id="bKeys" title="Tezkor tugmalar (?)"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="15" height="10" rx="1.5"/><path d="M5.5 8h1M9.5 8h1M13.5 8h1M6.5 12h7"/></svg></button>
+      <button class="btn" id="bPreview" title="Yoʻlni koʻrib chiqish va vaqtni hisoblash"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10z"/><circle cx="10" cy="10" r="2.3"/></svg><span class="t">Koʻrib chiqish</span></button>
+      <button class="btn primary" id="bGcode" title="G-code faylini saqlash"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v9.5M6 9l4 4 4-4M3.5 16.5h13"/></svg><span class="t">G-code saqlash</span></button>
+    </div>
+  </header>
+
+  <nav class="tools" aria-label="Asboblar">
+    <button class="tool on" data-tool="select" title="Tanlash va siljitish (V)"><svg viewBox="0 0 20 20"><path d="M5 3l10 6.2-4.6 1.3L13 16.3l-2 1-2.6-5.7L5 15z"/></svg><kbd>V</kbd></button>
+    <button class="tool" data-tool="rect" title="Toʻrtburchak (R)"><svg viewBox="0 0 20 20"><rect x="3.5" y="5" width="13" height="10" rx="1"/></svg><kbd>R</kbd></button>
+    <button class="tool" data-tool="ellipse" title="Ellips / doira (E)"><svg viewBox="0 0 20 20"><ellipse cx="10" cy="10" rx="7" ry="5.5"/></svg><kbd>E</kbd></button>
+    <button class="tool" data-tool="line" title="Chiziq / koʻpburchak (L). Ikki marta bosish — tugatish"><svg viewBox="0 0 20 20"><path d="M3 15l5-9 4 6 5-8"/></svg><kbd>L</kbd></button>
+    <button class="tool" data-tool="text" title="Matn (T)"><svg viewBox="0 0 20 20"><path d="M4 5h12M10 5v11M7.5 16h5"/></svg><kbd>T</kbd></button>
+    <button class="tool" data-tool="pan" title="Koʻrinishni surish (H yoki Probel)"><svg viewBox="0 0 20 20"><path d="M10 2.5v15M2.5 10h15M10 2.5L8 4.5M10 2.5l2 2M10 17.5l-2-2M10 17.5l2-2M2.5 10l2-2M2.5 10l2 2M17.5 10l-2-2M17.5 10l-2 2"/></svg><kbd>H</kbd></button>
+    <hr>
+    <button class="tool" id="tImport" title="Rasm yoki SVG import (Ctrl+I)"><svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="1"/><path d="M3 13l4-4 3 3 2-2 5 5"/><circle cx="13" cy="8" r="1.3"/></svg></button>
+  </nav>
+
+  <main class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="hint" id="hint" hidden></div>
+    <div class="drop" id="drop" hidden>Faylni shu yerga tashlang — SVG, PNG, JPG yoki loyiha</div>
+  </main>
+
+  <aside class="side">
+    <div class="tabs" role="tablist">
+      <button class="tab on" data-tab="layers">Qatlamlar</button>
+      <button class="tab" data-tab="obj">Obyekt</button>
+      <button class="tab" data-tab="machine">Stanok</button>
+    </div>
+    <div class="pane" id="pane-layers"></div>
+    <div class="pane" id="pane-obj" hidden></div>
+    <div class="pane" id="pane-machine" hidden></div>
+  </aside>
+
+  <footer class="palette" id="palette"><span class="lbl">Qatlam</span></footer>
+  <div class="status" id="status"></div>
+</div>
+
+<dialog id="pvDlg">
+  <div class="pv">
+    <header><h2 id="pvTitle">Koʻrib chiqish</h2><span class="muted small" id="pvSub"></span><div class="spacer"></div>
+      <label class="chk small"><input type="checkbox" id="pvRapid" checked> Boʻsh yurishlar</label>
+      <button class="sbtn" id="pvClose">Yopish</button></header>
+    <div class="pvc" id="pvc"><canvas id="pvCv"></canvas></div>
+    <div class="pvs" id="pvStats"></div>
+    <div class="pvctl">
+      <button class="sbtn primary" id="pvPlay">▶ Ijro</button>
+      <select class="inp" id="pvSpeed" style="width:auto"><option value="10">×10</option><option value="50" selected>×50</option><option value="200">×200</option><option value="1000">×1000</option></select>
+      <input type="range" id="pvRange" min="0" max="1000" value="1000" aria-label="Jarayon">
+      <span class="mono small" id="pvTime">0:00</span>
+    </div>
+  </div>
+</dialog>
+
+<div class="ctx" id="ctx" hidden role="menu"></div>
+<dialog id="keysDlg" class="keys">
+  <header><h2>Tezkor tugmalar</h2><div class="spacer"></div><button class="sbtn" id="keysClose">Yopish</button></header>
+  <div class="kgrid">
+    <section><h3>Asboblar</h3><dl><dt>V</dt><dd>Tanlash</dd><dt>R</dt><dd>Toʻrtburchak (Shift — kvadrat)</dd><dt>E</dt><dd>Ellips (Shift — doira)</dd><dt>L</dt><dd>Chiziq / koʻpburchak</dd><dt>T</dt><dd>Matn</dd><dt>H, Probel</dt><dd>Koʻrinishni surish</dd></dl></section>
+    <section><h3>Tahrirlash</h3><dl><dt>Ctrl+Z / Ctrl+Y</dt><dd>Bekor / qaytarish</dd><dt>Ctrl+C / X / V</dt><dd>Nusxa / kesish / joylash</dd><dt>Ctrl+D</dt><dd>Dublikat</dd><dt>Ctrl+G</dt><dd>Guruhlash</dd><dt>Ctrl+Shift+G</dt><dd>Guruhdan chiqarish</dd><dt>Ctrl+] / [</dt><dd>Oldinga / orqaga</dd><dt>Del</dt><dd>Oʻchirish</dd><dt>Ctrl+A</dt><dd>Hammasini tanlash</dd></dl></section>
+    <section><h3>Siljitish</h3><dl><dt>Strelkalar</dt><dd>1 mm</dd><dt>Shift+strelka</dt><dd>10 mm</dd><dt>Alt+strelka</dt><dd>0.1 mm</dd><dt>Shift+tortish</dt><dd>Faqat bir oʻq boʻylab</dd><dt>Shift+burish</dt><dd>15° qadam</dd></dl></section>
+    <section><h3>Koʻrinish va fayl</h3><dl><dt>Gʻildirak</dt><dd>Masshtab</dd><dt>F yoki 0</dt><dd>Ish maydonini sigʻdirish</dd><dt>+ / −</dt><dd>Kattalashtirish / kichraytirish</dd><dt>Ctrl+O</dt><dd>Ochish / import</dd><dt>Ctrl+S</dt><dd>Loyihani saqlash</dd><dt>Ctrl+V</dt><dd>Buferdan rasm qoʻyish</dd><dt>Oʻng tugma</dt><dd>Kontekst menyu</dd></dl></section>
+  </div>
+</dialog>
+<input type="file" id="fileIn" accept=".svg,.png,.jpg,.jpeg,.bmp,.gif,.webp,.json" multiple hidden>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+'use strict';
+/* ============================== Asosiy holat ============================== */
+const $ = s => document.querySelector(s);
+const PALETTE = ['#000000','#1f5fd6','#d62a2a','#1f9a3a','#d9a400','#d0581c','#0aa3a8','#a52ba8','#6f7378','#8a5a2b','#e05fa0','#4f8f8f'];
+const MODES = {line:'Chiziq', fill:'Toʻldirish', 'fill+line':'Toʻldirish + chiziq', image:'Rasm'};
+const DITHERS = {gray:'Kulrang (3D)', threshold:'Ostona', floyd:'Floyd–Steinberg', atkinson:'Atkinson', jarvis:'Jarvis'};
+const FONTS = ['Arial','Verdana','Georgia','Times New Roman','Courier New','Impact','Oswald','Roboto Slab','Lobster','Pacifico','Great Vibes'];
+const LS_KEY = 'nurkesar.project.v1';
+
+function defaultLayer(i){
+  return {name:'C'+String(i).padStart(2,'0'), mode:'line', speed:1000, power:30, minPower:0, passes:1, interval:0.1, overscan:2.5, angle:0, cross:false, air:false, output:true};
+}
+/* Diodli lazer (~10 W optik quvvat) uchun boshlang'ich qiymatlar — har doim material testi bilan tekshiring */
+const PRESETS = [
+  {n:'Fanera 3 mm — kesish', v:{mode:'line', speed:300, power:100, passes:2, air:true}},
+  {n:'Fanera 4 mm — kesish', v:{mode:'line', speed:250, power:100, passes:3, air:true}},
+  {n:'Fanera — gravyura', v:{mode:'fill', speed:3000, power:40, interval:0.1, passes:1, air:false}},
+  {n:'Fanera — chiziq (belgi)', v:{mode:'line', speed:1500, power:25, passes:1, air:false}},
+  {n:'Fanera — foto', v:{mode:'image', speed:3000, power:45, minPower:8, interval:0.1, passes:1}},
+  {n:'MDF 3 mm — kesish', v:{mode:'line', speed:250, power:100, passes:3, air:true}},
+  {n:'Teri — gravyura', v:{mode:'fill', speed:4000, power:25, interval:0.1, passes:1}},
+  {n:'Teri 2 mm — kesish', v:{mode:'line', speed:400, power:100, passes:2, air:true}},
+  {n:'Karton — kesish', v:{mode:'line', speed:1200, power:70, passes:1, air:true}},
+  {n:'Qogʻoz — kesish', v:{mode:'line', speed:2500, power:40, passes:1}},
+  {n:'Qora akril — gravyura', v:{mode:'fill', speed:3000, power:30, interval:0.08, passes:1}},
+  {n:'Anodlangan alyuminiy — markirovka', v:{mode:'fill', speed:1500, power:90, interval:0.06, passes:1}},
+  {n:'Boʻyalgan metall — bo‘yoq olish', v:{mode:'fill', speed:2000, power:80, interval:0.08, passes:1}},
+];
+const S = {
+  shapes:[], layers:PALETTE.map((c,i)=>defaultLayer(i)), order:PALETTE.map((c,i)=>i),
+  sel:new Set(), tool:'select', curLayer:0, editLayer:null, nextId:1,
+  dev:{bedW:400, bedH:400, origin:'bl', sMax:1000, laserCmd:'M4', rapid:3000, start:'abs'},
+  view:{scale:1.5, ox:40, oy:40}, snap:false, snapStep:1, lockAspect:true, isSample:false,
+  draft:null, clip:null, tab:'layers'
+};
+const RULER = 20;
+
+/* ============================== Geometriya ============================== */
+const D2R = Math.PI/180;
+function rot2(x,y,a){const c=Math.cos(a),s=Math.sin(a);return [x*c-y*s,x*s+y*c];}
+function toWorld(s,lx,ly){
+  if(s.fx) lx=s.w-lx; if(s.fy) ly=s.h-ly;
+  if(!s.rot) return [s.x+lx, s.y+ly];
+  const [rx,ry]=rot2(lx-s.w/2, ly-s.h/2, s.rot*D2R);
+  return [s.x+s.w/2+rx, s.y+s.h/2+ry];
+}
+function toLocal(s,x,y){
+  let lx,ly;
+  if(!s.rot){ lx=x-s.x; ly=y-s.y; }
+  else { const [rx,ry]=rot2(x-(s.x+s.w/2), y-(s.y+s.h/2), -s.rot*D2R); lx=rx+s.w/2; ly=ry+s.h/2; }
+  if(s.fx) lx=s.w-lx; if(s.fy) ly=s.h-ly;
+  return [lx,ly];
+}
+function localPaths(s){
+  switch(s.type){
+    case 'rect':{
+      const r=Math.max(0,Math.min(s.r||0, s.w/2, s.h/2));
+      if(r<=0.01) return [{closed:true, pts:[[0,0],[s.w,0],[s.w,s.h],[0,s.h]]}];
+      const pts=[], seg=Math.max(4,Math.ceil(r*Math.PI/2/0.4));
+      for(const [cx,cy,a0] of [[s.w-r,r,-90],[s.w-r,s.h-r,0],[r,s.h-r,90],[r,r,180]])
+        for(let i=0;i<=seg;i++){const a=(a0+90*i/seg)*D2R; pts.push([cx+r*Math.cos(a), cy+r*Math.sin(a)]);}
+      return [{closed:true, pts}];
+    }
+    case 'ellipse':{
+      const rx=s.w/2, ry=s.h/2;
+      const per=Math.PI*(3*(rx+ry)-Math.sqrt(Math.max(0,(3*rx+ry)*(rx+3*ry))));
+      const n=Math.max(24,Math.min(720,Math.ceil(per/0.4)));
+      const pts=[]; for(let i=0;i<n;i++){const a=i/n*2*Math.PI; pts.push([rx+rx*Math.cos(a), ry+ry*Math.sin(a)]);}
+      return [{closed:true, pts}];
+    }
+    case 'poly': case 'text':
+      return (s.paths||[]).map(p=>({closed:p.closed, pts:p.pts.map(q=>[q[0]*s.w, q[1]*s.h])}));
+    case 'image':
+      return [{closed:true, pts:[[0,0],[s.w,0],[s.w,s.h],[0,s.h]]}];
+  }
+  return [];
+}
+const pathCache = new WeakMap();
+function worldPaths(s){
+  const key=s.x+'|'+s.y+'|'+s.w+'|'+s.h+'|'+(s.rot||0)+'|'+(s.r||0)+'|'+(s.fx?1:0)+(s.fy?1:0)+'|'+(s.paths?s.paths.length:0);
+  const c=pathCache.get(s);
+  if(c && c.key===key && c.paths===s.paths) return c.wp;
+  const wp=localPaths(s).map(p=>({closed:p.closed, pts:p.pts.map(q=>toWorld(s,q[0],q[1]))}));
+  pathCache.set(s,{key, wp, paths:s.paths});
+  return wp;
+}
+function shapeBBox(s){
+  if(!s.rot) return {x0:s.x,y0:s.y,x1:s.x+s.w,y1:s.y+s.h};
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  if(s.type==='image'||s.type==='rect'){
+    for(const [lx,ly] of [[0,0],[s.w,0],[s.w,s.h],[0,s.h]]){const [x,y]=toWorld(s,lx,ly);x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+  } else {
+    for(const p of worldPaths(s)) for(const [x,y] of p.pts){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+    if(x0>x1) return {x0:s.x,y0:s.y,x1:s.x+s.w,y1:s.y+s.h};
+  }
+  return {x0,y0,x1,y1};
+}
+function unionBBox(list){
+  let b=null;
+  for(const s of list){const q=shapeBBox(s); if(!b) b={...q}; else {b.x0=Math.min(b.x0,q.x0);b.y0=Math.min(b.y0,q.y0);b.x1=Math.max(b.x1,q.x1);b.y1=Math.max(b.y1,q.y1);}}
+  return b;
+}
+const selShapes = () => S.shapes.filter(s=>S.sel.has(s.id));
+const byId = id => S.shapes.find(s=>s.id===id);
+
+function pointInPolys(x,y,polys){
+  let inside=false;
+  for(const p of polys){ if(!p.closed) continue; const a=p.pts;
+    for(let i=0,j=a.length-1;i<a.length;j=i++){
+      const [xi,yi]=a[i],[xj,yj]=a[j];
+      if(((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi)+xi)) inside=!inside;
+    }}
+  return inside;
+}
+function distToSeg(px,py,ax,ay,bx,by){
+  const dx=bx-ax,dy=by-ay,L=dx*dx+dy*dy; let t=L?((px-ax)*dx+(py-ay)*dy)/L:0; t=Math.max(0,Math.min(1,t));
+  return Math.hypot(ax+t*dx-px, ay+t*dy-py);
+}
+function nearEdge(x,y,polys,tol){
+  for(const p of polys){const a=p.pts,n=a.length; const m=p.closed?n:n-1;
+    for(let i=0;i<m;i++){const q=a[i],r=a[(i+1)%n]; if(distToSeg(x,y,q[0],q[1],r[0],r[1])<=tol) return true;}}
+  return false;
+}
+
+/* Douglas–Peucker soddalashtirish */
+function dp(pts,tol){
+  const n=pts.length; if(n<3) return pts.slice();
+  const keep=new Uint8Array(n); keep[0]=keep[n-1]=1; const st=[[0,n-1]], t2=tol*tol;
+  while(st.length){
+    const [a,b]=st.pop(); let md=-1,mi=-1; const [ax,ay]=pts[a],[bx,by]=pts[b]; const dx=bx-ax,dy=by-ay,L=dx*dx+dy*dy;
+    for(let i=a+1;i<b;i++){const [px,py]=pts[i]; let t=L?((px-ax)*dx+(py-ay)*dy)/L:0; t=Math.max(0,Math.min(1,t)); const d=(ax+t*dx-px)**2+(ay+t*dy-py)**2; if(d>md){md=d;mi=i;}}
+    if(md>t2){keep[mi]=1; st.push([a,mi],[mi,b]);}
+  }
+  const out=[]; for(let i=0;i<n;i++) if(keep[i]) out.push(pts[i]); return out;
+}
+function simplifyClosed(pts,tol){
+  if(pts.length<5) return pts;
+  let fi=0,fd=-1; const [x0,y0]=pts[0];
+  for(let i=1;i<pts.length;i++){const d=(pts[i][0]-x0)**2+(pts[i][1]-y0)**2; if(d>fd){fd=d;fi=i;}}
+  const a=dp(pts.slice(0,fi+1),tol), b=dp(pts.slice(fi).concat([pts[0]]),tol);
+  return a.concat(b.slice(1,-1));
+}
+/* Ikkilik rasmdan kontur chiqarish (piksel chegaralarini zanjirlash) */
+function traceBinary(bin,W,H,tol){
+  const VW=W+1, nV=VW*(H+1);
+  const oA=new Int32Array(nV).fill(-1), oB=new Int32Array(nV).fill(-1);
+  const add=(a,b)=>{ if(oA[a]<0) oA[a]=b; else oB[a]=b; };
+  const at=(x,y)=>(x<0||y<0||x>=W||y>=H)?0:bin[y*W+x];
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    if(!bin[y*W+x]) continue;
+    const v00=y*VW+x, v10=v00+1, v01=v00+VW, v11=v01+1;
+    if(!at(x,y-1)) add(v00,v10);
+    if(!at(x+1,y)) add(v10,v11);
+    if(!at(x,y+1)) add(v11,v01);
+    if(!at(x-1,y)) add(v01,v00);
+  }
+  const loops=[];
+  for(let st=0;st<nV;st++){
+    while(oA[st]>=0||oB[st]>=0){
+      const raw=[]; let cur=st, guard=0;
+      do{
+        let nx; if(oA[cur]>=0){nx=oA[cur];oA[cur]=-1;} else {nx=oB[cur];oB[cur]=-1;}
+        raw.push([cur%VW, (cur/VW)|0]); cur=nx;
+        if(++guard>5e6) break;
+      } while(cur!==st && (oA[cur]>=0||oB[cur]>=0));
+      // to'g'ri chiziqdagi nuqtalarni olib tashlash
+      const pts=[]; const n=raw.length;
+      for(let i=0;i<n;i++){const p=raw[(i+n-1)%n], c=raw[i], q=raw[(i+1)%n];
+        if((c[0]-p[0])*(q[1]-c[1]) - (c[1]-p[1])*(q[0]-c[0]) !== 0) pts.push(c);}
+      const sp=simplifyClosed(pts,tol);
+      if(sp.length>=3) loops.push(sp);
+    }
+  }
+  return loops;
+}
+
+/* ============================== Matn ============================== */
+const TXT_PX=120;
+function fontStr(s,px){return `${s.italic?'italic ':''}${s.bold?'700':'400'} ${px}px "${s.font}", sans-serif`;}
+function traceText(s){
+  const px=TXT_PX, lines=String(s.text||'').split('\n');
+  const c=document.createElement('canvas'), g=c.getContext('2d'); g.font=fontStr(s,px);
+  const lh=px*1.2; let maxW=1; for(const l of lines) maxW=Math.max(maxW,g.measureText(l).width);
+  const pad=Math.ceil(px*0.6);
+  c.width=Math.min(16000,Math.ceil(maxW)+pad*2); c.height=Math.min(16000,Math.ceil(lh*lines.length)+pad*2);
+  g.font=fontStr(s,px); g.fillStyle='#000'; g.textBaseline='alphabetic'; g.textAlign=s.align||'left';
+  const ax = s.align==='center'? pad+maxW/2 : s.align==='right'? pad+maxW : pad;
+  lines.forEach((l,i)=>g.fillText(l, ax, pad+px*0.9+i*lh));
+  const W=c.width,H=c.height, d=g.getImageData(0,0,W,H).data, bin=new Uint8Array(W*H);
+  for(let i=0;i<W*H;i++) bin[i]=d[i*4+3]>110?1:0;
+  const loops=traceBinary(bin,W,H,0.55);
+  if(!loops.length) return null;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const L of loops) for(const [x,y] of L){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+  const bw=Math.max(1e-6,x1-x0), bh=Math.max(1e-6,y1-y0), mm=s.size/px;
+  return {paths:loops.map(L=>({closed:true, pts:L.map(([x,y])=>[(x-x0)/bw,(y-y0)/bh])})), w:bw*mm, h:bh*mm};
+}
+async function retrace(s, keepCenter){
+  try{ await document.fonts.load(fontStr(s,TXT_PX), s.text||'A'); }catch(e){}
+  const cx=s.x+s.w/2, cy=s.y+s.h/2;
+  const r=traceText(s);
+  if(r){ s.paths=r.paths; s.w=r.w; s.h=r.h; } else { s.paths=[]; s.w=Math.max(1,s.size); s.h=Math.max(1,s.size); }
+  if(keepCenter){ s.x=cx-s.w/2; s.y=cy-s.h/2; }
+}
+
+/* ============================== Rasmlar ============================== */
+const imgEls = new Map();
+function getImg(s){
+  let e=imgEls.get(s.src);
+  if(!e){ e=new Image(); e.onload=()=>{ requestRender(); refreshPanels(); }; e.src=s.src; imgEls.set(s.src,e); }
+  return (e.complete && e.naturalWidth) ? e : null;
+}
+const KERNELS = {
+  floyd:[[1,0,7/16],[-1,1,3/16],[0,1,5/16],[1,1,1/16]],
+  atkinson:[[1,0,1/8],[2,0,1/8],[-1,1,1/8],[0,1,1/8],[1,1,1/8],[0,2,1/8]],
+  jarvis:[[1,0,7/48],[2,0,5/48],[-2,1,3/48],[-1,1,5/48],[0,1,7/48],[1,1,5/48],[2,1,3/48],[-2,2,1/48],[-1,2,3/48],[0,2,5/48],[1,2,3/48],[2,2,1/48]]
+};
+/* Natija: b[i] = kuydirish darajasi 0..1 */
+function processImage(s,pw,ph,modeOverride){
+  const im=getImg(s); if(!im) return null;
+  pw=Math.max(1,Math.round(pw)); ph=Math.max(1,Math.round(ph));
+  const c=document.createElement('canvas'); c.width=pw; c.height=ph;
+  const g=c.getContext('2d',{willReadFrequently:true}); g.fillStyle='#fff'; g.fillRect(0,0,pw,ph);
+  g.imageSmoothingEnabled=true; g.imageSmoothingQuality='high'; g.drawImage(im,0,0,pw,ph);
+  const d=g.getImageData(0,0,pw,ph).data, n=pw*ph, b=new Float32Array(n);
+  const br=(s.bright||0)/100, ct=Math.max(-0.95,Math.min(0.95,(s.contrast||0)/100)), cf=(1+ct)/(1-ct);
+  for(let i=0;i<n;i++){
+    let L=(0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2])/255;
+    L=(L-0.5)*cf+0.5+br; L=L<0?0:L>1?1:L; if(s.invert) L=1-L; b[i]=1-L;
+  }
+  const mode=modeOverride||s.dither||'gray';
+  if(mode==='threshold'){ for(let i=0;i<n;i++) b[i]=b[i]>=0.5?1:0; }
+  else if(KERNELS[mode]){
+    const K=KERNELS[mode];
+    for(let y=0;y<ph;y++) for(let x=0;x<pw;x++){
+      const i=y*pw+x, o=b[i], v=o>=0.5?1:0, e=o-v; b[i]=v;
+      for(const [kx,ky,kw] of K){const xx=x+kx,yy=y+ky; if(xx>=0&&xx<pw&&yy<ph) b[yy*pw+xx]+=e*kw;}
+    }
+  }
+  return {b,w:pw,h:ph};
+}
+const imgPrevCache = new WeakMap();
+function imagePreview(s){
+  const L=S.layers[s.layer]; const step=Math.max(0.02,L.interval||0.1);
+  let pw=s.w/step, ph=s.h/step; const cap=900/Math.max(pw,ph); if(cap<1){pw*=cap;ph*=cap;}
+  pw=Math.max(1,Math.round(pw)); ph=Math.max(1,Math.round(ph));
+  const key=[s.src.length,pw,ph,s.bright,s.contrast,s.dither,s.invert,T.burn].join('|');
+  const c=imgPrevCache.get(s); if(c&&c.key===key) return c.cv;
+  const r=processImage(s,pw,ph); if(!r) return null;
+  const cv=document.createElement('canvas'); cv.width=pw; cv.height=ph;
+  const g=cv.getContext('2d'), id=g.createImageData(pw,ph); const [cr,cg,cb]=hexRgb(T.burn);
+  for(let i=0;i<pw*ph;i++){ id.data[i*4]=cr; id.data[i*4+1]=cg; id.data[i*4+2]=cb; id.data[i*4+3]=Math.round(Math.max(0,Math.min(1,r.b[i]))*255); }
+  g.putImageData(id,0,0); imgPrevCache.set(s,{key,cv}); return cv;
+}
+function hexRgb(h){h=h.trim().replace('#',''); if(h.length===3) h=h.split('').map(c=>c+c).join(''); const n=parseInt(h,16); return [(n>>16)&255,(n>>8)&255,n&255];}
+
+/* ============================== Mavzu tokenlari ============================== */
+let T={};
+function readTokens(){
+  const cs=getComputedStyle(document.documentElement); const g=k=>cs.getPropertyValue(k).trim();
+  T={canvas:g('--canvas'),bed:g('--bed'),grid:g('--grid'),gridMajor:g('--grid-major'),ruler:g('--ruler'),rulerFg:g('--ruler-fg'),
+     fg:g('--fg'),muted:g('--muted'),sel:g('--sel'),accent:g('--accent'),burn:g('--burn'),line:g('--line'),danger:g('--danger'),
+     dark: (function(){const [r,gg,b]=hexRgb(g('--bed')); return (r+gg+b)/3<100;})()};
+}
+function dispColor(i){ const c=PALETTE[i]; if(T.dark && i===0) return '#d8dde2'; return c; }
+
+/* ============================== Chizish (render) ============================== */
+const cv=$('#cv'), ctx=cv.getContext('2d');
+let rq=0;
+function requestRender(){ if(!rq) rq=requestAnimationFrame(()=>{rq=0; render();}); }
+const d2s=(x,y)=>[S.view.ox+x*S.view.scale, S.view.oy+y*S.view.scale];
+const s2d=(x,y)=>[(x-S.view.ox)/S.view.scale, (y-S.view.oy)/S.view.scale];
+const machY = y => S.dev.origin==='bl' ? S.dev.bedH - y : y;
+
+function gridStep(k){ for(const st of [1,2,5,10,20,50,100,200]) if(st*k>=7) return st; return 500; }
+function render(){
+  const dpr=window.devicePixelRatio||1, W=cv.clientWidth, H=cv.clientHeight;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  const g=ctx; g.setTransform(dpr,0,0,dpr,0,0);
+  g.fillStyle=T.canvas; g.fillRect(0,0,W,H);
+  const k=S.view.scale, {bedW,bedH}=S.dev; const [bx,by]=d2s(0,0);
+  g.fillStyle=T.bed; g.fillRect(bx,by,bedW*k,bedH*k);
+  // setka
+  const st=gridStep(k), major=st*([2,20,200].includes(st)?5:10);
+  g.save(); g.beginPath(); g.rect(bx,by,bedW*k,bedH*k); g.clip(); g.lineWidth=1;
+  for(const pass of [0,1]){
+    g.strokeStyle=pass?T.gridMajor:T.grid; g.beginPath();
+    for(let x=0;x<=bedW+1e-9;x+=st){ const isM=Math.abs(x/major-Math.round(x/major))<1e-6; if(isM!==!!pass) continue; const sx=Math.round(bx+x*k)+.5; g.moveTo(sx,by); g.lineTo(sx,by+bedH*k); }
+    for(let i=0;i<=bedH/st+1e-9;i++){ const my=i*st; const isM=Math.abs(my/major-Math.round(my/major))<1e-6; if(isM!==!!pass) continue; const y=S.dev.origin==='bl'?bedH-my:my; const sy=Math.round(by+y*k)+.5; g.moveTo(bx,sy); g.lineTo(bx+bedW*k,sy); }
+    g.stroke();
+  }
+  g.restore();
+  g.strokeStyle=T.line; g.strokeRect(Math.round(bx)+.5,Math.round(by)+.5,Math.round(bedW*k),Math.round(bedH*k));
+  // boshlanish nuqtasi belgisi
+  const [ox0,oy0]=d2s(0, S.dev.origin==='bl'?bedH:0);
+  g.fillStyle=T.accent; g.beginPath(); g.arc(ox0,oy0,4,0,Math.PI*2); g.fill();
+
+  // shakllar
+  for(const s of S.shapes) drawShape(g,s);
+  drawSelection(g);
+  drawDraft(g);
+  if(drag && drag.kind==='marquee'){
+    const [x0,y0]=d2s(...drag.p0),[x1,y1]=d2s(...drag.p1);
+    const cross=drag.p1[0]<drag.p0[0];
+    g.save(); g.strokeStyle=T.sel; g.fillStyle=T.sel; g.globalAlpha=.08; g.fillRect(x0,y0,x1-x0,y1-y0); g.globalAlpha=1;
+    if(cross) g.setLineDash([5,4]); g.strokeRect(x0+.5,y0+.5,x1-x0,y1-y0); g.restore();
+  }
+  // lazer kallagi
+  if(MC.headPos){
+    const [hx,hy]=d2s(MC.headPos[0], machY(MC.headPos[1]));
+    g.save(); g.strokeStyle=T.danger; g.lineWidth=1.5; g.beginPath(); g.arc(hx,hy,7,0,Math.PI*2); g.moveTo(hx-12,hy); g.lineTo(hx+12,hy); g.moveTo(hx,hy-12); g.lineTo(hx,hy+12); g.stroke(); g.restore();
+  }
+  drawRulers(g,W,H);
+  updateStatus();
+}
+function shapePath2D(s){
+  const p=new Path2D();
+  for(const q of worldPaths(s)){ const a=q.pts; if(!a.length) continue;
+    let [x,y]=d2s(a[0][0],a[0][1]); p.moveTo(x,y);
+    for(let i=1;i<a.length;i++){[x,y]=d2s(a[i][0],a[i][1]); p.lineTo(x,y);}
+    if(q.closed) p.closePath(); }
+  return p;
+}
+function drawShape(g,s){
+  const L=S.layers[s.layer], col=dispColor(s.layer);
+  g.save(); if(!L.output) g.globalAlpha=.35;
+  if(s.type==='image'){
+    const pc=imagePreview(s); const [cx,cy]=d2s(s.x+s.w/2,s.y+s.h/2); const k=S.view.scale;
+    g.translate(cx,cy); g.rotate((s.rot||0)*D2R); g.scale(s.fx?-1:1, s.fy?-1:1);
+    if(pc){ g.imageSmoothingEnabled = (pc.width < s.w*k); g.drawImage(pc,-s.w*k/2,-s.h*k/2,s.w*k,s.h*k); }
+    else { g.fillStyle=T.grid; g.fillRect(-s.w*k/2,-s.h*k/2,s.w*k,s.h*k); }
+    g.strokeStyle=col; g.lineWidth=1; g.setLineDash([4,3]); g.strokeRect(-s.w*k/2,-s.h*k/2,s.w*k,s.h*k);
+    g.restore(); return;
+  }
+  const p=shapePath2D(s);
+  const fills = L.mode==='fill'||L.mode==='fill+line'||L.mode==='image';
+  if(fills){ g.fillStyle=col; g.globalAlpha*=.3; g.fill(p,'evenodd'); g.globalAlpha=L.output?1:.35; }
+  const hov = S.hover===s.id && !S.sel.has(s.id);
+  g.strokeStyle=col; g.lineWidth=hov?2.4:1.25; g.lineJoin='round'; g.stroke(p);
+  g.restore();
+}
+function handlePoints(){
+  const sel=selShapes(); if(!sel.length) return null;
+  const k=S.view.scale;
+  if(sel.length===1){
+    const s=sel[0]; const pts=[];
+    const u={...s, fx:false, fy:false};
+    for(const [hx,hy] of HANDLES){ const [x,y]=toWorld(u,(hx+1)/2*s.w,(hy+1)/2*s.h); pts.push(d2s(x,y)); }
+    const [tx,ty]=toWorld(u,s.w/2,0); const [ux,uy]=rot2(0,-26/k,(s.rot||0)*D2R);
+    return {pts, rot:d2s(tx+ux,ty+uy), top:d2s(tx,ty), single:s};
+  }
+  const b=unionBBox(sel); const pts=HANDLES.map(([hx,hy])=>d2s(b.x0+(hx+1)/2*(b.x1-b.x0), b.y0+(hy+1)/2*(b.y1-b.y0)));
+  return {pts, rot:null, bb:b};
+}
+const HANDLES=[[-1,-1],[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0]];
+function drawSelection(g){
+  const h=handlePoints(); if(!h) return;
+  g.save(); g.strokeStyle=T.sel; g.lineWidth=1; g.setLineDash([5,4]);
+  g.beginPath(); [0,2,4,6].forEach((i,j)=>{const [x,y]=h.pts[i]; j?g.lineTo(x,y):g.moveTo(x,y);}); g.closePath(); g.stroke();
+  g.setLineDash([]);
+  for(const s of selShapes()){ if(selShapes().length>1){ g.globalAlpha=.6; g.strokeStyle=T.sel; g.lineWidth=2; g.stroke(shapePath2D(s)); g.globalAlpha=1; } }
+  g.fillStyle=T.bed; g.strokeStyle=T.sel; g.lineWidth=1.2;
+  for(const [x,y] of h.pts){ g.fillRect(x-4,y-4,8,8); g.strokeRect(x-4+.5,y-4+.5,7,7); }
+  if(h.rot){ g.beginPath(); g.moveTo(...h.top); g.lineTo(...h.rot); g.stroke(); g.beginPath(); g.arc(h.rot[0],h.rot[1],5,0,Math.PI*2); g.fill(); g.stroke(); }
+  if(drag && (drag.kind==='move'||drag.kind==='resize'||drag.kind==='rot') && drag.moved){
+    const gm=selGeom(); let txt;
+    if(drag.kind==='move') txt=`X ${fmt1(gm.X)}  Y ${fmt1(gm.Y)}`;
+    else if(drag.kind==='rot') txt=`${fmt1(gm.R)}°`;
+    else txt=`${fmt1(gm.W)} × ${fmt1(gm.H)} mm`;
+    const xs=h.pts.map(p=>p[0]), ys=h.pts.map(p=>p[1]); const lx=Math.max(...xs)+10, ly=Math.max(...ys)+10;
+    g.font='500 11px "IBM Plex Mono", monospace'; const tw=g.measureText(txt).width;
+    g.fillStyle=T.sel; g.beginPath(); g.roundRect?g.roundRect(lx,ly,tw+12,20,4):g.rect(lx,ly,tw+12,20); g.fill();
+    g.fillStyle='#fff'; g.textBaseline='middle'; g.fillText(txt,lx+6,ly+10.5);
+  }
+  g.restore();
+}
+function drawDraft(g){
+  if(drag && drag.kind==='create'){
+    const r=createRect(drag); const col=dispColor(S.curLayer);
+    g.save(); g.strokeStyle=col; g.lineWidth=1.25; g.setLineDash([4,3]);
+    const [x0,y0]=d2s(r.x,r.y); const w=r.w*S.view.scale, h=r.h*S.view.scale;
+    g.beginPath(); if(drag.type==='ellipse') g.ellipse(x0+w/2,y0+h/2,w/2,h/2,0,0,Math.PI*2); else g.rect(x0,y0,w,h); g.stroke();
+    g.setLineDash([]); g.fillStyle=T.fg; g.font='11px '+getComputedStyle(document.body).getPropertyValue('--f-mono');
+    g.fillText(`${fmt1(r.w)} × ${fmt1(r.h)} mm`, x0+w+6, y0+h+14); g.restore();
+  }
+  if(S.draft){
+    const a=S.draft.pts; if(!a.length) return; const col=dispColor(S.curLayer);
+    g.save(); g.strokeStyle=col; g.lineWidth=1.25; g.beginPath();
+    a.forEach((p,i)=>{const [x,y]=d2s(p[0],p[1]); i?g.lineTo(x,y):g.moveTo(x,y);});
+    if(S.draft.hover){const [x,y]=d2s(...S.draft.hover); g.setLineDash([4,3]); g.lineTo(x,y);} g.stroke();
+    g.setLineDash([]); g.fillStyle=col; for(const p of a){const [x,y]=d2s(p[0],p[1]); g.fillRect(x-2.5,y-2.5,5,5);}
+    if(a.length>=3){const [x,y]=d2s(a[0][0],a[0][1]); g.strokeStyle=T.sel; g.beginPath(); g.arc(x,y,7,0,Math.PI*2); g.stroke();}
+    g.restore();
+  }
+}
+function drawRulers(g,W,H){
+  const k=S.view.scale, st=gridStep(k);
+  let lab=st; while(lab*k<55) lab*= (String(lab)[0]==='2'?2.5:2);
+  g.save(); g.fillStyle=T.ruler; g.fillRect(0,0,W,RULER); g.fillRect(0,0,RULER,H);
+  g.strokeStyle=T.line; g.beginPath(); g.moveTo(0,RULER+.5); g.lineTo(W,RULER+.5); g.moveTo(RULER+.5,0); g.lineTo(RULER+.5,H); g.stroke();
+  g.fillStyle=T.rulerFg; g.strokeStyle=T.rulerFg; g.font='10px "IBM Plex Mono", monospace'; g.textBaseline='top';
+  const [dx0]=s2d(RULER,0), [dx1]=s2d(W,0);
+  g.beginPath();
+  for(let x=Math.ceil(dx0/st)*st; x<=dx1; x+=st){ const sx=Math.round(d2s(x,0)[0])+.5; const isL=Math.abs(x/lab-Math.round(x/lab))<1e-6; g.moveTo(sx,RULER); g.lineTo(sx,RULER-(isL?9:4)); if(isL) g.fillText(String(Math.round(x)), sx+2, 2); }
+  const [,dy0]=s2d(0,RULER), [,dy1]=s2d(0,H);
+  const m0=Math.min(machY(dy0),machY(dy1)), m1=Math.max(machY(dy0),machY(dy1));
+  for(let m=Math.ceil(m0/st)*st; m<=m1; m+=st){ const y=S.dev.origin==='bl'?S.dev.bedH-m:m; const sy=Math.round(d2s(0,y)[1])+.5; const isL=Math.abs(m/lab-Math.round(m/lab))<1e-6; g.moveTo(RULER,sy); g.lineTo(RULER-(isL?9:4),sy);
+    if(isL){ g.save(); g.translate(2,sy-2); g.rotate(-Math.PI/2); g.textBaseline='top'; g.fillText(String(Math.round(m)),0,0); g.restore(); } }
+  g.stroke();
+  g.fillStyle=T.ruler; g.fillRect(0,0,RULER,RULER); g.fillStyle=T.rulerFg; g.fillText('mm',2,6);
+  // kursor belgisi
+  if(mouse.in){ g.strokeStyle=T.accent; g.beginPath(); g.moveTo(mouse.sx+.5,0); g.lineTo(mouse.sx+.5,RULER); g.moveTo(0,mouse.sy+.5); g.lineTo(RULER,mouse.sy+.5); g.stroke(); }
+  g.restore();
+}
+const fmt1=n=>(Math.round(n*10)/10).toFixed(1);
+const fmt2=n=>(Math.round(n*100)/100).toString();
+
+/* ============================== Koʻrinish ============================== */
+function fitView(){
+  const W=cv.clientWidth, H=cv.clientHeight; if(!W||!H) return;
+  S.fitted=true; const pad=24; const k=Math.min((W-RULER-pad*2)/S.dev.bedW,(H-RULER-pad*2)/S.dev.bedH);
+  S.view.scale=Math.max(0.05,k);
+  S.view.ox=RULER+(W-RULER-S.dev.bedW*k)/2; S.view.oy=RULER+(H-RULER-S.dev.bedH*k)/2;
+  requestRender();
+}
+function zoomAt(f,sx,sy){
+  const k0=S.view.scale, k=Math.max(0.05,Math.min(200,k0*f));
+  const [dx,dy]=s2d(sx,sy); S.view.scale=k; S.view.ox=sx-dx*k; S.view.oy=sy-dy*k; requestRender();
+}
+
+/* ============================== Tarix (bekor qilish) ============================== */
+const Hist={stack:[],i:-1};
+function snapState(){return {shapes:S.shapes.map(s=>({...s})), layers:S.layers.map(l=>({...l})), order:S.order.slice()};}
+function pushHistory(){
+  Hist.stack.length=Hist.i+1; Hist.stack.push(snapState());
+  if(Hist.stack.length>100) Hist.stack.shift();
+  Hist.i=Hist.stack.length-1; if(!S.initing) S.isSample=false; scheduleSave(); updateUndoUI();
+}
+function restoreState(st){
+  S.shapes=st.shapes.map(s=>({...s})); S.layers=st.layers.map(l=>({...l})); S.order=st.order.slice();
+  S.sel=new Set([...S.sel].filter(id=>S.shapes.some(s=>s.id===id)));
+  refreshPanels(); requestRender(); scheduleSave(); updateUndoUI();
+}
+function undo(){ if(Hist.i>0){Hist.i--; restoreState(Hist.stack[Hist.i]);} }
+function redo(){ if(Hist.i<Hist.stack.length-1){Hist.i++; restoreState(Hist.stack[Hist.i]);} }
+function updateUndoUI(){ $('#bUndo').disabled=Hist.i<=0; $('#bRedo').disabled=Hist.i>=Hist.stack.length-1; }
+
+/* ============================== Shakl yaratish ============================== */
+function newShape(o){ const s={id:S.nextId++, layer:S.curLayer, rot:0, ...o}; S.shapes.push(s); return s; }
+function createRect(d){
+  let [x0,y0]=d.p0, [x1,y1]=d.p1;
+  if(d.shift){ const m=Math.max(Math.abs(x1-x0),Math.abs(y1-y0)); x1=x0+Math.sign(x1-x0||1)*m; y1=y0+Math.sign(y1-y0||1)*m; }
+  return {x:Math.min(x0,x1), y:Math.min(y0,y1), w:Math.abs(x1-x0), h:Math.abs(y1-y0)};
+}
+function polyFromPoints(pts,closed){
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; for(const [x,y] of pts){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+  const w=x1-x0, h=y1-y0;
+  return {type:'poly', x:x0, y:y0, w, h, paths:[{closed, pts:pts.map(([x,y])=>[w>1e-9?(x-x0)/w:0, h>1e-9?(y-y0)/h:0])}]};
+}
+function multiPoly(paths){ // paths: [{closed, pts: world}]
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; for(const p of paths) for(const [x,y] of p.pts){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+  const w=x1-x0, h=y1-y0;
+  return {type:'poly', x:x0, y:y0, w, h, paths:paths.map(p=>({closed:p.closed, pts:p.pts.map(([x,y])=>[w>1e-9?(x-x0)/w:0, h>1e-9?(y-y0)/h:0])}))};
+}
+function finishDraft(close){
+  const d=S.draft; S.draft=null;
+  if(!d || d.pts.length<2){ requestRender(); return; }
+  const s=newShape(polyFromPoints(d.pts, close && d.pts.length>=3));
+  S.sel=new Set([s.id]); pushHistory(); refreshPanels(); setTool('select'); requestRender();
+}
+async function addTextAt(x,y){
+  const s={id:S.nextId++, layer:S.curLayer, rot:0, type:'text', text:'Matn', font:'Arial', size:10, bold:false, italic:false, align:'left', x, y, w:1, h:1, paths:[]};
+  await retrace(s); S.shapes.push(s); S.sel=new Set([s.id]);
+  ensureLayerMode(s.layer,'fill');
+  pushHistory(); setTool('select'); setTab('obj'); refreshPanels(); requestRender();
+  setTimeout(()=>{ const t=$('#p_text'); if(t){ t.focus(); t.select(); } },30);
+}
+function ensureLayerMode(i,mode){ const used=S.shapes.filter(s=>s.layer===i).length; if(used<=1 && S.layers[i].mode==='line' && mode!=='line'){ S.layers[i].mode=mode; } }
+
+/* ============================== Sichqoncha / sensor ============================== */
+let drag=null, spaceDown=false; const mouse={sx:0,sy:0,x:0,y:0,in:false}; const pointers=new Map(); let pinch=null;
+const snapV=v=>S.snap?Math.round(v/S.snapStep)*S.snapStep:v;
+function hitHandle(sx,sy){
+  const h=handlePoints(); if(!h) return null;
+  if(h.rot && Math.hypot(sx-h.rot[0],sy-h.rot[1])<=8) return 'rot';
+  for(let i=0;i<8;i++){ if(Math.abs(sx-h.pts[i][0])<=6 && Math.abs(sy-h.pts[i][1])<=6) return i; }
+  return null;
+}
+function hitShape(x,y){
+  const tol=5/S.view.scale;
+  for(let i=S.shapes.length-1;i>=0;i--){ const s=S.shapes[i];
+    if(s.type==='image'||s.type==='text'){ const [lx,ly]=toLocal(s,x,y); if(lx>=-tol&&ly>=-tol&&lx<=s.w+tol&&ly<=s.h+tol) return s; continue; }
+    if(nearEdge(x,y,worldPaths(s),tol)) return s; }
+  for(let i=S.shapes.length-1;i>=0;i--){ const s=S.shapes[i]; if(s.type==='image'||s.type==='text') continue;
+    if(pointInPolys(x,y,worldPaths(s))) return s; }
+  return null;
+}
+cv.addEventListener('pointerdown',e=>{
+  cv.focus({preventScroll:true});
+  cv.setPointerCapture(e.pointerId); pointers.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+  if(pointers.size===2){ const [a,b]=[...pointers.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y), mx:(a.x+b.x)/2, my:(a.y+b.y)/2, view:{...S.view}}; drag=null; S.draft&&(S.draft.hover=null); return; }
+  if(pointers.size>2) return;
+  const [mx,my]=s2d(e.offsetX,e.offsetY);
+  if(e.button===1 || spaceDown || S.tool==='pan'){ drag={kind:'pan',sx:e.offsetX,sy:e.offsetY,ox:S.view.ox,oy:S.view.oy}; cv.style.cursor='grabbing'; return; }
+  if(e.button!==0) return;
+  const t=S.tool;
+  if(t==='select'){
+    const h=hitHandle(e.offsetX,e.offsetY);
+    if(h==='rot'){ const s=selShapes()[0]; const c=[s.x+s.w/2,s.y+s.h/2]; drag={kind:'rot',s,c,a0:Math.atan2(my-c[1],mx-c[0]),r0:s.rot||0}; return; }
+    if(h!==null){ const hp=handlePoints(); drag={kind:'resize',h,single:hp.single?{...hp.single}:null,bb:hp.bb,orig:selShapes().map(s=>({...s})),moved:false}; return; }
+    const hit=hitShape(mx,my);
+    if(hit){
+      const grp=groupOf(hit);
+      if(e.shiftKey){ const on=S.sel.has(hit.id); for(const g of grp) on?S.sel.delete(g.id):S.sel.add(g.id); }
+      else if(!S.sel.has(hit.id)) S.sel=new Set(grp.map(g=>g.id));
+      drag={kind:'move',start:[mx,my],orig:selShapes().map(s=>({id:s.id,x:s.x,y:s.y})),bb:unionBBox(selShapes()),moved:false};
+      refreshPanels();
+    } else {
+      if(!e.shiftKey && S.sel.size){ S.sel.clear(); refreshPanels(); }
+      drag={kind:'marquee',p0:[mx,my],p1:[mx,my],add:e.shiftKey};
+    }
+    requestRender(); return;
+  }
+  if(t==='rect'||t==='ellipse'){ const p=[snapV(mx),snapV(my)]; drag={kind:'create',type:t,p0:p,p1:p,shift:e.shiftKey}; return; }
+  if(t==='line'){
+    let p=[snapV(mx),snapV(my)];
+    if(!S.draft) S.draft={pts:[]};
+    const a=S.draft.pts;
+    if(a.length && e.shiftKey) p=constrain45(a[a.length-1],p);
+    if(a.length>=3){ const [fx,fy]=d2s(...a[0]); if(Math.hypot(fx-e.offsetX,fy-e.offsetY)<=8){ finishDraft(true); return; } }
+    if(a.length && Math.hypot(p[0]-a[a.length-1][0],p[1]-a[a.length-1][1])<1e-6){ return; }
+    a.push(p); requestRender(); showHint('Nuqta qoʻshing. Ikki marta bosish yoki Enter — tugatish, birinchi nuqtani bosish — yopish, Esc — bekor.'); return;
+  }
+  if(t==='text'){ addTextAt(snapV(mx),snapV(my)); return; }
+});
+function constrain45(a,p){ const dx=p[0]-a[0], dy=p[1]-a[1]; const ang=Math.round(Math.atan2(dy,dx)/(Math.PI/4))*(Math.PI/4); const L=Math.hypot(dx,dy); return [a[0]+L*Math.cos(ang), a[1]+L*Math.sin(ang)]; }
+cv.addEventListener('dblclick',e=>{ if(S.tool==='line' && S.draft){ // dblclick qo'shgan oxirgi takror nuqtani olib tashlash
+  finishDraft(false); } else if(S.tool==='select'){ const [mx,my]=s2d(e.offsetX,e.offsetY); const h=hitShape(mx,my); if(h){ setTab('obj'); if(h.type==='text') setTimeout(()=>$('#p_text')?.focus(),20);} } });
+cv.addEventListener('pointermove',e=>{
+  if(pointers.has(e.pointerId)) pointers.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
+  mouse.sx=e.offsetX; mouse.sy=e.offsetY; mouse.in=true; const [mx,my]=s2d(e.offsetX,e.offsetY); mouse.x=mx; mouse.y=my;
+  if(pinch && pointers.size===2){
+    const [a,b]=[...pointers.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y), cx=(a.x+b.x)/2, cy=(a.y+b.y)/2;
+    const f=d/Math.max(1,pinch.d), v=pinch.view, k=Math.max(0.05,Math.min(200,v.scale*f));
+    const dx=(pinch.mx-v.ox)/v.scale, dy=(pinch.my-v.oy)/v.scale;
+    S.view.scale=k; S.view.ox=cx-dx*k; S.view.oy=cy-dy*k; requestRender(); return;
+  }
+  if(!drag){
+    if(S.tool==='select'){ const h=hitHandle(e.offsetX,e.offsetY); const hs=h===null?hitShape(mx,my):null; S.hover=hs?hs.id:null;
+      cv.style.cursor = h==='rot'?'grab': h!==null?(['nwse-resize','ns-resize','nesw-resize','ew-resize'][h%4]): hs?'move':'default'; }
+    else cv.style.cursor = S.tool==='pan'||spaceDown?'grab':'crosshair';
+    if(S.draft){ let p=[snapV(mx),snapV(my)]; const a=S.draft.pts; if(e.shiftKey&&a.length) p=constrain45(a[a.length-1],p); S.draft.hover=p; }
+    requestRender(); return;
+  }
+  if(drag.kind==='pan'){ S.view.ox=drag.ox+e.offsetX-drag.sx; S.view.oy=drag.oy+e.offsetY-drag.sy; requestRender(); return; }
+  if(drag.kind==='create'){ drag.p1=[snapV(mx),snapV(my)]; drag.shift=e.shiftKey; requestRender(); return; }
+  if(drag.kind==='marquee'){ drag.p1=[mx,my]; requestRender(); return; }
+  if(drag.kind==='move'){
+    let dx=mx-drag.start[0], dy=my-drag.start[1];
+    if(S.snap){ dx=snapV(drag.bb.x0+dx)-drag.bb.x0; dy=snapV(drag.bb.y0+dy)-drag.bb.y0; }
+    if(e.shiftKey){ if(Math.abs(dx)>Math.abs(dy)) dy=0; else dx=0; }
+    if(Math.abs(dx)+Math.abs(dy)>0) drag.moved=true;
+    for(const o of drag.orig){ const s=byId(o.id); s.x=o.x+dx; s.y=o.y+dy; }
+    requestRender(); refreshPropValues(); return;
+  }
+  if(drag.kind==='rot'){
+    let a=(Math.atan2(my-drag.c[1],mx-drag.c[0])-drag.a0)/D2R+drag.r0;
+    if(e.shiftKey) a=Math.round(a/15)*15; a=((a%360)+540)%360-180;
+    drag.s.rot=Math.round(a*10)/10; drag.moved=true; requestRender(); refreshPropValues(); return;
+  }
+  if(drag.kind==='resize'){ doResize(mx,my,e.shiftKey); drag.moved=true; requestRender(); refreshPropValues(); }
+});
+function doResize(mx,my,shift){
+  const [hx,hy]=HANDLES[drag.h]; const corner=hx!==0&&hy!==0; const lock=corner && (S.lockAspect!==shift);
+  const MIN=0.1;
+  if(drag.single){
+    const s0=drag.single, s=byId(s0.id);
+    let px=mx, py=my; if(!s0.rot){ px=snapV(px); py=snapV(py); }
+    const [lx,ly]=toLocal({...s0,fx:false,fy:false},px,py);
+    let L=0,R=s0.w,Tt=0,B=s0.h;
+    if(s0.w>1e-6){ if(hx<0) L=Math.min(lx,R-MIN); if(hx>0) R=Math.max(lx,L+MIN); }
+    if(s0.h>1e-6){ if(hy<0) Tt=Math.min(ly,B-MIN); if(hy>0) B=Math.max(ly,Tt+MIN); }
+    if(lock && s0.w>1e-6 && s0.h>1e-6){
+      const k=Math.max((R-L)/s0.w,(B-Tt)/s0.h);
+      if(hx<0) L=R-s0.w*k; else R=L+s0.w*k;
+      if(hy<0) Tt=B-s0.h*k; else B=Tt+s0.h*k;
+    }
+    const w=R-L, h=B-Tt; const dlx=(L+R)/2-s0.w/2, dly=(Tt+B)/2-s0.h/2;
+    const [rx,ry]=rot2(dlx,dly,(s0.rot||0)*D2R);
+    const cx=s0.x+s0.w/2+rx, cy=s0.y+s0.h/2+ry;
+    s.w=w; s.h=h; s.x=cx-w/2; s.y=cy-h/2;
+    if(s.type==='text' && s0.h>0) s.size=Math.max(0.5, Math.round(s0.size*(h/s0.h)*100)/100);
+  } else {
+    const b=drag.bb; let x0=b.x0,y0=b.y0,x1=b.x1,y1=b.y1; const px=snapV(mx), py=snapV(my);
+    if(hx<0) x0=Math.min(px,x1-MIN); if(hx>0) x1=Math.max(px,x0+MIN);
+    if(hy<0) y0=Math.min(py,y1-MIN); if(hy>0) y1=Math.max(py,y0+MIN);
+    let sx=(x1-x0)/Math.max(1e-6,b.x1-b.x0), sy=(y1-y0)/Math.max(1e-6,b.y1-b.y0);
+    if(lock){ const k=Math.max(sx,sy); sx=sy=k; }
+    if(hx===0) sx=lock?sy:1; if(hy===0) sy=lock?sx:1;
+    const ax=hx<0?b.x1:b.x0, ay=hy<0?b.y1:b.y0;
+    for(const o of drag.orig){ const s=byId(o.id); const cx=ax+(o.x+o.w/2-ax)*sx, cy=ay+(o.y+o.h/2-ay)*sy;
+      s.w=o.w*sx; s.h=o.h*sy; s.x=cx-s.w/2; s.y=cy-s.h/2; if(s.type==='text') s.size=Math.max(0.5,Math.round(o.size*sy*100)/100); }
+  }
+}
+function endPointer(e){
+  pointers.delete(e.pointerId);
+  if(pinch){ if(pointers.size<2) pinch=null; return; }
+  if(!drag) return;
+  const d=drag; drag=null;
+  if(d.kind==='pan'){ cv.style.cursor=S.tool==='pan'?'grab':'default'; return; }
+  if(d.kind==='create'){
+    const r=createRect(d);
+    if(r.w>=0.5 && r.h>=0.5){ const s=newShape({type:d.type, ...r}); S.sel=new Set([s.id]); pushHistory(); setTool('select'); refreshPanels(); }
+    requestRender(); return;
+  }
+  if(d.kind==='marquee'){
+    const x0=Math.min(d.p0[0],d.p1[0]), x1=Math.max(d.p0[0],d.p1[0]), y0=Math.min(d.p0[1],d.p1[1]), y1=Math.max(d.p0[1],d.p1[1]);
+    const cross=d.p1[0]<d.p0[0];
+    if(x1-x0>0.01||y1-y0>0.01){
+      for(const s of S.shapes){ const b=shapeBBox(s);
+        const inside=b.x0>=x0&&b.x1<=x1&&b.y0>=y0&&b.y1<=y1;
+        const inter=!(b.x1<x0||b.x0>x1||b.y1<y0||b.y0>y1);
+        if(cross?inter:inside) S.sel.add(s.id); }
+      expandGroups();
+    }
+    refreshPanels(); requestRender(); return;
+  }
+  if((d.kind==='move'||d.kind==='rot'||d.kind==='resize') && d.moved){ pushHistory(); refreshPanels(); }
+  requestRender();
+}
+cv.addEventListener('pointerup',endPointer);
+cv.addEventListener('pointercancel',endPointer);
+cv.addEventListener('pointerleave',()=>{mouse.in=false; requestRender();});
+cv.addEventListener('wheel',e=>{ e.preventDefault();
+  const dy=e.deltaMode===1?e.deltaY*16:e.deltaY, dx=e.deltaMode===1?e.deltaX*16:e.deltaX;
+  if(e.ctrlKey||e.metaKey){ zoomAt(Math.exp(-dy*0.01), e.offsetX, e.offsetY); return; }      // trackpad chimdish
+  const mouseWheel = e.deltaMode!==0 || (dx===0 && Math.abs(dy)>=40 && Number.isInteger(dy));
+  if(e.shiftKey){ S.view.ox-=(dx||dy); requestRender(); return; }
+  if(mouseWheel){ zoomAt(Math.exp(-dy*0.0015), e.offsetX, e.offsetY); return; }
+  S.view.ox-=dx; S.view.oy-=dy; requestRender();                                             // trackpad surish
+},{passive:false});
+cv.tabIndex=0;
+
+/* ============================== Klaviatura ============================== */
+const typing=()=>{const a=document.activeElement; return a && (a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.tagName==='SELECT');};
+document.addEventListener('keydown',e=>{
+  if($('#pvDlg').open||$('#keysDlg').open) return;
+  const mod=e.ctrlKey||e.metaKey, k=e.key;
+  if(mod && k.toLowerCase()==='s'){ e.preventDefault(); saveProject(); return; }
+  if(mod && k.toLowerCase()==='o'){ e.preventDefault(); $('#fileIn').click(); return; }
+  if(mod && k.toLowerCase()==='i'){ e.preventDefault(); $('#fileIn').click(); return; }
+  if(typing()) return;
+  if(mod && k.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
+  if(mod && k.toLowerCase()==='y'){ e.preventDefault(); redo(); return; }
+  if(mod && k.toLowerCase()==='a'){ e.preventDefault(); S.sel=new Set(S.shapes.map(s=>s.id)); refreshPanels(); requestRender(); return; }
+  if(mod && k.toLowerCase()==='c'){ copySel(); return; }
+  if(mod && k.toLowerCase()==='x'){ copySel(); deleteSel(); return; }
+  if(mod && k.toLowerCase()==='v'){ e.preventDefault(); paste(); return; }
+  if(mod && k.toLowerCase()==='d'){ e.preventDefault(); duplicateSel(); return; }
+  if(mod && k.toLowerCase()==='g'){ e.preventDefault(); e.shiftKey?ungroupSel():groupSel(); return; }
+  if(mod && k===']'){ e.preventDefault(); zOrder(1); return; }
+  if(mod && k==='['){ e.preventDefault(); zOrder(-1); return; }
+  if(k==='?'){ $('#keysDlg').showModal(); return; }
+  if(k==='Delete'||k==='Backspace'){ e.preventDefault(); deleteSel(); return; }
+  if(k==='Escape'){ hideCtx(); if(S.draft){S.draft=null; hideHint(); requestRender();} else if(S.sel.size){S.sel.clear(); refreshPanels(); requestRender();} setTool('select'); return; }
+  if(k==='Enter' && S.draft){ finishDraft(false); return; }
+  if(k===' '){ if(document.activeElement&&document.activeElement.tagName==='BUTTON') return; e.preventDefault(); if(!spaceDown){spaceDown=true; cv.style.cursor='grab';} return; }
+  if(k.startsWith('Arrow') && S.sel.size){ e.preventDefault(); const st=e.shiftKey?10:(e.altKey?0.1:1);
+    const dx=k==='ArrowLeft'?-st:k==='ArrowRight'?st:0, dy=k==='ArrowUp'?-st:k==='ArrowDown'?st:0;
+    for(const s of selShapes()){s.x+=dx;s.y+=dy;} nudgeCommit(); requestRender(); refreshPropValues(); return; }
+  if(mod) return;
+  const map={v:'select',r:'rect',e:'ellipse',l:'line',t:'text',h:'pan'};
+  if(map[k.toLowerCase()]){ setTool(map[k.toLowerCase()]); return; }
+  if(k==='+'||k==='='){ zoomAt(1.25,cv.clientWidth/2,cv.clientHeight/2); return; }
+  if(k==='-'){ zoomAt(0.8,cv.clientWidth/2,cv.clientHeight/2); return; }
+  if(k.toLowerCase()==='f'||k==='0'){ fitView(); return; }
+});
+document.addEventListener('keyup',e=>{ if(e.key===' '){ spaceDown=false; cv.style.cursor='default'; } });
+let nudgeT=0; function nudgeCommit(){ clearTimeout(nudgeT); nudgeT=setTimeout(pushHistory,400); }
+
+function setTool(t){
+  if(S.tool==='line' && t!=='line' && S.draft){ S.draft=null; }
+  S.tool=t; document.querySelectorAll('.tool[data-tool]').forEach(b=>b.classList.toggle('on',b.dataset.tool===t));
+  cv.style.cursor = t==='select'?'default':t==='pan'?'grab':'crosshair';
+  const hints={rect:'Toʻrtburchak chizish uchun torting. Shift — kvadrat.', ellipse:'Ellips chizish uchun torting. Shift — doira.', line:'Nuqtalarni bosib qoʻying. Ikki marta bosish yoki Enter — tugatish.', text:'Matn joylashadigan nuqtani bosing.', pan:'Koʻrinishni surish uchun torting.'};
+  hints[t]?showHint(hints[t]):hideHint(); requestRender();
+}
+function showHint(t){ const h=$('#hint'); h.textContent=t; h.hidden=false; }
+function hideHint(){ $('#hint').hidden=true; }
+
+/* ============================== Tahrirlash amallari ============================== */
+function deleteSel(){ if(!S.sel.size) return; S.shapes=S.shapes.filter(s=>!S.sel.has(s.id)); S.sel.clear(); pushHistory(); refreshPanels(); requestRender(); }
+function copySel(){ const a=selShapes(); if(a.length) S.clip=a.map(s=>({...s})); }
+function remapGids(){ const m=new Map(); return g=>{ if(!g) return undefined; if(!m.has(g)) m.set(g,S.nextId++); return m.get(g); }; }
+function paste(){ if(!S.clip) return; S.sel.clear(); const rg=remapGids(); for(const c of S.clip){ const s={...c,id:S.nextId++,x:c.x+5,y:c.y+5,gid:rg(c.gid)}; if(!s.gid) delete s.gid; S.shapes.push(s); S.sel.add(s.id);} S.clip=S.clip.map(c=>({...c,x:c.x+5,y:c.y+5})); pushHistory(); refreshPanels(); requestRender(); }
+function duplicateSel(){ copySel(); paste(); }
+function assignLayer(i){
+  S.curLayer=i;
+  if(S.sel.size){ for(const s of selShapes()) s.layer=i; pushHistory(); }
+  S.editLayer=i; refreshPanels(); requestRender();
+}
+function alignSel(how){
+  const a=selShapes(); if(!a.length) return;
+  const ref = a.length===1 ? {x0:0,y0:0,x1:S.dev.bedW,y1:S.dev.bedH} : unionBBox(a);
+  for(const s of a){ const b=shapeBBox(s); let dx=0,dy=0;
+    if(how==='l') dx=ref.x0-b.x0; if(how==='r') dx=ref.x1-b.x1; if(how==='cx'||how==='c') dx=(ref.x0+ref.x1)/2-(b.x0+b.x1)/2;
+    if(how==='t') dy=ref.y0-b.y0; if(how==='b') dy=ref.y1-b.y1; if(how==='cy'||how==='c') dy=(ref.y0+ref.y1)/2-(b.y0+b.y1)/2;
+    s.x+=dx; s.y+=dy; }
+  pushHistory(); refreshPanels(); requestRender();
+}
+function groupOf(s){ return s.gid ? S.shapes.filter(o=>o.gid===s.gid) : [s]; }
+function expandGroups(){ const g=new Set(selShapes().filter(s=>s.gid).map(s=>s.gid)); if(g.size) for(const s of S.shapes) if(g.has(s.gid)) S.sel.add(s.id); }
+function groupSel(){ const a=selShapes(); if(a.length<2){ toast('Guruhlash uchun kamida 2 ta obyekt tanlang'); return; } const gid=S.nextId++; for(const s of a) s.gid=gid; pushHistory(); refreshPanels(); requestRender(); toast(`${a.length} ta obyekt guruhlandi`); }
+function ungroupSel(){ const a=selShapes().filter(s=>s.gid); if(!a.length) return; for(const s of a) delete s.gid; pushHistory(); refreshPanels(); requestRender(); toast('Guruh ajratildi'); }
+function zOrder(dir){ const a=selShapes(); if(!a.length) return; const rest=S.shapes.filter(s=>!S.sel.has(s.id)); S.shapes=dir>0?rest.concat(a):a.concat(rest); pushHistory(); requestRender(); }
+function flipSel(axis){
+  const a=selShapes(); if(!a.length) return; const b=unionBBox(a);
+  for(const s of a){
+    const cx=s.x+s.w/2, cy=s.y+s.h/2;
+    if(axis==='x'){ s.fx=!s.fx; s.rot=-(s.rot||0); s.x=b.x0+b.x1-cx-s.w/2; }
+    else { s.fy=!s.fy; s.rot=-(s.rot||0); s.y=b.y0+b.y1-cy-s.h/2; }
+    if(!s.fx) delete s.fx; if(!s.fy) delete s.fy;
+  }
+  pushHistory(); refreshPanels(); requestRender();
+}
+function centerOnBed(){
+  const a=selShapes(); if(!a.length) return; const b=unionBBox(a);
+  const dx=S.dev.bedW/2-(b.x0+b.x1)/2, dy=S.dev.bedH/2-(b.y0+b.y1)/2; for(const s of a){s.x+=dx;s.y+=dy;}
+  pushHistory(); refreshPanels(); requestRender();
+}
+function makeArray(cols,rows,gx,gy){
+  const a=selShapes(); if(!a.length) return; const b=unionBBox(a); const w=b.x1-b.x0, h=b.y1-b.y0;
+  const added=[];
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){ if(!r&&!c) continue; const rg=remapGids();
+    for(const s of a){ const n={...s,id:S.nextId++,x:s.x+c*(w+gx),y:s.y+r*(h+gy),gid:rg(s.gid)}; if(!n.gid) delete n.gid; S.shapes.push(n); added.push(n.id);} }
+  for(const id of added) S.sel.add(id);
+  pushHistory(); refreshPanels(); requestRender(); toast(`${cols}×${rows} massiv yaratildi`);
+}
+
+/* ============================== Panellar ============================== */
+function setTab(t){ S.tab=t; document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t)); for(const p of ['layers','obj','machine']) $('#pane-'+p).hidden=p!==t; refreshPanels(); }
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function usedLayers(){ const u=new Set(S.shapes.map(s=>s.layer)); return S.order.filter(i=>u.has(i)); }
+function refreshPanels(){ renderPalette(); if(S.tab==='layers') renderLayers(); if(S.tab==='obj') renderObj(); if(S.tab==='machine') renderMachine(); updateStatus(); }
+
+function renderPalette(){
+  const el=$('#palette'); const used=new Set(S.shapes.map(s=>s.layer));
+  el.innerHTML='<span class="lbl">Qatlam</span>'+PALETTE.map((c,i)=>`<button class="sw${i===S.curLayer?' cur':''}${used.has(i)?' used':''}" data-i="${i}" style="background:${c}" title="${esc(S.layers[i].name)} — tanlanganlarni shu qatlamga oʻtkazish">${String(i).padStart(2,'0')}</button>`).join('')
+    +`<span class="muted small" style="margin-left:6px">Rangni bossangiz, tanlangan obyektlar shu qatlamga oʻtadi</span>`;
+}
+$('#palette').addEventListener('click',e=>{ const b=e.target.closest('.sw'); if(b) assignLayer(+b.dataset.i); });
+
+function layerSummary(L){ return L.mode==='image'?`${L.speed} mm/min · ${L.minPower}–${L.power}%` : `${L.speed} mm/min · ${L.power}%${L.passes>1?' · ×'+L.passes:''}`; }
+function renderLayers(){
+  const el=$('#pane-layers'); const used=usedLayers();
+  if(S.editLayer===null || !used.includes(S.editLayer)) S.editLayer=used[0]??null;
+  let h='<div class="sec"><h3>Ishlov tartibi</h3>';
+  if(!used.length) h+='<div class="empty">Hali obyekt yoʻq. Chap tomondagi asboblar bilan chizing yoki rasm/SVG import qiling. Har bir rang alohida qatlam: tezlik va quvvat qatlamga beriladi.</div>';
+  else h+='<div class="lyrs">'+used.map(i=>{const L=S.layers[i]; const n=S.shapes.filter(s=>s.layer===i).length; return `<div class="lyr${i===S.editLayer?' on':''}" data-i="${i}"><span class="dot" style="background:${PALETTE[i]}"></span><span class="nm">${esc(L.name)} <span class="pill">${MODES[L.mode]}</span><small>${layerSummary(L)} · ${n} ta</small></span><button class="eye${L.output?'':' off'}" data-eye="${i}" title="Chiqishga qoʻshish/oʻchirish">${L.output?'yoqiq':'oʻchiq'}</button><span></span></div>`;}).join('')+'</div>';
+  h+='</div>';
+  if(S.editLayer!==null){
+    const i=S.editLayer, L=S.layers[i], idx=used.indexOf(i);
+    const dpi=Math.round(25.4/L.interval);
+    h+=`<div class="sec" id="lyrEd"><h3>Qatlam sozlamalari — <span style="color:${PALETTE[i]}">●</span> ${esc(L.name)}</h3>
+      <label class="f"><span>Material shabloni</span><select id="l_preset"><option value="">Tanlang — qiymatlar avtomatik toʻldiriladi</option>${PRESETS.map((p,j)=>`<option value="${j}">${p.n}</option>`).join('')}</select></label>
+      <div class="g2">
+        <label class="f"><span>Nomi</span><input id="l_name" data-l="name" value="${esc(L.name)}"></label>
+        <label class="f"><span>Rejim</span><select id="l_mode" data-l="mode">${Object.entries(MODES).map(([k,v])=>`<option value="${k}"${k===L.mode?' selected':''}>${v}</option>`).join('')}</select></label>
+        <label class="f"><span>Tezlik, mm/min</span><input id="l_speed" type="number" min="1" step="10" data-l="speed" value="${L.speed}"></label>
+        <label class="f"><span>Maks. quvvat, %</span><input id="l_power" type="number" min="0" max="100" step="1" data-l="power" value="${L.power}"></label>
+        <label class="f"><span>Min. quvvat, %</span><input id="l_min" type="number" min="0" max="100" step="1" data-l="minPower" value="${L.minPower}"></label>
+        <label class="f"><span>Oʻtishlar soni</span><input id="l_pass" type="number" min="1" max="50" step="1" data-l="passes" value="${L.passes}"></label>
+        <label class="f"><span>Qator oraligʻi, mm <span class="mono">(${dpi} DPI)</span></span><input id="l_int" type="number" min="0.02" max="5" step="0.01" data-l="interval" value="${L.interval}"></label>
+        <label class="f"><span>Overscan, mm</span><input id="l_os" type="number" min="0" max="20" step="0.5" data-l="overscan" value="${L.overscan}"></label>
+        ${L.mode!=='line'?`<label class="f"><span>Toʻldirish burchagi, °</span><input id="l_ang" type="number" min="0" max="179" step="15" data-l="angle" value="${L.angle||0}"></label>
+        <label class="chk" style="align-self:end;padding-bottom:6px"><input type="checkbox" id="l_cross" data-l="cross"${L.cross?' checked':''}> Toʻrsimon (+90°)</label>`:''}
+      </div>
+      <div class="row"><label class="chk"><input type="checkbox" id="l_air" data-l="air"${L.air?' checked':''}> Havo puflash (M8/M9)</label>
+        <label class="chk"><input type="checkbox" id="l_out" data-l="output"${L.output?' checked':''}> Chiqishga qoʻshish</label></div>
+      <div class="row"><button class="sbtn" data-mv="-1"${idx<=0?' disabled':''}>↑ Oldinroq</button><button class="sbtn" data-mv="1"${idx>=used.length-1?' disabled':''}>↓ Keyinroq</button>
+        <button class="sbtn" id="selLayer">Qatlamdagilarni tanlash</button></div>
+      <div class="note">${L.mode==='line'?'Chiziq — kontur boʻylab kesish yoki chizish. Kesish uchun past tezlik va yuqori quvvat.':L.mode==='image'?'Rasm — piksellar qatorma-qator kuydiriladi. Vektor shakllar bu qatlamda toʻldiriladi.':'Toʻldirish — yopiq shakllar ichi gorizontal qatorlar bilan kuydiriladi (gravyura).'} Min. quvvat faqat kulrang rasmda ishlatiladi.</div>
+    </div>`;
+  }
+  el.innerHTML=h;
+}
+$('#pane-layers').addEventListener('click',e=>{
+  const eye=e.target.closest('[data-eye]'); if(eye){ const L=S.layers[+eye.dataset.eye]; L.output=!L.output; pushHistory(); renderLayers(); requestRender(); return; }
+  const row=e.target.closest('.lyr'); if(row){ S.editLayer=+row.dataset.i; S.curLayer=S.editLayer; renderLayers(); renderPalette(); return; }
+  const mv=e.target.closest('[data-mv]'); if(mv){ const used=usedLayers(); const i=S.editLayer, p=used.indexOf(i), q=p+ +mv.dataset.mv; if(q<0||q>=used.length) return;
+    const a=S.order.indexOf(i), b=S.order.indexOf(used[q]); [S.order[a],S.order[b]]=[S.order[b],S.order[a]]; pushHistory(); renderLayers(); return; }
+  if(e.target.id==='selLayer'){ S.sel=new Set(S.shapes.filter(s=>s.layer===S.editLayer).map(s=>s.id)); requestRender(); }
+});
+$('#pane-layers').addEventListener('input',e=>{
+  const k=e.target.dataset.l; if(!k||S.editLayer===null) return; const L=S.layers[S.editLayer];
+  if(e.target.type==='checkbox') L[k]=e.target.checked;
+  else if(e.target.type==='number'){ const v=parseFloat(e.target.value); if(!isFinite(v)) return; L[k]=k==='passes'?Math.max(1,Math.round(v)):k==='interval'?Math.max(0.02,v):Math.max(0,k==='power'||k==='minPower'?Math.min(100,v):v); }
+  else L[k]=e.target.value;
+  requestRender(); renderPalette();
+  const row=document.querySelector(`.lyr[data-i="${S.editLayer}"] small`); if(row) row.textContent=`${layerSummary(L)} · ${S.shapes.filter(s=>s.layer===S.editLayer).length} ta`;
+});
+$('#pane-layers').addEventListener('change',e=>{
+  if(e.target.id==='l_preset' && e.target.value!=='' && S.editLayer!==null){ const p=PRESETS[+e.target.value]; Object.assign(S.layers[S.editLayer],{minPower:0,interval:0.1,passes:1,air:false},p.v,{name:p.n.split(' — ')[0]}); pushHistory(); renderLayers(); requestRender(); toast('Shablon qoʻllandi: '+p.n+'. Avval material testida tekshiring.'); return; }
+  const k=e.target.dataset.l; if(!k) return; pushHistory();
+  if(k==='mode'||k==='output'||k==='name') renderLayers(); });
+
+/* --- Obyekt paneli --- */
+function selGeom(){
+  const a=selShapes(); if(!a.length) return null;
+  if(a.length===1){ const s=a[0]; return {X:s.x, Y:S.dev.origin==='bl'?S.dev.bedH-(s.y+s.h):s.y, W:s.w, H:s.h, R:s.rot||0}; }
+  const b=unionBBox(a); return {X:b.x0, Y:S.dev.origin==='bl'?S.dev.bedH-b.y1:b.y0, W:b.x1-b.x0, H:b.y1-b.y0, R:0};
+}
+function renderObj(){
+  const el=$('#pane-obj'); const a=selShapes();
+  if(!a.length){ el.innerHTML=`<div class="empty">Obyekt tanlanmagan. Ish maydonida shaklni bosing yoki sichqoncha bilan ramka torting. Oʻngdan chapga tortilgan ramka tegib turgan hamma narsani tanlaydi.</div>
+    <div class="sec"><h3>Tezkor tugmalar</h3><div class="small muted mono" style="line-height:1.8">V tanlash · R toʻrtburchak · E ellips · L chiziq · T matn<br>Ctrl+Z / Ctrl+Y · Ctrl+D nusxa · Del oʻchirish<br>Strelkalar 1 mm · Shift 10 mm · Alt 0.1 mm<br>Gʻildirak — masshtab · Probel+tortish — surish · F — sigʻdirish</div></div>`; return; }
+  const g=selGeom(), one=a.length===1?a[0]:null;
+  let h=`<div class="sec"><h3>${one?({rect:'Toʻrtburchak',ellipse:'Ellips',poly:'Vektor',text:'Matn',image:'Rasm'})[one.type]:a.length+' ta obyekt'}</h3>
+    <div class="g2">
+      <label class="f"><span>X, mm</span><input type="number" step="0.1" id="p_X" data-k="X" value="${fmt2(g.X)}"></label>
+      <label class="f"><span>Y, mm</span><input type="number" step="0.1" id="p_Y" data-k="Y" value="${fmt2(g.Y)}"></label>
+      <label class="f"><span>Kenglik, mm</span><input type="number" step="0.1" min="0" id="p_W" data-k="W" value="${fmt2(g.W)}"></label>
+      <label class="f"><span>Balandlik, mm</span><input type="number" step="0.1" min="0" id="p_H" data-k="H" value="${fmt2(g.H)}"></label>
+      ${one?`<label class="f"><span>Burilish, °</span><input type="number" step="1" id="p_R" data-k="R" value="${fmt2(g.R)}"></label>`:''}
+      <label class="chk" style="align-self:end;padding-bottom:6px"><input type="checkbox" id="p_lock" data-k="lock"${S.lockAspect?' checked':''}> Nisbatni saqlash</label>
+    </div>
+    <div class="small muted">X/Y — chap ${S.dev.origin==='bl'?'pastki':'yuqori'} burchak, stanok koordinatalarida.</div>
+  </div>
+  <div class="sec"><h3>Qatlam</h3><div class="row">${PALETTE.map((c,i)=>`<button class="sw${a.every(s=>s.layer===i)?' cur':''}" data-asg="${i}" style="background:${c}" title="${esc(S.layers[i].name)}">${String(i).padStart(2,'0')}</button>`).join('')}</div></div>`;
+  if(one && one.type==='rect') h+=`<div class="sec"><h3>Burchaklar</h3><label class="f"><span>Yumaloqlash radiusi, mm</span><input type="number" min="0" step="0.5" id="p_r" data-k="r" value="${one.r||0}"></label></div>`;
+  if(one && one.type==='text') h+=`<div class="sec"><h3>Matn</h3>
+    <label class="f"><span>Yozuv</span><textarea id="p_text" data-k="text" rows="2">${esc(one.text)}</textarea></label>
+    <div class="g2"><label class="f"><span>Shrift</span><select id="p_font" data-k="font">${FONTS.map(f=>`<option${f===one.font?' selected':''} style="font-family:'${f}'">${f}</option>`).join('')}</select></label>
+    <label class="f"><span>Oʻlcham (em), mm</span><input type="number" min="0.5" step="0.5" id="p_size" data-k="size" value="${one.size}"></label></div>
+    <div class="row"><label class="chk"><input type="checkbox" id="p_bold" data-k="bold"${one.bold?' checked':''}> Qalin</label><label class="chk"><input type="checkbox" id="p_it" data-k="italic"${one.italic?' checked':''}> Kursiv</label>
+      <select class="inp" id="p_align" data-k="align" style="width:auto">${[['left','Chapga'],['center','Markazga'],['right','Oʻngga']].map(([v,t])=>`<option value="${v}"${one.align===v?' selected':''}>${t}</option>`).join('')}</select></div>
+    <button class="sbtn" data-act="text2vec">Vektor shaklga aylantirish</button></div>`;
+  if(one && one.type==='image'){
+    const L=S.layers[one.layer], im=getImg(one); const pw=Math.round(one.w/L.interval), ph=Math.round(one.h/L.interval);
+    h+=`<div class="sec"><h3>Rasmga ishlov</h3>
+      <label class="f"><span>Usul</span><select id="p_dither" data-k="dither">${Object.entries(DITHERS).map(([k,v])=>`<option value="${k}"${k===one.dither?' selected':''}>${v}</option>`).join('')}</select></label>
+      <label class="f"><span>Yorqinlik: <b id="v_bright">${one.bright||0}</b></span><input type="range" min="-100" max="100" id="p_bright" data-k="bright" value="${one.bright||0}"></label>
+      <label class="f"><span>Kontrast: <b id="v_contrast">${one.contrast||0}</b></span><input type="range" min="-100" max="100" id="p_contrast" data-k="contrast" value="${one.contrast||0}"></label>
+      <label class="chk"><input type="checkbox" id="p_inv" data-k="invert"${one.invert?' checked':''}> Negativ (teskari)</label>
+      <div class="small muted mono">${im?`Asl rasm: ${im.naturalWidth}×${im.naturalHeight} px<br>`:''}Kuydirish: ${pw}×${ph} nuqta, ${Math.round(25.4/L.interval)} DPI</div>
+      <div class="row"><button class="sbtn" data-act="trace">Vektorlash (kontur)</button><button class="sbtn" data-act="natsize">Asl oʻlcham (254 DPI)</button></div></div>`;
+  }
+  if(one && one.type==='poly'){ const n=one.paths.reduce((a,p)=>a+p.pts.length,0); h+=`<div class="sec"><h3>Vektor</h3><div class="small muted mono">${one.paths.length} ta kontur · ${n} ta nuqta · ${one.paths.every(p=>p.closed)?'yopiq':'ochiq konturlar bor'}</div></div>`; }
+  const grouped=a.some(s=>s.gid);
+  h+=`<div class="sec"><h3>Oʻzgartirish</h3><div class="row">
+      <button class="sbtn" data-act="fx" title="Gorizontal aks ettirish">⇋ Aks (gorizontal)</button><button class="sbtn" data-act="fy" title="Vertikal aks ettirish">⇵ Aks (vertikal)</button>
+      <button class="sbtn" data-act="front" title="Ctrl+]">Oldinga</button><button class="sbtn" data-act="back" title="Ctrl+[">Orqaga</button>
+      ${a.length>1&&!a.every(s=>s.gid&&s.gid===a[0].gid)?'<button class="sbtn" data-act="group" title="Ctrl+G">Guruhlash</button>':''}${grouped?'<button class="sbtn" data-act="ungroup" title="Ctrl+Shift+G">Guruhdan chiqarish</button>':''}</div></div>`;
+  h+=`<div class="sec"><h3>Tekislash</h3><div class="row">
+      <button class="sbtn" data-al="l" title="Chapga">⇤ Chap</button><button class="sbtn" data-al="cx">↔ Markaz</button><button class="sbtn" data-al="r">Oʻng ⇥</button>
+      <button class="sbtn" data-al="t">⤒ Yuqori</button><button class="sbtn" data-al="cy">↕ Oʻrta</button><button class="sbtn" data-al="b">Past ⤓</button></div>
+      <div class="small muted">${one?'Bitta obyekt ish maydoniga nisbatan tekislanadi.':'Obyektlar umumiy ramkaga nisbatan tekislanadi.'}</div>
+      <button class="sbtn" data-act="center">Ish maydoni markaziga qoʻyish</button></div>
+    <div class="sec"><h3>Massiv (nusxalar toʻri)</h3><div class="g2">
+      <label class="f"><span>Ustunlar</span><input type="number" min="1" max="50" id="a_c" value="3"></label>
+      <label class="f"><span>Qatorlar</span><input type="number" min="1" max="50" id="a_r" value="2"></label>
+      <label class="f"><span>Oraliq X, mm</span><input type="number" step="0.5" id="a_gx" value="5"></label>
+      <label class="f"><span>Oraliq Y, mm</span><input type="number" step="0.5" id="a_gy" value="5"></label></div>
+      <button class="sbtn" data-act="array">Massiv yaratish</button></div>
+    <div class="sec"><div class="row"><button class="sbtn" data-act="dup">Nusxa olish (Ctrl+D)</button><button class="sbtn danger" data-act="del">Oʻchirish</button></div></div>`;
+  el.innerHTML=h;
+}
+function refreshPropValues(){
+  if(S.tab!=='obj') return; const g=selGeom(); if(!g) return;
+  for(const k of ['X','Y','W','H','R']){ const i=$('#p_'+k); if(i && document.activeElement!==i) i.value=fmt2(g[k]); }
+  const one=selShapes().length===1?selShapes()[0]:null; const sz=$('#p_size'); if(one&&one.type==='text'&&sz&&document.activeElement!==sz) sz.value=one.size;
+}
+let textT=0;
+$('#pane-obj').addEventListener('input',e=>{
+  const k=e.target.dataset.k; if(!k) return; const a=selShapes(); if(!a.length) return;
+  const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
+  if(k==='lock'){ S.lockAspect=v; return; }
+  if(['X','Y','W','H','R'].includes(k)){ const n=parseFloat(v); if(!isFinite(n)) return; setGeom(k,n); requestRender(); return; }
+  const one=a[0];
+  if(k==='r'){ one.r=Math.max(0,parseFloat(v)||0); requestRender(); return; }
+  if(k==='bright'||k==='contrast'){ one[k]=+v; $('#v_'+k).textContent=v; requestRender(); return; }
+  if(k==='dither'||k==='invert'){ one[k]=v; requestRender(); return; }
+  if(one.type==='text' && ['text','font','size','bold','italic','align'].includes(k)){
+    one[k]= k==='size'?Math.max(0.5,parseFloat(v)||one.size):v;
+    clearTimeout(textT);
+    S.textJob=new Promise(res=>{ textT=setTimeout(async()=>{ await retrace(one,true); requestRender(); refreshPropValues(); const W=$('#p_W'),H=$('#p_H'); const g=selGeom(); if(W&&g){W.value=fmt2(g.W);H.value=fmt2(g.H);} res(); }, k==='text'?250:0); });
+  }
+});
+$('#pane-obj').addEventListener('change',e=>{ const k=e.target.dataset.k; if(!k || k==='lock') return;
+  if(['text','font','size','bold','italic','align'].includes(k)) Promise.resolve(S.textJob).then(()=>pushHistory()); else pushHistory(); });
+$('#pane-obj').addEventListener('click',async e=>{
+  const asg=e.target.closest('[data-asg]'); if(asg){ assignLayer(+asg.dataset.asg); return; }
+  const al=e.target.closest('[data-al]'); if(al){ alignSel(al.dataset.al); return; }
+  const act=e.target.closest('[data-act]')?.dataset.act; if(!act) return;
+  if(act==='del') deleteSel();
+  if(act==='fx') flipSel('x'); if(act==='fy') flipSel('y');
+  if(act==='front') zOrder(1); if(act==='back') zOrder(-1);
+  if(act==='group') groupSel(); if(act==='ungroup') ungroupSel();
+  if(act==='dup') duplicateSel();
+  if(act==='center') centerOnBed();
+  if(act==='array') makeArray(Math.max(1,+$('#a_c').value|0),Math.max(1,+$('#a_r').value|0),+$('#a_gx').value||0,+$('#a_gy').value||0);
+  if(act==='trace') traceImageShape(selShapes()[0]);
+  if(act==='text2vec'){ const s=selShapes()[0]; s.type='poly'; delete s.text; pushHistory(); refreshPanels(); requestRender(); }
+  if(act==='natsize'){ const s=selShapes()[0], im=getImg(s); if(im){ const cx=s.x+s.w/2, cy=s.y+s.h/2; s.w=im.naturalWidth*0.1; s.h=im.naturalHeight*0.1; s.x=cx-s.w/2; s.y=cy-s.h/2; pushHistory(); refreshPanels(); requestRender(); } }
+});
+function setGeom(k,n){
+  const a=selShapes(), g=selGeom(), bl=S.dev.origin==='bl';
+  if(k==='X'){ const dx=n-g.X; for(const s of a) s.x+=dx; }
+  if(k==='Y'){ const dy=(n-g.Y)*(bl?-1:1); for(const s of a) s.y+=dy; }
+  if(k==='R' && a.length===1){ a[0].rot=n; }
+  if(k==='W'||k==='H'){
+    if(n<=0) return;
+    let sx=1, sy=1;
+    if(k==='W'){ if(g.W<1e-6) return; sx=n/g.W; if(S.lockAspect) sy=sx; }
+    else { if(g.H<1e-6) return; sy=n/g.H; if(S.lockAspect) sx=sy; }
+    // langar: chap-past (bl) yoki chap-yuqori
+    if(a.length===1){ const s=a[0]; const ay=bl?s.y+s.h:s.y; s.w*=sx; s.h*=sy; if(bl) s.y=ay-s.h; if(s.type==='text') s.size=Math.round(s.size*sy*100)/100; }
+    else { const b=unionBBox(a); const ax=b.x0, ay=bl?b.y1:b.y0;
+      for(const s of a){ const cx=ax+(s.x+s.w/2-ax)*sx, cy=ay+(s.y+s.h/2-ay)*sy; s.w*=sx; s.h*=sy; s.x=cx-s.w/2; s.y=cy-s.h/2; if(s.type==='text') s.size=Math.round(s.size*sy*100)/100; } }
+    const other=k==='W'?$('#p_H'):$('#p_W'); const g2=selGeom(); if(other) other.value=fmt2(k==='W'?g2.H:g2.W);
+  }
+}
+function traceImageShape(s){
+  if(!s||s.type!=='image') return;
+  const im=getImg(s); if(!im) return;
+  const k=Math.min(1, 1200/Math.max(im.naturalWidth,im.naturalHeight));
+  const pw=Math.max(2,Math.round(im.naturalWidth*k)), ph=Math.max(2,Math.round(im.naturalHeight*k));
+  const r=processImage(s,pw,ph,'threshold'); const bin=new Uint8Array(pw*ph); for(let i=0;i<pw*ph;i++) bin[i]=r.b[i]>0.5?1:0;
+  const loops=traceBinary(bin,pw,ph,0.8).filter(L=>L.length>=3);
+  if(!loops.length){ toast('Kontur topilmadi — yorqinlik/kontrastni oʻzgartirib koʻring'); return; }
+  const n={id:S.nextId++, type:'poly', layer:S.curLayer===s.layer?(s.layer+1)%12:S.curLayer, rot:s.rot||0, x:s.x, y:s.y, w:s.w, h:s.h,
+    paths:loops.map(L=>({closed:true, pts:L.map(([x,y])=>[x/pw,y/ph])}))};
+  S.shapes.push(n); S.sel=new Set([n.id]); pushHistory(); refreshPanels(); requestRender(); toast(`${loops.length} ta kontur yaratildi`);
+}
+
+/* ============================== G-code ============================== */
+function jobShapes(){ return S.shapes.filter(s=>S.layers[s.layer].output); }
+const f3=n=>{const v=Math.round(n*1000)/1000; return Object.is(v,-0)?'0':String(v);};
+const clampX=x=>Math.max(0,Math.min(S.dev.bedW,x)), clampY=y=>Math.max(0,Math.min(S.dev.bedH,y));
+function orderPaths(paths, start){
+  // ichki konturlar avval (chuqurlik bo'yicha), so'ng eng yaqin qo'shni tartibi
+  const info=paths.map(p=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; for(const [x,y] of p.pts){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);} return {p,b:{x0,y0,x1,y1},depth:0};});
+  if(info.length<=2000){
+    for(const a of info){ if(!a.p.closed) continue; for(const b of info){ if(a===b||!b.p.closed) continue;
+      if(b.b.x0<=a.b.x0&&b.b.y0<=a.b.y0&&b.b.x1>=a.b.x1&&b.b.y1>=a.b.y1 && (b.b.x1-b.b.x0)*(b.b.y1-b.b.y0)>(a.b.x1-a.b.x0)*(a.b.y1-a.b.y0)
+         && pointInPolys(a.p.pts[0][0],a.p.pts[0][1],[b.p])) a.depth++; } }
+  }
+  const close=p=>{const pts=p.pts.slice(); if(p.closed) pts.push(pts[0]); return pts;};
+  const depths=[...new Set(info.map(i=>i.depth))].sort((a,b)=>b-a);
+  const out=[]; let [cx,cy]=start;
+  for(const d of depths){
+    const rest=info.filter(i=>i.depth===d);
+    if(rest.length>2500){ // juda ko'p kontur: tezkor tartib (pastdan yuqoriga, chapdan o'ngga)
+      rest.sort((a,b)=>(Math.round(b.b.y1/5)-Math.round(a.b.y1/5))||(a.b.x0-b.b.x0)); for(const r of rest) out.push(close(r.p));
+      const l=out[out.length-1]; [cx,cy]=l[l.length-1]; continue;
+    }
+    while(rest.length){
+      let bi=0,bd=Infinity,bj=0,brev=false;
+      for(let i=0;i<rest.length;i++){ const p=rest[i].p, a=p.pts;
+        if(p.closed){ const stp=Math.max(1,Math.floor(a.length/48)); for(let j=0;j<a.length;j+=stp){const dd=(a[j][0]-cx)**2+(a[j][1]-cy)**2; if(dd<bd){bd=dd;bi=i;bj=j;brev=false;}} }
+        else { const d0=(a[0][0]-cx)**2+(a[0][1]-cy)**2, d1=(a[a.length-1][0]-cx)**2+(a[a.length-1][1]-cy)**2; if(d0<bd){bd=d0;bi=i;bj=0;brev=false;} if(d1<bd){bd=d1;bi=i;bj=0;brev=true;} }
+      }
+      const p=rest.splice(bi,1)[0].p; let pts;
+      if(p.closed){ pts=p.pts.slice(bj).concat(p.pts.slice(0,bj)); pts.push(pts[0]); }
+      else pts=brev?p.pts.slice().reverse():p.pts.slice();
+      out.push(pts); [cx,cy]=pts[pts.length-1];
+    }
+  }
+  return out;
+}
+function hatchRows(polys, interval){
+  const edges=[];
+  for(const a of polys){ for(let i=0;i<a.length;i++){ const p=a[i], q=a[(i+1)%a.length]; if(p[1]===q[1]) continue; edges.push(p[1]<q[1]?[p[0],p[1],q[0],q[1]]:[q[0],q[1],p[0],p[1]]); } }
+  if(!edges.length) return [];
+  edges.sort((a,b)=>a[1]-b[1]);
+  let y0=Infinity,y1=-Infinity; for(const e of edges){y0=Math.min(y0,e[1]);y1=Math.max(y1,e[3]);}
+  const rows=[]; let ptr=0, active=[];
+  const n=Math.floor((y1-y0)/interval);
+  for(let k=0;k<=n;k++){
+    const y=y0+interval/2+k*interval; if(y>=y1) break;
+    while(ptr<edges.length && edges[ptr][1]<=y){ active.push(edges[ptr]); ptr++; }
+    active=active.filter(e=>e[3]>y);
+    const xs=[]; for(const e of active){ if(e[1]<=y && e[3]>y) xs.push(e[0]+(y-e[1])*(e[2]-e[0])/(e[3]-e[1])); }
+    xs.sort((a,b)=>a-b); const segs=[]; for(let i=0;i+1<xs.length;i+=2) if(xs[i+1]-xs[i]>1e-4) segs.push([xs[i],xs[i+1]]);
+    if(segs.length) rows.push({y,segs});
+  }
+  return rows;
+}
+/* G-code yozuvchisi: qatorlar, ko'rib chiqish harakatlari va statistika */
+function makeWriter(offX,offY){
+  const d=S.dev;
+  const W={out:[], moves:[], cx:null, cy:null, curF:null, curS:null, time:0, burn:0, rapidLen:0, li:0};
+  W.MX=x=>x+offX; W.MY=y=>(d.origin==='bl'?d.bedH-y:y)+offY;
+  W.rapid=(x,y)=>{
+    if(W.cx!==null && Math.abs(x-W.cx)<1e-4 && Math.abs(y-W.cy)<1e-4) return;
+    W.out.push(`G0 X${f3(W.MX(x))} Y${f3(W.MY(y))}`);
+    const L=W.cx===null?0:Math.hypot(x-W.cx,y-W.cy); W.time+=L/d.rapid*60; W.rapidLen+=L;
+    W.moves.push([W.cx??x,W.cy??y,x,y,0,0,W.li,W.time]); W.cx=x; W.cy=y;
+  };
+  W.cut=(x,y,f,s)=>{
+    if(W.cx===null){ W.rapid(x,y); return; }
+    const L=Math.hypot(x-W.cx,y-W.cy); if(L<1e-5) return;
+    let line=`G1 X${f3(W.MX(x))} Y${f3(W.MY(y))}`;
+    if(s!==W.curS){ line+=` S${s}`; W.curS=s; } if(f!==W.curF){ line+=` F${f}`; W.curF=f; }
+    W.out.push(line); W.time+=L/f*60; if(s>0) W.burn+=L;
+    W.moves.push([W.cx,W.cy,x,y,s>0?1:2,s/d.sMax,W.li,W.time]); W.cx=x; W.cy=y;
+  };
+  return W;
+}
+function emitFill(W, polys, ang, step, os, F, sOn){
+  const a=(ang||0)*D2R;
+  const rp = a ? polys.map(p=>p.map(([x,y])=>rot2(x,y,-a))) : polys;
+  const rows=hatchRows(rp, step); if(!rows.length) return;
+  const P=(xr,yr,cl)=>{ const q=a?rot2(xr,yr,a):[xr,yr]; return cl?[clampX(q[0]),clampY(q[1])]:q; };
+  let dir=1, last=null;
+  for(let ri=rows.length-1; ri>=0; ri--){ // pastdan yuqoriga — tutun ishlangan joyga tushmaydi
+    const {y,segs}=rows[ri]; const sg=dir>0?segs:segs.slice().reverse();
+    for(const seg of sg){
+      let s0=seg[0], s1=seg[1]; if(dir<0){ s0=seg[1]; s1=seg[0]; }
+      const lead=s0-dir*os;
+      if(!last || Math.abs(last[1]-y)>step*1.5 || Math.abs(lead-last[0])>10) W.rapid(...P(lead,y,true)); else W.cut(...P(lead,y,true),F,0);
+      if(os>0) W.cut(...P(s0,y),F,0);
+      W.cut(...P(s1,y),F,sOn);
+      if(os>0) W.cut(...P(s1+dir*os,y,true),F,0);
+      last=[s1+dir*os,y];
+    }
+    dir=-dir;
+  }
+}
+function emitRaster(W, s, L, F, sOn, sMin, warn){
+  const step=Math.max(0.02,L.interval), pw=Math.max(1,Math.round(s.w/step)), ph=Math.max(1,Math.round(s.h/step));
+  if(pw*ph>25e6){ warn.push('Rasm juda katta: qator oraligʻini oshiring.'); return; }
+  const r=processImage(s,pw,ph); if(!r){ warn.push('Rasm hali yuklanmagan.'); return; }
+  const cw=s.w/pw, rh=s.h/ph, os=L.overscan||0, gray=(s.dither||'gray')==='gray';
+  const P=(lx,ly)=>toWorld(s,lx,ly), PC=(lx,ly)=>{const [x,y]=toWorld(s,lx,ly); return [clampX(x),clampY(y)];};
+  let dir=1;
+  for(let rr=ph-1; rr>=0; rr--){
+    const base=rr*pw; let first=-1,last=-1;
+    for(let c=0;c<pw;c++){ if(r.b[base+c]>0.004){ if(first<0) first=c; last=c; } }
+    if(first<0) continue;
+    const ly=(rr+0.5)*rh;
+    const sv=c=>{const v=Math.max(0,Math.min(1,r.b[base+c])); if(v<=0.004) return 0; return gray?Math.round(sMin+v*(sOn-sMin)):sOn;};
+    const startLx = dir>0 ? first*cw : (last+1)*cw;
+    const [x,y]=PC(startLx-dir*os,ly);
+    if(W.cx===null||Math.hypot(x-W.cx,y-W.cy)>os*2+rh*3) W.rapid(x,y); else W.cut(x,y,F,0);
+    W.cut(...P(startLx,ly),F,0);
+    if(dir>0){ let c=first; while(c<=last){ const v=sv(c); let e=c; while(e+1<=last && sv(e+1)===v) e++; W.cut(...P((e+1)*cw,ly),F,v); c=e+1; } W.cut(...PC((last+1)*cw+os,ly),F,0); }
+    else { let c=last; while(c>=first){ const v=sv(c); let e=c; while(e-1>=first && sv(e-1)===v) e--; W.cut(...P(e*cw,ly),F,v); c=e-1; } W.cut(...PC(first*cw-os,ly),F,0); }
+    dir=-dir;
+  }
+}
+function emitLines(W, ordered, F, sOn){
+  for(const pts of ordered){ W.rapid(pts[0][0],pts[0][1]); for(let j=1;j<pts.length;j++) W.cut(pts[j][0],pts[j][1],F,sOn); }
+}
+const ANCHORS={tl:'Chap-yuqori',tc:'Yuqori-markaz',tr:'Oʻng-yuqori',ml:'Chap-oʻrta',mc:'Markaz',mr:'Oʻng-oʻrta',bl:'Chap-past',bc:'Past-markaz',br:'Oʻng-past'};
+function anchorPoint(bb){
+  const an=S.dev.anchor||'bl', h={l:0,c:0.5,r:1}[an[1]], v={t:0,m:0.5,b:1}[an[0]];
+  return [bb.x0+(bb.x1-bb.x0)*h, bb.y0+(bb.y1-bb.y0)*v];
+}
+function gcodeHeader(W, title, bb){
+  const d=S.dev;
+  W.out.push(`; Nurkesar lazer studiya — ${title} (GRBL 1.1)`, `; Sana: ${new Date().toLocaleString('uz-UZ')}`,
+    `; Ish maydoni: ${d.bedW} x ${d.bedH} mm, boshlanish: ${d.origin==='bl'?'chap-past':'chap-yuqori'}, ${d.start==='cur'?'joriy holatdan ('+ANCHORS[d.anchor||'bl'].toLowerCase()+')':'mutlaq koordinatalar'}`,
+    `; Ramka: X ${f3(W.MX(bb.x0))}..${f3(W.MX(bb.x1))}  Y ${f3(Math.min(W.MY(bb.y0),W.MY(bb.y1)))}..${f3(Math.max(W.MY(bb.y0),W.MY(bb.y1)))}`,
+    'G21 ; millimetr','G90 ; mutlaq koordinatalar','M5');
+  if(d.start==='cur') W.out.push('G92 X0 Y0 ; joriy kallak holati — ish nuqtasi');
+  W.out.push(`${d.laserCmd} S0 ; lazer rejimi ($32=1 boʻlishi kerak)`);
+}
+function gcodeFooter(W, home){
+  const d=S.dev;
+  W.out.push('','M5 ; lazer oʻchirildi'); W.rapid(home[0],home[1]);
+  if(d.start==='cur') W.out.push('G92.1 ; vaqtinchalik nolni bekor qilish');
+  W.out.push('M2');
+}
+function genGcode(){
+  const d=S.dev, warn=[];
+  const shapes=jobShapes(); if(!shapes.length) return {error:'Chiqishga yuboriladigan obyekt yoʻq. Qatlamlar “yoqiq” ekanini tekshiring.'};
+  const bb=unionBBox(shapes);
+  let offX=0, offY=0, anc=null;
+  if(d.start==='cur'){ anc=anchorPoint(bb); offX=-anc[0]; offY=-(d.origin==='bl'? d.bedH-anc[1] : anc[1]); }
+  else if(bb.x0<-0.01||bb.y0<-0.01||bb.x1>d.bedW+0.01||bb.y1>d.bedH+0.01) warn.push('Baʼzi obyektlar ish maydonidan tashqarida — stanok chegaraga urilishi mumkin.');
+  const W=makeWriter(offX,offY);
+  gcodeHeader(W,'loyiha',bb);
+  for(const i of S.order){
+    const L=S.layers[i]; if(!L.output) continue;
+    const ls=shapes.filter(s=>s.layer===i); if(!ls.length) continue;
+    W.li=i;
+    const sOn=Math.round(L.power/100*d.sMax), sMin=Math.round(L.minPower/100*d.sMax), F=Math.max(1,Math.round(L.speed));
+    W.out.push('', `; ---- Qatlam ${L.name}: ${MODES[L.mode]}, ${F} mm/min, ${L.power}%${L.passes>1?', '+L.passes+' oʻtish':''} ----`);
+    if(L.air) W.out.push('M8 ; havo');
+    const images=ls.filter(s=>s.type==='image'), vec=ls.filter(s=>s.type!=='image');
+    const doFill = L.mode==='fill'||L.mode==='fill+line'||L.mode==='image';
+    const doLine = L.mode==='line'||L.mode==='fill+line';
+    const polys=[], lines=[];
+    for(const s of vec) for(const p of worldPaths(s)){ if(p.pts.length<2) continue; if(doFill&&p.closed&&p.pts.length>=3) polys.push(p.pts); if(doLine || (doFill&&!p.closed)) lines.push(p); }
+    const angles = polys.length ? (L.cross ? [L.angle||0,(L.angle||0)+90] : [L.angle||0]) : [];
+    const ordered = lines.length ? orderPaths(lines, W.cx===null?[0,d.origin==='bl'?d.bedH:0]:[W.cx,W.cy]) : [];
+    for(let pass=0; pass<L.passes; pass++){
+      if(L.passes>1) W.out.push(`; oʻtish ${pass+1}/${L.passes}`);
+      for(const s of images) emitRaster(W,s,L,F,sOn,sMin,warn);
+      for(const a of angles) emitFill(W,polys,a,Math.max(0.02,L.interval),L.overscan||0,F,sOn);
+      emitLines(W,ordered,F,sOn);
+    }
+    if(L.air) W.out.push('M9');
+  }
+  gcodeFooter(W, anc || [0, d.origin==='bl'?d.bedH:0]);
+  return {text:W.out.join('\n')+'\n', moves:W.moves, time:W.time, burn:W.burn, rapidLen:W.rapidLen, lines:W.out.length, warn, bb, kind:'job'};
+}
+/* Material testi: tezlik × quvvat jadvali */
+function genMaterialTest(o){
+  const d=S.dev, warn=[];
+  const cols=Math.max(1,Math.min(20,o.cols|0)), rows=Math.max(1,Math.min(20,o.rows|0)), sz=Math.max(2,o.size), gap=Math.max(0,o.gap);
+  const lblW=o.labels?16:0, lblH=o.labels?9:0;
+  const gw=cols*sz+(cols-1)*gap, gh=rows*sz+(rows-1)*gap;
+  const yBottom = d.origin==='bl' ? d.bedH-o.y : o.y+gh+lblH; // dizayn koordinatasi
+  const gx0=o.x+lblW, gy0=yBottom-gh;
+  const bb={x0:o.x, y0:gy0-lblH, x1:gx0+gw, y1:yBottom};
+  if(bb.x0<0||bb.y0<0||bb.x1>d.bedW||bb.y1>d.bedH) warn.push('Test jadvali ish maydoniga sigʻmaydi — joyini yoki oʻlchamini kamaytiring.');
+  let offX=0, offY=0, anc=null;
+  if(d.start==='cur'){ anc=anchorPoint(bb); offX=-anc[0]; offY=-(d.origin==='bl'? d.bedH-anc[1] : anc[1]); }
+  const W=makeWriter(offX,offY);
+  gcodeHeader(W,'material testi',bb);
+  W.out.push(`; Tezlik: ${o.sMin}..${o.sMax} mm/min (qatorlar), quvvat: ${o.pMin}..${o.pMax}% (ustunlar), rejim: ${o.mode==='fill'?'toʻldirish':'chiziq'}`);
+  const val=(a,b,i,n)=>n>1?a+(b-a)*i/(n-1):a;
+  for(let r=0;r<rows;r++){
+    const F=Math.max(1,Math.round(val(o.sMin,o.sMax,r,rows)));
+    for(let c=0;c<cols;c++){
+      const p=val(o.pMin,o.pMax,c,cols), S1=Math.round(p/100*d.sMax);
+      const x=gx0+c*(sz+gap), y=gy0+r*(sz+gap);
+      W.li=Math.min(11,c); W.out.push(`; katak: ${F} mm/min, ${Math.round(p)}%`);
+      const rect=[[x,y],[x+sz,y],[x+sz,y+sz],[x,y+sz]];
+      if(o.mode==='fill') emitFill(W,[rect],0,Math.max(0.02,o.interval),1,F,S1);
+      else emitLines(W,[[...rect,rect[0]]],F,S1);
+    }
+  }
+  if(o.labels){
+    W.li=0; const lF=Math.max(1,Math.round(o.lblSpeed)), lS=Math.round(o.lblPower/100*d.sMax);
+    W.out.push('', `; yorliqlar: ${lF} mm/min, ${o.lblPower}%`);
+    const label=(txt,cx,cy,align)=>{
+      const t={type:'text',text:txt,font:'Arial',size:3.2,bold:true,italic:false,align:'left',x:0,y:0,w:1,h:1,rot:0};
+      const r=traceText(t); if(!r) return; t.paths=r.paths; t.w=r.w; t.h=r.h;
+      t.x = align==='r' ? cx-t.w : cx-t.w/2; t.y=cy-t.h/2;
+      emitFill(W, worldPaths(t).map(p=>p.pts), 0, 0.1, 0, lF, lS);
+    };
+    for(let c=0;c<cols;c++) label(Math.round(val(o.pMin,o.pMax,c,cols))+'%', gx0+c*(sz+gap)+sz/2, gy0-lblH/2, 'c');
+    for(let r=0;r<rows;r++) label(String(Math.round(val(o.sMin,o.sMax,r,rows))), gx0-2, gy0+r*(sz+gap)+sz/2, 'r');
+  }
+  gcodeFooter(W, anc || [0, d.origin==='bl'?d.bedH:0]);
+  return {text:W.out.join('\n')+'\n', moves:W.moves, time:W.time, burn:W.burn, rapidLen:W.rapidLen, lines:W.out.length, warn, bb, kind:'test', test:{cols,rows,...o}};
+}
+function fmtTime(sec){ sec=Math.round(sec); const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60; return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`; }
+
+/* ============================== Fayllar ============================== */
+function toast(t,ms=2600){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,ms); }
+async function saveFile(name, data, mime, artifactName){
+  let dl=null; try{ dl = window.claude?.use ? await window.claude.use('downloads') : null; }catch(e){ dl=null; }
+  if(dl){
+    try{ await dl.save({filename:artifactName||name, data}); toast('Saqlandi: '+(artifactName||name)); }
+    catch(e){ const c=e&&e.code; toast(c==='declined'?'Saqlash bekor qilindi':c==='rate_limited'?'Oyna allaqachon ochiq — biroz kuting':'Saqlab boʻlmadi: '+(e&&e.message||c)); }
+    return;
+  }
+  try{
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:mime})); a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},1500); toast('Saqlandi: '+name);
+  }catch(e){ toast('Bu oynada fayl saqlab boʻlmaydi. G-code’ni “Nusxalash” orqali oling.'); }
+}
+const inArtifact = () => !!(window.claude && window.claude.use);
+function projectJSON(){ return {app:'nurkesar', v:1, dev:S.dev, layers:S.layers, order:S.order, curLayer:S.curLayer, nextId:S.nextId, shapes:S.shapes}; }
+function loadProject(p){
+  if(!p || p.app!=='nurkesar' || !Array.isArray(p.shapes)) throw new Error('Bu Nurkesar loyihasi emas');
+  S.dev={...S.dev,...p.dev}; S.layers=PALETTE.map((c,i)=>({...defaultLayer(i),...(p.layers&&p.layers[i]||{})}));
+  S.order=Array.isArray(p.order)&&p.order.length===12?p.order:PALETTE.map((c,i)=>i);
+  S.shapes=p.shapes.map(s=>({...s})); S.nextId=Math.max(p.nextId||1, ...S.shapes.map(s=>s.id+1), 1); S.curLayer=p.curLayer||0;
+  S.sel.clear(); S.isSample=false; Hist.stack=[]; Hist.i=-1; pushHistory(); fitView(); refreshPanels();
+}
+function saveProject(){ saveFile('nurkesar-loyiha.json', JSON.stringify(projectJSON()), 'application/json'); }
+let saveT=0;
+function scheduleSave(){ clearTimeout(saveT); saveT=setTimeout(()=>{
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({...projectJSON(), isSample:S.isSample})); S.saved={ok:true,t:new Date()}; }
+  catch(e){ if(!S.saved||S.saved.ok) toast('Avtosaqlash uchun brauzer xotirasi yetmadi (rasm katta). Loyihani “Saqlash” bilan faylga saqlang.',5000); S.saved={ok:false,t:new Date()}; }
+  updateStatus(); }, 600); }
+function readFileAs(f,how){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); how==='text'?r.readAsText(f):r.readAsDataURL(f); }); }
+async function importFiles(files){
+  for(const f of files){
+    const name=f.name.toLowerCase();
+    try{
+      if(name.endsWith('.json')){ loadProject(JSON.parse(await readFileAs(f,'text'))); toast('Loyiha ochildi'); continue; }
+      if(name.endsWith('.svg')){ const n=importSVG(await readFileAs(f,'text')); toast(`SVG import qilindi: ${n} ta qatlam`); continue; }
+      if(/\.(png|jpe?g|bmp|gif|webp)$/.test(name)){ await importImage(await readFileAs(f,'url')); continue; }
+      toast('Bu fayl turi qoʻllab-quvvatlanmaydi: '+f.name);
+    }catch(e){ toast('Import xatosi: '+(e.message||e)); }
+  }
+}
+function freeLayer(prefer){ const used=new Set(S.shapes.map(s=>s.layer)); if(prefer!=null && !used.has(prefer)) return prefer; for(let i=0;i<12;i++) if(!used.has(i)) return i; return prefer??0; }
+async function importImage(url){
+  const im=new Image(); await new Promise((res,rej)=>{im.onload=res; im.onerror=()=>rej(new Error('Rasmni oʻqib boʻlmadi')); im.src=url;});
+  imgEls.set(url,im);
+  let w=im.naturalWidth*0.1, h=im.naturalHeight*0.1; const cap=Math.min(S.dev.bedW,S.dev.bedH)*0.6; const k=Math.min(1,cap/Math.max(w,h)); w*=k; h*=k;
+  const li=freeLayer(); const L=S.layers[li]; if(!S.shapes.some(s=>s.layer===li)){ Object.assign(L,{mode:'image',speed:3000,power:45,minPower:5,interval:0.1}); }
+  const s=newShape({type:'image', src:url, layer:li, x:(S.dev.bedW-w)/2, y:(S.dev.bedH-h)/2, w, h, dither:'jarvis', bright:0, contrast:0, invert:false});
+  S.sel=new Set([s.id]); S.isSample=false; pushHistory(); setTab('obj'); refreshPanels(); requestRender(); toast('Rasm qoʻshildi — '+L.name+' qatlamida');
+}
+function importSVG(text){
+  const doc=new DOMParser().parseFromString(text,'image/svg+xml'); const root=doc.documentElement;
+  if(!root || root.nodeName.toLowerCase()!=='svg') throw new Error('SVG fayl notoʻgʻri');
+  const vbAttr=root.getAttribute('viewBox'); const vb=vbAttr?vbAttr.trim().split(/[\s,]+/).map(Number):null; const wAttr=root.getAttribute('width');
+  const U={mm:1,cm:10,in:25.4,pt:25.4/72,pc:25.4/6,px:25.4/96,'':25.4/96};
+  let mmPerUnit=25.4/96;
+  if(wAttr){ const m=/^\s*([\d.]+)\s*([a-z%]*)\s*$/i.exec(wAttr); if(m && m[2]!=='%'){ const unit=U[m[2].toLowerCase()]??25.4/96; mmPerUnit = (vb&&vb[2]) ? parseFloat(m[1])*unit/vb[2] : unit; } }
+  const holder=document.createElement('div'); holder.style.cssText='position:absolute;left:-100000px;top:0;width:10px;height:10px;overflow:hidden;opacity:0;pointer-events:none';
+  const node=document.importNode(root,true); node.removeAttribute('viewBox'); node.setAttribute('width','1000'); node.setAttribute('height','1000');
+  node.querySelectorAll('script,foreignObject').forEach(n=>n.remove());
+  holder.appendChild(node); document.body.appendChild(holder);
+  const groups=new Map();
+  try{
+    const els=node.querySelectorAll('path,rect,circle,ellipse,line,polyline,polygon');
+    for(const el of els){
+      if(el.closest('defs,clipPath,mask,symbol,marker,pattern')) continue;
+      const cs=getComputedStyle(el); if(cs.display==='none'||cs.visibility==='hidden') continue;
+      const M=el.getCTM(); if(!M) continue;
+      const tf=(x,y)=>[(M.a*x+M.c*y+M.e)*mmPerUnit,(M.b*x+M.d*y+M.f)*mmPerUnit];
+      const sc=Math.sqrt(Math.abs(M.a*M.d-M.b*M.c))||1;
+      const tag=el.tagName.toLowerCase(); let paths=[];
+      if(tag==='polygon'||tag==='polyline'){ const pts=[]; const raw=(el.getAttribute('points')||'').trim().split(/[\s,]+/).map(Number); for(let i=0;i+1<raw.length;i+=2) pts.push(tf(raw[i],raw[i+1])); if(pts.length>=2) paths.push({closed:tag==='polygon',pts}); }
+      else if(tag==='line'){ const g=a=>parseFloat(el.getAttribute(a))||0; paths.push({closed:false,pts:[tf(g('x1'),g('y1')),tf(g('x2'),g('y2'))]}); }
+      else if(tag==='rect' && !(parseFloat(el.getAttribute('rx'))>0||parseFloat(el.getAttribute('ry'))>0)){ const g=a=>parseFloat(el.getAttribute(a))||0; const x=g('x'),y=g('y'),w=g('width'),h=g('height'); if(w>0&&h>0) paths.push({closed:true,pts:[tf(x,y),tf(x+w,y),tf(x+w,y+h),tf(x,y+h)]}); }
+      else {
+        let total=0; try{ total=el.getTotalLength(); }catch(e){}
+        if(!(total>0)) continue;
+        const step=(0.15/mmPerUnit)/sc; const n=Math.min(40000,Math.max(8,Math.ceil(total/step))); const ds=total/n;
+        let cur=[]; let prev=null;
+        for(let i=0;i<=n;i++){ const p=el.getPointAtLength(Math.min(total,i*ds)); if(prev && Math.hypot(p.x-prev.x,p.y-prev.y)>ds*2.2){ if(cur.length>1) paths.push({pts:cur}); cur=[]; } cur.push(tf(p.x,p.y)); prev=p; }
+        if(cur.length>1) paths.push({pts:cur});
+        const closedTag=tag!=='path';
+        paths=paths.map(p=>{ const a=p.pts, c=closedTag || Math.hypot(a[0][0]-a[a.length-1][0],a[0][1]-a[a.length-1][1])<0.05; let pts=c?a.slice(0,-1):a; pts=c?simplifyClosed(pts,0.02):dp(pts,0.02); return {closed:c&&pts.length>=3,pts}; });
+      }
+      // rang bo'yicha qatlam
+      let col=cs.stroke&&cs.stroke!=='none'?cs.stroke:cs.fill; const m=/rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(col||''); let li=S.curLayer;
+      if(m){ let bd=1e9; PALETTE.forEach((p,i)=>{const [r,g,b]=hexRgb(p); const dd=(r-m[1])**2+(g-m[2])**2+(b-m[3])**2; if(dd<bd){bd=dd;li=i;}}); }
+      if(!groups.has(li)) groups.set(li,[]); groups.get(li).push(...paths.filter(p=>p.pts.length>=2));
+    }
+  } finally { holder.remove(); }
+  if(!groups.size) throw new Error('SVG ichida chiziladigan shakl topilmadi');
+  // umumiy ramka va markazlash
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; for(const ps of groups.values()) for(const p of ps) for(const [x,y] of p.pts){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+  const dx=S.dev.bedW/2-(x0+x1)/2, dy=S.dev.bedH/2-(y0+y1)/2;
+  S.sel.clear();
+  for(const [li,ps] of groups){ const moved=ps.map(p=>({closed:p.closed, pts:p.pts.map(([x,y])=>[x+dx,y+dy])})); const s=newShape({...multiPoly(moved), layer:li}); S.sel.add(s.id); }
+  S.isSample=false; pushHistory(); refreshPanels(); requestRender();
+  return groups.size;
+}
+$('#fileIn').addEventListener('change',e=>{ importFiles([...e.target.files]); e.target.value=''; });
+const stage=$('#stage');
+stage.addEventListener('dragover',e=>{ e.preventDefault(); $('#drop').hidden=false; });
+stage.addEventListener('dragleave',e=>{ if(e.target===stage||e.target===cv) $('#drop').hidden=true; });
+stage.addEventListener('drop',e=>{ e.preventDefault(); $('#drop').hidden=true; importFiles([...e.dataTransfer.files]); });
+document.addEventListener('paste',e=>{ if(typing()) return; const items=[...(e.clipboardData?.items||[])]; const f=items.find(i=>i.kind==='file'); if(f){ e.preventDefault(); importFiles([f.getAsFile()]); } });
+
+/* ============================== Koʻrib chiqish oynasi ============================== */
+const PV={job:null, t:1, playing:false, raf:0, drawn:0, off:null, map:null};
+function openPreview(jobIn){
+  const job=(jobIn&&jobIn.moves)?jobIn:genGcode(); if(job.error){ toast(job.error); return; }
+  PV.job=job; PV.t=job.time; PV.drawn=0; PV.off=null;
+  $('#pvTitle').textContent = job.kind==='test' ? 'Material testi' : 'Koʻrib chiqish';
+  $('#pvSub').textContent=`${job.lines.toLocaleString('ru-RU')} qator G-code`;
+  const per={}; for(const m of job.moves){ if(m[4]===1){ per[m[6]]=(per[m[6]]||0)+Math.hypot(m[2]-m[0],m[3]-m[1]); } }
+  const b=job.bb, bl=S.dev.origin==='bl';
+  $('#pvStats').innerHTML=`<div class="sec"><h3>Ish</h3><dl class="kv">
+      <dt>Taxminiy vaqt</dt><dd><b>${fmtTime(job.time)}</b></dd>
+      <dt>Kuydirish yoʻli</dt><dd>${(job.burn/1000).toFixed(2)} m</dd>
+      <dt>Boʻsh yurish</dt><dd>${(job.rapidLen/1000).toFixed(2)} m</dd>
+      <dt>Oʻlcham</dt><dd>${fmt1(b.x1-b.x0)} × ${fmt1(b.y1-b.y0)} mm</dd>
+      <dt>Joylashuv</dt><dd>X ${fmt1(b.x0)}, Y ${fmt1(bl?S.dev.bedH-b.y1:b.y0)}</dd></dl>
+      <div class="small muted">Vaqt tezlanish hisobga olinmagan holda hisoblangan; real ish odatda 10–30% uzoqroq.</div></div>
+    ${job.kind==='test'?`<div class="sec"><h3>Jadval</h3><dl class="kv"><dt>Ustunlar — quvvat</dt><dd>${job.test.cols} × ${job.test.pMin}…${job.test.pMax}%</dd><dt>Qatorlar — tezlik</dt><dd>${job.test.rows} × ${job.test.sMin}…${job.test.sMax}</dd><dt>Katak</dt><dd>${job.test.size} mm</dd></dl><div class="small muted">Kuydirgandan soʻng eng toza natija bergan katakning tezlik va quvvatini qatlamga yozing.</div></div>`
+      :`<div class="sec"><h3>Qatlamlar</h3><dl class="kv">${S.order.filter(i=>per[i]).map(i=>`<dt><span style="color:${PALETTE[i]}">●</span> ${esc(S.layers[i].name)}</dt><dd>${(per[i]/1000).toFixed(2)} m</dd>`).join('')}</dl></div>`}
+    ${job.warn.length?`<div class="sec">${[...new Set(job.warn)].map(w=>`<div class="warn">⚠ ${esc(w)}</div>`).join('')}</div>`:''}
+    <div class="sec"><button class="sbtn primary" id="pvSave">G-code saqlash</button><button class="sbtn" id="pvCopy">Nusxalash</button>${MC.on?'<button class="sbtn" id="pvSend">Stanokka yuborish</button>':''}</div>`;
+  $('#pvRange').value=1000; const dlg=$('#pvDlg'); dlg.showModal(); requestAnimationFrame(drawPreview);
+}
+function pvTransform(W,H){ // ishni ekranga sig'dirish (ish maydoni bilan birga)
+  const b=PV.job.bb, m=Math.max(10,0.08*Math.max(b.x1-b.x0,b.y1-b.y0));
+  const x0=b.x0-m, y0=b.y0-m, w=b.x1-b.x0+2*m, h=b.y1-b.y0+2*m, pad=16;
+  const k=Math.min((W-pad*2)/w,(H-pad*2)/h);
+  return {k, ox:(W-w*k)/2-x0*k, oy:(H-h*k)/2-y0*k}; }
+function drawPreview(){
+  const c=$('#pvCv'), job=PV.job; if(!job) return; const dpr=window.devicePixelRatio||1, W=c.clientWidth, H=c.clientHeight; if(!W) return;
+  if(c.width!==Math.round(W*dpr)||c.height!==Math.round(H*dpr)){ c.width=Math.round(W*dpr); c.height=Math.round(H*dpr); PV.off=null; }
+  const tr=pvTransform(W,H), showR=$('#pvRapid').checked;
+  const key=W+'x'+H+'|'+showR;
+  if(!PV.off || PV.offKey!==key){ PV.off=document.createElement('canvas'); PV.off.width=c.width; PV.off.height=c.height; PV.offKey=key; PV.drawn=0;
+    const g=PV.off.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); g.fillStyle=T.bed; g.fillRect(tr.ox,tr.oy,S.dev.bedW*tr.k,S.dev.bedH*tr.k);
+    const gs=tr.k*10>=8?10:tr.k*50>=8?50:0; if(gs){ g.strokeStyle=T.grid; g.lineWidth=1; g.beginPath(); for(let x=0;x<=S.dev.bedW;x+=gs){const sx=Math.round(tr.ox+x*tr.k)+.5; g.moveTo(sx,tr.oy); g.lineTo(sx,tr.oy+S.dev.bedH*tr.k);} for(let y=0;y<=S.dev.bedH;y+=gs){const yy=S.dev.origin==='bl'?S.dev.bedH-y:y; const sy=Math.round(tr.oy+yy*tr.k)+.5; g.moveTo(tr.ox,sy); g.lineTo(tr.ox+S.dev.bedW*tr.k,sy);} g.stroke(); }
+    g.strokeStyle=T.line; g.strokeRect(tr.ox+.5,tr.oy+.5,S.dev.bedW*tr.k,S.dev.bedH*tr.k); PV.base=PV.off.getContext('2d').getImageData(0,0,c.width,c.height); }
+  // qaysi harakatgacha
+  const mv=job.moves; let lo=0,hi=mv.length; while(lo<hi){const m=(lo+hi)>>1; if(mv[m][7]<PV.t) lo=m+1; else hi=m;} const upto=Math.min(mv.length,lo);
+  const g=PV.off.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+  if(upto<PV.drawn){ g.setTransform(1,0,0,1,0,0); g.putImageData(PV.base,0,0); g.setTransform(dpr,0,0,dpr,0,0); PV.drawn=0; }
+  const X=x=>tr.ox+x*tr.k, Y=y=>tr.oy+y*tr.k; g.lineWidth=Math.max(0.6,Math.min(1.5,tr.k*0.12)); g.lineCap='round';
+  let i=PV.drawn;
+  while(i<upto){
+    const m=mv[i]; const burnM=m[4]===1; if(m[4]===2 || (!burnM && !showR)){ i++; continue; }
+    const style=burnM?dispColor(m[6]):T.danger, alpha=burnM?Math.max(0.15,Math.min(1,m[5]*1.3)):0.35;
+    g.strokeStyle=style; g.globalAlpha=alpha; g.setLineDash(burnM?[]:[3,3]); g.beginPath();
+    let n=0; while(i<upto && n<5000){ const q=mv[i]; if(q[4]!==m[4] || q[6]!==m[6] || (burnM && Math.abs(q[5]-m[5])>0.04)) break; if(burnM||showR){ g.moveTo(X(q[0]),Y(q[1])); g.lineTo(X(q[2]),Y(q[3])); } i++; n++; }
+    g.stroke();
+  }
+  g.globalAlpha=1; g.setLineDash([]); PV.drawn=upto;
+  const ctx2=c.getContext('2d'); ctx2.setTransform(1,0,0,1,0,0); ctx2.fillStyle=T.canvas; ctx2.fillRect(0,0,c.width,c.height); ctx2.drawImage(PV.off,0,0);
+  // kallak
+  if(upto<mv.length || PV.playing){ const m=mv[Math.max(0,Math.min(mv.length-1,upto))]; const t0=upto>0?mv[upto-1][7]:0, f=m[7]>t0?(PV.t-t0)/(m[7]-t0):1; const hx=m[0]+(m[2]-m[0])*Math.max(0,Math.min(1,f)), hy=m[1]+(m[3]-m[1])*Math.max(0,Math.min(1,f));
+    ctx2.setTransform(dpr,0,0,dpr,0,0); ctx2.strokeStyle=T.danger; ctx2.lineWidth=1.5; ctx2.beginPath(); ctx2.arc(X(hx),Y(hy),6,0,Math.PI*2); ctx2.stroke(); }
+  $('#pvTime').textContent=`${fmtTime(PV.t)} / ${fmtTime(job.time)}`;
+}
+function pvTick(ts){
+  if(!PV.playing) return; const dt=PV.last?(ts-PV.last)/1000:0; PV.last=ts;
+  PV.t=Math.min(PV.job.time, PV.t+dt*(+$('#pvSpeed').value)); $('#pvRange').value=Math.round(PV.t/PV.job.time*1000);
+  drawPreview(); if(PV.t>=PV.job.time){ PV.playing=false; $('#pvPlay').textContent='▶ Ijro'; return; } PV.raf=requestAnimationFrame(pvTick);
+}
+$('#pvPlay').addEventListener('click',()=>{ if(!PV.job) return; PV.playing=!PV.playing; $('#pvPlay').textContent=PV.playing?'❚❚ Pauza':'▶ Ijro';
+  if(PV.playing){ if(PV.t>=PV.job.time) PV.t=0; PV.last=0; PV.raf=requestAnimationFrame(pvTick); } });
+$('#pvRange').addEventListener('input',e=>{ if(!PV.job) return; PV.t=(+e.target.value/1000)*PV.job.time; drawPreview(); });
+$('#pvRapid').addEventListener('change',()=>{ PV.off=null; drawPreview(); });
+$('#pvClose').addEventListener('click',()=>$('#pvDlg').close());
+$('#pvDlg').addEventListener('close',()=>{ PV.playing=false; $('#pvPlay').textContent='▶ Ijro'; cancelAnimationFrame(PV.raf); });
+$('#pvStats').addEventListener('click',e=>{ if(e.target.id==='pvSave') exportGcode(PV.job); if(e.target.id==='pvCopy') copyGcode(PV.job); if(e.target.id==='pvSend'){ $('#pvDlg').close(); startJob(PV.job); } });
+new ResizeObserver(()=>{ if($('#pvDlg').open){ PV.off=null; drawPreview(); } }).observe($('#pvc'));
+
+function exportGcode(job){ job=job||genGcode(); if(job.error){ toast(job.error); return; }
+  saveFile('nurkesar.gcode', job.text, 'text/plain', 'nurkesar.gcode.txt'); }
+async function copyGcode(job){ job=job||genGcode(); if(job.error){ toast(job.error); return; }
+  try{ await navigator.clipboard.writeText(job.text); toast('G-code nusxalandi ('+job.lines+' qator)'); }
+  catch(e){ const ta=$('#gcOut'); if(ta){ ta.value=job.text; ta.hidden=false; ta.select(); toast('Matn belgilandi — Ctrl+C bosing'); } else toast('Nusxalab boʻlmadi'); } }
+
+/* ============================== Stanok (GRBL, Web Serial) ============================== */
+const MC={port:null, reader:null, writer:null, on:false, rx:'', q:[], inflight:[], job:null, state:'', headPos:null, wco:[0,0,0], log:[], poll:0};
+const enc=new TextEncoder();
+function mlog(t,cls){ MC.log.push([t,cls||'']); if(MC.log.length>300) MC.log.splice(0,MC.log.length-300); const el=$('#mcLog'); if(el){ const d=document.createElement('div'); if(cls) d.className=cls; d.textContent=t; el.appendChild(d); while(el.childNodes.length>300) el.firstChild.remove(); el.scrollTop=el.scrollHeight; } }
+async function mcConnect(){
+  if(!('serial' in navigator)){ mlog('Bu brauzer Web Serial’ni qoʻllamaydi. Faylni kompyuterga saqlab, Chrome yoki Edge’da oching.','err'); return; }
+  try{ MC.port=await navigator.serial.requestPort(); await MC.port.open({baudRate:+($('#baud')?.value||115200)}); }
+  catch(e){ mlog('Ulanib boʻlmadi: '+(e.message||e)+'. Agar bu sahifa Claude ichida ochilgan boʻlsa, HTML faylni kompyuterga saqlab Chrome’da oching — xavfsizlik sababli bu yerda USB port yopiq.','err'); MC.port=null; renderMachine(); return; }
+  MC.writer=MC.port.writable.getWriter(); MC.on=true; MC.q=[]; MC.inflight=[]; MC.job=null; mlog('Ulandi. GRBL javobi kutilmoqda…','me');
+  readLoop(); MC.poll=setInterval(()=>rt('?'),300); renderMachine();
+  setTimeout(()=>{ if(MC.on) rt('\x18'); },300);
+}
+async function readLoop(){
+  const dec=new TextDecoder();
+  try{ MC.reader=MC.port.readable.getReader();
+    while(true){ const {value,done}=await MC.reader.read(); if(done) break; MC.rx+=dec.decode(value,{stream:true}); let i;
+      while((i=MC.rx.indexOf('\n'))>=0){ const line=MC.rx.slice(0,i).trim(); MC.rx=MC.rx.slice(i+1); if(line) onMcLine(line); } }
+  }catch(e){ if(MC.on) mlog('Aloqa uzildi: '+(e.message||e),'err'); }
+  finally{ try{MC.reader.releaseLock();}catch(e){} if(MC.on) mcDisconnect(); }
+}
+async function mcDisconnect(){
+  MC.on=false; clearInterval(MC.poll); try{ await MC.reader?.cancel(); }catch(e){} try{ MC.writer?.releaseLock(); }catch(e){} try{ await MC.port?.close(); }catch(e){}
+  MC.port=null; MC.job=null; MC.headPos=null; MC.state=''; mlog('Uzildi','me'); renderMachine(); requestRender();
+}
+function rt(ch){ if(MC.on&&MC.writer) MC.writer.write(enc.encode(ch)).catch(()=>{}); }
+function mcSend(line,quiet){ if(!MC.on){ toast('Avval stanokka ulaning'); return; } MC.q.push(line); if(!quiet&&!MC.job) mlog('> '+line,'me'); pump(); }
+function pump(){
+  let used=MC.inflight.reduce((a,b)=>a+b,0);
+  while(MC.q.length){ const l=MC.q[0]; if(used+l.length+1>120 && MC.inflight.length) break; MC.q.shift(); MC.writer.write(enc.encode(l+'\n')).catch(()=>{}); MC.inflight.push(l.length+1); used+=l.length+1; }
+}
+function onMcLine(line){
+  if(line.startsWith('<')){ parseStatus(line); return; }
+  if(line==='ok'||line.startsWith('error')){ MC.inflight.shift(); if(line.startsWith('error')) mlog(line+grblErr(line),'err');
+    if(MC.job){ MC.job.done++; updateJobUI(); if(MC.job.done>=MC.job.total){ mlog(`Ish tugadi (${fmtTime((Date.now()-MC.job.t0)/1000)})`); MC.job=null; renderMachine(); } } pump(); return; }
+  if(line.startsWith('ALARM')) { mlog(line+' — “Qulfni ochish” ($X) yoki “Uyga” ($H) bosing','err'); return; }
+  if(line.startsWith('Grbl')){ MC.inflight=[]; mlog(line); return; }
+  mlog(line);
+}
+function grblErr(l){ const m={'1':'buyruq harfi yoʻq','2':'son notoʻgʻri','9':'ALARM holatida G-code bloklangan','15':'jog chegaradan chiqadi','20':'qoʻllanmaydigan buyruq','22':'F (tezlik) berilmagan','33':'harakat nishoni notoʻgʻri'}; const n=l.split(':')[1]; return m[n]?` (${m[n]})`:''; }
+function parseStatus(l){
+  const parts=l.slice(1,-1).split('|'); MC.state=parts[0];
+  let mpos=null,wpos=null; for(const p of parts){ const [k,v]=p.split(':'); if(!v) continue; const n=v.split(',').map(Number);
+    if(k==='MPos') mpos=n; if(k==='WPos') wpos=n; if(k==='WCO') MC.wco=n; }
+  const w = wpos || (mpos ? [mpos[0]-MC.wco[0], mpos[1]-MC.wco[1], mpos[2]-MC.wco[2]] : null);
+  if(w){ MC.headPos=w; }
+  const st=$('#mcState'); if(st){ st.textContent=MC.state; st.className='state '+(/Idle/.test(MC.state)?'ok':/Run|Jog|Home/.test(MC.state)?'run':/Alarm|Door|Hold/.test(MC.state)?'bad':''); }
+  const ps=$('#mcPos'); if(ps&&w) ps.textContent=`X ${w[0].toFixed(2)}  Y ${w[1].toFixed(2)}`;
+  requestRender();
+}
+function startJob(job){
+  job=job||genGcode(); if(job.error){ toast(job.error); return; } if(!MC.on){ toast('Avval stanokka ulaning'); setTab('machine'); return; }
+  if(MC.job){ toast('Ish allaqachon bajarilmoqda'); return; }
+  const lines=job.text.split('\n').map(l=>l.replace(/;.*$/,'').replace(/\(.*?\)/g,'').trim()).filter(Boolean);
+  MC.job={total:lines.length, done:0, t0:Date.now()}; mlog(`Ish boshlandi: ${lines.length} qator, taxminan ${fmtTime(job.time)}`);
+  MC.q.push(...lines); pump(); setTab('machine'); renderMachine();
+}
+function updateJobUI(){ const b=$('#mcBar'); if(b&&MC.job) b.style.width=(MC.job.done/MC.job.total*100).toFixed(1)+'%'; const t=$('#mcProg'); if(t&&MC.job) t.textContent=`${MC.job.done} / ${MC.job.total}`; }
+function frameJob(){
+  const shapes=jobShapes(); if(!shapes.length){ toast('Ramka uchun obyekt yoʻq'); return; }
+  const b=unionBBox(shapes), d=S.dev, F=3000;
+  const Y=y=>d.origin==='bl'?d.bedH-y:y;
+  if(d.start==='cur'){ // kallak hozir langar nuqtasida turibdi deb hisoblanadi
+    const an=anchorPoint(b); const pts=[[b.x0,b.y0],[b.x1,b.y0],[b.x1,b.y1],[b.x0,b.y1],[b.x0,b.y0],an];
+    const cmds=['M5','G91']; let pv=an; let first=true;
+    for(const q of pts){ const dx=q[0]-pv[0], dy=Y(q[1])-Y(pv[1]); cmds.push(first?`G0 X${fmt2(dx)} Y${fmt2(dy)}`:`G1 X${fmt2(dx)} Y${fmt2(dy)} S0 F${F}`); first=false; pv=q; }
+    cmds.push('G90'); cmds.forEach(l=>mcSend(l)); return; }
+  ['M5','G90',`G0 X${fmt2(b.x0)} Y${fmt2(Y(b.y0))}`,`G1 X${fmt2(b.x1)} S0 F${F}`,`G1 Y${fmt2(Y(b.y1))}`,`G1 X${fmt2(b.x0)}`,`G1 Y${fmt2(Y(b.y0))}`].forEach(l=>mcSend(l));
+}
+function renderMachine(){
+  const el=$('#pane-machine'); const d=S.dev; const serialOk='serial' in navigator;
+  el.innerHTML=`
+  <div class="sec"><h3>Fayl</h3>
+    <div class="row"><button class="sbtn primary wide" data-m="save">G-code saqlash</button><button class="sbtn wide" data-m="preview">Koʻrib chiqish</button><button class="sbtn wide" data-m="copy">Nusxalash</button></div>
+    <div class="small muted">${inArtifact()?'Fayl <span class="mono">.gcode.txt</span> nomi bilan saqlanadi — LaserGRBL yoki boshqa dasturda ochishdan oldin oxiridagi <span class="mono">.txt</span> ni olib tashlang.':'Fayl <span class="mono">.gcode</span> koʻrinishida saqlanadi — LaserGRBL, UGS, CNCjs bilan ochiladi.'}</div>
+    <textarea id="gcOut" class="inp mono small" rows="6" hidden readonly></textarea>
+  </div>
+  <div class="sec"><h3>Stanokka ulanish (GRBL)</h3>
+    <div class="row"><span class="state${MC.on?' ok':''}" id="mcState">${MC.on?(MC.state||'Ulangan'):'Ulanmagan'}</span><span class="mono small muted" id="mcPos"></span></div>
+    <div class="row"><select class="inp" id="baud" style="width:auto">${[115200,250000,57600,9600].map(b=>`<option${b===115200?' selected':''}>${b}</option>`).join('')}</select>
+      ${MC.on?'<button class="sbtn" data-m="disc">Uzish</button>':'<button class="sbtn primary" data-m="conn">USB orqali ulash</button>'}</div>
+    ${!MC.on?`<div class="note">${serialOk?'':'Bu brauzerda USB (Web Serial) yoʻq. '}Toʻgʻridan-toʻgʻri boshqarish Chrome yoki Edge’da, faylni kompyuterdan ochganda ishlaydi. Claude ichida koʻrayotgan boʻlsangiz, G-code’ni saqlab LaserGRBL orqali yuboring.</div>`:''}
+    ${MC.job?`<div class="bar"><i id="mcBar"></i></div><div class="row small mono"><span id="mcProg"></span></div>`:''}
+    <div class="row"><button class="sbtn primary" data-m="start"${MC.on&&!MC.job?'':' disabled'}>▶ Boshlash</button><button class="sbtn" data-m="pause"${MC.on?'':' disabled'}>❚❚ Pauza</button><button class="sbtn" data-m="resume"${MC.on?'':' disabled'}>Davom</button><button class="sbtn danger" data-m="stop"${MC.on?'':' disabled'}>■ Toʻxtatish</button></div>
+    <div class="row"><button class="sbtn" data-m="frame"${MC.on&&!MC.job?'':' disabled'}>Ramka</button><button class="sbtn" data-m="home"${MC.on?'':' disabled'}>Uyga ($H)</button><button class="sbtn" data-m="unlock"${MC.on?'':' disabled'}>Qulfni ochish ($X)</button>
+      <button class="sbtn" data-m="zero"${MC.on?'':' disabled'}>Shu yer — 0,0</button><button class="sbtn" data-m="goto0"${MC.on?'':' disabled'}>0,0 ga borish</button></div>
+    <div class="row" style="align-items:flex-start;gap:14px">
+      <div class="jog">${[['','↖',-1,1],['','↑',0,1],['','↗',1,1],['','←',-1,0],['','·',0,0],['','→',1,0],['','↙',-1,-1],['','↓',0,-1],['','↘',1,-1]].map(([,t,x,y])=>`<button data-jx="${x}" data-jy="${y}"${MC.on&&!MC.job?'':' disabled'} title="${x||y?'Siljitish':'Toʻxtatish'}">${t}</button>`).join('')}</div>
+      <div class="f" style="flex:1"><span>Qadam, mm</span><select class="inp" id="jogStep">${[0.1,1,5,10,50].map(v=>`<option${v===10?' selected':''}>${v}</option>`).join('')}</select>
+        <span style="margin-top:6px">Jog tezligi, mm/min</span><input class="inp" type="number" id="jogF" value="3000" step="100"></div>
+    </div>
+    <div class="console" id="mcLog" aria-live="polite"></div>
+    <div class="row"><input class="inp mono" id="mcCmd" placeholder="Buyruq: $$, $I, G0 X10…" style="flex:1"${MC.on?'':' disabled'}><button class="sbtn" data-m="send"${MC.on?'':' disabled'}>Yuborish</button></div>
+  </div>
+  <div class="sec"><h3>Material testi</h3>
+    <div class="small muted">Yangi material uchun eng yaxshi tezlik va quvvatni topish: har bir katak boshqa qiymat bilan kuydiriladi.</div>
+    <div class="g2">
+      <label class="f"><span>Tezlik min, mm/min</span><input type="number" id="mt_sMin" data-mt="sMin" value="${MT.sMin}" step="100"></label>
+      <label class="f"><span>Tezlik maks, mm/min</span><input type="number" id="mt_sMax" data-mt="sMax" value="${MT.sMax}" step="100"></label>
+      <label class="f"><span>Quvvat min, %</span><input type="number" id="mt_pMin" data-mt="pMin" value="${MT.pMin}" min="0" max="100"></label>
+      <label class="f"><span>Quvvat maks, %</span><input type="number" id="mt_pMax" data-mt="pMax" value="${MT.pMax}" min="0" max="100"></label>
+      <label class="f"><span>Qatorlar (tezlik)</span><input type="number" id="mt_rows" data-mt="rows" value="${MT.rows}" min="1" max="20"></label>
+      <label class="f"><span>Ustunlar (quvvat)</span><input type="number" id="mt_cols" data-mt="cols" value="${MT.cols}" min="1" max="20"></label>
+      <label class="f"><span>Katak, mm</span><input type="number" id="mt_size" data-mt="size" value="${MT.size}" min="2" step="1"></label>
+      <label class="f"><span>Oraliq, mm</span><input type="number" id="mt_gap" data-mt="gap" value="${MT.gap}" min="0" step="0.5"></label>
+      <label class="f"><span>Rejim</span><select id="mt_mode" data-mt="mode"><option value="fill"${MT.mode==='fill'?' selected':''}>Toʻldirish (gravyura)</option><option value="line"${MT.mode==='line'?' selected':''}>Chiziq (kesish)</option></select></label>
+      <label class="f"><span>Qator oraligʻi, mm</span><input type="number" id="mt_int" data-mt="interval" value="${MT.interval}" step="0.01" min="0.02"></label>
+      <label class="f"><span>Joy X, mm</span><input type="number" id="mt_x" data-mt="x" value="${MT.x}"></label>
+      <label class="f"><span>Joy Y, mm</span><input type="number" id="mt_y" data-mt="y" value="${MT.y}"></label>
+    </div>
+    <label class="chk"><input type="checkbox" id="mt_lbl" data-mt="labels"${MT.labels?' checked':''}> Qiymat yorliqlarini yozish (${MT.lblSpeed} mm/min, ${MT.lblPower}%)</label>
+    <div class="row"><button class="sbtn primary" data-m="mtPrev">Testni koʻrish</button><button class="sbtn" data-m="mtSave">G-code saqlash</button>${MC.on?'<button class="sbtn" data-m="mtRun">Stanokda bajarish</button>':''}</div>
+  </div>
+  <div class="sec"><h3>Stanok sozlamalari</h3>
+    <div class="g2">
+      <label class="f"><span>Ish maydoni X, mm</span><input type="number" id="d_w" data-d="bedW" min="10" value="${d.bedW}"></label>
+      <label class="f"><span>Ish maydoni Y, mm</span><input type="number" id="d_h" data-d="bedH" min="10" value="${d.bedH}"></label>
+      <label class="f"><span>Boshlanish nuqtasi</span><select id="d_o" data-d="origin"><option value="bl"${d.origin==='bl'?' selected':''}>Chap-past</option><option value="tl"${d.origin==='tl'?' selected':''}>Chap-yuqori</option></select></label>
+      <label class="f"><span>Maks. S qiymati ($30)</span><input type="number" id="d_s" data-d="sMax" min="1" value="${d.sMax}"></label>
+      <label class="f"><span>Lazer rejimi</span><select id="d_m" data-d="laserCmd"><option value="M4"${d.laserCmd==='M4'?' selected':''}>M4 — dinamik</option><option value="M3"${d.laserCmd==='M3'?' selected':''}>M3 — doimiy</option></select></label>
+      <label class="f"><span>Boʻsh yurish tezligi, mm/min</span><input type="number" id="d_r" data-d="rapid" min="100" value="${d.rapid}"></label>
+    </div>
+    <label class="f"><span>Ishni boshlash</span><select id="d_st" data-d="start"><option value="abs"${d.start==='abs'?' selected':''}>Mutlaq koordinatalar (ish maydonidagi joyida)</option><option value="cur"${d.start==='cur'?' selected':''}>Joriy holatdan (kallak turgan joydan)</option></select></label>
+    ${d.start==='cur'?`<div class="row" style="align-items:center;gap:12px"><div class="anc">${Object.keys(ANCHORS).map(k=>`<button data-anc="${k}" class="${(d.anchor||'bl')===k?'on':''}" title="${ANCHORS[k]}"></button>`).join('')}</div>
+      <div class="small muted" style="flex:1;min-width:0">Kallak dizaynning <b>${ANCHORS[d.anchor||'bl'].toLowerCase()}</b> nuqtasida turadi. Kallakni joyiga qoʻyib, “Ramka” bilan tekshiring.</div></div>`:''}
+    <div class="note">M4 (dinamik quvvat) tezlik pasayganda quvvatni ham kamaytiradi — burchaklar kuyib ketmaydi. GRBL’da <span class="mono">$32=1</span> (lazer rejimi) yoqilgan boʻlishi shart.</div>
+  </div>`;
+  const log=$('#mcLog'); for(const [t,c] of MC.log){ const dv=document.createElement('div'); if(c) dv.className=c; dv.textContent=t; log.appendChild(dv);} log.scrollTop=log.scrollHeight;
+  if(!MC.log.length){ const dv=document.createElement('div'); dv.className='me'; dv.textContent='Konsol: stanok javoblari shu yerda koʻrinadi.'; log.appendChild(dv); }
+  updateJobUI();
+}
+$('#pane-machine').addEventListener('click',e=>{
+  const j=e.target.closest('[data-jx]'); if(j){ const x=+j.dataset.jx, y=+j.dataset.jy*(S.dev.origin==='bl'?1:-1); if(!x&&!y){ rt('\x85'); return; } const st=+$('#jogStep').value, F=+$('#jogF').value||3000;
+    mcSend(`$J=G91 G21 X${fmt2(x*st)} Y${fmt2(y*st)} F${F}`); return; }
+  const an=e.target.closest('[data-anc]'); if(an){ S.dev.anchor=an.dataset.anc; scheduleSave(); renderMachine(); return; }
+  const m=e.target.closest('[data-m]')?.dataset.m; if(!m) return;
+  if(m==='mtPrev'||m==='mtSave'||m==='mtRun'){ const job=genMaterialTest(MT);
+    if(m==='mtPrev') openPreview(job); else if(m==='mtSave') saveFile('material-testi.gcode', job.text, 'text/plain', 'material-testi.gcode.txt'); else startJob(job); return; }
+  ({save:()=>exportGcode(), preview:openPreview, copy:()=>copyGcode(), conn:mcConnect, disc:mcDisconnect, start:()=>startJob(), pause:()=>{rt('!');mlog('Pauza','me');}, resume:()=>{rt('~');mlog('Davom etmoqda','me');},
+    stop:()=>{ rt('\x18'); MC.q=[]; MC.inflight=[]; if(MC.job) mlog('Ish toʻxtatildi','err'); MC.job=null; setTimeout(()=>{ if(MC.on) MC.writer.write(enc.encode('M5\n')).catch(()=>{}); },400); renderMachine(); },
+    frame:frameJob, home:()=>mcSend('$H'), unlock:()=>mcSend('$X'), zero:()=>mcSend('G10 L20 P1 X0 Y0'), goto0:()=>mcSend('G90 G0 X0 Y0'),
+    send:()=>{ const v=$('#mcCmd').value.trim(); if(v){ if(v==='?'||v==='!'||v==='~') rt(v); else mcSend(v); $('#mcCmd').value=''; } } })[m]?.();
+});
+$('#pane-machine').addEventListener('keydown',e=>{ if(e.target.id==='mcCmd' && e.key==='Enter'){ e.preventDefault(); $('[data-m="send"]').click(); } });
+const MT={sMin:1000,sMax:4000,pMin:20,pMax:100,rows:4,cols:5,size:8,gap:2,mode:'fill',interval:0.1,x:10,y:10,labels:true,lblSpeed:3000,lblPower:25};
+try{ Object.assign(MT, JSON.parse(localStorage.getItem('nurkesar.mt')||'{}')); }catch(e){}
+$('#pane-machine').addEventListener('input',e=>{ const k=e.target.dataset.mt; if(!k) return;
+  MT[k]= e.target.type==='checkbox'?e.target.checked : k==='mode'?e.target.value : (parseFloat(e.target.value)||0);
+  try{ localStorage.setItem('nurkesar.mt',JSON.stringify(MT)); }catch(err){} });
+$('#pane-machine').addEventListener('change',e=>{ const k=e.target.dataset.d; if(!k) return; const v=e.target.value;
+  S.dev[k]= ['bedW','bedH','sMax','rapid'].includes(k) ? Math.max(1,parseFloat(v)||S.dev[k]) : v;
+  if(k==='bedW'||k==='bedH') fitView(); if(k==='start'||k==='origin') renderMachine(); scheduleSave(); requestRender(); });
+
+/* ============================== Holat qatori ============================== */
+function updateStatus(){
+  const el=$('#status'); if(!el) return;
+  const a=selShapes(); const g=a.length?selGeom():null;
+  el.innerHTML=`<span>X <b>${mouse.in?fmt1(mouse.x):'—'}</b> Y <b>${mouse.in?fmt1(machY(mouse.y)):'—'}</b> mm</span>
+    <span>Masshtab <b>${Math.round(S.view.scale/ (96/25.4) *100)}%</b></span>
+    <span>${a.length?`Tanlangan: <b>${a.length}</b> · ${fmt1(g.W)} × ${fmt1(g.H)} mm`:`Obyektlar: <b>${S.shapes.length}</b>`}</span>
+    <span>Maydon <b>${S.dev.bedW}×${S.dev.bedH}</b></span>
+    ${S.isSample?'<span class="ex">Namuna loyiha — “Yangi” bilan tozalang</span>':''}
+    ${S.saved?(S.saved.ok?`<span>Avtosaqlandi ${S.saved.t.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'})}</span>`:'<span class="ex">Avtosaqlanmadi</span>'):''}
+    ${MC.on?`<span>Stanok: <b>${esc(MC.state||'ulangan')}</b></span>`:''}`;
+  $('#bFit').textContent=Math.round(S.view.scale/(96/25.4)*100)+'%';
+}
+
+/* ============================== Yuqori panel tugmalari ============================== */
+document.querySelectorAll('.tool[data-tool]').forEach(b=>b.addEventListener('click',()=>setTool(b.dataset.tool)));
+$('#tImport').addEventListener('click',()=>$('#fileIn').click());
+$('#bOpen').addEventListener('click',()=>$('#fileIn').click());
+$('#bSave').addEventListener('click',saveProject);
+$('#bUndo').addEventListener('click',undo); $('#bRedo').addEventListener('click',redo);
+$('#bZoomIn').addEventListener('click',()=>zoomAt(1.25,cv.clientWidth/2,cv.clientHeight/2));
+$('#bZoomOut').addEventListener('click',()=>zoomAt(0.8,cv.clientWidth/2,cv.clientHeight/2));
+$('#bFit').addEventListener('click',fitView);
+$('#bSnap').addEventListener('click',()=>{ const steps=[0,1,5,10]; const cur=S.snap?S.snapStep:0; const nx=steps[(steps.indexOf(cur)+1)%steps.length]; S.snap=nx>0; if(nx) S.snapStep=nx;
+  $('#bSnap').textContent=S.snap?`Setka ${S.snapStep} mm`:'Setka oʻchiq'; $('#bSnap').classList.toggle('on',S.snap); });
+$('#bPreview').addEventListener('click',openPreview);
+$('#bGcode').addEventListener('click',()=>exportGcode());
+let newArm=0;
+$('#bNew').addEventListener('click',()=>{
+  const b=$('#bNew');
+  const bt=$('#bNewT');
+  if(!newArm && S.shapes.length){ newArm=1; bt.textContent='Tozalansinmi?'; b.classList.add('on'); toast('Hammasini tozalash uchun yana bir bor bosing'); setTimeout(()=>{ newArm=0; bt.textContent='Yangi'; b.classList.remove('on'); },3000); return; }
+  newArm=0; bt.textContent='Yangi'; b.classList.remove('on');
+  S.shapes=[]; S.sel.clear(); S.layers=PALETTE.map((c,i)=>defaultLayer(i)); S.order=PALETTE.map((c,i)=>i); S.curLayer=0; S.isSample=false; S.draft=null;
+  pushHistory(); refreshPanels(); requestRender();
+});
+
+/* ============================== Kontekst menyu va yordam ============================== */
+function hideCtx(){ $('#ctx').hidden=true; }
+cv.addEventListener('contextmenu',e=>{
+  e.preventDefault(); if(S.draft){ finishDraft(false); return; }
+  const [mx,my]=s2d(e.offsetX,e.offsetY); const hit=hitShape(mx,my);
+  if(hit && !S.sel.has(hit.id)){ S.sel=new Set(groupOf(hit).map(g=>g.id)); refreshPanels(); requestRender(); }
+  const n=S.sel.size, a=selShapes(), grouped=a.some(s=>s.gid);
+  const it=(act,label,key,dis,cls)=>`<button data-c="${act}"${dis?' disabled':''}${cls?` class="${cls}"`:''}>${label}<kbd>${key||''}</kbd></button>`;
+  const m=$('#ctx');
+  m.innerHTML = it('copy','Nusxa olish','Ctrl+C',!n)+it('paste','Joylash','Ctrl+V',!S.clip)+it('dup','Dublikat','Ctrl+D',!n)+'<hr>'
+    +it('group','Guruhlash','Ctrl+G',n<2)+it('ungroup','Guruhdan chiqarish','Ctrl+⇧+G',!grouped)+'<hr>'
+    +it('front','Oldinga chiqarish','Ctrl+]',!n)+it('back','Orqaga surish','Ctrl+[',!n)
+    +it('fx','Gorizontal aks','',!n)+it('fy','Vertikal aks','',!n)+it('center','Ish maydoni markaziga','',!n)+'<hr>'
+    +it('all','Hammasini tanlash','Ctrl+A',!S.shapes.length)+it('del','Oʻchirish','Del',!n,'danger');
+  m.hidden=false; const r=m.getBoundingClientRect();
+  m.style.left=Math.min(e.clientX, innerWidth-r.width-8)+'px'; m.style.top=Math.min(e.clientY, innerHeight-r.height-8)+'px';
+});
+$('#ctx').addEventListener('click',e=>{ const b=e.target.closest('[data-c]'); if(!b||b.disabled) return; hideCtx();
+  ({copy:copySel, paste, dup:duplicateSel, group:groupSel, ungroup:ungroupSel, front:()=>zOrder(1), back:()=>zOrder(-1), fx:()=>flipSel('x'), fy:()=>flipSel('y'), center:centerOnBed,
+    all:()=>{ S.sel=new Set(S.shapes.map(s=>s.id)); refreshPanels(); requestRender(); }, del:deleteSel})[b.dataset.c]?.(); });
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest('#ctx')) hideCtx(); });
+window.addEventListener('blur',hideCtx);
+$('#bKeys').addEventListener('click',()=>$('#keysDlg').showModal());
+$('#keysClose').addEventListener('click',()=>$('#keysDlg').close());
+
+/* ============================== Namuna loyiha ============================== */
+async function buildSample(){
+  const H=S.dev.bedH, cx=75, cy=H-75;
+  Object.assign(S.layers[2],{name:'Kesish', mode:'line', speed:400, power:85, passes:2});
+  Object.assign(S.layers[1],{name:'Chegara', mode:'line', speed:2000, power:18});
+  Object.assign(S.layers[0],{name:'Yozuv', mode:'fill', speed:3000, power:35, interval:0.1});
+  Object.assign(S.layers[4],{name:'Naqsh', mode:'fill+line', speed:2500, power:30, interval:0.12});
+  S.shapes=[];
+  newShape({type:'ellipse', layer:2, x:cx-50, y:cy-50, w:100, h:100});
+  newShape({type:'ellipse', layer:1, x:cx-44, y:cy-44, w:88, h:88});
+  // 8 qirrali yulduz (naqsh)
+  const star=[]; for(let i=0;i<16;i++){ const r=i%2?7:16, a=(i/16)*Math.PI*2-Math.PI/2; star.push([cx+r*Math.cos(a), cy-20+r*Math.sin(a)]); }
+  newShape({...polyFromPoints(star,true), layer:4});
+  const t1={id:S.nextId++, layer:0, rot:0, type:'text', text:'Samarqand', font:'Lobster', size:16, bold:false, italic:false, align:'center', x:0, y:0, w:1, h:1, paths:[]};
+  const t2={id:S.nextId++, layer:0, rot:0, type:'text', text:'2026', font:'Oswald', size:9, bold:false, italic:false, align:'center', x:0, y:0, w:1, h:1, paths:[]};
+  await retrace(t1); await retrace(t2);
+  t1.x=cx-t1.w/2; t1.y=cy+4; t2.x=cx-t2.w/2; t2.y=cy+24;
+  S.shapes.push(t1,t2);
+  newShape({type:'rect', layer:1, x:170, y:H-140, w:120, h:60, r:6});
+  const t3={id:S.nextId++, layer:0, rot:0, type:'text', text:'NURKESAR', font:'Oswald', size:14, bold:false, italic:false, align:'left', x:0,y:0,w:1,h:1,paths:[]};
+  await retrace(t3); t3.x=230-t3.w/2; t3.y=H-110-t3.h/2; S.shapes.push(t3);
+  S.curLayer=0; S.isSample=true;
+}
+
+/* ============================== Ishga tushirish ============================== */
+function onTheme(){ readTokens(); requestRender(); if($('#pvDlg').open){ PV.off=null; drawPreview(); } }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',onTheme);
+new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+new ResizeObserver(()=>{ if(!S.fitted) fitView(); else requestRender(); }).observe(stage);
+window.addEventListener('beforeunload',()=>{ try{ localStorage.setItem(LS_KEY, JSON.stringify({...projectJSON(), isSample:S.isSample})); }catch(e){} });
+
+(async function init(){
+  readTokens();
+  let loaded=false;
+  try{ const raw=localStorage.getItem(LS_KEY); if(raw){ const p=JSON.parse(raw); if(p && p.app==='nurkesar' && p.shapes && p.shapes.length){ S.initing=true; loadProject(p); S.isSample=!!p.isSample; loaded=true; } } }catch(e){}
+  S.initing=true;
+  if(!loaded){ await buildSample(); Hist.stack=[]; Hist.i=-1; pushHistory(); }
+  S.initing=false;
+  updateUndoUI(); refreshPanels(); fitView();
+  document.fonts.ready.then(async()=>{ // shriftlar kech yuklansa matnni qayta chizish
+    if(S.isSample){ for(const s of S.shapes) if(s.type==='text') await retrace(s,true); requestRender(); }
+  });
+})();
+</script>
+
+</body></html>

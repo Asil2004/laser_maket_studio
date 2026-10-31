@@ -1,0 +1,634 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Qatlam Lazer Studiyasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<script src="../vendor/jszip.min.js"></script>
+<style>
+/* Layout: workshop bench — numbered settings rail on the left, plywood stage + cut plates on the right */
+:root{
+  --bg:#ecebe6; --panel:#fbfaf7; --fg:#1e1c19; --muted:#6a645a; --line:#d8d3c8;
+  --cut:#d9271b; --engrave:#1d5bd0; --wood:#d8b483; --sheet:#f3e6cf; --chip:#efe9de; --warn:#a15c00;
+  --display:"Big Shoulders Stencil Display", "Arial Narrow", Impact, sans-serif;
+  --body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161513; --panel:#1f1d1a; --fg:#ece6db; --muted:#a39a8c; --line:#36312a;
+  --cut:#ff5b4c; --engrave:#6d9dff; --wood:#c7a272; --sheet:#2a2520; --chip:#2b2722; --warn:#f0a63c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161513; --panel:#1f1d1a; --fg:#ece6db; --muted:#a39a8c; --line:#36312a;
+  --cut:#ff5b4c; --engrave:#6d9dff; --wood:#c7a272; --sheet:#2a2520; --chip:#2b2722; --warn:#f0a63c; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.45}
+.wrap{max-width:1380px;margin:0 auto;padding-inline:16px;padding-block:18px 40px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:18px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,46px);line-height:.95;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1 span{color:var(--cut)}
+.lede{color:var(--muted);max-width:66ch;margin:6px 0 0}
+.legend{display:flex;gap:14px;font-family:var(--mono);font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:920px){.main{grid-template-columns:1fr}}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 16px 16px}
+.grp{padding-block:14px;border-bottom:1px dashed var(--line);display:grid;gap:10px}
+.grp:last-child{border-bottom:0}
+.grp h2{font-family:var(--display);font-weight:600;font-size:19px;margin:0;letter-spacing:.03em;display:flex;gap:8px;align-items:baseline}
+.grp h2 b{font-family:var(--mono);font-size:11px;color:var(--cut);font-weight:500}
+.drop{border:1.5px dashed var(--line);border-radius:8px;padding:12px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:border-color .15s}
+.drop:hover,.drop.over{border-color:var(--cut)}
+.drop img{width:64px;height:64px;object-fit:cover;border-radius:4px;background:var(--chip);flex:none}
+.drop small{color:var(--muted);display:block;word-break:break-all}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.row label{font-weight:500}
+.row output{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.row input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--cut)}
+.seg{display:flex;background:var(--chip);border-radius:7px;padding:3px;gap:3px;flex-wrap:wrap}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:inherit;font-size:13px;padding:6px 8px;border-radius:5px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--panel);box-shadow:0 1px 2px rgba(0,0,0,.15);font-weight:600}
+.chk{display:flex;gap:8px;align-items:center;cursor:pointer}
+.chk input{accent-color:var(--cut);width:16px;height:16px;flex:none}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.num label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+.num input{width:100%;font:inherit;font-family:var(--mono);padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.hint{font-size:12px;color:var(--muted);margin:0}
+.warn{font-size:12px;color:var(--warn);margin:0}
+.sub{display:grid;gap:10px;padding-left:10px;border-left:2px solid var(--line)}
+button:focus-visible,input:focus-visible,.drop:focus-visible{outline:2px solid var(--engrave);outline-offset:2px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:8px 12px;border-radius:7px;cursor:pointer}
+.btn:hover{border-color:var(--fg)}
+.btn.primary{background:var(--cut);border-color:var(--cut);color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:5px 9px;font-size:12px}
+section.view{display:grid;gap:14px;min-width:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stat{background:var(--panel);padding:10px 12px;min-width:0}
+.stat span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.stat strong{font-family:var(--mono);font-weight:500;font-size:16px;font-variant-numeric:tabular-nums}
+.bench{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:12px;min-width:0}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.stagebox{display:grid;place-items:center;min-height:300px;padding:30px 10px;border-radius:8px;background:
+  radial-gradient(ellipse at 50% 42%, color-mix(in srgb,var(--panel) 65%, var(--wood)) 0%, var(--bg) 78%);overflow:hidden;position:relative}
+.stage{position:relative;perspective:1700px;max-width:100%}
+.stack{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .35s ease}
+.stack>svg{position:absolute;left:0;top:0;overflow:visible;backface-visibility:visible}
+.busy{position:absolute;top:10px;right:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.flat{max-width:100%;max-height:62vh;border-radius:6px;image-rendering:auto}
+.sliders{display:flex;gap:18px;flex-wrap:wrap}
+.sliders .row{min-width:180px;flex:1}
+.order{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ochip{display:flex;align-items:center;gap:1px;background:var(--chip);border-radius:6px;padding:3px}
+.ochip i{width:22px;height:22px;border-radius:4px;border:1px solid rgba(0,0,0,.18);display:block}
+.ochip em{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--muted);padding:0 3px;min-width:14px;text-align:center}
+.ochip button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:12px;padding:2px 4px;border-radius:3px}
+.ochip button:hover{color:var(--fg);background:var(--panel)}
+.ochip button:disabled{opacity:.25;cursor:default}
+.ochip.off i{background-image:repeating-linear-gradient(45deg,transparent 0 3px,rgba(0,0,0,.45) 3px 5px)!important;opacity:.5}
+.ochip.off em{text-decoration:line-through}
+.plates{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.plate{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel);display:grid;grid-template-rows:auto 1fr}
+.plate .pv{background:var(--sheet);aspect-ratio:4/3;display:grid;place-items:center;padding:8px}
+.plate .pv svg{width:100%;height:100%}
+.plate .meta{padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line)}
+.plate .meta b{font-family:var(--display);font-size:17px;letter-spacing:.03em;font-weight:600}
+.plate .meta small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.tag{font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:3px;background:var(--chip);color:var(--muted);margin-left:4px;vertical-align:middle}
+.dlbar{display:flex;gap:8px;flex-wrap:wrap}
+.steps{margin:0;padding-left:20px;display:grid;gap:4px;color:var(--muted);font-size:13px}
+.steps b{color:var(--fg)}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:7px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);z-index:10}
+.toast.on{opacity:1}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);max-width:min(640px,calc(100% - 32px));width:100%}
+dialog textarea{width:100%;height:240px;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px}
+@media (prefers-reduced-motion:reduce){.stack{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Qatlam <span>Lazer</span> Studiyasi</h1>
+      <p class="lede">Rasm tashlang — sayt uni ranglar bo'yicha qatlamlarga ajratadi, mayda detallarni gravyuraga o'tkazadi, kerfni hisobga olib kesish SVG larini chiqaradi va xohlasangiz tishli bo'g'imli organayzer qutisini ham chizib beradi.</p>
+    </div>
+    <div class="legend"><span><i style="border-color:var(--cut)"></i>kesish #FF0000</span><span><i style="border-color:var(--engrave)"></i>gravyura #0000FF</span></div>
+  </header>
+
+  <div class="main">
+    <aside>
+      <div class="grp">
+        <h2><b>01</b>Rasm</h2>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Rasm tanlash">
+          <img id="thumb" alt="">
+          <div><strong>Rasm tanlang yoki shu yerga tashlang</strong><small id="imgname">Hozir: namunaviy manzara</small></div>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+        <div><button class="btn sm" id="sampleBtn">Namunani qaytarish</button></div>
+        <p class="hint">Aniq konturli, 4–8 rangli rasm (illyustratsiya, logotip, manzara) eng yaxshi natija beradi. Ctrl+V bilan ham qo'yish mumkin.</p>
+      </div>
+
+      <div class="grp">
+        <h2><b>02</b>Qatlamlar</h2>
+        <div class="row"><label for="n">Ranglar (qatlamlar) soni</label><output id="nO"></output><input type="range" id="n" min="2" max="10" value="7"></div>
+        <div class="seg" id="modeSeg"><button data-v="color" aria-pressed="true">Rang bo'yicha</button><button data-v="lum" aria-pressed="false">Yorug'lik bo'yicha</button></div>
+        <label class="chk"><input type="checkbox" id="inv"> To'q ranglar orqada bo'lsin</label>
+        <div class="row"><label for="blur">Shovqinni silliqlash</label><output id="blurO"></output><input type="range" id="blur" min="0" max="5" value="1"></div>
+        <div class="row"><label for="res">Aniqlik</label><output id="resO"></output><input type="range" id="res" min="200" max="800" step="20" value="440"></div>
+      </div>
+
+      <div class="grp">
+        <h2><b>03</b>Shakl</h2>
+        <label class="chk"><input type="checkbox" id="bg" checked> Fonni olib tashlash</label>
+        <div class="row" id="tolRow"><label for="tol">Fon sezgirligi</label><output id="tolO"></output><input type="range" id="tol" min="5" max="120" value="40"></div>
+        <div><p class="hint" style="margin-bottom:5px">Asos (orqa plastina) shakli</p>
+        <div class="seg" id="baseSeg"><button data-v="sil" aria-pressed="true">Siluet</button><button data-v="rect" aria-pressed="false">To'rtburchak</button><button data-v="oval" aria-pressed="false">Oval</button><button data-v="none" aria-pressed="false">Yo'q</button></div></div>
+        <div class="row"><label for="margin">Asos cheti</label><output id="marginO"></output><input type="range" id="margin" min="0" max="20" value="5"></div>
+        <div class="row"><label for="minW">Eng ingichka qism</label><output id="minWO"></output><input type="range" id="minW" min="0" max="4" step="0.2" value="1.4"></div>
+        <div class="row"><label for="minA">Mayda bo'laklarni tashlash</label><output id="minAO"></output><input type="range" id="minA" min="0" max="40" value="6"></div>
+        <div class="row"><label for="simp">Kontur soddaligi</label><output id="simpO"></output><input type="range" id="simp" min="0.4" max="3" step="0.1" value="1.1"></div>
+        <label class="chk"><input type="checkbox" id="smooth" checked> Egri chiziqli silliq kontur</label>
+      </div>
+
+      <div class="grp">
+        <h2><b>04</b>Gravyura</h2>
+        <label class="chk"><input type="checkbox" id="engr" checked> Mayda detallarni (matn, chiziq) gravyura qilish</label>
+        <div class="row" id="engTRow"><label for="engT">Detal sezgirligi</label><output id="engTO"></output><input type="range" id="engT" min="10" max="120" value="45"></div>
+        <label class="chk"><input type="checkbox" id="guides" checked> Joylashuv chiziqlari</label>
+        <label class="chk"><input type="checkbox" id="nums" checked> Yashirin joyga qatlam raqami</label>
+      </div>
+
+      <div class="grp">
+        <h2><b>05</b>Organayzer quti</h2>
+        <label class="chk"><input type="checkbox" id="box" checked> Rasmni orqa devor qilib quti yasash</label>
+        <div class="sub" id="boxOpts">
+          <div class="nums">
+            <div class="num"><label for="bD">Chuqurlik, mm</label><input id="bD" type="number" min="50" max="400" value="120"></div>
+            <div class="num"><label for="bDiv">Bo'lgichlar</label><input id="bDiv" type="number" min="0" max="8" value="2"></div>
+            <div class="num"><label for="bHf">Old devor, mm</label><input id="bHf" type="number" min="20" max="300" value="55"></div>
+            <div class="num"><label for="bHb">Yon devor orqasi, mm</label><input id="bHb" type="number" min="20" max="300" value="85"></div>
+          </div>
+          <p class="hint" id="boxInfo">Quti uzunligi = rasm kengligi. Barcha qismlar tishli (tab-slot) bo'g'im bilan yig'iladi.</p>
+        </div>
+        <label class="chk" id="standRow"><input type="checkbox" id="stand"> Tik turishi uchun taglik qo'shish</label>
+      </div>
+
+      <div class="grp">
+        <h2><b>06</b>Material va lazer</h2>
+        <div class="nums">
+          <div class="num"><label for="wmm">Kenglik, mm</label><input id="wmm" type="number" min="40" max="1500" value="280"></div>
+          <div class="num"><label for="thk">Fanera qalinligi, mm</label><input id="thk" type="number" min="0.5" max="12" step="0.1" value="3"></div>
+          <div class="num"><label for="kerf">Kerf (nur eni), mm</label><input id="kerf" type="number" min="0" max="0.6" step="0.01" value="0.12"></div>
+          <div class="num"><label for="speed">Kesish tezligi, mm/s</label><input id="speed" type="number" min="1" max="500" value="15"></div>
+          <div class="num"><label for="sheetW">List kengligi, mm</label><input id="sheetW" type="number" min="100" max="3000" value="600"></div>
+          <div class="num"><label for="sheetH">List bo'yi, mm</label><input id="sheetH" type="number" min="100" max="3000" value="400"></div>
+        </div>
+        <p class="hint">Fanera qalinligini shtangensirkul bilan o'lchab kiriting — tishlar zich tushishi shunga bog'liq.</p>
+      </div>
+    </aside>
+
+    <section class="view">
+      <div class="stats" id="stats"></div>
+
+      <div class="bench">
+        <div class="bar">
+          <div class="seg" id="tabSeg" style="flex:0 1 auto"><button data-v="3d" aria-pressed="true">3D yig'ilgan</button><button data-v="map" aria-pressed="false">Ranglar xaritasi</button><button data-v="orig" aria-pressed="false">Asl rasm</button></div>
+          <div class="seg" id="paintSeg" style="flex:0 1 auto"><button data-v="wood" aria-pressed="false">Yog'och</button><button data-v="paint" aria-pressed="true">Bo'yalgan</button></div>
+        </div>
+        <div class="stagebox" id="stagebox">
+          <div class="stage" id="stage"><div class="stack" id="stack"></div></div>
+          <canvas class="flat" id="mapCv" hidden></canvas>
+          <img class="flat" id="origImg" alt="Asl rasm" hidden>
+          <div class="busy" id="busy" hidden>hisoblanmoqda…</div>
+        </div>
+        <div class="sliders">
+          <div class="row"><label for="tilt">Yuqoridan qarash</label><output id="tiltO"></output><input type="range" id="tilt" min="-10" max="70" value="20"></div>
+          <div class="row"><label for="rot">Burilish</label><output id="rotO"></output><input type="range" id="rot" min="-70" max="70" value="-30"></div>
+        </div>
+        <div>
+          <p class="hint" style="margin-bottom:6px">Balandlik tartibi — chapdan o'ngga: orqadan oldinga. ◀ ▶ bilan suring, ✕ bilan rangni olib tashlang (u joy teshik bo'ladi).</p>
+          <div class="order" id="order"></div>
+        </div>
+        <p class="warn" id="warn" hidden></p>
+      </div>
+
+      <div class="bench">
+        <div class="bar">
+          <h2 style="font-family:var(--display);font-weight:600;font-size:22px;margin:0;letter-spacing:.03em">Kesish qismlari</h2>
+          <div class="dlbar">
+            <button class="btn" id="dlSheet">Listlarga joylangan SVG</button>
+            <button class="btn primary" id="dlZip">Hammasini ZIP</button>
+          </div>
+        </div>
+        <div class="plates" id="plates"></div>
+        <ol class="steps" id="steps"></ol>
+      </div>
+    </section>
+  </div>
+</div>
+
+<dialog id="dlg">
+  <p style="margin-top:0"><strong>Bu oynada fayl saqlab bo'lmadi.</strong> SVG matnini nusxalab, <code>.svg</code> fayl sifatida saqlang.</p>
+  <textarea id="dlgText" readonly></textarea>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn" id="dlgCopy">Nusxalash</button><button class="btn primary" id="dlgClose">Yopish</button></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const S={img:null,opts:{},prep:null,cl:null,order:null,excl:new Set(),plates:[],parts:[],frame:null,box:null,mode:'color',base:'sil',paint:'paint',tab:'3d',tiltV:20,rotV:-30,warn:''};
+
+/* ================= sample ================= */
+function sampleURL(){
+  const c=document.createElement('canvas');c.width=700;c.height=480;const g=c.getContext('2d');
+  g.fillStyle='#fff';g.fillRect(0,0,700,480);
+  g.save();g.beginPath();
+  [[105,165,64],[205,118,76],[350,92,92],[495,118,76],[595,165,64]].forEach(([x,y,r])=>{g.moveTo(x+r,y);g.arc(x,y,r,0,Math.PI*2)});
+  g.rect(42,165,616,315);g.fillStyle='#bfe2f2';g.fill('nonzero');g.clip('nonzero');
+  g.fillStyle='#f4c240';g.beginPath();g.arc(560,128,40,0,7);g.fill();
+  g.fillStyle='#5b3a1c';g.font='bold 30px Arial, sans-serif';g.textAlign='center';g.fillText('TOZA TABIAT',300,140);g.font='bold 22px Arial, sans-serif';g.fillText('BIZNING KELAJAK',300,170);
+  g.fillStyle='#8db374';g.beginPath();g.moveTo(0,320);g.lineTo(140,200);g.lineTo(250,280);g.lineTo(370,185);g.lineTo(510,290);g.lineTo(610,225);g.lineTo(700,290);g.lineTo(700,480);g.lineTo(0,480);g.fill();
+  g.fillStyle='#4e8a3d';g.beginPath();g.moveTo(0,355);g.bezierCurveTo(170,285,320,355,450,320);g.bezierCurveTo(560,292,640,322,700,312);g.lineTo(700,480);g.lineTo(0,480);g.fill();
+  g.strokeStyle='#2f7ed0';g.lineWidth=36;g.lineCap='round';g.beginPath();g.moveTo(370,322);g.bezierCurveTo(280,370,460,395,330,480);g.stroke();
+  g.fillStyle='#2a6128';g.beginPath();g.moveTo(0,410);g.bezierCurveTo(130,378,240,430,360,420);g.bezierCurveTo(490,410,590,378,700,405);g.lineTo(700,480);g.lineTo(0,480);g.fill();
+  const tree=(x,y,h)=>{g.fillStyle='#6b4423';g.fillRect(x-5,y-10,10,20);g.fillStyle='#1c4722';for(let i=0;i<3;i++){const w=h*(.55-i*.12),yy=y-8-i*h*.28;g.beginPath();g.moveTo(x-w,yy);g.lineTo(x,yy-h*.45);g.lineTo(x+w,yy);g.fill();}};
+  tree(95,392,100);tree(150,404,76);tree(570,382,104);tree(628,396,76);tree(515,400,64);
+  g.strokeStyle='#f6f6f6';g.lineWidth=7;g.beginPath();g.moveTo(255,290);g.lineTo(255,195);g.stroke();
+  g.lineWidth=6;[0,2.09,4.19].forEach(a=>{g.beginPath();g.moveTo(255,195);g.lineTo(255+Math.cos(a-1.57)*52,195+Math.sin(a-1.57)*52);g.stroke()});
+  g.restore();return c.toDataURL('image/png');
+}
+
+/* ================= helpers ================= */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const lum=(r,g,b)=>0.299*r+0.587*g+0.114*b;
+const hex=c=>'#'+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+function toLab(r,g,b){const f=v=>{v/=255;return v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4)};r=f(r);g=f(g);b=f(b);
+  let x=(r*0.4124+g*0.3576+b*0.1805)/0.95047,y=r*0.2126+g*0.7152+b*0.0722,z=(r*0.0193+g*0.1192+b*0.9505)/1.08883;
+  const h=t=>t>0.008856?Math.cbrt(t):7.787*t+16/116;x=h(x);y=h(y);z=h(z);return[116*y-16,500*(x-y),200*(y-z)]}
+function boxBlur(d,W,H,r){if(r<=0)return;const tmp=new Float32Array(W*H*3);
+  for(let y=0;y<H;y++)for(let c=0;c<3;c++){let acc=0,cnt=0;for(let x=-r;x<W+r;x++){if(x+r<W){acc+=d[(y*W+x+r)*4+c];cnt++}if(x-r-1>=0){acc-=d[(y*W+x-r-1)*4+c];cnt--}if(x>=0&&x<W)tmp[(y*W+x)*3+c]=acc/cnt}}
+  for(let x=0;x<W;x++)for(let c=0;c<3;c++){let acc=0,cnt=0;for(let y=-r;y<H+r;y++){if(y+r<H){acc+=tmp[((y+r)*W+x)*3+c];cnt++}if(y-r-1>=0){acc-=tmp[((y-r-1)*W+x)*3+c];cnt--}if(y>=0&&y<H)d[(y*W+x)*4+c]=acc/cnt}}}
+
+/* ================= 1. prepare ================= */
+function prepare(){
+  const o=S.opts,img=S.img;const sc=o.res/Math.max(img.naturalWidth,img.naturalHeight);
+  const W=Math.max(8,Math.round(img.naturalWidth*sc)),H=Math.max(8,Math.round(img.naturalHeight*sc));
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d',{willReadFrequently:true});
+  g.drawImage(img,0,0,W,H);const d=g.getImageData(0,0,W,H).data;const raw=new Uint8ClampedArray(d);
+  boxBlur(d,W,H,o.blur);
+  const fg=new Uint8Array(W*H).fill(1);for(let i=0;i<W*H;i++)if(d[i*4+3]<128)fg[i]=0;
+  if(o.bg){let sr=0,sg=0,sb=0,n=0;const add=i=>{if(d[i*4+3]>=128){sr+=d[i*4];sg+=d[i*4+1];sb+=d[i*4+2];n++}};
+    for(let x=0;x<W;x++){add(x);add((H-1)*W+x)}for(let y=0;y<H;y++){add(y*W);add(y*W+W-1)}
+    if(n){sr/=n;sg/=n;sb/=n;const t2=o.tol*o.tol;
+      const like=i=>{if(d[i*4+3]<128)return true;const a=d[i*4]-sr,b=d[i*4+1]-sg,e=d[i*4+2]-sb;return a*a+b*b+e*e<t2};
+      const seen=new Uint8Array(W*H),st=new Int32Array(W*H);let sp=0;const push=i=>{if(!seen[i]&&like(i)){seen[i]=1;st[sp++]=i}};
+      for(let x=0;x<W;x++){push(x);push((H-1)*W+x)}for(let y=0;y<H;y++){push(y*W);push(y*W+W-1)}
+      while(sp){const i=st[--sp];fg[i]=0;const x=i%W,y=(i/W)|0;if(x>0)push(i-1);if(x<W-1)push(i+1);if(y>0)push(i-W);if(y<H-1)push(i+W)}}}
+  S.prep={W,H,d,raw,fg};
+}
+
+/* ================= 2. cluster (k-means in Lab) ================= */
+function cluster(){
+  const {W,H,d,fg}=S.prep,N=S.opts.n;const idx=[];for(let i=0;i<W*H;i++)if(fg[i])idx.push(i);
+  const cl=new Uint8Array(W*H);let centers=[];S.excl=new Set();
+  if(!idx.length){S.cl={cl,centers:[[200,170,130]]};S.order=[0];return}
+  if(S.mode==='lum'){
+    const v=idx.map(i=>lum(d[i*4],d[i*4+1],d[i*4+2]));const s=v.slice().sort((a,b)=>a-b);const thr=[];for(let k=1;k<N;k++)thr.push(s[Math.floor(k*s.length/N)]);
+    const sum=Array.from({length:N},()=>[0,0,0,0]);
+    idx.forEach((i,j)=>{let c=0;while(c<thr.length&&v[j]>=thr[c])c++;cl[i]=c;const q=sum[c];q[0]+=d[i*4];q[1]+=d[i*4+1];q[2]+=d[i*4+2];q[3]++});
+    centers=sum.map(q=>q[3]?[q[0]/q[3],q[1]/q[3],q[2]/q[3]]:null);
+  }else{
+    const r=rng(11);const step=Math.max(1,Math.floor(idx.length/18000));const sm=[];
+    for(let j=0;j<idx.length;j+=step){const i=idx[j];sm.push(toLab(d[i*4],d[i*4+1],d[i*4+2]))}
+    const dist=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;
+    let C=[sm[Math.floor(r()*sm.length)].slice()];const dd=new Float64Array(sm.length);
+    while(C.length<N){let tot=0;for(let j=0;j<sm.length;j++){let m=Infinity;for(const c of C)m=Math.min(m,dist(sm[j],c));dd[j]=m;tot+=m}
+      if(tot===0)break;let t=r()*tot,j=0;for(;j<sm.length-1;j++){t-=dd[j];if(t<=0)break}C.push(sm[j].slice())}
+    for(let it=0;it<16;it++){const acc=C.map(()=>[0,0,0,0]);
+      for(const p of sm){let b=0,bm=Infinity;for(let c=0;c<C.length;c++){const q=dist(p,C[c]);if(q<bm){bm=q;b=c}}const a=acc[b];a[0]+=p[0];a[1]+=p[1];a[2]+=p[2];a[3]++}
+      C=C.map((c,k)=>acc[k][3]?[acc[k][0]/acc[k][3],acc[k][1]/acc[k][3],acc[k][2]/acc[k][3]]:c)}
+    const cache=new Map(),sum=C.map(()=>[0,0,0,0]);
+    for(const i of idx){const key=(d[i*4]>>2)<<12|(d[i*4+1]>>2)<<6|(d[i*4+2]>>2);let b=cache.get(key);
+      if(b===undefined){const p=toLab(d[i*4],d[i*4+1],d[i*4+2]);let bm=Infinity;b=0;for(let c=0;c<C.length;c++){const q=dist(p,C[c]);if(q<bm){bm=q;b=c}}cache.set(key,b)}
+      cl[i]=b;const q=sum[b];q[0]+=d[i*4];q[1]+=d[i*4+1];q[2]+=d[i*4+2];q[3]++}
+    centers=sum.map(q=>q[3]?[q[0]/q[3],q[1]/q[3],q[2]/q[3]]:null);
+  }
+  const keep=centers.map((c,i)=>c?i:-1).filter(i=>i>=0);const remap=new Int32Array(centers.length);keep.forEach((k,i)=>remap[k]=i);
+  for(const i of idx)cl[i]=remap[cl[i]];centers=keep.map(k=>centers[k]);
+  S.cl={cl,centers};
+  const ord=centers.map((c,i)=>i).sort((a,b)=>lum(...centers[b])-lum(...centers[a]));
+  S.order=S.opts.inv?ord.reverse():ord;
+}
+
+/* ================= mask ops ================= */
+function clean(m,W,H,minA,minHole){if(minHole===undefined)minHole=minA;
+  const lab=new Uint8Array(W*H),st=new Int32Array(W*H),comp=[];
+  for(const v of [1,0]){lab.fill(0);
+    for(let s=0;s<W*H;s++){if(m[s]!==v||lab[s])continue;let sp=0,n=0,edge=false;comp.length=0;st[sp++]=s;lab[s]=1;
+      while(sp){const i=st[--sp];comp.push(i);n++;const x=i%W,y=(i/W)|0;if(x===0||y===0||x===W-1||y===H-1)edge=true;
+        if(x>0&&m[i-1]===v&&!lab[i-1]){lab[i-1]=1;st[sp++]=i-1}if(x<W-1&&m[i+1]===v&&!lab[i+1]){lab[i+1]=1;st[sp++]=i+1}
+        if(y>0&&m[i-W]===v&&!lab[i-W]){lab[i-W]=1;st[sp++]=i-W}if(y<H-1&&m[i+W]===v&&!lab[i+W]){lab[i+W]=1;st[sp++]=i+W}}
+      if(v===1?n<minA:(!edge&&n<minHole))for(const i of comp)m[i]=1-v}}}
+function dilate(m,W,H,r){for(let p=0;p<r;p++){const src=m.slice();const diag=p%2===1;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(src[i])continue;
+    let on=(x>0&&src[i-1])||(x<W-1&&src[i+1])||(y>0&&src[i-W])||(y<H-1&&src[i+W]);
+    if(!on&&diag)on=(x>0&&y>0&&src[i-W-1])||(x<W-1&&y>0&&src[i-W+1])||(x>0&&y<H-1&&src[i+W-1])||(x<W-1&&y<H-1&&src[i+W+1]);
+    if(on)m[i]=1}}}
+function erode(m,W,H,r){for(let i=0;i<m.length;i++)m[i]^=1;dilate(m,W,H,r);for(let i=0;i<m.length;i++)m[i]^=1}
+function distT(m,W,H){const D=new Float32Array(W*H);const B=1e9;for(let i=0;i<W*H;i++)D[i]=m[i]?B:0;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(!D[i])continue;let v=D[i];
+    v=Math.min(v,x>0?D[i-1]+1:1,y>0?D[i-W]+1:1,x>0&&y>0?D[i-W-1]+1.414:1.414,x<W-1&&y>0?D[i-W+1]+1.414:1.414);D[i]=v}
+  for(let y=H-1;y>=0;y--)for(let x=W-1;x>=0;x--){const i=y*W+x;if(!D[i])continue;let v=D[i];
+    v=Math.min(v,x<W-1?D[i+1]+1:1,y<H-1?D[i+W]+1:1,x<W-1&&y<H-1?D[i+W+1]+1.414:1.414,x>0&&y<H-1?D[i+W-1]+1.414:1.414);D[i]=v}
+  return D}
+
+/* ================= tracing ================= */
+function trace(m,W,H){
+  const V=W+1,h1=new Int32Array(V*(H+1)).fill(-1),h2=new Int32Array(V*(H+1)).fill(-1);const sx=[],sy=[],ex=[],ey=[];
+  const add=(a,b,c,e)=>{const k=b*V+a,id=sx.length;sx.push(a);sy.push(b);ex.push(c);ey.push(e);if(h1[k]<0)h1[k]=id;else h2[k]=id};
+  const at=(x,y)=>x>=0&&y>=0&&x<W&&y<H&&m[y*W+x];
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!m[y*W+x])continue;
+    if(!at(x,y-1))add(x,y,x+1,y);if(!at(x+1,y))add(x+1,y,x+1,y+1);if(!at(x,y+1))add(x+1,y+1,x,y+1);if(!at(x-1,y))add(x,y+1,x,y)}
+  const used=new Uint8Array(sx.length),loops=[];
+  for(let e0=0;e0<sx.length;e0++){if(used[e0])continue;const pts=[];let e=e0;
+    while(e>=0&&!used[e]){used[e]=1;pts.push(sx[e],sy[e]);const k=ey[e]*V+ex[e];const a=h1[k],b=h2[k];
+      if(b>=0){const dx=ex[e]-sx[e],dy=ey[e]-sy[e],ox=ex[a]-sx[a],oy=ey[a]-sy[a];e=(dx*oy-dy*ox)>0?a:b}else e=a}
+    loops.push(pts)}
+  return loops}
+function corners(p){const n=p.length/2,o=[];for(let i=0;i<n;i++){const a=(i+n-1)%n,c=(i+1)%n;
+  if((p[i*2]-p[a*2])*(p[c*2+1]-p[i*2+1])-(p[i*2+1]-p[a*2+1])*(p[c*2]-p[i*2])!==0)o.push(p[i*2],p[i*2+1])}return o}
+function dp(P,tol){const n=P.length;if(n<3)return P;const keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];
+  while(st.length){const [a,b]=st.pop();const ax=P[a][0],ay=P[a][1],bx=P[b][0],by=P[b][1];const L=Math.hypot(bx-ax,by-ay)||1e-9;let md=-1,mi=-1;
+    for(let i=a+1;i<b;i++){const q=Math.abs((bx-ax)*(ay-P[i][1])-(ax-P[i][0])*(by-ay))/L;if(q>md){md=q;mi=i}}
+    if(md>tol){keep[mi]=1;st.push([a,mi],[mi,b])}}
+  return P.filter((p,i)=>keep[i])}
+function simplifyLoop(flat,tol){const c=corners(flat);const n=c.length/2;if(n<3)return null;const P=[];for(let i=0;i<n;i++)P.push([c[i*2],c[i*2+1]]);
+  let far=0,fd=-1;for(let i=1;i<n;i++){const q=(P[i][0]-P[0][0])**2+(P[i][1]-P[0][1])**2;if(q>fd){fd=q;far=i}}
+  const A=dp(P.slice(0,far+1),tol),B=dp(P.slice(far).concat([P[0]]),tol);const out=A.concat(B.slice(1,-1));return out.length>=3?out:null}
+const area=p=>{let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];s+=a[0]*b[1]-b[0]*a[1]}return s/2};
+const perim=p=>{let s=0;for(let i=0;i<p.length;i++){const q=p[(i+1)%p.length];s+=Math.hypot(q[0]-p[i][0],q[1]-p[i][1])}return s};
+function offsetLoop(p,d){if(!d)return p;const n=p.length,o=[];
+  for(let i=0;i<n;i++){const a=p[(i+n-1)%n],b=p[i],c=p[(i+1)%n];
+    let e1x=b[0]-a[0],e1y=b[1]-a[1],l1=Math.hypot(e1x,e1y)||1;e1x/=l1;e1y/=l1;let e2x=c[0]-b[0],e2y=c[1]-b[1],l2=Math.hypot(e2x,e2y)||1;e2x/=l2;e2y/=l2;
+    const n1x=e1y,n1y=-e1x,n2x=e2y,n2y=-e2x;let mx=n1x+n2x,my=n1y+n2y;const ml=Math.hypot(mx,my);
+    if(ml<1e-6){mx=n1x;my=n1y}else{mx/=ml;my/=ml}const k=d/Math.max(mx*n1x+my*n1y,0.35);o.push([b[0]+mx*k,b[1]+my*k,b[2]])}
+  return o}
+
+/* ================= path output ================= */
+const F=v=>(Math.round(v*100)/100).toString();
+function loopD(p,smooth){const n=p.length;
+  if(!smooth||n<4)return 'M'+p.map(q=>F(q[0])+' '+F(q[1])).join('L')+'Z';
+  const mid=(a,b)=>F((a[0]+b[0])/2)+' '+F((a[1]+b[1])/2);const st=p.findIndex(q=>q[2]);
+  if(st<0){let d='M'+mid(p[n-1],p[0]);for(let i=0;i<n;i++)d+='Q'+F(p[i][0])+' '+F(p[i][1])+' '+mid(p[i],p[(i+1)%n]);return d+'Z'}
+  let d='M'+F(p[st][0])+' '+F(p[st][1]);
+  for(let k=1;k<=n;k++){const i=(st+k)%n,q=p[i],nx=p[(i+1)%n];
+    if(q[2]){if(k<n)d+='L'+F(q[0])+' '+F(q[1])}
+    else{d+='Q'+F(q[0])+' '+F(q[1])+' '+(nx[2]?F(nx[0])+' '+F(nx[1]):mid(q,nx));if(nx[2])k++}}
+  return d+'Z'}
+function loopsD(loops,smooth){return loops.map(l=>loopD(l,smooth)).join('')}
+function linesD(lines){return lines.map(l=>'M'+l.map(q=>F(q[0])+' '+F(q[1])).join('L')).join('')}
+
+/* ================= stroke digits ================= */
+const DIG={'0':[[[0,0],[.6,0],[.6,1],[0,1],[0,0]]],'1':[[[.15,.15],[.3,0],[.3,1]]],'2':[[[0,0],[.6,0],[.6,.5],[0,.5],[0,1],[.6,1]]],'3':[[[0,0],[.6,0],[.6,1],[0,1]],[[0,.5],[.6,.5]]],
+ '4':[[[0,0],[0,.5],[.6,.5]],[[.6,0],[.6,1]]],'5':[[[.6,0],[0,0],[0,.5],[.6,.5],[.6,1],[0,1]]],'6':[[[.6,0],[0,0],[0,1],[.6,1],[.6,.5],[0,.5]]],'7':[[[0,0],[.6,0],[.6,1]]],
+ '8':[[[0,0],[.6,0],[.6,1],[0,1],[0,0]],[[0,.5],[.6,.5]]],'9':[[[.6,.5],[0,.5],[0,0],[.6,0],[.6,1],[0,1]]]};
+function digits(str,cx,cy,h){const w=(str.length*0.9-0.3)*h;const out=[];[...str].forEach((ch,i)=>{(DIG[ch]||[]).forEach(l=>out.push(l.map(([x,y])=>[cx-w/2+(i*0.9+x)*h,cy-h/2+y*h])))});return out}
+
+/* ================= box geometry (mm) ================= */
+function ivs(len,tw=16){const n=Math.max(1,Math.round(len/(2*tw)));const s=len/(2*n+1),o=[];for(let i=0;i<n;i++)o.push([(2*i+1)*s,(2*i+2)*s]);return o}
+function edge(out,A,B,iv,depth){out.push([A[0],A[1],1]);const L=Math.hypot(B[0]-A[0],B[1]-A[1]);const dx=(B[0]-A[0])/L,dy=(B[1]-A[1])/L,nx=dy,ny=-dx;
+  for(const [a,b] of iv.slice().sort((p,q)=>p[0]-q[0])){const P=[A[0]+dx*a,A[1]+dy*a],Q=[A[0]+dx*b,A[1]+dy*b];
+    out.push([P[0],P[1],1],[P[0]+nx*depth,P[1]+ny*depth,1],[Q[0]+nx*depth,Q[1]+ny*depth,1],[Q[0],Q[1],1])}}
+const rev=(iv,len)=>iv.map(([a,b])=>[len-b,len-a]);
+function rectHole(x0,y0,x1,y1){return[[x0,y0,1],[x0,y1,1],[x1,y1,1],[x1,y0,1]]}
+function roundRect(w,h,r){const o=[];const arc=(cx,cy,a0)=>{for(let k=0;k<=4;k++){const a=a0+k*Math.PI/8;o.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r,k===0||k===4?1:0])}};
+  arc(w-r,r,-Math.PI/2);arc(w-r,h-r,0);arc(r,h-r,Math.PI/2);arc(r,r,Math.PI);return o}
+function boxGeom(o,L){const t=o.thk,e=Math.max(1.6*t,5);let n=Math.max(0,Math.round(o.bDiv));const D=Math.max(o.bD,4*e+20),Hb=Math.max(20,o.bHb),Hf=Math.min(Math.max(15,o.bHf),Hb);
+  const Ls=D-2*e-2*t,inner=L-2*e-2*t;while(n>0&&(inner-n*t)/(n+1)<12)n--;const cw=(inner-n*t)/(n+1);
+  const walls=[{x:e,side:1}];for(let i=1;i<=n;i++)walls.push({x:e+t+i*cw+(i-1)*t,side:0});walls.push({x:L-e-t,side:1});
+  return{t,e,D,Hb,Hf,L,Ls,n,cw,walls,TB:ivs(L,18),TF:ivs(L,18),TS:ivs(Ls,14),TVb:ivs(Hb,12),TVf:ivs(Hf,12)}}
+function profile(B){const {Ls,Hb,Hf,t}=B;const o=[];const top=Hb-Hf;const N=18;
+  const cx=u=>2*(1-u)*u*Ls*0.42+u*u*Ls,cy=u=>2*(1-u)*u*top+u*u*top;
+  for(let i=0;i<=N;i++){const u=i/N;o.push([cx(u),cy(u),i===0||i===N?1:0])}
+  o.pop();edge(o,[Ls,top],[Ls,Hb],rev(B.TVf,Hf),t);edge(o,[Ls,Hb],[0,Hb],rev(B.TS,Ls),t);edge(o,[0,Hb],[0,0],B.TVb,t);
+  const prev=[];for(let i=0;i<=N;i++){const u=i/N;prev.push([cx(u),cy(u)])}prev.push([Ls,Hb],[0,Hb]);
+  return{loops:[o],prev}}
+function buildBoxParts(B){const {t,e,D,L,Hf,Hb,Ls,walls}=B;const parts=[];
+  const bo=roundRect(L,D,3);const bh=[];
+  for(const [a,b] of B.TB)bh.push(rectHole(a,e,b,e+t));
+  for(const [a,b] of B.TF)bh.push(rectHole(a,D-e-t,b,D-e));
+  for(const w of walls)for(const [a,b] of B.TS)bh.push(rectHole(w.x,e+t+a,w.x+t,e+t+b));
+  parts.push({kind:'box',key:'tub',name:'Quti tubi',qty:1,loops:[bo,...bh],prev:[[0,0],[L,0],[L,D],[0,D]],w:L,h:D});
+  const fo=[];fo.push([0,0,1]);fo.push([L,0,1]);edge(fo,[L,Hf],[0,Hf],rev(B.TF,L),t);
+  const fh=[];for(const w of walls)for(const [a,b] of B.TVf)fh.push(rectHole(w.x,Hf-b,w.x+t,Hf-a));
+  parts.push({kind:'box',key:'old',name:'Old devor',qty:1,loops:[fo,...fh],prev:[[0,0],[L,0],[L,Hf],[0,Hf]],w:L,h:Hf});
+  const pr=profile(B);
+  parts.push({kind:'box',key:'yon',name:'Yon devor',qty:2,loops:pr.loops,prev:pr.prev,w:Ls,h:Hb});
+  if(B.n)parts.push({kind:'box',key:'bolgich',name:"Bo'lgich",qty:B.n,loops:pr.loops,prev:pr.prev,w:Ls,h:Hb});
+  return parts}
+function standPart(fw,T){const L=fw+24,D=Math.max(60,T*4+30),sl=fw*0.6,sx=(L-sl)/2,sy=22;
+  return{kind:'box',key:'taglik',name:'Taglik',qty:1,loops:[roundRect(L,D,6),rectHole(sx,sy,sx+sl,sy+T+0.2)],prev:null,w:L,h:D}}
+
+/* ================= 3. build ================= */
+function build(){
+  const o=S.opts,{W,H,fg,raw}=S.prep,{cl,centers}=S.cl;const s=o.wmm/W;const boxOn=o.box;
+  const baseMode=boxOn&&o.base==='none'?'sil':o.base;
+  const mp=baseMode!=='none'?Math.round(o.margin/s):0,pad=mp+2,GW=W+2*pad,GH=H+2*pad,NN=GW*GH;
+  const ox=2*s,byPx=GH-2,oyB=byPx*s,L=(GW-4)*s;
+  S.warn='';const B=boxOn?boxGeom(o,L):null;S.box=B;
+  const rank=new Int32Array(centers.length);S.order.forEach((c,i)=>rank[c]=i);
+  const level=new Uint8Array(NN);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(fg[i]&&!S.excl.has(cl[i]))level[(y+pad)*GW+x+pad]=rank[cl[i]]+1}
+  const minA=o.minA/(s*s),rOpen=Math.round(o.minW/2/s);
+  let stripM=null;if(B){stripM=new Uint8Array(NN);for(const w of B.walls){const xa=Math.floor((ox+w.x-0.5)/s),xb=Math.ceil((ox+w.x+B.t+0.5)/s),ya=Math.floor((oyB-B.Hb-1)/s);
+      for(let y=Math.max(0,ya);y<GH;y++)for(let x=Math.max(0,xa);x<Math.min(GW,xb);x++)stripM[y*GW+x]=1}}
+  const masks=[];let prev=null,prevCount=-1,baseCount=0;
+  if(baseMode!=='none'){const m=new Uint8Array(NN);
+    if(baseMode==='sil'){for(let i=0;i<NN;i++)m[i]=level[i]?1:0;clean(m,GW,GH,minA);dilate(m,GW,GH,mp)}
+    else{const x0=2,y0=2,x1=GW-2,y1=GH-2,cx=(x0+x1)/2,cy=(y0+y1)/2,rx=(x1-x0)/2,ry=(y1-y0)/2,rr=Math.min(rx,ry)*0.1;
+      for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){let on;
+        if(baseMode==='oval')on=((x+.5-cx)/rx)**2+((y+.5-cy)/ry)**2<=1;
+        else{const qx=Math.max(Math.abs(x+.5-cx)-(rx-rr),0),qy=Math.max(Math.abs(y+.5-cy)-(ry-rr),0);on=qx*qx+qy*qy<=rr*rr}
+        if(on)m[y*GW+x]=1}}
+    if(B){const yTop=Math.max(2,byPx-Math.ceil((B.Hb+6)/s));for(let y=yTop;y<byPx;y++)for(let x=2;x<GW-2;x++)m[y*GW+x]=1}
+    clean(m,GW,GH,minA,Infinity);
+    for(let i=0;i<NN;i++)baseCount+=m[i];masks.push({kind:'base',m,color:centers[S.order[0]]});prev=m;prevCount=baseCount}
+  for(let k=1;k<=S.order.length;k++){if(S.excl.has(S.order[k-1]))continue;
+    const m=new Uint8Array(NN);for(let i=0;i<NN;i++)m[i]=level[i]>=k?1:0;
+    if(stripM)for(let i=0;i<NN;i++)if(stripM[i])m[i]=0;
+    if(rOpen>0){erode(m,GW,GH,rOpen);dilate(m,GW,GH,rOpen)}
+    clean(m,GW,GH,minA);let cnt=0;
+    if(prev)for(let i=0;i<NN;i++){m[i]&=prev[i];cnt+=m[i]}else for(let i=0;i<NN;i++)cnt+=m[i];
+    if(cnt<Math.max(4,minA)||cnt===prevCount)continue;if(baseCount&&cnt>=baseCount*0.995)continue;
+    masks.push({kind:'layer',m,color:centers[S.order[k-1]]});prev=m;prevCount=cnt}
+
+  const fw=GW*s,fh=Math.max(GH*s,B?oyB+B.t+1:0);S.frame={w:fw,h:fh,s,GW,GH,pad,ox,oyB,L};
+  S.plates=masks.map((r,i)=>{const loops=[];
+    for(const Lp of trace(r.m,GW,GH)){const p=simplifyLoop(Lp,o.simp);if(!p)continue;if(Math.abs(area(p))<Math.max(3,minA*0.5))continue;loops.push(p.map(q=>[q[0]*s,q[1]*s,0]))}
+    return{idx:i,kind:r.kind,color:r.color,loops,m:r.m}});
+  if(B&&S.plates[0]&&S.plates[0].kind==='base'){const bp=S.plates[0];const eps=1e-6;
+    let li=-1,best=-1;bp.loops.forEach((l,i)=>{if(l.some(q=>Math.abs(q[1]-oyB)<eps)){const a=area(l);if(a>best){best=a;li=i}}});
+    if(li>=0){let l=bp.loops[li];const on=q=>Math.abs(q[1]-oyB)<eps;const n=l.length;let j=0;
+      for(;j<n;j++)if(!on(l[j])&&on(l[(j+1)%n]))break;
+      l=l.slice(j+1).concat(l.slice(0,j+1));let r=0;while(r<l.length&&on(l[r]))r++;const rest=l.slice(r);
+      const seg=[];edge(seg,[ox+L,oyB],[ox,oyB],rev(B.TB,L),B.t);seg.push([ox,oyB,1]);
+      bp.loops[li]=seg.concat(rest)}else S.warn="Orqa devor pastki chetini topib bo'lmadi — asos shaklini \"To'rtburchak\" qilib ko'ring.";
+    for(const w of B.walls)for(const [a,b] of B.TVb)bp.loops.push(rectHole(ox+w.x,oyB-b,ox+w.x+B.t,oyB-a))}
+  const P=S.plates;
+  P.forEach((pl,i)=>{const nx=P[i+1];pl.lines=[];pl.png=null;pl.pngPrev=null;
+    if(o.nums&&nx){const D=distT(nx.m,GW,GH);let bi=-1,bv=0;for(let q=0;q<NN;q++)if(D[q]>bv){bv=D[q];bi=q}
+      const str=String(i+1),hmm=Math.min(9,bv*s*1.2/Math.max(1,str.length*0.6));
+      if(hmm>=2.5)pl.lines=digits(str,((bi%GW)+.5)*s,(((bi/GW)|0)+.5)*s,hmm)}
+    if(o.engr){const pc=lum(...pl.color),thr=o.engT;const E=new Uint8Array(NN);let cnt=0;
+      for(let y=0;y<H;y++)for(let x=0;x<W;x++){const g=(y+pad)*GW+x+pad;if(!pl.m[g]||(nx&&nx.m[g])||(stripM&&stripM[g]))continue;const q=(y*W+x)*4;
+        if(raw[q+3]>=128&&lum(raw[q],raw[q+1],raw[q+2])<pc-thr){E[g]=1;cnt++}}
+      if(cnt>0){clean(E,GW,GH,3,0);cnt=0;for(let q=0;q<NN;q++)cnt+=E[q]}
+      if(cnt>0){const mk=(r,g,b,a)=>{const c=document.createElement('canvas');c.width=GW;c.height=GH;const x=c.getContext('2d');const im=x.createImageData(GW,GH);
+          for(let q=0;q<NN;q++)if(E[q]){im.data[q*4]=r;im.data[q*4+1]=g;im.data[q*4+2]=b;im.data[q*4+3]=a}x.putImageData(im,0,0);return c.toDataURL('image/png')};
+        pl.png=mk(0,0,0,255);pl.pngPrev=mk(70,40,16,215)}}
+    pl.name=pl.kind==='base'?(B?'Orqa devor (asos)':'Asos'):(i+1)+'-qatlam';
+    pl.file='qatlam-'+String(i+1).padStart(2,'0')+(pl.kind==='base'?'-asos':'')+'.svg'});
+  P.forEach(p=>delete p.m);
+  S.parts=B?buildBoxParts(B):(o.stand?[standPart(fw,P.length*o.thk)]:[]);
+  S.parts.forEach(p=>{p.file=(p.key)+(p.qty>1?'-x'+p.qty:'')+'.svg'});
+}
+
+/* ================= export ================= */
+const SW=0.1;
+function bboxL(loops){let a=Infinity,b=Infinity,c=-Infinity,d=-Infinity;for(const l of loops)for(const q of l){a=Math.min(a,q[0]);b=Math.min(b,q[1]);c=Math.max(c,q[0]);d=Math.max(d,q[1])}return{x:a,y:b,w:c-a,h:d-b}}
+function kerfed(loops){const k=S.opts.kerf/2;return loops.map(l=>offsetLoop(l,k))}
+function cutPaths(loops){const K=kerfed(loops);const holes=K.filter(l=>area(l)<0),outs=K.filter(l=>area(l)>=0);
+  return `<g id="kesish" fill="none" stroke="#FF0000" stroke-width="${SW}">`+(holes.length?`<path d="${loopsD(holes,S.opts.smooth)}"/>`:'')+`<path d="${loopsD(outs,S.opts.smooth)}"/></g>`}
+function engrParts(pl){const nx=S.plates[pl.idx+1];let g='';
+  if(pl.png)g+=`<image id="gravyura-rastr" x="0" y="0" width="${F(S.frame.GW*S.frame.s)}" height="${F(S.frame.GH*S.frame.s)}" preserveAspectRatio="none" href="${pl.png}"/>`;
+  let v='';if(S.opts.guides&&nx)v+=`<path d="${loopsD(nx.loops,S.opts.smooth)}"/>`;if(pl.lines.length)v+=`<path d="${linesD(pl.lines)}" stroke-linecap="round"/>`;
+  if(v)g+=`<g id="gravyura" fill="none" stroke="#0000FF" stroke-width="${SW}">${v}</g>`;return g}
+function plateInner(pl){return pl.kind==='box'?cutPaths(pl.loops):engrParts(pl)+cutPaths(pl.loops)}
+function svgDoc(w,h,body){return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${F(w)}mm" height="${F(h)}mm" viewBox="0 0 ${F(w)} ${F(h)}">\n${body}\n</svg>`}
+function plateSVG(pl){if(pl.kind!=='box')return svgDoc(S.frame.w,S.frame.h,`<!-- ${pl.name} · ${S.opts.thk} mm · kerf ${S.opts.kerf} mm -->\n`+plateInner(pl));
+  const b=bboxL(pl.loops);return svgDoc(b.w+4,b.h+4,`<!-- ${pl.name} ×${pl.qty} -->\n<g transform="translate(${F(2-b.x)} ${F(2-b.y)})">${plateInner(pl)}</g>`)}
+function allItems(){const items=[];S.plates.filter(p=>p.loops.length).forEach(p=>items.push({p,b:bboxL(p.loops)}));
+  S.parts.forEach(p=>{const b=bboxL(p.loops);for(let i=0;i<p.qty;i++)items.push({p,b})});return items}
+function pack(){const gap=4,SWm=Math.max(80,S.opts.sheetW),SHm=Math.max(80,S.opts.sheetH);
+  const items=allItems().sort((a,b)=>b.b.h-a.b.h);const sheets=[];let cur=null,x=0,y=0,rowH=0;
+  const newSheet=()=>{cur={items:[]};sheets.push(cur);x=gap;y=gap;rowH=0};newSheet();
+  for(const it of items){const w=it.b.w+1,h=it.b.h+1;
+    if(x+w>SWm-gap&&x>gap){x=gap;y+=rowH+gap;rowH=0}
+    if(y+h>SHm-gap&&y>gap){newSheet()}
+    cur.items.push({it,x,y});x+=w+gap;rowH=Math.max(rowH,h)}
+  return{sheets,SWm,SHm}}
+function sheetSVG(sh,SWm,SHm){const body=sh.items.map(({it,x,y})=>`<g transform="translate(${F(x-it.b.x)} ${F(y-it.b.y)})">${plateInner(it.p)}</g>`).join('\n');
+  return svgDoc(SWm,SHm,`<!-- list ${SWm}×${SHm} mm, material ${S.opts.thk} mm -->\n<rect x="0" y="0" width="${SWm}" height="${SHm}" fill="none" stroke="#00A000" stroke-width="0.2" stroke-dasharray="4 3"/>\n`+body)}
+
+/* ================= render ================= */
+function mix(a,b,t){return a.map((v,i)=>v+(b[i]-v)*t)}
+function fillFor(pl,i,n){if(S.paint==='paint')return hex(pl.color);return hex(mix([190,144,92],[236,212,170],n>1?i/(n-1):0))}
+const WOOD='#d9b886',WOODD='#8a6136';
+function svgEl(w,h,inner,css,vb){return `<svg width="${F(w)}" height="${F(h)}" viewBox="${vb}" style="${css}" aria-hidden="true">${inner}</svg>`}
+function render(){
+  const P=S.plates,o=S.opts,{w,h,s}=S.frame,B=S.box,n=P.length;
+  const box=$('stagebox'),stage=$('stage');const availW=Math.min(box.clientWidth-60,900),availH=Math.max(240,Math.min(window.innerHeight*0.55,560));
+  const sc=Math.min(availW/w,availH/h)*(B?0.62:0.8);const pw=w*sc,ph=h*sc;stage.style.width=pw+'px';stage.style.height=ph+'px';
+  const dz=o.thk*sc*(B?1:1.25),vb=`0 0 ${F(w)} ${F(h)}`;let html='';
+  const imgTag=pl=>pl.pngPrev?`<image x="0" y="0" width="${F(S.frame.GW*s)}" height="${F(S.frame.GH*s)}" preserveAspectRatio="none" href="${pl.pngPrev}"/>`:'';
+  P.forEach((pl,i)=>{const d=loopsD(pl.loops,o.smooth),fill=fillFor(pl,i,n);const z0=i*dz;
+    for(let e=2;e>=1;e--)html+=svgEl(pw,ph,`<path d="${d}" fill="${WOODD}" fill-rule="evenodd"/>`,`transform:translateZ(${F(z0-dz*e/3)}px)`,vb);
+    html+=svgEl(pw,ph,`<path d="${d}" fill="${fill}" fill-rule="evenodd" stroke="#4a2e14" stroke-width="${F(0.7/sc)}" stroke-opacity=".7"/>${imgTag(pl)}`,`transform:translateZ(${F(z0)}px);filter:drop-shadow(0 ${i?1:2}px ${i?1.5:4}px rgba(40,22,6,.45))`,vb)});
+  if(B){const t=B.t,zb=(Z)=>(Z-B.e-B.t)*sc,X0=S.frame.ox*sc,Yb=S.frame.oyB*sc;
+    const face=(pts,ww,hh,css,col)=>svgEl(ww*sc,hh*sc,`<path d="M${pts.map(q=>F(q[0])+' '+F(q[1])).join('L')}Z" fill="${col}" stroke="#5a3a1c" stroke-width="${F(0.8/sc)}"/>`,css,`0 0 ${F(ww)} ${F(hh)}`);
+    const tub=S.parts[0],old=S.parts[1],yon=S.parts[2];
+    html+=face(tub.prev,B.L,B.D,`left:${F(X0)}px;top:${F(Yb+t*sc)}px;transform-origin:0 0;transform:translateZ(${F(zb(0))}px) rotateX(90deg)`,WOODD);
+    html+=face(tub.prev,B.L,B.D,`left:${F(X0)}px;top:${F(Yb)}px;transform-origin:0 0;transform:translateZ(${F(zb(0))}px) rotateX(90deg)`,WOOD);
+    for(const wl of B.walls)for(const off of [0,t])html+=face(yon.prev,B.Ls,B.Hb,`left:${F(X0+(wl.x+off)*sc)}px;top:${F(Yb-B.Hb*sc)}px;transform-origin:0 0;transform:rotateY(-90deg)`,off?WOOD:'#c9a26e');
+    html+=face(old.prev,B.L,B.Hf,`left:${F(X0)}px;top:${F(Yb-B.Hf*sc)}px;transform:translateZ(${F(zb(B.D-B.e-t))}px)`,WOODD);
+    html+=face(old.prev,B.L,B.Hf,`left:${F(X0)}px;top:${F(Yb-B.Hf*sc)}px;transform:translateZ(${F(zb(B.D-B.e))}px)`,WOOD);
+  }
+  $('stack').innerHTML=html;S.zc=B?(B.D/2-B.e)*sc:n*dz/2;applyView();
+  const C=S.cl.centers;$('order').innerHTML=S.order.map((c,i)=>{const off=S.excl.has(c);return `<div class="ochip${off?' off':''}"><button data-mv="${i}" data-dir="-1" ${i===0?'disabled':''} aria-label="Orqaga">◀</button><i style="background:${hex(C[c])}"></i><em>${i+1}</em><button data-mv="${i}" data-dir="1" ${i===S.order.length-1?'disabled':''} aria-label="Oldinga">▶</button><button data-x="${c}" aria-label="${off?'Qaytarish':'Olib tashlash'}">${off?'↺':'✕'}</button></div>`}).join('');
+  $('warn').hidden=!S.warn;$('warn').textContent=S.warn;
+  let cards='';const strokeW=b=>F(Math.max(b.w,b.h)/240);
+  P.forEach((pl,i)=>{const nx=P[i+1];const b=bboxL(pl.loops);if(!isFinite(b.w))return;const m=Math.max(b.w,b.h)*0.04;
+    const eng=(pl.png?`<image x="0" y="0" width="${F(S.frame.GW*s)}" height="${F(S.frame.GH*s)}" preserveAspectRatio="none" href="${pl.pngPrev}" opacity=".55"/>`:'')+(o.guides&&nx?`<path d="${loopsD(nx.loops,o.smooth)}" fill="none" stroke="var(--engrave)" stroke-width="${F(Math.max(b.w,b.h)/360)}"/>`:'')+(pl.lines.length?`<path d="${linesD(pl.lines)}" fill="none" stroke="var(--engrave)" stroke-width="${strokeW(b)}"/>`:'');
+    const len=kerfed(pl.loops).reduce((a,l)=>a+perim(l),0);const pieces=pl.loops.filter(l=>area(l)>0).length;
+    cards+=`<div class="plate"><div class="pv"><svg viewBox="${F(b.x-m)} ${F(b.y-m)} ${F(b.w+2*m)} ${F(b.h+2*m)}">${eng}<path d="${loopsD(pl.loops,o.smooth)}" fill="none" stroke="var(--cut)" stroke-width="${strokeW(b)}"/></svg></div>
+    <div class="meta"><div><b>${i+1} · ${pl.kind==='base'?(B?'Orqa devor':'Asos'):'Qatlam'}</b>${pl.png?'<span class="tag">rastr</span>':''}<small>${pieces} bo'lak · ${(len/1000).toFixed(2)} m</small></div><button class="btn sm" data-dl="p${i}">SVG</button></div></div>`});
+  S.parts.forEach((pt,j)=>{const b=bboxL(pt.loops),m=Math.max(b.w,b.h)*0.04;
+    cards+=`<div class="plate"><div class="pv"><svg viewBox="${F(b.x-m)} ${F(b.y-m)} ${F(b.w+2*m)} ${F(b.h+2*m)}"><path d="${loopsD(pt.loops,true)}" fill="none" stroke="var(--cut)" stroke-width="${strokeW(b)}"/></svg></div>
+    <div class="meta"><div><b>${pt.name}</b>${pt.qty>1?`<span class="tag">×${pt.qty}</span>`:''}<small>${b.w.toFixed(0)}×${b.h.toFixed(0)} mm</small></div><button class="btn sm" data-dl="b${j}">SVG</button></div></div>`});
+  $('plates').innerHTML=cards;
+  let total=0;P.forEach(p=>kerfed(p.loops).forEach(l=>total+=perim(l)));S.parts.forEach(p=>kerfed(p.loops).forEach(l=>total+=perim(l)*p.qty));
+  const pk=pack();const secs=total/Math.max(1,o.speed);const tm=secs<90?Math.round(secs)+' s':secs<5400?Math.round(secs/60)+' daq':(secs/3600).toFixed(1)+' soat';
+  const cnt=P.length+S.parts.reduce((a,p)=>a+p.qty,0);
+  const size=B&&P[0]?`${B.L.toFixed(0)}×${B.D.toFixed(0)}×${(S.frame.oyB-bboxL(P[0].loops).y).toFixed(0)}`:`${w.toFixed(0)}×${h.toFixed(0)}`;
+  $('stats').innerHTML=[['Qismlar',cnt],['Relyef qalinligi',(n*o.thk).toFixed(1)+' mm'],[B?'Quti U×Ch×B':"O'lcham",size+' mm'],['Kesish uzunligi',(total/1000).toFixed(2)+' m'],['Taxminiy vaqt',tm],['Listlar',pk.sheets.length+' × '+pk.SWm+'×'+pk.SHm]].map(([a,b])=>`<div class="stat"><span>${a}</span><strong>${b}</strong></div>`).join('');
+  const st=[`<b>Kesing:</b> avval ko'k gravyura (tezlik yuqori, quvvat past), keyin qizil kesish — ichki teshiklar fayllarda tashqi konturdan oldin turadi.`,
+    `<b>Bo'yang:</b> har bir qatlamni yopishtirishdan oldin o'z rangiga bo'yang (yuqoridagi rang namunasi bo'yicha).`,
+    `<b>Yopishtiring:</b> 1-plastinadan boshlab, har bir qatlamni ko'k joylashuv chizig'i ustiga PVA bilan qo'ying${o.nums?'; raqam keyingi qatlam ostida qoladi':''}.`];
+  if(B)st.push(`<b>Qutini yig'ing:</b> yon devor va bo'lgichlarni orqa devor teshiklariga, so'ng old devorni ularning tishlariga kiriting, oxirida hammasini quti tubiga o'rnating.`);
+  $('steps').innerHTML=st.map(x=>`<li>${x}</li>`).join('');
+  drawMap();
+}
+function applyView(){$('stack').style.transformOrigin=`50% 55% ${F(S.zc||0)}px`;$('stack').style.transform=`rotateX(${-S.tiltV}deg) rotateY(${S.rotV}deg)`;$('tiltO').value=S.tiltV+'°';$('rotO').value=S.rotV+'°'}
+function drawMap(){if(S.tab!=='map'||!S.prep)return;const {W,H,fg}=S.prep,{cl,centers}=S.cl;const c=$('mapCv');c.width=W;c.height=H;const g=c.getContext('2d');const im=g.createImageData(W,H);
+  for(let i=0;i<W*H;i++){let r,gg,b;if(!fg[i]||S.excl.has(cl[i])){const ch=(((i%W)>>3)+((i/W>>3)|0))&1;r=gg=b=ch?235:205}else[r,gg,b]=centers[cl[i]];im.data[i*4]=r;im.data[i*4+1]=gg;im.data[i*4+2]=b;im.data[i*4+3]=255}
+  g.putImageData(im,0,0)}
+
+/* ================= pipeline ================= */
+let timer=0,stage=0;
+const ids=['n','inv','blur','res','bg','tol','margin','minW','minA','simp','smooth','engr','engT','guides','nums','box','bD','bDiv','bHf','bHb','stand','wmm','thk','kerf','speed','sheetW','sheetH'];
+function readOpts(){const o=S.opts;ids.forEach(k=>{const el=$(k);o[k]=el.type==='checkbox'?el.checked:+el.value});o.base=S.base;
+  o.wmm=Math.max(40,o.wmm||280);o.thk=Math.max(0.5,o.thk||3);o.kerf=Math.max(0,Math.min(0.6,o.kerf||0));o.sheetW=o.sheetW||600;o.sheetH=o.sheetH||400;o.speed=o.speed||15;
+  $('nO').value=o.n;$('blurO').value=o.blur?o.blur+' px':"yo'q";$('resO').value=o.res+' px';$('tolO').value=o.tol;$('marginO').value=o.margin+' mm';$('minWO').value=o.minW?o.minW.toFixed(1)+' mm':"yo'q";$('minAO').value=o.minA+' mm²';$('simpO').value=o.simp.toFixed(1)+' px';$('engTO').value=o.engT;
+  $('tolRow').hidden=!o.bg;$('engTRow').hidden=!o.engr;$('boxOpts').hidden=!o.box;$('standRow').hidden=o.box;
+  if(S.box&&o.box)$('boxInfo').textContent=`Quti uzunligi = rasm kengligi (${S.box.L.toFixed(0)} mm). ${S.box.n+1} ta bo'lim, har biri ≈${S.box.cw.toFixed(0)} mm. Qismlar tishli bo'g'im bilan yig'iladi.`}
+const stageOf={n:2,inv:2,blur:1,res:1,bg:1,tol:1};
+function schedule(from){stage=Math.min(stage||9,from);clearTimeout(timer);$('busy').hidden=false;
+  timer=setTimeout(()=>requestAnimationFrame(()=>{try{readOpts();if(!S.img)return;
+    if(stage<=1)prepare();if(stage<=2)cluster();if(stage<=3)build();render();readOpts()}catch(e){console.error(e);toast('Xatolik: '+e.message)}
+    stage=0;$('busy').hidden=true}),140)}
+function loadSrc(src,name){const im=new Image();im.onload=()=>{S.img=im;$('thumb').src=src;$('origImg').src=src;$('imgname').textContent='Hozir: '+name;schedule(1)};
+  im.onerror=()=>toast("Bu faylni rasm sifatida ochib bo'lmadi");im.src=src}
+function loadFile(f){if(!f||!f.type.startsWith('image/')){toast('Rasm fayli kerak (PNG, JPG, WEBP, SVG)');return}const r=new FileReader();r.onload=()=>loadSrc(r.result,f.name);r.readAsDataURL(f)}
+
+/* ================= wiring ================= */
+ids.forEach(k=>$(k).addEventListener(($(k).type==='number')?'change':'input',()=>{readOpts();schedule(stageOf[k]||3)}));
+function seg(id,cb){$(id).addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$(id).children].forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset.v)})}
+seg('modeSeg',v=>{S.mode=v;schedule(2)});seg('baseSeg',v=>{S.base=v;schedule(3)});
+seg('paintSeg',v=>{S.paint=v;if(S.plates.length)render()});
+seg('tabSeg',v=>{S.tab=v;$('stage').hidden=v!=='3d';$('origImg').hidden=v!=='orig';$('mapCv').hidden=v!=='map';drawMap()});
+$('tilt').addEventListener('input',e=>{S.tiltV=+e.target.value;applyView()});$('rot').addEventListener('input',e=>{S.rotV=+e.target.value;applyView()});
+$('order').addEventListener('click',e=>{const x=e.target.closest('button[data-x]');if(x){const c=+x.dataset.x;S.excl.has(c)?S.excl.delete(c):S.excl.add(c);schedule(3);return}
+  const b=e.target.closest('button[data-mv]');if(!b||b.disabled)return;const i=+b.dataset.mv,j=i+ +b.dataset.dir;const o=S.order;[o[i],o[j]]=[o[j],o[i]];schedule(3)});
+const drop=$('drop');drop.addEventListener('click',()=>$('file').click());drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('file').click()}});
+$('file').addEventListener('change',e=>loadFile(e.target.files[0]));
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,()=>drop.classList.remove('over')));
+document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0])});
+document.addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it)loadFile(it.getAsFile())});
+$('sampleBtn').addEventListener('click',()=>loadSrc(sampleURL(),'namunaviy manzara'));
+let rz=0;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(S.plates.length)render()},150)});
+
+/* ================= downloads ================= */
+let dlP=null;const dlNs=()=>dlP||(dlP=(window.claude&&window.claude.use)?window.claude.use('downloads').catch(()=>null):Promise.resolve(null));
+function showText(t){$('dlgText').value=t;$('dlg').showModal()}
+async function save(filename,data,text){const d=await dlNs();if(!d){text?showText(text):toast("Bu ko'rinishda fayl saqlab bo'lmaydi");return}
+  try{await d.save({filename,data});toast('Saqlandi: '+filename)}catch(e){const c=e&&e.code;
+    if(c==='declined')toast('Saqlash bekor qilindi');else if(c==='rate_limited')toast("Oldingi so'rov hali ochiq — biroz kuting");else if(text)showText(text);else toast("Saqlab bo'lmadi: "+(e&&e.message||c))}}
+$('plates').addEventListener('click',e=>{const b=e.target.closest('button[data-dl]');if(!b)return;const k=b.dataset.dl;
+  const p=k[0]==='p'?S.plates[+k.slice(1)]:S.parts[+k.slice(1)];const t=plateSVG(p);save(p.file,t,t)});
+$('dlSheet').addEventListener('click',async()=>{const pk=pack();if(pk.sheets.length===1||!window.JSZip){const t=sheetSVG(pk.sheets[0],pk.SWm,pk.SHm);save('list-1.svg',t,t);return}
+  const z=new JSZip();pk.sheets.forEach((s,i)=>z.file('list-'+(i+1)+'.svg',sheetSVG(s,pk.SWm,pk.SHm)));save('listlar.zip',await z.generateAsync({type:'blob'}),null)});
+$('dlZip').addEventListener('click',async()=>{if(!window.JSZip){toast("ZIP kutubxonasi yuklanmadi — SVG larni alohida oling");return}
+  const z=new JSZip(),o=S.opts;S.plates.forEach(p=>z.file('relyef/'+p.file,plateSVG(p)));S.parts.forEach(p=>z.file('quti/'+p.file,plateSVG(p)));
+  const pk=pack();pk.sheets.forEach((s,i)=>z.file('listlar/list-'+(i+1)+'.svg',sheetSVG(s,pk.SWm,pk.SHm)));
+  const lines=S.plates.map(p=>`  ${p.file}  ${p.name}  rang ${hex(p.color)}${p.png?'  (rastr gravyura bor)':''}`).join('\n');
+  const bx=S.box?`\nQuti: ${S.box.L.toFixed(1)} x ${S.box.D.toFixed(1)} mm, old devor ${S.box.Hf} mm, yon devor ${S.box.Hb} mm, ${S.box.n} bo'lgich.\nYig'ish: yon devor va bo'lgichlar orqa devor teshiklariga -> old devor -> quti tubi.\n`:'';
+  z.file('YIGISH.txt',`Qatlam Lazer Studiyasi\n\nMaterial: ${o.thk} mm fanera. Kerf: ${o.kerf} mm (konturlarga allaqachon qo'shilgan).\nRelyef: ${S.plates.length} plastina, qalinligi ${(S.plates.length*o.thk).toFixed(1)} mm.\n\nRanglar: qizil #FF0000 = kesish, ko'k #0000FF = vektor gravyura, qora rasm = rastr gravyura.\nRelyef fayllari bir xil ramkada: hammasini 0,0 nuqtaga import qiling.\n\nQatlamlar (orqadan oldinga):\n${lines}\n${bx}\nMaslahat: avval gravyura, keyin ichki teshiklar, oxirida tashqi kontur kesilsin.\n`);
+  save('lazer-qatlamlar.zip',await z.generateAsync({type:'blob'}),null)});
+$('dlgClose').addEventListener('click',()=>$('dlg').close());
+$('dlgCopy').addEventListener('click',()=>{const t=$('dlgText');const p=navigator.clipboard&&navigator.clipboard.writeText(t.value);if(p)p.then(()=>toast('Nusxalandi'),()=>{t.select();toast('Matn belgilandi — Ctrl+C bosing')});else t.select()});
+let tt=0;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2800)}
+
+readOpts();loadSrc(sampleURL(),'namunaviy manzara');
+})();
+</script>
+
+</body></html>

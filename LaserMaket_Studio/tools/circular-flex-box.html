@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circular Flex Box Generator</title>
+<style>
+:root{--bg:#f5f6f5;--panel:#fff;--ink:#20261f;--sub:#6b7169;--accent:#2f9e58;--accent2:#2b6cb0;--line:#dfe3dd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14170f;--panel:#1c211a;--ink:#eef1ea;--sub:#9aa398;--line:#2c332a;}}
+:root[data-theme="dark"]{--bg:#14170f;--panel:#1c211a;--ink:#eef1ea;--sub:#9aa398;--line:#2c332a;}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Segoe UI,Roboto,sans-serif;min-height:100%}
+header{padding:16px 16px 4px}
+h1{font-size:1.15rem;margin:0 0 2px;font-weight:800}
+p.sub{color:var(--sub);font-size:.8rem;margin:0 0 8px}
+main{padding:0 16px 32px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+h3{font-size:.72rem;margin:0 0 8px;color:var(--accent2);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label{font-size:.7rem;color:var(--sub);display:block;margin-bottom:2px}
+input,select{width:100%;padding:8px 9px;border-radius:7px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:.88rem}
+.row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.toggle{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.toggle label{flex:1;text-align:center;padding:8px 4px;margin:0;font-size:.78rem;color:var(--ink);cursor:pointer}
+.toggle input{display:none}
+.toggle input:checked+label{background:var(--accent2);color:#fff}
+button{background:var(--accent2);color:#fff;border:none;border-radius:9px;padding:11px 16px;font-size:.92rem;font-weight:700;width:100%}
+button.sec{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+button.cta{background:var(--accent);font-size:1rem;padding:14px}
+.previewWrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fffdfa;max-height:60vh}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .previewWrap{background:#faf8f4}}
+:root[data-theme="dark"] .previewWrap{background:#faf8f4}
+svg{display:block}
+.info{font-size:.75rem;color:var(--sub);margin-top:6px;line-height:1.5}
+.warn{color:#c85a30;font-size:.78rem;margin-top:4px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}
+.stat b{display:block;font-size:1.05rem;color:var(--accent2)}
+.stat span{font-size:.65rem;color:var(--sub);text-transform:uppercase;letter-spacing:.03em}
+</style>
+</head>
+<body>
+<header><h1>Circular Flex Box — MakerCase uslubida</h1><p class="sub">Dumaloq flex-devorli quti generatori: o'lcham → material → birikish → SVG</p></header>
+<main>
+<div class="card"><h3>1. O'lchamlar</h3>
+<div class="toggle" style="margin-bottom:8px">
+  <input type="radio" name="DIMMODE" id="DIM_IN" checked><label for="DIM_IN">Ichki o'lcham</label>
+  <input type="radio" name="DIMMODE" id="DIM_OUT"><label for="DIM_OUT">Tashqi o'lcham</label>
+</div>
+<div class="grid">
+<div><label>Diametr (mm)</label><input id="D" type="number" value="200" min="30"></div>
+<div><label>Balandlik H (mm)</label><input id="H" type="number" value="100" min="20"></div>
+<div><label>Material qalinligi t (mm)</label><input id="T" type="number" value="3" step="0.5" min="1"></div>
+<div><label>Kerf (mm)</label><input id="KERF" type="number" value="0.1" step="0.01" min="0"></div>
+</div></div>
+
+<div class="card"><h3>2. Flex (living hinge) — g'isht naqshi</h3><div class="grid">
+<div><label>Qator oralig'i / qadam (mm)</label><input id="PITCH" type="number" value="7" step="0.5" min="1.5"></div>
+<div><label>Kesim uzunligi (mm)</label><input id="CUTLEN" type="number" value="18" step="1" min="5"></div>
+<div><label>Ko'prik / end-gap (mm)</label><input id="ENDGAP" type="number" value="1" step="0.2" min="0.3"></div>
+<div><label>Kesim kengligi (mm)</label><input id="CUTW" type="number" value="0.9" step="0.1" min="0.1"></div>
+<div><label>Yuqori zaxira (mm)</label><input id="TOPSUP" type="number" value="6" min="2"></div>
+<div><label>Pastki zaxira (mm)</label><input id="BOTSUP" type="number" value="6" min="2"></div>
+<div><label>Yon (shov) zaxira (mm)</label><input id="SIDES" type="number" value="10" min="3"></div>
+</div></div>
+
+<div class="card"><h3>3. Birikish — shov (finger joint) va MAMA/PAPA pazlar</h3><div class="grid">
+<div><label>Shov tish kengligi (mm)</label><input id="FW" type="number" value="10" min="3"></div>
+<div><label>Paz chuqurligi (= material qalinligi tavsiya, mm)</label><input id="FD" type="number" value="3" step="0.5" min="1"></div>
+<div><label>Tolerance (-0.30..+0.30mm)</label><input id="TOL" type="number" value="-0.1" step="0.05" min="-0.3" max="0.3"></div>
+<div><label>MAMA/PAPA paz kengligi (mm)</label><input id="TABW" type="number" value="4" step="0.5" min="2"></div>
+<div><label>Paz oralig'i (mm)</label><input id="TABPITCH" type="number" value="80" min="30"></div>
+</div></div>
+
+<div class="card"><h3>4. Qismlar</h3>
+<div class="row"><input id="BOTTOM" type="checkbox" checked><label style="margin:0" for="BOTTOM">Tub (pastki doira)</label></div>
+<div class="row"><input id="TOP" type="checkbox" checked><label style="margin:0" for="TOP">Yuqori halqa + qopqoq</label></div>
+<div class="grid" style="margin-top:6px"><div><label>Halqa eni (mm)</label><input id="RW" type="number" value="15" min="5"></div>
+<div><label>Qopqoq bo'shlig'i (mm)</label><input id="CLR" type="number" value="0.4" step="0.1" min="0.1"></div></div>
+</div>
+
+<div class="card"><h3>5. Material list</h3><div class="grid">
+<div><label>List eni (mm)</label><input id="SW" type="number" value="700" min="100"></div>
+<div><label>List bo'yi (mm)</label><input id="SH" type="number" value="400" min="100"></div>
+</div></div>
+
+<div class="row"><button id="gen" class="cta">GENERATE BOX PLANS</button></div>
+
+<div class="card">
+  <div class="stats" id="stats"></div>
+</div>
+
+<div class="card">
+  <div class="previewWrap"><div id="preview"></div></div>
+  <div class="info" id="dims"></div>
+  <div class="warn" id="warn"></div>
+</div>
+
+<div class="card"><h3>Tub/halqa birikuvi (paz kesigi)</h3>
+  <div class="previewWrap" style="max-height:220px"><div id="zoom"></div></div>
+  <div class="info">Ikki qatlam ustma-ust yopishtiriladi: katta qatlam (devor tashqi yuzasiga tekis) va kichik qatlam (devor ichki yuzasiga tekis). Orada devor qalinligicha (t) uzluksiz paz hosil bo'ladi — devorning cheti shu pazga to'liq kirib, yelimlanadi.</div>
+</div>
+
+<div class="card"><h3>Yig'ish tartibi</h3><ol id="guide"></ol></div>
+
+<button id="dl" class="cta">DOWNLOAD SVG</button>
+</main>
+<script>
+// ============ SAFE, FORWARD-ONLY GEOMETRY ENGINE ============
+// Every edge is built by walking forward (increasing local index), never by
+// subtracting a global anchor point. Reversal (when a path needs to be
+// traversed backwards) is done by reversing an already-correct point array,
+// never by re-deriving coordinates with flipped signs. This avoids the
+// self-intersection class of bug from earlier versions.
+
+function calcCircumference(D){ return Math.PI*D; }
+function oddCount(len,target){ let n=Math.round(len/target); if(n<3)n=3; if(n%2===0)n++; return n; }
+
+// Vertical seam edge (x fixed), walked from yFrom to yTo (either direction).
+function verticalSeam(x,yFrom,yTo,n,nx,type,depth){
+  const dir=yTo>yFrom?1:-1, seg=Math.abs(yTo-yFrom)/n, sign=type==='male'?1:(type==='female'?-1:0);
+  let pts=[], y=yFrom;
+  for(let k=0;k<n;k++){
+    const y1=y+dir*seg;
+    if(sign!==0 && k%2===0){ const xo=x+nx*depth*sign; pts.push([xo,y],[xo,y1],[x,y1]); }
+    else pts.push([x,y1]);
+    y=y1;
+  }
+  return pts;
+}
+// Horizontal edge for ONE piece of the wall, always built forward (local x:0->count*seg).
+// notchDir: +1 or -1, the y-direction a notch is cut INTO the panel from yBase.
+// startIdx: the GLOBAL tooth index this piece begins at (keeps phase in sync with the disc/ring).
+function pieceHEdge(count,startIdx,seg,yBase,notchDir,depth){
+  let pts=[];
+  for(let k=0;k<count;k++){
+    const i=startIdx+k, x0=k*seg, x1=(k+1)*seg;
+    if(i%2===0){ const yo=yBase+notchDir*depth; pts.push([x0,yo],[x1,yo],[x1,yBase]); }
+    else pts.push([x1,yBase]);
+  }
+  return pts;
+}
+function pointsToPathD(pts){ return 'M'+pts.map(p=>p[0].toFixed(3)+','+p[1].toFixed(3)).join(' L')+' Z'; }
+
+// SPARSE locking tabs: a handful of large evenly-spaced tabs (like the
+// reference photo), NOT a dense finger comb. Used for wall<->disc/ring
+// connections. The dense comb (pieceHEdge/verticalSeam) is kept only for the
+// piece-to-piece seam, where a continuous comb is appropriate.
+function sparseCircleTabs(r,cx,cy,count,tabW,depth,sign){
+  sign = sign===undefined?1:sign;
+  let d='';
+  for(let i=0;i<count;i++){
+    const angC=(2*Math.PI*i)/count, halfAng=(tabW/2)/r;
+    const a0=angC-halfAng, a1=angC+halfAng, rr=r+sign*depth;
+    const p1=[cx+r*Math.cos(a0),cy+r*Math.sin(a0)], p2=[cx+r*Math.cos(a1),cy+r*Math.sin(a1)];
+    const p3=[cx+rr*Math.cos(a1),cy+rr*Math.sin(a1)], p4=[cx+rr*Math.cos(a0),cy+rr*Math.sin(a0)];
+    d+=`M${p1[0].toFixed(2)},${p1[1].toFixed(2)} L${p4[0].toFixed(2)},${p4[1].toFixed(2)} L${p3[0].toFixed(2)},${p3[1].toFixed(2)} L${p2[0].toFixed(2)},${p2[1].toFixed(2)} Z `;
+  }
+  return d;
+}
+// Notches for a wall PIECE spanning global arc range [offset, offset+pieceLen],
+// built as a proper forward point list (integrated into the closed outline,
+// not a separate overlay) so there are no duplicate/overlapping cut lines.
+// A tab is only cut if it fits fully inside the piece (with margin) — tabs
+// that would straddle a piece boundary are simply skipped there.
+function pieceSparseEdgePts(pieceLen,offset,C,count,tabW,yBase,notchDir,depth,mult){
+  mult = mult===undefined?1:mult; // +1 = notch INTO panel (matches original), -1 = tab protruding OUT of panel
+  let tabs=[];
+  for(let i=0;i<count;i++){
+    const s=(C*i)/count, local=s-offset;
+    if(local-tabW/2>=2 && local+tabW/2<=pieceLen-2) tabs.push(local);
+  }
+  tabs.sort((a,b)=>a-b);
+  let pts=[];
+  tabs.forEach(local=>{
+    const x0=local-tabW/2, x1=local+tabW/2, yo=yBase+notchDir*depth*mult;
+    pts.push([x0,yBase],[x0,yo],[x1,yo],[x1,yBase]);
+  });
+  pts.push([pieceLen,yBase]);
+  return pts;
+}
+
+// MAMA slot: a fully ENCLOSED rectangular hole punched through the ring/disc
+// body at radius r (not an edge notch) — the wall's tenon tab pokes up
+// through this hole when assembled.
+function circleMortiseHoles(r,cx,cy,count,tabW,tabDepth){
+  let d='';
+  for(let i=0;i<count;i++){
+    const ang=(2*Math.PI*i)/count, halfW=(tabW/2)/r, halfD=tabDepth/2;
+    const rIn2=r-halfD, rOut2=r+halfD;
+    const p1=[cx+rIn2*Math.cos(ang-halfW),cy+rIn2*Math.sin(ang-halfW)];
+    const p2=[cx+rOut2*Math.cos(ang-halfW),cy+rOut2*Math.sin(ang-halfW)];
+    const p3=[cx+rOut2*Math.cos(ang+halfW),cy+rOut2*Math.sin(ang+halfW)];
+    const p4=[cx+rIn2*Math.cos(ang+halfW),cy+rIn2*Math.sin(ang+halfW)];
+    d+=`M${p1[0].toFixed(2)},${p1[1].toFixed(2)} L${p2[0].toFixed(2)},${p2[1].toFixed(2)} L${p3[0].toFixed(2)},${p3[1].toFixed(2)} L${p4[0].toFixed(2)},${p4[1].toFixed(2)} Z `;
+  }
+  return d;
+}
+function circleTeeth(r,cx,cy,n,depth){
+  let d='';
+  for(let i=0;i<n;i+=2){
+    const a0=(2*Math.PI*i)/n, a1=(2*Math.PI*(i+1))/n, rr=r+depth;
+    const p1=[cx+r*Math.cos(a0),cy+r*Math.sin(a0)], p2=[cx+r*Math.cos(a1),cy+r*Math.sin(a1)];
+    const p3=[cx+rr*Math.cos(a1),cy+rr*Math.sin(a1)], p4=[cx+rr*Math.cos(a0),cy+rr*Math.sin(a0)];
+    d+=`M${p1[0].toFixed(2)},${p1[1].toFixed(2)} L${p4[0].toFixed(2)},${p4[1].toFixed(2)} L${p3[0].toFixed(2)},${p3[1].toFixed(2)} L${p2[0].toFixed(2)},${p2[1].toFixed(2)} Z `;
+  }
+  return d;
+}
+// Proper "brick" living-hinge pattern (per laser-cutting best practice):
+// each column is a stack of SHORT cut segments (cutLen) separated by small
+// uncut bridges (endGap), and neighboring columns are offset by half a unit
+// so bridges never line up vertically — this is far stronger and bends more
+// evenly than one long continuous slit per column.
+function calculateFlexPattern(pieceLen,H,rowSpacing,cutW,cutLen,endGap,topSup,botSup,sideSup){
+  const flexTop=topSup, flexBottom=H-botSup, unit=cutLen+endGap;
+  let cuts=[], col=0;
+  for(let x=sideSup; x+cutW<=pieceLen-sideSup+1e-6; x+=rowSpacing, col++){
+    const stagger=(col%2===1)?unit/2:0;
+    let y=flexTop-stagger;
+    while(y<flexBottom){
+      const segStart=Math.max(flexTop,y), segEnd=Math.min(flexBottom,y+cutLen);
+      if(segEnd-segStart>0.5) cuts.push({x,y:segStart,w:cutW,h:segEnd-segStart});
+      y+=unit;
+    }
+  }
+  return cuts;
+}
+
+// Builds ALL wall pieces. Splitting is pure arc-length (equal division).
+// Top/bottom edges are FLAT — they seat into a glued rabbet groove formed by
+// the disc/ring sandwich (see buildRabbetPair), not finger teeth.
+function buildWallPieces(C,H,nSeam,depth,rowSpacing,cutW,cutLen,endGap,topSup,botSup,sideSup,maxLen,tabCount,tabW){
+  const numPieces=Math.max(1,Math.ceil(C/maxLen));
+  const pieceLen=C/numPieces;
+  let parts=[];
+  for(let p=0;p<numPieces;p++){
+    const offset=p*pieceLen;
+    const topPts=pieceSparseEdgePts(pieceLen,offset,C,tabCount,tabW,0,1,depth,-1);   // PAPA tab, protrudes up
+    const botPtsFwd=pieceSparseEdgePts(pieceLen,offset,C,tabCount,tabW,H,-1,depth,-1); // PAPA tab, protrudes down
+    let pts=[[0,0]];
+    pts=pts.concat(topPts);
+    pts=pts.concat(verticalSeam(pieceLen,0,H,nSeam,1,'male',depth)); // right seam -> (pieceLen,H)
+    pts=pts.concat(botPtsFwd.slice().reverse());
+    pts.push([0,H]);
+    pts=pts.concat(verticalSeam(0,H,0,nSeam,-1,'female',depth));     // left seam -> ~(0,~0)
+    const cuts=calculateFlexPattern(pieceLen,H,rowSpacing,cutW,cutLen,endGap,topSup,botSup,sideSup);
+    const cutSvg=cuts.map(c=>`<rect x="${c.x.toFixed(2)}" y="${c.y.toFixed(2)}" width="${c.w.toFixed(2)}" height="${c.h.toFixed(2)}" fill="none" stroke="#c00" stroke-width="0.15"/>`).join('');
+    parts.push({w:pieceLen,h:H,label:`Devor bo'lagi ${p+1}/${numPieces} (PAPA pazlar)`,
+      cut:`<path d="${pointsToPathD(pts)}" fill="none" stroke="#c00" stroke-width="0.18"/>${cutSvg}`});
+  }
+  return parts;
+}
+// Ring/disc with MAMA mortise holes at radius rIn+t/2 (the wall's neutral/mid
+// line), matching the wall's PAPA tenon positions. The disc/ring's own
+// boundary is extended a rim margin BEYOND the wall's outer surface (rIn+t)
+// so the hole is a true enclosed pocket, not touching the part's own edge
+// (the reference explicitly calls for "chiqib ketmagan, ichki o'yik").
+// holeR: pass a radius to make it a ring with that central opening; 0 = disc.
+function buildMortisePart(rIn,t,tabCount,tabW,holeR,label){
+  const rimMargin=Math.max(3,t);
+  const rWall=rIn+t, rMortise=rIn+t/2, rBoundary=rWall+rimMargin, hole=holeR||0;
+  const boundary = hole
+    ? `<circle cx="${rBoundary}" cy="${rBoundary}" r="${rBoundary}" fill="none" stroke="#c00" stroke-width="0.15"/><circle cx="${rBoundary}" cy="${rBoundary}" r="${hole}" fill="none" stroke="#c00" stroke-width="0.15"/>`
+    : `<circle cx="${rBoundary}" cy="${rBoundary}" r="${rBoundary}" fill="none" stroke="#c00" stroke-width="0.15"/>`;
+  const holes=circleMortiseHoles(rMortise,rBoundary,rBoundary,tabCount,tabW,t);
+  return {w:2*rBoundary,h:2*rBoundary,label,cut:boundary+holes};
+}
+
+function shelfPack(parts,sw,sh,gap){
+  let sheets=[[]],si=0,sx=0,sy=0,rowH=0;
+  parts.forEach(p=>{
+    if(sx>0 && sx+p.w>sw){ sx=0; sy+=rowH+gap; rowH=0; }
+    if(sx===0 && sy+p.h>sh && sy>0){ si++; sheets[si]=sheets[si]||[]; sy=0; rowH=0; }
+    sheets[si].push({...p,x:sx,y:sy}); sx+=p.w+gap; rowH=Math.max(rowH,p.h);
+  });
+  return sheets;
+}
+
+function generateSVG(){
+  const D=+D_.value,H=+H_.value,t=+T_.value,kerf=+KERF_.value,
+        pitch=+PITCH_.value,cutW=+CUTW_.value,cutLen=+CUTLEN_.value,endGap=+ENDGAP_.value,
+        topSup=+TOPSUP_.value,botSup=+BOTSUP_.value,sideSup=+SIDES_.value,
+        fw=+FW_.value,fd=+FD_.value,tol=+TOL_.value,
+        bottom=BOTTOM_.checked,top=TOP_.checked,rw=+RW_.value,clr=+CLR_.value,
+        SW=+SW_.value,SH=+SH_.value,tabPitch=+TABPITCH_.value,tabW=+TABW_.value;
+
+  const rIn=(DIM_OUT.checked ? D-2*t : D)/2;
+  const d0=2*rIn+t; // neutral diameter (d+t) — the wall bends around its own mid-thickness
+  const C=calcCircumference(d0);
+  const tabCount=Math.max(4,Math.round(C/tabPitch));
+  const nSeam=oddCount(H,fw);
+  const depth=Math.max(0.3, fd-kerf+tol);
+  const maxLen=SW-8;
+
+  const wallParts=buildWallPieces(C,H,nSeam,depth,pitch,cutW,cutLen,endGap,topSup,botSup,sideSup,maxLen,tabCount,tabW);
+  let parts=[...wallParts];
+
+  if(bottom) parts=[buildMortisePart(rIn,t,tabCount,tabW,0,'Tub (MAMA pazlar)'), ...parts];
+  if(top){
+    const rHole=Math.max(5,rIn+t-rw);
+    parts.push(buildMortisePart(rIn,t,tabCount,tabW,rHole,'Yuqori halqa (MAMA pazlar)'));
+    if(clr>=0 && rHole>10){
+      const rCap=Math.max(3,rHole-clr);
+      parts.push({w:2*rCap,h:2*rCap,label:'Qopqoq (ixtiyoriy, halqa teshigiga kiradi)',cut:`<circle cx="${rCap}" cy="${rCap}" r="${rCap}" fill="none" stroke="#c00" stroke-width="0.15"/>`});
+    }
+  }
+
+  const sheets=shelfPack(parts,SW,SH,4);
+  const oversized=parts.some(p=>p.w>SW||p.h>SH);
+  const weakJoint = fd < t;
+  const tightBend = rIn < 15*t;
+  let y=0, body='';
+  sheets.forEach((sheet,si)=>{
+    body+=`<g transform="translate(0,${y})"><rect x="0" y="0" width="${SW}" height="${SH}" fill="none" stroke="#999" stroke-dasharray="4,2" stroke-width="0.3"/><text x="4" y="10" font-size="8" fill="#999">List ${si+1}</text>`;
+    body+=`<g id="CUT">`+sheet.map(p=>`<g transform="translate(${p.x},${p.y})">${p.cut}</g>`).join('')+`</g>`;
+    body+=`<g id="MARK">`+sheet.map(p=>`<text x="${p.x+4}" y="${p.y+14}" font-size="7" fill="#000">${p.label}</text>`).join('')+`</g>`;
+    body+=`<g id="ENGRAVE"></g></g>`;
+    y+=SH+15;
+  });
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SW} ${y}" width="${SW}mm" height="${y}mm">${body}</svg>`;
+  preview.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SW} ${y}" width="${Math.min(SW,760)}">${body}</svg>`;
+  dims.textContent=`Ichki d=${(2*rIn).toFixed(1)}mm, Neytral d0=${d0.toFixed(1)}mm, H=${H}mm | Devor uzunligi C=π×d0=${C.toFixed(1)}mm | ${wallParts.length} ta devor bo'lagi | MAMA/PAPA paz=${tabCount} ta (${tabW}×${t}mm) | Shov tishlari=${nSeam} | ${sheets.length} list (${SW}x${SH}mm)`;
+  stats.innerHTML=`<div class="stat"><b>${d0.toFixed(0)}mm</b><span>Neytral diametr d0</span></div><div class="stat"><b>${C.toFixed(1)}mm</b><span>Devor uzunligi C</span></div><div class="stat"><b>${sheets.length}</b><span>Kerakli list soni</span></div>`;
+  warn.textContent = [oversized?"Ba'zi detallar tanlangan list o'lchamidan katta.":'', weakJoint?`Tish chuqurligi (${fd}mm) material qalinligidan (${t}mm) kichik — ulanish zaif bo'lishi mumkin, chuqurlikni oshiring.`:'', tightBend?`Diametr (${(2*rIn).toFixed(0)}mm) material qalinligiga (${t}mm) nisbatan juda kichik — egilishda yorilish xavfi bor. Qator oralig'ini kamaytiring yoki diametrni oshiring (tavsiya: ichki radius ≥ 15×t).`:''].filter(Boolean).join(' ');
+  guide.innerHTML=[
+    bottom?'Tub disk (MAMA pazli) tayyor — chetlarida yopiq to\'rtburchak teshiklar bor.':'',
+    `Devor bo'laklarini tartib bilan (1→${wallParts.length}) yon tomonlaridagi finger-joint tishlari orqali ketma-ket ulang — oxirgisi 1-bo\'lakka qaytib ulanadi, aylana hosil bo'ladi.`,
+    bottom?'Aylantirilgan devorni tub ustiga qo\'ying: devorning pastki chetidagi PAPA tishlari (quloqchalari) tubdagi MAMA teshiklariga tiqib kirsin.':'',
+    top?'Xuddi shunday, devorning yuqori chetidagi PAPA tishlarini yuqori halqadagi MAMA teshiklariga kiritib boring.':'',
+    top?'Agar qopqoq kesilgan bo\'lsa, uni halqa teshigiga bosib kiriting (press-fit).':'',
+    'Barcha ulanishlarni yog\'och yelimi bilan mahkamlang.'
+  ].filter(Boolean).map(s=>`<li>${s}</li>`).join('');
+  renderZoom(t,tabW,depth);
+}
+
+['D','H','T','KERF','PITCH','CUTW','CUTLEN','ENDGAP','TOPSUP','BOTSUP','SIDES','FW','FD','TOL','BOTTOM','TOP','RW','CLR','SW','SH','TABPITCH','TABW'].forEach(id=>window[id+'_']=document.getElementById(id));
+function renderZoom(t,tabW,depth){
+  const S=14; // px per mm
+  const w=(tabW+30)*S, h=(depth+18)*S;
+  const x0=10*S, y0=6*S;
+  // MAMA: enclosed rectangular hole (drawn as a closed rect, red)
+  const mama=`<rect x="${x0}" y="${y0}" width="${tabW*S}" height="${depth*S}" fill="none" stroke="#c00" stroke-width="2"/>`;
+  // PAPA: a tab of the SAME size, shown protruding from a panel edge below it (blue)
+  const py=y0+depth*S+18;
+  const papa=`<rect x="${x0}" y="${py-depth*S}" width="${tabW*S}" height="${depth*S}" fill="none" stroke="#06c" stroke-width="2"/><line x1="${x0-15}" y1="${py}" x2="${x0+tabW*S+15}" y2="${py}" stroke="#666" stroke-width="1.5"/>`;
+  zoom.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${py+40}" width="${Math.min(w,500)}">`+
+    mama+`<text x="${x0}" y="${y0-6}" font-size="11" fill="#c00">MAMA teshik (halqa/tub), ${tabW}×${depth.toFixed(1)}mm</text>`+
+    papa+`<text x="${x0}" y="${py+22}" font-size="11" fill="#06c">PAPA tish (devor cheti), ${tabW}×${depth.toFixed(1)}mm</text></svg>`;
+}
+gen.addEventListener('click',generateSVG);
+generateSVG();
+
+dl.addEventListener('click',async()=>{
+  generateSVG();
+  const svgEl=preview.querySelector('svg');
+  const svgStr=new XMLSerializer().serializeToString(svgEl);
+  try{
+    const downloads=await claude.use('downloads');
+    if(downloads){ await downloads.save({filename:'circular-flex-box.svg', data:new Blob([svgStr],{type:'image/svg+xml'})}); return; }
+  }catch(e){}
+  try{
+    const blob=new Blob([svgStr],{type:'image/svg+xml'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='circular-flex-box.svg';
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ alert('Yuklab olishda xatolik'); }
+});
+</script>
+</body>
+</html>

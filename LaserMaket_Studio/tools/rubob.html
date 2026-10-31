@@ -1,0 +1,2647 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Rubob Laser Model Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* CAD ish stoli: chap — kirish va sozlamalar, markaz — 3D, o'ng — detallar daraxti, past — kesish listlari */
+:root {
+  --bg: #E6E9E7; --panel: #F6F7F6; --panel-2: #EDF0EE; --ink: #18211D; --muted: #5B6862; --line: #CDD4D0;
+  --accent: #0D6B5B; --accent-ink: #FFFFFF; --accent-soft: #D3E9E3; --laser: #D3361C; --warn: #A86400; --warn-bg: #FDF0D8; --err-bg: #FBE3DE; --ok: #1F7A3A;
+  --ply: #E6CFA2; --ply-2: #DABE8A; --bed: #2A322E; --bed-dot: #3B4540; --vp: #DDE2DF; --vp-2: #F3F5F4;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1312; --panel: #171C1A; --panel-2: #1D2321; --ink: #E3EAE6; --muted: #92A099; --line: #2A3330;
+  --accent: #46BEA8; --accent-ink: #062019; --accent-soft: #173A33; --laser: #FF6A4D; --warn: #F0B860; --warn-bg: #3A2C12; --err-bg: #3C1C16; --ok: #6FD08B;
+  --ply: #D6BB88; --ply-2: #C8AB74; --bed: #0A0E0C; --bed-dot: #1E2623; --vp: #121716; --vp-2: #1C2321; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0F1312; --panel: #171C1A; --panel-2: #1D2321; --ink: #E3EAE6; --muted: #92A099; --line: #2A3330;
+  --accent: #46BEA8; --accent-ink: #062019; --accent-soft: #173A33; --laser: #FF6A4D; --warn: #F0B860; --warn-bg: #3A2C12; --err-bg: #3C1C16; --ok: #6FD08B;
+  --ply: #D6BB88; --ply-2: #C8AB74; --bed: #0A0E0C; --bed-dot: #1E2623; --vp: #121716; --vp-2: #1C2321; color-scheme: dark }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 13px/1.45 var(--f-body); }
+.app { padding-inline: 12px; padding-block: 10px 24px; max-width: 1680px; margin: 0 auto; display: grid; gap: 10px; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* yuqori panel */
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; min-width: 0; }
+.brand h1 { font: 800 19px/1 var(--f-display); letter-spacing: -0.01em; margin: 0; }
+.brand h1 b { color: var(--laser); font-weight: 800; }
+.brand span { color: var(--muted); font-size: 12px; }
+.tools { display: flex; flex-wrap: wrap; gap: 6px; }
+.tgroup { display: flex; gap: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.tgroup button { border: 0; border-right: 1px solid var(--line); border-radius: 0; }
+.tgroup button:last-child { border-right: 0; }
+button, .btn { font: 500 12px var(--f-body); color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer; white-space: nowrap; }
+button:hover { background: var(--accent-soft); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button.primary:hover { filter: brightness(1.08); }
+button[aria-pressed=true] { background: var(--ink); color: var(--panel); }
+button:disabled { opacity: .45; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--laser); outline-offset: 1px; }
+
+/* asosiy setka */
+.work { display: grid; grid-template-columns: 310px minmax(0, 1fr) 290px; gap: 10px; align-items: start; }
+@media (max-width: 1180px) { .work { grid-template-columns: 300px minmax(0, 1fr); } .right { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; } }
+@media (max-width: 760px) { .work { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.left { display: grid; gap: 10px; }
+details.sec { border-bottom: 1px solid var(--line); }
+details.sec:last-child { border-bottom: 0; }
+details.sec > summary { list-style: none; cursor: pointer; padding: 9px 12px; font: 600 11px var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+details.sec > summary::-webkit-details-marker { display: none; }
+details.sec > summary::after { content: "+"; font-family: var(--f-mono); }
+details.sec[open] > summary::after { content: "−"; }
+.secbody { padding: 2px 12px 12px; display: grid; gap: 9px; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.row label, .lab { font-weight: 500; }
+.row output, .val { font: 500 12px var(--f-mono); color: var(--accent); }
+.hint { color: var(--muted); font-size: 11.5px; margin: 0; }
+.field { display: grid; gap: 3px; }
+input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+input[type=number], select, input[type=text] { width: 100%; font: 500 12px var(--f-mono); color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; padding: 5px 7px; min-width: 0; }
+input[type=color] { width: 34px; height: 24px; border: 1px solid var(--line); border-radius: 4px; padding: 0; background: none; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg label { flex: 1 1 auto; text-align: center; cursor: pointer; border-right: 1px solid var(--line); }
+.seg label:last-child { border-right: 0; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; padding: 5px 6px; font: 500 12px var(--f-mono); color: var(--muted); }
+.seg input:checked + span { background: var(--accent); color: var(--accent-ink); }
+.seg input:focus-visible + span { outline: 2px solid var(--laser); outline-offset: -2px; }
+.chk { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.chk input { accent-color: var(--accent); margin-top: 2px; }
+.chk i { display: block; font-style: normal; color: var(--muted); font-size: 11.5px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips button { padding: 3px 7px; font-family: var(--f-mono); }
+
+/* yuklash */
+.drop { border: 1.5px dashed var(--line); border-radius: 8px; padding: 14px; text-align: center; cursor: pointer; display: grid; gap: 4px; background: var(--panel-2); }
+.drop.over { border-color: var(--accent); background: var(--accent-soft); }
+.drop strong { font: 700 14px var(--f-display); }
+.imgwrap { position: relative; border-radius: 6px; overflow: hidden; background: var(--bed); }
+.imgwrap canvas { display: block; width: 100%; height: auto; }
+.badge { display: inline-flex; align-items: center; gap: 5px; font: 600 11px var(--f-mono); padding: 2px 7px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); }
+.badge.ok { color: var(--ok); } .badge.warn { color: var(--warn); } .badge.err { color: var(--laser); }
+.aiout { font-size: 12px; background: var(--panel-2); border-radius: 6px; padding: 8px; border: 1px solid var(--line); white-space: pre-wrap; max-height: 160px; overflow: auto; }
+
+/* 3D */
+.center { display: grid; gap: 10px; min-width: 0; }
+.viewport { position: relative; height: clamp(360px, 58vh, 640px); border-radius: 8px; overflow: hidden; border: 1px solid var(--line);
+  background: radial-gradient(120% 100% at 50% 10%, var(--vp-2), var(--vp) 70%); }
+.viewport canvas { display: block; width: 100% !important; height: 100% !important; touch-action: none; }
+.vbar { position: absolute; left: 8px; right: 8px; top: 8px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; pointer-events: none; }
+.vbar > * { pointer-events: auto; }
+.vbar .tgroup { background: var(--panel); }
+.vbar button { background: var(--panel); }
+.explode { position: absolute; left: 8px; bottom: 8px; z-index: 2; display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; width: min(340px, calc(100% - 16px)); }
+.explode label { font-weight: 500; white-space: nowrap; }
+.guide { position: absolute; right: 8px; bottom: 8px; z-index: 2; width: min(360px, calc(100% - 16px)); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.guide h3 { margin: 0; font: 700 15px var(--f-display); }
+.guide .gnav { display: flex; gap: 6px; align-items: center; }
+.guide .gnav .mono { margin-right: auto; color: var(--muted); }
+.vmsg { position: absolute; inset: auto 12px 56px 12px; margin: 0; color: var(--muted); }
+.sel { position: absolute; left: 8px; top: 48px; z-index: 2; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font: 500 12px var(--f-mono); }
+
+/* o'ng panel */
+.right { display: grid; gap: 10px; }
+.ptitle { padding: 9px 12px 6px; font: 600 11px var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; }
+.tree { max-height: 360px; overflow: auto; padding: 0 6px 8px; }
+.tree details { margin: 0 0 2px; }
+.tree summary { cursor: pointer; padding: 4px 6px; border-radius: 4px; font-weight: 600; display: flex; justify-content: space-between; gap: 6px; }
+.tree summary:hover { background: var(--panel-2); }
+.tree summary .mono { color: var(--muted); font-weight: 400; }
+.tree ul { list-style: none; margin: 0; padding: 0 0 4px 12px; }
+.tree li button { width: 100%; text-align: left; display: flex; gap: 8px; border: 0; background: none; padding: 3px 6px; border-radius: 4px; white-space: normal; }
+.tree li button:hover { background: var(--panel-2); }
+.tree li button[aria-current=true] { background: var(--accent-soft); }
+.tree li .mono { color: var(--accent); min-width: 30px; }
+.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 10px; padding: 0 12px 12px; margin: 0; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
+ol.steps { margin: 0; padding: 0 12px 12px; list-style: none; counter-reset: s; display: grid; gap: 6px; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; cursor: pointer; padding: 3px; border-radius: 4px; }
+ol.steps li:hover { background: var(--panel-2); }
+ol.steps li[aria-current=true] { background: var(--accent-soft); }
+ol.steps li::before { content: counter(s); font: 600 11px/20px var(--f-mono); text-align: center; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+ol.steps b { font-weight: 600; }
+ol.steps small { display: block; color: var(--muted); font-family: var(--f-mono); }
+
+/* pastki panel */
+.bottom { display: grid; gap: 0; }
+.btabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px 0; border-bottom: 1px solid var(--line); align-items: end; }
+.btabs button { border-radius: 6px 6px 0 0; border-bottom: 0; }
+.btabs button[aria-selected=true] { background: var(--panel); color: var(--ink); font-weight: 600; position: relative; top: 1px; }
+.btabs .spacer { margin-left: auto; }
+.bpane { padding: 10px; display: grid; gap: 10px; min-width: 0; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 0; }
+.stats div { background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+.stats dt { color: var(--muted); font-size: 11px; }
+.stats dd { margin: 0; font: 600 16px/1.25 var(--f-mono); font-variant-numeric: tabular-nums; }
+.stats dd small { font-size: 11px; color: var(--muted); font-weight: 400; }
+.sheettabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.sheettabs button[aria-selected=true] { background: var(--ink); color: var(--panel); }
+.bed { background-color: var(--bed); background-image: radial-gradient(var(--bed-dot) 1.1px, transparent 1.2px); background-size: 9px 9px; border-radius: 6px; padding: 12px; overflow-x: auto; }
+.bed svg { display: block; width: 100%; min-width: 560px; height: auto; max-height: 70vh; }
+.bed .sheet { fill: var(--ply); }
+.bed .cut { fill: none; stroke-width: 1.2px; vector-effect: non-scaling-stroke; }
+.bed .fine { fill: none; stroke-width: .7px; vector-effect: non-scaling-stroke; }
+.bed .ref { fill: none; stroke-width: .8px; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+.bed .hl { stroke-width: 2.6px; }
+.bed g.part { cursor: pointer; }
+.bed g.part:hover .cut { stroke-width: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--muted); font-size: 12px; }
+.legend span::before { content: ""; display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--c); vertical-align: middle; margin-right: 6px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+th { text-align: left; font: 600 10.5px var(--f-body); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); padding: 0 10px 6px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 6px 10px 6px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.m { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.vlist { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.vlist li { padding: 6px 9px; border-radius: 5px; font-size: 12.5px; display: flex; gap: 8px; align-items: baseline; }
+.vlist li.error { background: var(--err-bg); }
+.vlist li.warn { background: var(--warn-bg); }
+.vlist li.info { background: var(--panel-2); }
+.vlist li b { font: 600 10.5px var(--f-mono); text-transform: uppercase; min-width: 62px; }
+.vlist li.error b { color: var(--laser); } .vlist li.warn b { color: var(--warn); } .vlist li.info b { color: var(--muted); }
+.okline { color: var(--ok); font-weight: 600; }
+.exports { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.status { color: var(--muted); font-size: 12px; }
+
+/* dialog */
+.modal { position: fixed; inset: 0; background: rgba(10, 14, 12, .45); display: grid; place-items: center; z-index: 20; padding: 16px; }
+.dialog { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; width: min(560px, 100%); max-height: 80vh; overflow: auto; padding: 16px; display: grid; gap: 12px; }
+.dialog h2 { margin: 0; font: 700 18px var(--f-display); }
+.dialog .acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+
+.vbar button[aria-pressed=true] { background: var(--ink); color: var(--panel); }
+.secbody { grid-template-columns: minmax(0, 1fr); }
+.field, .row > *, .secbody > * { min-width: 0; }
+select { max-width: 100%; text-overflow: ellipsis; }
+.imgrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+.explode output { white-space: nowrap; min-width: 3.2em; text-align: right; }
+.sheetrow { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.topbar, .tools, .tgroup { min-width: 0; }
+.tgroup { flex-wrap: wrap; }
+@media (max-width: 760px) { .center { order: -1; } .viewport { height: 62vw; min-height: 300px; } .bed svg { min-width: 0; } }
+.dlbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 12px; background: var(--accent-soft); border: 1px solid var(--line); border-radius: 8px; }
+.dlbar strong { font: 700 15px var(--f-display); }
+.dlbar button { font-size: 13px; padding: 8px 12px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><h1>Rubob <b>Laser</b> Model Generator</h1><span>rasmdan yig'iladigan fanera maketigacha</span></div>
+    <div class="tools" role="toolbar" aria-label="Asosiy amallar">
+      <div class="tgroup">
+        <button type="button" class="primary" id="bGenerate">Modelni yaratish</button>
+        <button type="button" id="bRecalc">Qayta hisoblash</button>
+        <button type="button" id="bNest">Avto joylash</button>
+      </div>
+      <div class="tgroup">
+        <button type="button" id="bExplode" aria-pressed="false">Parchalangan ko'rinish</button>
+        <button type="button" id="bGuide" aria-pressed="false">Yig'ish qo'llanmasi</button>
+      </div>
+      <div class="tgroup">
+        <button type="button" id="bSVG">SVG</button>
+        <button type="button" id="bDXF" title="ZIP ichida">DXF</button>
+        <button type="button" id="bCDR" title="CorelDRAW uchun">CDR</button>
+        <button type="button" id="bPDF">PDF</button>
+        <button type="button" id="bPNG">PNG</button>
+        <button type="button" id="bGcode" title="ZIP ichida">G-code</button>
+        <button type="button" id="bZip">Hammasi (ZIP)</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="work">
+    <!-- ============ CHAP ============ -->
+    <aside class="left">
+      <section class="panel">
+        <details class="sec" open>
+          <summary>Rasm</summary>
+          <div class="secbody">
+            <div class="drop" id="drop" tabindex="0" role="button" aria-label="Rubob rasmini yuklang">
+              <strong>Rubob rasmini yuklang</strong>
+              <span class="hint">JPG, PNG, WEBP yoki SVG — sudrab tashlang yoki bosing</span>
+              <input type="file" id="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" hidden>
+            </div>
+            <div id="imgBox" hidden>
+              <div class="imgwrap"><canvas id="imgCanvas" aria-label="Yuklangan rasm va ajratilgan siluet"></canvas></div>
+              <div class="imgrow" style="margin-top:6px"><span id="segBadge" class="badge">—</span><label class="chk" style="font-size:12px"><input type="checkbox" id="ovShow" checked>Siluetni ustiga solish</label></div>
+            </div>
+            <div id="imgCtrls" hidden style="display:grid;gap:9px;grid-template-columns:minmax(0,1fr)">
+              <button type="button" class="primary" id="bAI">AI bilan tanib olish</button>
+              <p class="hint" id="aiNote">Claude rasmga qarab bosh, dasta, korpus chegaralarini, quloqlar va torlar sonini aniqlaydi.</p>
+              <div class="aiout" id="aiOut" hidden></div>
+              <div class="field">
+                <div class="row"><label for="srcSel">Siluet manbai</label></div>
+                <select id="srcSel"><option value="pixel">Piksel bo'yicha ajratilgan siluet</option><option value="ai">AI qayta tiklagan siluet</option></select>
+              </div>
+              <div class="field"><div class="row"><label for="thr">Fon chegarasi</label><output id="thrOut">avto</output></div><input type="range" id="thr" min="0" max="160" value="0"><p class="hint">0 — avtomatik. Fon notekis bo'lsa qo'lda sozlang.</p></div>
+              <div class="field"><div class="row"><label for="uN">Bosh tugashi (ostona)</label><output id="uNOut">—</output></div><input type="range" id="uN" min="4" max="40" step="0.5" value="15"></div>
+              <div class="field"><div class="row"><label for="uNE">Dasta tugashi (korpus boshi)</label><output id="uNEOut">—</output></div><input type="range" id="uNE" min="20" max="90" step="0.5" value="60"></div>
+              <div class="duo"><button type="button" id="bFlip">Bosh/dumni almashtirish</button><button type="button" id="bClear">Rasmni olib tashlash</button></div>
+            </div>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Model</summary>
+          <div class="secbody">
+            <div class="field"><label class="lab" for="shapeSrc">Shakl</label>
+              <select id="shapeSrc"><option value="image" disabled>Yuklangan rasmdan</option><option value="uzbek" selected>O'zbek rubobi (shablon)</option><option value="afghan">Afg'on rubobi (shablon)</option><option value="kashgar">Kashg'ar rubobi (shablon)</option></select></div>
+            <div class="field"><span class="lab">Suvenir o'lchami</span>
+              <div class="chips" id="presets"><button type="button" data-l="300">Mini 300</button><button type="button" data-l="400">Kichik 400</button><button type="button" data-l="500">O'rta 500</button><button type="button" data-l="650">Katta 650</button><button type="button" data-l="custom">Boshqa</button></div></div>
+            <div class="field"><div class="row"><label for="len">Umumiy uzunlik</label><output id="lenOut">500 mm</output></div><input type="range" id="len" min="300" max="1000" step="5" value="500"></div>
+            <div class="field"><div class="row"><label for="bw">Korpus eni</label><output id="bwOut">125 mm</output></div><input type="range" id="bw" min="80" max="300" step="1" value="125"></div>
+            <div class="field"><div class="row"><label for="bd">Korpus chuqurligi</label><output id="bdOut">60 mm</output></div><input type="range" id="bd" min="30" max="150" step="1" value="60"></div>
+            <div class="field"><div class="row"><label for="scale">Masshtab</label><output id="scaleOut">100 %</output></div><input type="range" id="scale" min="10" max="200" step="1" value="100"></div>
+            <label class="chk"><input type="checkbox" id="keep" checked><span><b>Proportsiyani saqlash</b><i>Bitta o'lcham o'zgarsa, qolganlari mutanosib o'zgaradi</i></span></label>
+            <div class="field"><div class="row"><label for="ribs">Korpus qovurg'alari</label><output id="ribsOut">avto</output></div><input type="range" id="ribs" min="7" max="20" step="1" value="7"><p class="hint">Eng chap holat — avto (8–20, korpus o'lchamiga qarab).</p></div>
+            <div class="trio">
+              <div class="field"><label for="pegM">Quloqlar</label><input type="number" id="pegM" min="2" max="8" value="4"></div>
+              <div class="field"><label for="pegS">Yon quloq</label><input type="number" id="pegS" min="0" max="15" value="0"></div>
+              <div class="field"><label for="strN">Torlar</label><input type="number" id="strN" min="2" max="6" value="4"></div>
+            </div>
+            <div class="duo">
+              <div class="field"><label for="fretN">Pardalar</label><input type="number" id="fretN" min="0" max="30" value="14"></div>
+              <div class="field"><label for="rosN">Rozetkalar</label><input type="number" id="rosN" min="0" max="5" value="0"></div>
+            </div>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Korpus qoplamasi</summary>
+          <div class="secbody">
+            <label class="chk"><input type="checkbox" id="cover" checked><span><b>Korpusni yopish (bochka usuli)</b><i>Qovurg'alar ustidan uzun egilgan taxtachalar — oraliqlar ko'rinmaydi</i></span></label>
+            <div class="field"><label class="lab" for="rearSel">Orqa tomoni</label><select id="rearSel"><option value="round" selected>Yumaloq — taxtachalar bilan to'liq yopiladi</option><option value="flat">Tekis orqa panel + yon taxtachalar</option></select></div>
+            <div class="field"><div class="row"><label for="coverN">Taxtachalar soni</label><output id="coverNOut">12</output></div><input type="range" id="coverN" min="8" max="24" step="2" value="12"><p class="hint">Ko'proq taxtacha — silliqroq kosa, lekin ensizroq bo'laklar.</p></div>
+            <div class="field"><span class="lab">Taxtacha qalinligi</span>
+              <div class="seg" role="radiogroup" aria-label="Taxtacha qalinligi">
+                <label><input type="radio" name="ct" value="1"><span>1</span></label><label><input type="radio" name="ct" value="1.5" checked><span>1,5</span></label><label><input type="radio" name="ct" value="2"><span>2</span></label><label><input type="radio" name="ct" value="3"><span>3 mm</span></label>
+              </div><p class="hint">Karkasdan boshqa qalinlik bo'lsa, taxtachalar alohida listga joylanadi.</p></div>
+            <label class="chk"><input type="checkbox" id="neckCover" checked><span><b>Dastani ham yopish</b><i>Grif osti qovurg'alar va taxtachalar bilan yopiq bo'ladi</i></span></label>
+            <label class="chk"><input type="checkbox" id="coverKerf" checked><span><b>Egiluvchan kesik</b><i>Ko'ndalang kesiklar — taxtacha namlamasdan egiladi</i></span></label>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Bezak</summary>
+          <div class="secbody">
+            <div class="seg" role="radiogroup" aria-label="Bezak turi">
+              <label><input type="radio" name="decor" id="dSimple" value="simple"><span>Oddiy</span></label>
+              <label><input type="radio" name="decor" id="dOrn" value="ornament" checked><span>Naqshli (o'zbekcha girih)</span></label>
+            </div>
+            <label class="chk"><input type="checkbox" id="cutThrough"><span><b>Teshib kesish</b><i>Rozetkalar gravyura emas, kesib ochiladi</i></span></label>
+            <label class="chk"><input type="checkbox" id="strEng" checked><span><b>Torlar izi gravyurasi</b></span></label>
+            <label class="chk"><input type="checkbox" id="labels" checked><span><b>Detal ID gravyurasi</b><i>A01, A02… yig'ishda adashmaslik uchun</i></span></label>
+            <label class="chk"><input type="checkbox" id="stand" checked><span><b>Ko'rgazma stendi</b></span></label>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Material</summary>
+          <div class="secbody">
+            <div class="field"><label class="lab" for="mat">Material</label><select id="mat"><option value="plywood">Fanera</option><option value="mdf">MDF</option><option value="acrylic">Akril</option><option value="cardboard">Karton</option></select></div>
+            <div class="field"><span class="lab">Nominal qalinlik</span>
+              <div class="seg" role="radiogroup" aria-label="Nominal qalinlik">
+                <label><input type="radio" name="tn" value="1.5"><span>1,5</span></label><label><input type="radio" name="tn" value="2"><span>2</span></label><label><input type="radio" name="tn" value="3" checked><span>3</span></label><label><input type="radio" name="tn" value="4"><span>4</span></label><label><input type="radio" name="tn" value="5"><span>5 mm</span></label>
+              </div></div>
+            <div class="field"><div class="row"><label for="ta">Haqiqiy (o'lchangan) qalinlik</label><span class="val" id="taOut">3,00 mm</span></div>
+              <input type="number" id="ta" min="0.8" max="8" step="0.05" value="3">
+              <div class="chips" id="taChips"></div>
+              <p class="hint">Barcha tirqishlar shu qalinlikka moslanadi.</p></div>
+            <div class="field"><div class="row"><label for="clr">Tirqish bo'shlig'i</label><output id="clrOut">0,00 mm</output></div><input type="range" id="clr" min="-0.1" max="0.3" step="0.01" value="0"><p class="hint">0 — zich (press-fit). Musbat — bo'shroq.</p></div>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Lazer parametrlari</summary>
+          <div class="secbody">
+            <div class="field"><label class="lab" for="mach">Mashina</label><select id="mach"><option value="diode">Diod lazer</option><option value="co2">CO2 lazer</option><option value="cnc">CNC freza</option></select></div>
+            <div class="field" id="kerfF"><div class="row"><label for="kerf">Kerf (nur eni)</label><output id="kerfOut">0,10 mm</output></div><input type="range" id="kerf" min="0" max="0.5" step="0.01" value="0.1"></div>
+            <div class="field" id="toolF" hidden><label for="tool">Freza diametri, mm</label><input type="number" id="tool" min="0.5" max="6" step="0.1" value="2"><p class="hint">CNC da ichki burchaklar freza radiusida yumaloqlanadi — tirqishlarni egov bilan tozalang.</p></div>
+            <div class="duo">
+              <div class="field"><label for="cutF">Kesish tezligi, mm/min</label><input type="number" id="cutF" min="10" max="20000" value="250"></div>
+              <div class="field"><label for="cutS">Kesish quvvati (S)</label><input type="number" id="cutS" min="0" max="1000" value="1000"></div>
+            </div>
+            <div class="duo">
+              <div class="field"><label for="passes">O'tishlar soni</label><input type="number" id="passes" min="1" max="20" value="3"></div>
+              <div class="field"><label for="engF">Gravyura tezligi</label><input type="number" id="engF" min="10" max="30000" value="2000"></div>
+            </div>
+            <div class="field"><div class="row"><label for="engI">Gravyura chuqurligi / kuchi</label><output id="engIOut">35 %</output></div><input type="range" id="engI" min="5" max="100" value="35"></div>
+            <p class="hint" id="laserNote"></p>
+            <div class="field"><span class="lab">Ko'rinish ranglari</span>
+              <div class="trio">
+                <label class="row"><span>Kesish</span><input type="color" id="cCut" value="#e0301e"></label>
+                <label class="row"><span>Gravyura</span><input type="color" id="cEng" value="#111111"></label>
+                <label class="row"><span>Yordamchi</span><input type="color" id="cRef" value="#1e6fe0"></label>
+              </div></div>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Kesish listi</summary>
+          <div class="secbody">
+            <div class="chips" id="sheetPresets"><button type="button" data-w="300" data-h="200">300×200</button><button type="button" data-w="400" data-h="300">400×300</button><button type="button" data-w="600" data-h="400">600×400</button><button type="button" data-w="600" data-h="900">600×900</button><button type="button" data-w="custom">Boshqa</button></div>
+            <div class="duo"><div class="field"><label for="sw">Eni, mm</label><input type="number" id="sw" min="100" max="3000" value="600"></div><div class="field"><label for="sh">Bo'yi, mm</label><input type="number" id="sh" min="100" max="3000" value="400"></div></div>
+            <div class="duo"><div class="field"><label for="gap">Detallar oralig'i</label><input type="number" id="gap" min="0.5" max="20" step="0.5" value="3"></div><div class="field"><label for="margin">Chet zaxirasi</label><input type="number" id="margin" min="0" max="30" step="1" value="5"></div></div>
+          </div>
+        </details>
+      </section>
+    </aside>
+
+    <!-- ============ MARKAZ ============ -->
+    <main class="center">
+      <div class="viewport" id="vp">
+        <div class="vbar">
+          <div class="tgroup" role="group" aria-label="Ko'rinish">
+            <button type="button" data-view="iso">Izometrik</button><button type="button" data-view="front">Old</button><button type="button" data-view="side">Yon</button><button type="button" data-view="rear">Orqa</button>
+          </div>
+          <div class="tgroup" role="group" aria-label="Holat">
+            <button type="button" id="vAssembled" aria-pressed="true">Yig'ilgan</button><button type="button" id="vExploded" aria-pressed="false">Parchalangan</button>
+          </div>
+          <button type="button" id="vCover" aria-pressed="true">Qoplama</button>
+          <button type="button" id="vSpin" aria-pressed="false">Aylantirish</button>
+        </div>
+        <div class="sel" id="selTag" hidden></div>
+        <div class="explode"><label for="exp">Parchalash</label><input type="range" id="exp" min="0" max="100" value="0"><output id="expOut" class="mono">0 %</output></div>
+        <div class="guide" id="guide" hidden>
+          <div class="gnav"><span class="mono" id="gStep">1 / 10</span><button type="button" id="gPrev">Oldingi</button><button type="button" id="gNext" class="primary">Keyingi</button><button type="button" id="gClose" aria-label="Qo'llanmani yopish">×</button></div>
+          <h3 id="gTitle">—</h3>
+          <p id="gText" style="margin:0"></p>
+          <p class="hint mono" id="gParts"></p>
+        </div>
+        <p class="vmsg" id="vmsg" hidden>3D ko'rinish bu qurilmada ishlamadi. Listlar va fayllar odatdagidek tayyorlanadi.</p>
+      </div>
+    </main>
+
+    <!-- ============ O'NG ============ -->
+    <aside class="right">
+      <section class="panel">
+        <div class="ptitle"><span>Detallar daraxti</span><span class="mono" id="treeCount">0</span></div>
+        <div class="tree" id="tree"></div>
+      </section>
+      <section class="panel">
+        <div class="ptitle"><span>Tanlangan detal</span></div>
+        <dl class="kv" id="partInfo"><dt>—</dt><dd>Daraxtdan yoki 3D/listdan tanlang</dd></dl>
+      </section>
+      <section class="panel">
+        <div class="ptitle"><span>O'lchamlar</span></div>
+        <dl class="kv" id="dims"></dl>
+      </section>
+      <section class="panel">
+        <div class="ptitle"><span>Yig'ish tartibi</span></div>
+        <ol class="steps" id="steps"></ol>
+      </section>
+    </aside>
+  </div>
+
+  <!-- ============ PAST ============ -->
+  <section class="panel bottom">
+    <div class="btabs" role="tablist">
+      <button type="button" role="tab" id="tabSheets" aria-selected="true">Kesish listlari</button>
+      <button type="button" role="tab" id="tabParts" aria-selected="false">Detallar jadvali</button>
+      <button type="button" role="tab" id="tabCheck" aria-selected="false">Tekshiruv</button>
+      <span class="spacer"></span>
+      <span class="status" id="status" aria-live="polite"></span>
+    </div>
+    <div class="bpane" id="paneSheets">
+      <div class="dlbar">
+        <strong>Yuklab olish</strong>
+        <div class="exports">
+          <button type="button" class="primary" data-exp="zip">Hammasi (ZIP)</button>
+          <button type="button" data-exp="svg">SVG</button><button type="button" data-exp="dxf">DXF</button><button type="button" data-exp="cdr">CorelDRAW</button>
+          <button type="button" data-exp="pdf">PDF</button><button type="button" data-exp="png">PNG</button><button type="button" data-exp="gcode">G-code</button>
+        </div>
+      </div>
+      <dl class="stats">
+        <div><dt>Listlar</dt><dd id="stSheets">—</dd></div>
+        <div><dt>Band maydon</dt><dd id="stUsed">—</dd></div>
+        <div><dt>Chiqindi</dt><dd id="stWaste">—</dd></div>
+        <div><dt>Kesish uzunligi</dt><dd id="stCut">—</dd></div>
+        <div><dt>Gravyura uzunligi</dt><dd id="stEng">—</dd></div>
+        <div><dt>Taxminiy vaqt</dt><dd id="stTime">—</dd></div>
+      </dl>
+      <div class="sheetrow"><div class="sheettabs" id="sheetTabs" role="tablist"></div><div class="legend" id="legend"></div></div>
+      <div class="bed" id="bed"></div>
+    </div>
+    <div class="bpane" id="paneParts" hidden>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Detal ID</th><th>Nomi</th><th>Soni</th><th>Material</th><th>Qalinlik</th><th>O'lcham, mm</th><th>Kesish / gravyura</th><th>List</th></tr></thead>
+        <tbody id="partsBody"></tbody>
+      </table></div>
+    </div>
+    <div class="bpane" id="paneCheck" hidden>
+      <div class="row"><span id="checkSum"></span><button type="button" class="primary" id="bFix">AVTO TUZATISH</button></div>
+      <ul class="vlist" id="checkList"></ul>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="copyModal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+    <h2 id="cTitle">Faylni qo'lda saqlash</h2>
+    <p style="margin:0">Bu ko'rinishda fayl to'g'ridan-to'g'ri yuklanmaydi. Quyidagi SVG kodini nusxalang, matn muharririga (Bloknot) qo'ying va <b id="cName">rubob.svg</b> nomi bilan saqlang. Yoki Claude bilan suhbatda "fayllarni yubor" deb yozing.</p>
+    <textarea id="cText" readonly style="width:100%;height:180px;font:11px var(--f-mono);background:var(--panel-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px"></textarea>
+    <div class="acts"><button type="button" id="cClose">Yopish</button><button type="button" class="primary" id="cCopy">Nusxalash</button></div>
+  </div>
+</div>
+<div class="modal" id="modal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <h2 id="mTitle">Eksportdan oldin tekshiruv</h2>
+    <p id="mText" style="margin:0"></p>
+    <ul class="vlist" id="mList"></ul>
+    <div class="acts"><button type="button" id="mCancel">Bekor qilish</button><button type="button" id="mFix">AVTO TUZATISH</button><button type="button" class="primary" id="mGo">Baribir eksport</button></div>
+  </div>
+</div>
+<script src="../vendor/three.min.js"></script>
+<script src="../vendor/OrbitControls.js"></script>
+<script>
+/* ======================================================================
+   Rubob Laser Model Generator — geometriya yadrosi
+   Koordinatalar (mm): x — eni, Y — bo'yi (bosh uchidan dumga), d — chuqurlik
+   (old panel yuzasidan pastga). 2D detal chizmalari mm da.
+   ====================================================================== */
+const DEG = Math.PI / 180;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+function bez(p0, p1, p2, p3, n) {
+  const out = [];
+  for (let i = 1; i <= n; i++) {
+    const t = i / n, u = 1 - t;
+    out.push([u*u*u*p0[0] + 3*u*u*t*p1[0] + 3*u*t*t*p2[0] + t*t*t*p3[0],
+              u*u*u*p0[1] + 3*u*u*t*p1[1] + 3*u*t*t*p2[1] + t*t*t*p3[1]]);
+  }
+  return out;
+}
+function polyArea(p) { let a = 0; for (let i = 0, j = p.length - 1; i < p.length; j = i++) a += (p[j][0] + p[i][0]) * (p[j][1] - p[i][1]); return a / 2; }
+function pip(pt, poly) {
+  let c = false; const [x, y] = pt;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+  }
+  return c;
+}
+function segDist(p, a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy;
+  let t = l2 ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2 : 0; t = clamp(t, 0, 1);
+  return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+}
+function polyDist(p, poly) { let m = Infinity; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) m = Math.min(m, segDist(p, poly[j], poly[i])); return m; }
+function circlePts(cx, cy, r, n = 48) { const o = []; for (let i = 0; i < n; i++) { const a = 2 * Math.PI * i / n; o.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return o; }
+function rdp(pts, eps) {
+  if (pts.length < 3) return pts.slice();
+  let idx = 0, dm = 0;
+  for (let i = 1; i < pts.length - 1; i++) { const d = segDist(pts[i], pts[0], pts.at(-1)); if (d > dm) { dm = d; idx = i; } }
+  if (dm <= eps) return [pts[0], pts.at(-1)];
+  const a = rdp(pts.slice(0, idx + 1), eps), b = rdp(pts.slice(idx), eps);
+  return a.slice(0, -1).concat(b);
+}
+function chaikinClosed(p, it = 2) {
+  for (let k = 0; k < it; k++) {
+    const o = [];
+    for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length]; o.push([0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]], [0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1]]); }
+    p = o;
+  }
+  return p;
+}
+/* Kerf uchun ko'pburchakni siljitish (delta > 0 — tashqariga, maydon kattalashadi) */
+function offsetPoly(pts, delta) {
+  if (!delta) return pts;
+  const n = pts.length, A = polyArea(pts), s = A > 0 ? 1 : -1;
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n], p1 = pts[i], p2 = pts[(i + 1) % n];
+    const e1 = [p1[0] - p0[0], p1[1] - p0[1]], e2 = [p2[0] - p1[0], p2[1] - p1[1]];
+    const l1 = Math.hypot(...e1) || 1, l2 = Math.hypot(...e2) || 1;
+    // tashqi normal (A>0 da y-pastga koordinatalarda o'ngga)
+    const n1 = [s * e1[1] / l1, -s * e1[0] / l1], n2 = [s * e2[1] / l2, -s * e2[0] / l2];
+    let mx = n1[0] + n2[0], my = n1[1] + n2[1];
+    const dot = 1 + n1[0] * n2[0] + n1[1] * n2[1];
+    const f = dot < 0.25 ? 1 / 0.25 : 1 / dot;
+    out.push([p1[0] + mx * delta * f, p1[1] + my * delta * f]);
+  }
+  // yo'nalishni tekshirish
+  if (Math.abs(polyArea(out)) < Math.abs(A) === delta > 0) return pts.map((p, i) => [2 * p[0] - out[i][0], 2 * p[1] - out[i][1]]);
+  return out;
+}
+function interpTable(tab, u) { // tab: [[u, v]] o'sib boruvchi u
+  if (u <= tab[0][0]) return tab[0][1];
+  if (u >= tab.at(-1)[0]) return tab.at(-1)[1];
+  let lo = 0, hi = tab.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (tab[m][0] <= u) lo = m; else hi = m; }
+  const a = tab[lo], b = tab[hi], f = (u - a[0]) / (b[0] - a[0] || 1);
+  return a[1] + (b[1] - a[1]) * f;
+}
+
+/* ======================= SHABLONLAR ======================= */
+const TEMPLATES = {
+  uzbek: { name: "O'zbek rubobi", head: .155, neck: .445, neckW0: .046, neckW1: .058, headW: .052, hornPos: "neck", hornL: .028, hornD: .028,
+    bowlW: .25, aspect: 1.08, joinAngle: -32, depth: .12, pegsMain: 4, pegsSym: 0, frets: 14, strings: 4, rosettes: 0 },
+  afghan: { name: "Afg'on rubobi", head: .16, neck: .28, neckW0: .055, neckW1: .065, headW: .06, hornPos: "waist", chest: .2, chestW: .27, shoulder: .4, waistW: .19,
+    hornL: .025, hornD: .03, bowlW: .29, aspect: 1.25, depth: .16, pegsMain: 3, pegsSym: 11, frets: 4, strings: 3, rosettes: 3 },
+  kashgar: { name: "Kashg'ar rubobi", head: .17, neck: .53, neckW0: .042, neckW1: .053, headW: .045, hornPos: "neck", hornL: .065, hornD: .03,
+    bowlW: .22, aspect: 1, joinAngle: -62, depth: .13, pegsMain: 5, pegsSym: 0, frets: 19, strings: 5, rosettes: 0 }
+};
+
+function hornPts(x0, y0, hL, hD) {
+  // yuqori qirra -> uch -> pastki ilmoq; (x0,y0) — shox boshlanishi
+  const pts = [];
+  pts.push(...bez([x0, y0], [x0 + hL * 0.15, y0 + hD * 0.55], [x0 + hL * 0.6, y0 + hD * 0.05], [x0 + hL, y0 + hD * 0.45], 12));
+  pts.push(...bez([x0 + hL, y0 + hD * 0.45], [x0 + hL * 1.12, y0 + hD * 0.65], [x0 + hL * 1.05, y0 + hD * 1.05], [x0 + hL * 0.88, y0 + hD * 1.0], 6));
+  const end = [x0 + hL * 0.35, y0 + hD * 1.45];
+  pts.push(...bez([x0 + hL * 0.88, y0 + hD], [x0 + hL * 0.62, y0 + hD * 0.95], [x0 + hL * 0.42, y0 + hD * 1.1], end, 8));
+  return pts;
+}
+
+function templateProfile(key) {
+  const T = TEMPLATES[key];
+  const uN = T.head, uNE = T.head + T.neck;
+  const w0 = T.neckW0 / 2, w1 = T.neckW1 / 2;
+  const rx = T.bowlW / 2, ry = rx * T.aspect, yc = 1 - ry;
+  const E = phi => [rx * Math.cos(phi), yc + ry * Math.sin(phi)];
+  const dE = phi => [-rx * Math.sin(phi), ry * Math.cos(phi)];
+  const outer = [[w1, uNE]], core = [[w1, uNE]];
+  let phiJ;
+  if (T.hornPos === "neck") {
+    const h = hornPts(w1, uNE, T.hornL, T.hornD);
+    outer.push(...h);
+    const Cs = h.at(-1);
+    phiJ = T.joinAngle * DEG;
+    const J = E(phiJ), d = dE(phiJ), dl = Math.hypot(...d), k2 = Math.hypot(J[0] - Cs[0], J[1] - Cs[1]) * 0.45;
+    const chest = bez(Cs, [Cs[0] + (J[0] - Cs[0]) * 0.1, Cs[1] + (J[1] - Cs[1]) * 0.4], [J[0] - d[0] / dl * k2, J[1] - d[1] / dl * k2], J, 18);
+    outer.push(...chest);
+    core.push([w1 * 1.08, Cs[1]], ...chest);
+  } else {
+    const uW = uNE + T.chest, S = [T.chestW / 2, uNE + T.shoulder * T.chest], Wp = [T.waistW / 2, uW];
+    const c1 = bez([w1, uNE], [w1 + (S[0] - w1) * 0.2, uNE + (S[1] - uNE) * 0.5], [S[0], S[1] - (S[1] - uNE) * 0.45], S, 12);
+    const c2 = bez(S, [S[0], S[1] + (uW - S[1]) * 0.45], [Wp[0] + (S[0] - Wp[0]) * 0.3, uW - (uW - S[1]) * 0.25], Wp, 10);
+    outer.push(...c1, ...c2); core.push(...c1, ...c2);
+    const h = hornPts(Wp[0], uW, T.hornL, T.hornD);
+    outer.push(...h);
+    const yj = h.at(-1)[1] + 0.012;
+    phiJ = Math.asin(clamp((yj - yc) / ry, -0.97, 0.3));
+    const J = E(phiJ);
+    outer.push(...bez(h.at(-1), [h.at(-1)[0], h.at(-1)[1] + 0.004], [J[0] - 0.004, J[1] - 0.004], J, 6));
+    core.push(J);
+  }
+  for (let i = 1; i <= 48; i++) { const p = E(phiJ + (Math.PI / 2 - phiJ) * i / 48); outer.push(p); core.push(p); }
+  core.at(-1)[0] = 0;
+  const outline = outer.concat(outer.slice(0, -1).reverse().map(([x, y]) => [-x, y]));
+  // core jadvali [u, halfW], u bo'yicha monoton
+  const tab = []; let last = -1;
+  for (const [x, y] of core) if (y > last + 1e-6) { tab.push([y, Math.max(0, x)]); last = y; }
+  return { source: "template", key, name: T.name, outline, core: tab, uN, uNE, w0, w1, headW: T.headW / 2,
+    meta: { pegsMain: T.pegsMain, pegsSym: T.pegsSym, frets: T.frets, strings: T.strings, depth: T.depth, rosettes: T.rosettes } };
+}
+
+/* ======================= ID GRAVYURA SHRIFTI ======================= */
+const GLYPH = {
+  A: [[[0, 1], [0.3, 0], [0.6, 1]], [[0.12, 0.6], [0.48, 0.6]]],
+  0: [[[0, 0], [0.6, 0], [0.6, 1], [0, 1], [0, 0]]], 1: [[[0.1, 0.2], [0.3, 0], [0.3, 1]], [[0.1, 1], [0.5, 1]]],
+  2: [[[0, 0], [0.6, 0], [0.6, 0.5], [0, 0.5], [0, 1], [0.6, 1]]], 3: [[[0, 0], [0.6, 0], [0.6, 1], [0, 1]], [[0.1, 0.5], [0.6, 0.5]]],
+  4: [[[0, 0], [0, 0.55], [0.6, 0.55]], [[0.45, 0], [0.45, 1]]], 5: [[[0.6, 0], [0, 0], [0, 0.5], [0.6, 0.5], [0.6, 1], [0, 1]]],
+  6: [[[0.6, 0], [0, 0], [0, 1], [0.6, 1], [0.6, 0.5], [0, 0.5]]], 7: [[[0, 0], [0.6, 0], [0.2, 1]]],
+  8: [[[0, 0], [0.6, 0], [0.6, 1], [0, 1], [0, 0]], [[0, 0.5], [0.6, 0.5]]], 9: [[[0.6, 0.5], [0, 0.5], [0, 0], [0.6, 0], [0.6, 1], [0, 1]]]
+};
+function textPaths(str, cx, cy, h) {
+  const adv = 0.85 * h, wTot = adv * str.length - 0.25 * h, out = [];
+  let x = cx - wTot / 2;
+  for (const ch of str) { for (const s of GLYPH[ch] || []) out.push({ pts: s.map(([a, b]) => [x + a * h, cy - h / 2 + b * h]), open: true }); x += adv; }
+  return { subs: out, w: wTot };
+}
+
+/* ======================= BEZAK (o'zbekcha girih) ======================= */
+function starPaths(cx, cy, r, n = 8) { // 8 qirrali yulduz (ikki kvadrat) + ichki doira
+  const subs = [];
+  for (let k = 0; k < 2; k++) { const s = []; for (let i = 0; i < 4; i++) { const a = (k * 45 + i * 90 + 22.5) * DEG; s.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } subs.push({ pts: s }); }
+  subs.push({ pts: circlePts(cx, cy, r * 0.42, 32) });
+  const s2 = []; for (let i = 0; i < 2 * n; i++) { const a = (i * 180 / n) * DEG, rr = i % 2 ? r * 0.62 : r * 0.92; s2.push([cx + rr * Math.cos(a), cy + rr * Math.sin(a)]); }
+  subs.push({ pts: s2 });
+  return subs;
+}
+function diamondChain(x0, y0, x1, y1, size) { // ikki nuqta orasida rombchalar zanjiri
+  const L = Math.hypot(x1 - x0, y1 - y0), n = Math.floor(L / (size * 1.6)); if (n < 1) return [];
+  const ux = (x1 - x0) / L, uy = (y1 - y0) / L, px = -uy, py = ux, subs = [];
+  for (let i = 0; i < n; i++) {
+    const c = (i + 0.5) * L / n, cx = x0 + ux * c, cy = y0 + uy * c, a = size * 0.7, b = size * 0.42;
+    subs.push({ pts: [[cx - ux * a, cy - uy * a], [cx + px * b, cy + py * b], [cx + ux * a, cy + uy * a], [cx - px * b, cy - py * b]] });
+  }
+  return subs;
+}
+
+/* ======================= ASOSIY KONSTRUKTOR ======================= */
+function design(prm, prof) {
+  const W = [];                    // ogohlantirishlar
+  const parts = [];
+  const slots = [];                 // validatsiya uchun
+  const joints = [];
+  const t = prm.tActual, ts = t + prm.clearance;            // tirqish eni
+  const L = prm.length * prm.scale / 100;
+  const coreMax = Math.max(...prof.core.map(c => c[1]));
+  const fx = (prm.bodyW * prm.scale / 100) / (2 * coreMax * L);
+  const D = prm.bodyD * prm.scale / 100;
+  const yN = prof.uN * L, yNE = prof.uNE * L, Lb = L - yNE;
+  const fxAt = Y => lerp(1, fx, clamp((Y - yNE) / (0.18 * Lb), 0, 1));
+  const front = prof.outline.map(([x, u]) => [x * L * fxAt(u * L), u * L]);
+  const frontHalf = Y => { let m = Infinity; for (let i = 0, j = front.length - 1; i < front.length; j = i++) { const [xi, yi] = front[i], [xj, yj] = front[j]; if ((yi > Y) !== (yj > Y)) { const x = xi + (Y - yi) / (yj - yi) * (xj - xi); if (x > 0 && x < m) m = x; } } return m === Infinity ? 0 : m; };
+  const fhTab = []; for (let i = 0; i <= 400; i++) { const Y = yNE + 0.3 + (L - yNE - 0.6) * i / 400; fhTab.push([Y, frontHalf(Y)]); }
+  const Wc = Y => Math.max(0, Math.min(interpTable(prof.core, Y / L) * L * fxAt(Y), interpTable(fhTab, Y) - 0.8));
+  const wN = Y => lerp(prof.w0, prof.w1, clamp((Y - yN) / (yNE - yN), 0, 1)) * L;
+  const dnE = clamp(1.25 * wN(yNE), 2 * t + 4, D * 0.9);
+  const dn = Y => lerp(0.82 * dnE, dnE, clamp((Y - yN) / (yNE - yN), 0, 1));
+  // tiklangan chuqurlik: kesim kengligiga mutanosib (shar/nok shakli), dasta tutashuvida dasta chuqurligi
+  let WcMax = 0, yMax = yNE; for (let i = 0; i <= 200; i++) { const Y = yNE + Lb * i / 200, w = Wc(Y); if (w > WcMax) { WcMax = w; yMax = Y; } }
+  const Dp = Y => { if (Y >= L) return 0; const a = D * Wc(Y) / WcMax, b = dnE * clamp(1 - (Y - yNE) / (0.3 * Lb), 0, 1); return Math.min(D, Math.max(a, b)); };
+  const Dk = 0.86 * D;
+  const tgc = prm.cover ? prm.coverT : 0;            // qoplama qalinligi — karkas shuncha ichkariga
+  const Wci = Y => Math.max(0, Wc(Y) - tgc), Dpi = Y => Math.max(0, Dp(Y) - tgc);
+  const pe = 2.4;
+  const secX = (w, Dl, d) => w * Math.pow(Math.max(0, 1 - Math.pow(Math.min(1, d / Dl), pe)), 1 / pe);
+  const rw = clamp(0.12 * D, Math.max(2.6 * t, 7), 4 * t + 3);
+  const tabW = clamp(rw * 0.45, 3, 10);
+  const armOff = rw * 0.56;
+  const meta = Object.assign({}, prof.meta, prm.override || {});
+  const nStr = clamp(Math.round(meta.strings || 4), 2, 6);
+
+  const add = (o) => { o.paths = o.paths || []; parts.push(o); return o; };
+  const addSlot = (part, poly, need, label) => slots.push({ part, poly, need, w: ts, label });
+
+
+  /* ---------- Qovurg'alar joylashuvi ---------- */
+  const gus = clamp(0.7 * dnE, 6, 40);
+  const yA = yNE + Math.max(gus + t + 3, 0.05 * Lb);
+  let yB = L - 0.05 * Lb;
+  while (yB > yA && (Wci(yB) < rw + 1.5 * t + 5 || Dpi(yB) < rw + 4)) yB -= 0.5;
+  let nR = prm.ribs === "auto" ? clamp(Math.round((yB - yA) / Math.max(16, 6 * t)) + 1, 8, 20) : clamp(+prm.ribs, 4, 20);
+  const minPitch = t + 6;
+  if ((yB - yA) / (nR - 1) < minPitch) { const nn = Math.max(4, Math.floor((yB - yA) / minPitch) + 1); W.push({ code: "ribs", msg: `Qovurg'alar juda zich — ${nR} o'rniga ${nn} ta qilindi.` }); nR = nn; }
+  const ribY = []; for (let i = 0; i < nR; i++) ribY.push(lerp(yA, yB, i / (nR - 1)));
+  if (prm.cover) ribY.unshift(yNE + t / 2);           // korpusning dasta tomonidagi yopiq old devori
+
+  /* ---------- Bosh (quloq qutisi) o'lchamlari ---------- */
+  const alpha = (prm.headAngle ?? 12) * DEG, ca = Math.cos(alpha), sa = Math.sin(alpha);
+  const headLen = (prof.uN) * L;
+  const Lh = headLen * 0.8;
+  const m = clamp(Math.round((2 * prof.headW * L - 3 * t) / (2 * t)), 1, 4); // oraliq qatlamlari
+  const boxW = 3 * t + 2 * m * t;
+  const hs = Math.max(4, 0.22 * dnE);
+  const nPeg = clamp(Math.round(meta.pegsMain || 4), 2, 8);
+  const dh0 = Math.max(0.95 * dn(yN), hs + t + 4), dh1 = Math.max(0.8 * dh0, hs + t + 4);
+  const dh = u => dh0 + (dh1 - dh0) * u / Lh;
+  const P = (u, v) => [yN - u * ca + v * sa, u * sa + v * ca];
+  const pegV = u => (dh(u) - hs) / 2;
+  const u0 = Math.max(0.12 * Lh, t + 3), gapP = Math.max((Lh * 0.88 - u0) / Math.max(1, nPeg - 1), t + 3);
+  const pegU = []; for (let i = 0; i < nPeg; i++) pegU.push(u0 + i * gapP);
+  const LhUse = Math.max(Lh, pegU.at(-1) + t / 2 + 4);
+  if (LhUse > Lh + 0.5) W.push({ code: "head", msg: "Quloqlar ko'p — bosh qutisi biroz uzaytirildi." });
+  const rf = 0.6 * dh1, cuF = LhUse + 0.9 * rf, cvF = dh1 / 2;
+  const finial = []; for (let a = 230; a <= 490; a += 10) finial.push([cuF + rf * Math.cos(a * DEG), cvF + rf * Math.sin(a * DEG)]);
+  const sq = (Y, d, rot) => { const h = ts / 2, pts = [[-h, -h], [h, -h], [h, h], [-h, h]]; return pts.map(([a, b]) => rot ? [Y + a * ca + b * sa, d - a * sa + b * ca] : [Y + a, d + b]); };
+  const pegHoleHead = u => { const [Y, d] = P(u, pegV(u)); return { pts: sq(Y, d, true) }; };
+
+  /* ---------- Dasta yonlari va simpatik quloqlar ---------- */
+  const wAvg = (wN(yN) + wN(yNE)) / 2;
+  const neckCover = !!(prm.cover && prm.neckCover !== false);
+  const tgn = neckCover ? prm.coverT : 0;
+  const dnI = Y => dn(Y) - tgn;                              // qoplama ostidagi ichki chuqurlik
+  const sideOK = neckCover ? wAvg - tgn > t + 3 : wAvg - 1.5 * t >= 1.2;
+  const nSym = sideOK ? clamp(Math.round(meta.pegsSym || 0), 0, 15) : 0;
+  if (!sideOK && (meta.pegsSym || 0) > 0) W.push({ code: "sym", msg: "Dasta tor — yon quloqlar qo'shilmadi." });
+  let ds = Y => Math.max(3, dn(Y) * Math.sqrt(Math.max(0, 1 - ((wN(Y) - t) / wN(Y)) ** 2)));
+  if (nSym) { const need = ts + 5; const f0 = ds; ds = Y => Math.max(f0(Y), need); }
+  const symY = []; for (let i = 0; i < nSym; i++) symY.push(lerp(yN + 0.18 * (yNE - yN), yNE - 0.12 * (yNE - yN), nSym === 1 ? 0.5 : i / (nSym - 1)));
+  const MnN = clamp(Math.round((prm.coverN || 12) / 4), 2, 6);
+  const neckPt = (Y, f) => { // dasta tashqi ellipsi bo'ylab yoy ulushi f dagi nuqta [x, d]
+    const w = wN(Y), d = dn(Y), n = 60, acc = [0]; let prev = [w, 0];
+    for (let i = 1; i <= n; i++) { const th = Math.PI / 2 * i / n, q = [w * Math.cos(th), d * Math.sin(th)]; acc.push(acc[i - 1] + Math.hypot(q[0] - prev[0], q[1] - prev[1])); prev = q; }
+    const S = acc[n] * f; let i = 1; while (i < n && acc[i] < S) i++;
+    const th = Math.PI / 2 * (i - 1 + (S - acc[i - 1]) / ((acc[i] - acc[i - 1]) || 1)) / n; return [w * Math.cos(th), d * Math.sin(th)];
+  };
+  // yon quloq — grif ostidagi birinchi taxtachaning o'rtasidan chiqadi
+  const symD = Y => neckCover ? neckPt(Y, 0.5 / MnN)[1] : ds(Y) / 2;
+  const symX = Y => neckPt(Y, 0.5 / MnN)[0];
+  // dasta qovurg'alari (qoplama bo'lsa): ostona yonida yopiq devor + teng oraliqda
+  const neckRibY = [];
+  if (neckCover) {
+    neckRibY.push(yN + t / 2);
+    const nk = clamp(Math.round((yNE - yN) / 45), 2, 9);
+    for (let i = 1; i <= nk; i++) {
+      let Y = lerp(yN + t / 2, yNE - 12, i / (nk + 0.5));
+      for (let k = 0; k < 12 && symY.some(q => Math.abs(q - Y) < ts + 4); k++) Y += 2.5;
+      if (Y < yNE - 8) neckRibY.push(Y);
+    }
+  }
+
+  /* ---------- O'zak (markaziy profil) ---------- */
+  const tabL = Math.max(6, 2.5 * t);
+  const spineTopTabs = [];          // [Y, which] — old panel / grif
+  for (let i = 0; i < ribY.length - 1; i += 2) spineTopTabs.push([(ribY[i] + ribY[i + 1]) / 2, "front"]);
+  const nFT = Math.max(2, Math.round((yNE - yN) / 80) + 1);
+  for (let i = 0; i < nFT; i++) spineTopTabs.push([lerp(yN + 0.2 * (yNE - yN), yNE - 0.12 * (yNE - yN), nFT === 1 ? .5 : i / (nFT - 1)), "grif"]);
+  // orqa panel uchun tekis hududlar (bir nechta bo'lishi mumkin — masalan, belli Afg'on korpusi)
+  const flatRegions = [];
+  const roundBack = !!(prm.cover && !prm.rearFlat);
+  { let a = null; const n = 400;
+    for (let i = 0; i <= n; i++) {
+      const Y = yNE + Lb * i / n, ok = roundBack ? Dpi(Y) > Dk + t + 0.3 && secX(Wci(Y), Dpi(Y), Dk + t) >= ts + 5 : Dpi(Y) > Dk + 0.3 && secX(Wci(Y), Dpi(Y), Dk) >= ts + 5;
+      if (ok && a === null) a = Y;
+      if ((!ok || i === n) && a !== null) { if (Y - a >= 3 * tabL) flatRegions.push([a, Y]); a = null; }
+    } }
+  const inRegion = Y => flatRegions.findIndex(([a, b]) => Y >= a + ts && Y <= b - ts);
+  const flatY = ribY.filter(Y => inRegion(Y) >= 0);
+  const spineBotTabs = [];
+  flatRegions.forEach((rg, ri) => { const ys = flatY.filter(Y => inRegion(Y) === ri); for (let i = 0; i < ys.length - 1; i += 2) spineBotTabs.push((ys[i] + ys[i + 1]) / 2); });
+  const hasRear = flatY.length >= 2;
+  if (!hasRear) W.push({ code: "rear", msg: "Korpus juda sayoz — orqa panel uchun tekis joy qolmadi, orqa panel qo'shilmadi." });
+  const dBot = Y => (hasRear ? Math.min(Dpi(Y), Dk) : Dpi(Y));
+
+  const panelHalfAt = Y => roundBack ? secX(Wci(Y), Dpi(Y), Dk + t) : prm.cover ? secX(Wc(Y), Dp(Y), Dk + t) : secX(Wci(Y), Dpi(Y), Dk);
+  const ribInfo = ribY.map(Y => {
+    const w = Wci(Y), Dl = Dpi(Y), dOut = dBot(Y);
+    const wi = w - rw, Di = Dl - rw, dIn = Math.min(Di, (hasRear ? Dk : Dl) - rw);
+    const band = wi > 1.5 * t + 3 && dIn > 4;
+    const mid = band ? (dIn + dOut) / 2 : dOut / 2;
+    // old panelga kiradigan tish o'rni: panel chetidan kamida 1,6 mm ichkarida
+    const x0 = band ? w - armOff : w / 2, xMin = band ? wi + tabW / 2 + 0.5 : tabW / 2 + ts / 2 + 1.5;
+    let tabX = null;
+    for (let x = x0; x >= xMin; x -= 0.25) {
+      const sl = rect(x - (tabW + prm.clearance) / 2, Y - ts / 2, x + (tabW + prm.clearance) / 2, Y + ts / 2);
+      if (Math.min(...sl.map(q => polyDist(q, front))) >= Math.max(1.8, 0.4 * t + 0.3) && sl.every(q => pip(q, front))) { tabX = x; break; }
+    }
+    let xk = hasRear && inRegion(Y) >= 0 ? secX(w, Dl, Dk) : 0, xb = 0;
+    if (xk > 2 * tabW) { // orqa panelga kiradigan tish panel chetidan kamida 2 mm ichkarida
+      xb = Math.min(xk * 0.5, panelHalfAt(Y) - tabW / 2 - 2);
+      if (xb < tabW / 2 + ts / 2 + 1.5) xk = 0;
+    }
+    return { Y, w, Dl, dOut, wi, Di, dIn, band, mid, tabX, xk, xb };
+  });
+  // orqa panel(lar) konturi oldindan — tishlar faqat panel ichiga to'liq tushsa qo'yiladi
+  const panelPolys = flatRegions.map(([y0, y1]) => {
+    let ys = []; for (let i = 0; i <= 120; i++) ys.push(lerp(y0, y1, i / 120));
+    if (prm.cover) ys = ys.filter(Y => roundBack ? Dpi(Y) > Dk + t + 0.2 : Dp(Y) > Dk + t + 0.2);
+    if (ys.length < 6) return null;
+    const right = ys.map(Y => [Math.max(0.6, panelHalfAt(Y)), Y]);
+    return right.concat(right.slice().reverse().map(([x, y]) => [-x, y]));
+  });
+  const fitsPanel = (Y, rectPts) => { const ri = inRegion(Y), poly = ri >= 0 ? panelPolys[ri] : null; return !!poly && rectPts.every(q => pip(q, poly) && polyDist(q, poly) >= Math.max(1.8, 0.4 * t + 0.3)); };
+  ribInfo.forEach(r => {
+    if (!(r.xk > 2 * tabW)) return;
+    if (![-r.xb, r.xb].every(x => fitsPanel(r.Y, rect(x - (tabW + prm.clearance) / 2, r.Y - ts / 2, x + (tabW + prm.clearance) / 2, r.Y + ts / 2)))) r.xk = 0;
+  });
+  for (let i = spineBotTabs.length - 1; i >= 0; i--) { const Y = spineBotTabs[i]; if (!fitsPanel(Y, rect(-ts / 2, Y - (tabL + prm.clearance) / 2, ts / 2, Y + (tabL + prm.clearance) / 2))) spineBotTabs.splice(i, 1); }
+
+  let spineSplit = null;
+  {
+    const Yend = L - Math.max(t, 2);
+    const headMinY = yN - LhUse * ca - 2 * rf;
+    if (prm.maxPart && Yend - headMinY > prm.maxPart) {
+      let ys = clamp((headMinY + Yend) / 2, yN + 25, yNE - 15);
+      for (let k = 0; k < 20 && symY.some(Y => Math.abs(Y - ys) < 2 * ts + 6); k++) ys += 4;
+      spineSplit = ys;
+      if (Math.max(ys - headMinY, Yend - ys) > prm.maxPart) W.push({ code: "split", msg: "O'zak ikkiga bo'lingan bo'lsa ham listga sig'maydi — kattaroq list tanlang." });
+      else W.push({ code: "split", msg: "O'zak listga sig'magani uchun dasta qismida jumboq-ulanish bilan ikkiga bo'lindi." });
+    }
+    const top = [];
+    const rk = spineSplit ? clamp(0.28 * dn(spineSplit), 2.5, 7) : 0;
+    const tabsT = spineTopTabs.map(([Y]) => Y).filter(Y => !spineSplit || Math.abs(Y - spineSplit) > tabL / 2 + 2.5 * rk + 3).sort((a, b) => a - b);
+    spineTopTabs.splice(0, spineTopTabs.length, ...spineTopTabs.filter(([Y]) => tabsT.includes(Y)));
+    top.push([yN, 0]);
+    for (const Y of tabsT) top.push([Y - tabL / 2, 0], [Y - tabL / 2, -t], [Y + tabL / 2, -t], [Y + tabL / 2, 0]);
+    top.push([Yend, 0]);
+    const bot = [];
+    const events = [];
+    ribInfo.forEach(r => events.push({ Y: r.Y, type: "slot", r }));
+    spineBotTabs.forEach(Y => events.push({ Y, type: "tab" }));
+    events.sort((a, b) => b.Y - a.Y);
+    const N = 220;
+    let Yprev = Yend;
+    const emitUntil = Ystop => {
+      const n = Math.max(2, Math.ceil((Yprev - Ystop) / ((Yend - yNE) / N)));
+      for (let i = 0; i <= n; i++) { const Y = Yprev - (Yprev - Ystop) * i / n; bot.push([Y, dBot(Y)]); }
+      Yprev = Ystop;
+    };
+    bot.push([Yend, Math.max(0.5, dBot(Yend))]);
+    for (const e of events) {
+      if (e.type === "slot") {
+        const h = ts / 2; emitUntil(e.Y + h);
+        bot.push([e.Y + h, e.r.mid], [e.Y - h, e.r.mid]);
+        Yprev = e.Y - h; bot.push([Yprev, dBot(Yprev)]);
+      } else {
+        const h = tabL / 2; emitUntil(e.Y + h);
+        bot.push([e.Y + h, Dk + t], [e.Y - h, Dk + t]);
+        Yprev = e.Y - h; bot.push([Yprev, dBot(Yprev)]);
+      }
+    }
+    emitUntil(yNE);
+    { // dasta pastki qirrasi (qoplama bo'lsa ichkariga), dasta qovurg'alari uchun tirqishlar
+      const nrs = neckRibY.slice().sort((a, b) => b - a), h = ts / 2;
+      let Yp = yNE; bot.push([yNE, dnI(yNE)]);
+      const run = Ys => { const n = Math.max(2, Math.ceil((Yp - Ys) / 8)); for (let i = 1; i <= n; i++) { const Y = Yp - (Yp - Ys) * i / n; bot.push([Y, dnI(Y)]); } Yp = Ys; };
+      for (const Yr of nrs) { if (Yr + h > yNE - 0.5 || Yr - h < yN) continue; run(Yr + h); bot.push([Yr + h, dnI(Yr) / 2], [Yr - h, dnI(Yr) / 2]); Yp = Yr - h; bot.push([Yp, dnI(Yp)]); }
+      run(yN);
+    }
+    const head = [];
+    for (let i = 0; i <= 12; i++) { const u = LhUse * i / 12; head.push(P(u, dh(u))); }
+    for (let i = finial.length - 1; i >= 0; i--) head.push(P(...finial[i]));
+    head.push(P(LhUse, 0));
+    const holes = [];
+    pegU.forEach(u => holes.push(pegHoleHead(u)));
+    symY.forEach(Y => holes.push({ pts: sq(Y, symD(Y), false) }));
+    const labelAt = (Y) => ({ at: [Y, dn(Y) / 2], h: Math.min(4, dn(yN) * 0.4) });
+    if (!spineSplit) {
+      add({ key: "spine", name: "O'zak (markaziy qovurg'a)", cat: "support", step: 2, place: { type: "side", x: 0 }, explode: [0, -0.15, 0],
+        paths: [{ kind: "cut", subs: [{ pts: [...top, ...bot, ...head] }, ...holes] }], label: labelAt(lerp(yN, yNE, 0.5)) });
+    } else {
+      const ys = spineSplit, db = dn(ys), rn = rk * 0.62, cy = db / 2, cx = ys + rk * 0.85;
+      const a1 = Math.atan2(-rn, ys - cx), a2 = Math.atan2(rn, ys - cx);
+      const knob = [[ys, 0], [ys, cy - rn]];
+      // a1 dan (pastga emas) qarama-qarshi tomon orqali a2 gacha
+      for (let i = 0; i <= 24; i++) { const a = a1 + (a2 - a1) * i / 24; knob.push([cx + rk * Math.cos(a), cy + rk * Math.sin(a)]); }
+      knob.push([ys, cy + rn], [ys, db]);
+      const topA = top.filter(p => p[0] < ys), topB = top.filter(p => p[0] > ys);
+      const botA = bot.filter(p => p[0] < ys), botB = bot.filter(p => p[0] > ys);
+      const pieceA = [...topA, ...knob, ...botA, ...head];
+      const pieceB = [[ys, 0], ...topB, ...botB, ...knob.slice().reverse()];
+      const hA = holes.filter(h => h.pts.every(q => q[0] < ys)), hB = holes.filter(h => h.pts.every(q => q[0] > ys));
+      add({ key: "spine", name: "O'zak — korpus qismi", cat: "support", step: 2, place: { type: "side", x: 0 }, explode: [0, -0.15, 0],
+        paths: [{ kind: "cut", subs: [{ pts: pieceB }, ...hB] }], label: labelAt(lerp(ys, yNE, 0.5)) });
+      add({ key: "spineNeck", name: "O'zak — dasta va bosh qismi", cat: "neck", step: 5, place: { type: "side", x: 0 }, explode: [0, -0.15, -0.25],
+        paths: [{ kind: "cut", subs: [{ pts: pieceA }, ...hA] }], label: labelAt(lerp(yN, ys, 0.5)) });
+      joints.push([parts.length - 1, parts.length - 2, "slot"]);
+    }
+    const sp = parts.find(p => p.key === "spine");
+    ribInfo.forEach((r, i) => addSlot(sp, rect(r.Y - ts / 2, r.mid, r.Y + ts / 2, r.dOut), t, `qovurg'a ${i + 1}`));
+  }
+  const spineIdx = parts.findIndex(p => p.key === "spine");
+
+  /* ---------- Qovurg'alar ---------- */
+  ribInfo.forEach((r, i) => {
+    const N = 44, pts = [];
+    const outerAt = th => { const c = Math.cos(th), s = Math.sin(th); return [r.w * Math.sign(c) * Math.pow(Math.abs(c), 2 / pe), Math.min(r.Dl * Math.pow(Math.abs(s), 2 / pe), r.dOut)]; };
+    const innerAt = th => { const c = Math.cos(th), s = Math.sin(th); return [r.wi * Math.sign(c) * Math.pow(Math.abs(c), 2 / pe), Math.min(r.Di * Math.pow(Math.abs(s), 2 / pe), r.dIn)]; };
+    const tabTop = (xc) => [[xc - tabW / 2, 0], [xc - tabW / 2, -t], [xc + tabW / 2, -t], [xc + tabW / 2, 0]];
+    const h = ts / 2;
+    const tt = xc => r.tabX === null ? [] : tabTop(xc);
+    if (r.band) {
+      const armC = r.tabX ?? 0;
+      pts.push([-r.w, 0], ...tt(-armC), [-r.wi, 0]);
+      // ichki egri chiziq (chapdan o'ngga), markazda o'zak tirqishi
+      let slotDone = false;
+      for (let j = 1; j < N; j++) {
+        const q = innerAt(Math.PI - Math.PI * j / N);
+        if (!slotDone && q[0] > -h) {
+          pts.push([-h, Math.min(r.Di * Math.pow(Math.max(0, 1 - Math.pow(h / r.wi, pe)), 1 / pe), r.dIn)], [-h, r.mid], [h, r.mid], [h, Math.min(r.Di * Math.pow(Math.max(0, 1 - Math.pow(h / r.wi, pe)), 1 / pe), r.dIn)]);
+          slotDone = true;
+        }
+        if (Math.abs(q[0]) <= h) continue;
+        pts.push(q);
+      }
+      pts.push([r.wi, 0], ...tt(armC), [r.w, 0]);
+    } else {
+      pts.push([-r.w, 0], ...tt(-(r.tabX ?? 0)), [-h, 0], [-h, r.mid], [h, r.mid], [h, 0], ...tt(r.tabX ?? 0), [r.w, 0]);
+    }
+    // tashqi egri chiziq (o'ngdan chapga), orqa panel tishlari bilan
+    const bt = r.xk > 2 * tabW ? [r.xb, -r.xb] : [];
+    let bi = 0;
+    for (let j = 1; j < N; j++) {
+      const q = outerAt(Math.PI * j / N);
+      while (bi < bt.length && q[0] < bt[bi] + tabW / 2) {
+        const xc = bt[bi];
+        pts.push([xc + tabW / 2, r.dOut], [xc + tabW / 2, r.dOut + t], [xc - tabW / 2, r.dOut + t], [xc - tabW / 2, r.dOut]);
+        bi++;
+      }
+      if (bt.some(xc => Math.abs(q[0] - xc) < tabW / 2 && q[1] >= r.dOut - 1e-6)) continue;
+      pts.push(q);
+    }
+    const subs = [{ pts }];
+    if (!r.band) { // yaxlit qovurg'a — yengillatish teshigi
+      const hr = Math.min(r.w * 0.28, r.dOut * 0.28);
+      const cc = [[-r.w * 0.45, r.dOut * 0.45], [r.w * 0.45, r.dOut * 0.45]], rr = hr * 0.7;
+      if (hr > Math.max(t, 4) && cc.every(c => pip(c, pts) && polyDist(c, pts) - rr >= Math.max(2.5, 0.7 * t) && Math.abs(c[0]) - rr >= ts / 2 + 2.5)) cc.forEach(c => subs.push({ circle: [c[0], c[1], rr] }));
+    }
+    const lab = r.band ? [-(r.w + r.wi) / 2 * 0.62, (r.Di + r.Dl) / 2 * 0.72] : [0, r.mid + (r.dOut - r.mid) * 0.5];
+    const p = add({ key: "rib", idx: i, name: prm.cover && i === 0 ? "Korpus old devori (tovon)" : `Korpus qovurg'asi ${prm.cover ? i : i + 1}`, cat: "rib", step: 1, place: { type: "front", Y: r.Y },
+      explode: [0, -0.35, (r.Y - (yA + yB) / 2) / Lb * 0.9], paths: [{ kind: "cut", subs }], ribNo: i + 1, ribGeo: { w: r.w, wi: r.wi, dOut: r.dOut + (r.xk > 2 * tabW ? t : 0), dIn: r.dIn, band: r.band, tabH: t },
+      label: { at: lab, h: clamp(rw * 0.45, 2.2, 4) } });
+    addSlot(p, rect(-h, r.band ? r.dIn : 0, h, r.mid), t, "o'zak");
+    joints.push([spineIdx, parts.length - 1, "slot"]);
+  });
+
+  /* ---------- Old panel ---------- */
+  const yBr = meta.bridgeU ? meta.bridgeU * L : yMax + 0.48 * (L - yMax);
+  const yTail = L - Math.max(0.035 * Lb, t + 5);
+  let frontIdx;
+  {
+    const cut = [{ pts: front }], fine = [];
+    // tirqishlar
+    const fslots = [];
+    ribInfo.forEach(r => { if (r.tabX === null) return; const xs = [-r.tabX, r.tabX]; xs.forEach(x => fslots.push(rect(x - (tabW + prm.clearance) / 2, r.Y - ts / 2, x + (tabW + prm.clearance) / 2, r.Y + ts / 2))); });
+    spineTopTabs.filter(s => s[1] === "front").forEach(([Y]) => fslots.push(rect(-ts / 2, Y - (tabL + prm.clearance) / 2, ts / 2, Y + (tabL + prm.clearance) / 2)));
+    // dum ushlagich tirqishi
+    const tpW = clamp(nStr * Math.max(2.5, 0.012 * L) + 2 * t, 10, 40), tpTab = clamp(tpW * 0.5, 4, 16);
+    fslots.push(rect(-(tpTab + prm.clearance) / 2, yTail - ts / 2, (tpTab + prm.clearance) / 2, yTail + ts / 2));
+    fslots.forEach(s => cut.push({ pts: s }));
+    // teri chegarasi (ellips), bezak
+    const Rs = (L - yMax) * 0.98, rxS = 0.88 * WcMax, ryS = 0.9 * Rs, ycS = L - Rs;
+    const skin = []; for (let i = 0; i <= 120; i++) { const a = 2 * Math.PI * i / 120; skin.push([rxS * Math.cos(a), ycS + ryS * Math.sin(a)]); }
+    // faqat panel ichidagi bo'laklar
+    let run = [];
+    const flush = () => { if (run.length > 1) fine.push({ pts: run, open: true }); run = []; };
+    for (const q of skin) { if (pip(q, front) && polyDist(q, front) > 1.5) run.push(q); else flush(); } flush();
+    // xarrak belgisi
+    const bw = Math.max(12, nStr * Math.max(3, 0.013 * L) + 6), bh = Math.max(1.2, ts / 2);
+    fine.push({ pts: rect(-bw / 2, yBr - bh, bw / 2, yBr + bh) });
+    // rozetkalar (ko'krak qismi)
+    const nRos = clamp(Math.round(meta.rosettes || 0), 0, 5);
+    const chestTop = yNE + gus + 4, chestBot = ycS - ryS - 4;
+    const holesCut = [];
+    if (nRos && chestBot - chestTop > 12) {
+      const yc = (chestTop + chestBot) / 2, wHere = Wc(yc);
+      const rr = clamp(Math.min((chestBot - chestTop) / 2.6, wHere * 0.22), 3, 30);
+      const places = nRos === 1 ? [[0, yc]] : nRos === 2 ? [[-wHere * 0.45, yc], [wHere * 0.45, yc]] : [[0, yc - rr * 0.5], [-wHere * 0.5, yc + rr * 0.6], [wHere * 0.5, yc + rr * 0.6]].concat(nRos > 3 ? [[-wHere * 0.25, yc - rr * 1.4], [wHere * 0.25, yc - rr * 1.4]].slice(0, nRos - 3) : []);
+      for (const [x, y] of places) {
+        const nearSlot = fslots.some(s => polyDist([x, y], s) < rr + 2) || Math.abs(x) < rr + ts && prm.cutThrough;
+        if (!pip([x, y], front) || polyDist([x, y], front) < rr + 3 || nearSlot) continue;
+        if (prm.cutThrough && 2 * rr >= Math.max(t, 3)) { holesCut.push({ circle: [x, y, rr] }); if (prm.decor === "ornament") fine.push({ pts: circlePts(x, y, rr + 1.6, 48) }); }
+        else { fine.push({ pts: circlePts(x, y, rr, 48) }); if (prm.decor === "ornament") fine.push(...starPaths(x, y, rr * 0.82)); else fine.push({ pts: circlePts(x, y, rr * 0.6, 40) }); }
+      }
+    }
+    holesCut.forEach(h => cut.push(h));
+    if (prm.decor === "ornament") {
+      // chekka bo'ylab qo'sh chiziq (teri chegarasidan tashqarida)
+      const off = Math.max(2.5, 0.025 * WcMax);
+      const band1 = offsetPoly(front, -off), band2 = offsetPoly(front, -off * 1.8);
+      for (const band of [band1, band2]) {
+        let r2 = []; const fl = () => { if (r2.length > 2) fine.push({ pts: r2, open: true }); r2 = []; };
+        for (const q of band) {
+          const inSkin = ((q[0] / rxS) ** 2 + ((q[1] - ycS) / ryS) ** 2) < 1.08;
+          const nearS = fslots.some(s => polyDist(q, s) < 1.2);
+          if (q[1] > yNE + 1.5 && !inSkin && !nearS) r2.push(q); else fl();
+        }
+        fl();
+      }
+      // shoxlar ostida yulduzcha
+      const ys = Math.max(chestTop, yNE + 0.08 * Lb);
+      if (!nRos) { const rr = clamp(Wc(ys) * 0.25, 3, 18); if (polyDist([0, ys + rr], front) > rr + 2) fine.push(...starPaths(0, ys + rr + 2, rr)); }
+    }
+    if (prm.strings) {
+      for (let i = 0; i < nStr; i++) {
+        const f = nStr === 1 ? 0 : i / (nStr - 1) - 0.5;
+        fine.push({ pts: [[f * wN(yNE) * 0.9, yNE + 0.5], [f * (bw - 6), yBr - bh]], open: true });
+        fine.push({ pts: [[f * (bw - 6), yBr + bh], [f * (tpW - 2 * t), yTail - ts / 2 - 0.6]], open: true });
+      }
+    }
+    const p = add({ key: "front", name: "Old panel (deka)", cat: "panel", step: 3, place: { type: "top", h: 0 }, explode: [0, 1.0, 0],
+      paths: [{ kind: "cut", subs: cut }, { kind: "fine", subs: fine }], label: { at: [0, yTail - ts - 3], h: 2.5 } });
+    fslots.forEach(s => addSlot(p, s, t, "tish"));
+    frontIdx = parts.length - 1;
+    joints.push([frontIdx, spineIdx, "slot"]);
+    parts.filter(x => x.key === "rib").forEach(x => joints.push([frontIdx, parts.indexOf(x), "slot"]));
+    design._tp = { tpW, tpTab };
+  }
+
+  /* ---------- Orqa panel(lar) ---------- */
+  if (hasRear) flatRegions.forEach(([y0, y1], ri) => {
+    const ribsHere = ribInfo.filter(r => inRegion(r.Y) === ri);
+    if (!ribsHere.length) return;
+    const poly = panelPolys[ri]; if (!poly) return;
+    const subs = [{ pts: poly }];
+    const rs = [];
+    ribsHere.forEach(r => { if (r.xk > 2 * tabW) [-r.xb, r.xb].forEach(x => rs.push(rect(x - (tabW + prm.clearance) / 2, r.Y - ts / 2, x + (tabW + prm.clearance) / 2, r.Y + ts / 2))); });
+    spineBotTabs.filter(Y => Y > y0 && Y < y1 && inRegion(Y) === ri).forEach(Y => rs.push(rect(-ts / 2, Y - (tabL + prm.clearance) / 2, ts / 2, Y + (tabL + prm.clearance) / 2)));
+    rs.forEach(s => subs.push({ pts: s }));
+    const yl = ribsHere.length > 1 ? (ribsHere[0].Y + ribsHere[1].Y) / 2 + (spineBotTabs.some(Y => Math.abs(Y - (ribsHere[0].Y + ribsHere[1].Y) / 2) < 3) ? 0 : 0) : (y0 + y1) / 2;
+    const p = add({ key: "rear", name: (roundBack ? "Orqa ichki panel (kil)" : "Orqa panel") + (flatRegions.length > 1 ? ` ${ri + 1}` : ""), cat: "panel", step: 4, place: { type: "top", h: -(Dk + t) }, explode: [0, -1.3, 0],
+      paths: [{ kind: "cut", subs }], label: { at: [Math.min(secX(Wci(yl), Dpi(yl), Dk) * 0.5, 14), yl], h: 3 } });
+    rs.forEach(s => addSlot(p, s, t, "tish"));
+    joints.push([parts.length - 1, spineIdx, "slot"]);
+    ribsHere.filter(r => r.xk > 2 * tabW).forEach(r => joints.push([parts.length - 1, parts.findIndex(x => x.key === "rib" && ribInfo[x.idx] === r), "slot"]));
+  });
+
+  /* ---------- Qoplama: bochka taxtachalari (klyopkalar) — korpus va dasta uchun umumiy ---------- */
+  // o: { y0, y1, section(Y) -> [[x, d, s]] | null, M, key, nameBase, cat, step, holes: [{Y, f}] (o'ng tomon), stopAfter }
+  const atFrac = (sec, f) => { const S = sec.at(-1)[2] * f; let i = 1; while (i < sec.length - 1 && sec[i][2] < S) i++; const a = sec[i - 1], b = sec[i], k = (S - a[2]) / ((b[2] - a[2]) || 1); return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]; };
+  const makeStaves = o => {
+    const { M } = o, Ys = [], secs = [];
+    const Ny = o.Ny || 110;
+    for (let i = 0; i <= Ny; i++) {
+      const u = i / Ny, Y = o.y0 + (o.y1 - o.y0) * (o.ease ? 1 - Math.pow(1 - u, 1.6) : u);
+      const sec = o.section(Y);
+      if (!sec || sec.at(-1)[2] / M < 1.6) { if (Ys.length && Y > o.stopAfter) break; continue; }
+      Ys.push(Y); secs.push(sec);
+    }
+    if (Ys.length < 5) return 0;
+    const pitch = Math.max(1.6, 1.1 * tgc), br = 1.6;
+    for (let j = 0; j < M; j++) {
+      const fm = (j + 0.5) / M, e0 = [], e1 = [], cen = [];
+      Ys.forEach((Y, i) => { const a = atFrac(secs[i], j / M), b = atFrac(secs[i], (j + 1) / M), c = atFrac(secs[i], fm); e0.push([a[0], Y, a[1]]); e1.push([b[0], Y, b[1]]); cen.push([c[0], Y, c[1]]); });
+      let v = 0; const right = [], vAt = [];
+      cen.forEach((c, i) => { if (i) { const p0 = cen[i - 1]; v += Math.hypot(c[0] - p0[0], c[1] - p0[1], c[2] - p0[2]); } right.push([secs[i].at(-1)[2] / (2 * M), v]); vAt.push([Ys[i], v]); });
+      const outline = right.concat(right.slice().reverse().map(([x, y]) => [-x, y]));
+      const wOf = s => interpTable(right.map(([x, y]) => [y, x]), s);
+      // yon quloq teshiklari (faqat o'ng tomondagi taxtachalarda)
+      const holes = [];
+      (o.holes || []).forEach(hh => {
+        if (Math.floor(hh.f * M) !== j) return;
+        const A = interpTable(Ys.map((Y, i) => [Y, secs[i].at(-1)[2]]), hh.Y);
+        const lat = (hh.f * M - j - 0.5) * A / M, vv = interpTable(vAt, hh.Y), hs2 = ts / 2;
+        holes.push({ pts: [[lat - hs2, vv - hs2], [lat + hs2, vv - hs2], [lat + hs2, vv + hs2], [lat - hs2, vv + hs2]], hy: vv });
+      });
+      const kerfFor = hl => {
+        const kf = [];
+        if (!prm.coverKerf) return kf;
+        let row = 0;
+        for (let s = 4; s < v - 4; s += pitch, row++) {
+          if (hl.some(h => Math.abs(h.hy - s) < ts / 2 + 1.2)) continue;
+          const hw = wOf(s) - br;
+          if (hw < 2 * br + 1) continue;
+          if (row % 2 === 0) kf.push({ pts: [[-hw, s], [hw, s]], open: true });
+          else kf.push({ pts: [[-hw + br, s], [-br / 2, s]], open: true }, { pts: [[br / 2, s], [hw - br, s]], open: true });
+        }
+        return kf;
+      };
+      const mid = cen[Math.floor(cen.length * 0.4)], dir = [mid[0] / (o.wRef || 1), -mid[2] / (o.dRef || 1)], dl = Math.hypot(...dir) || 1;
+      const labY = v * 0.42, labH = Math.min(3, wOf(labY) * 0.7);
+      [1, -1].forEach(side => {
+        const hl = side > 0 ? holes : [];
+        const kerf = kerfFor(hl);
+        add({ key: o.key, idx: j, side, name: `${o.nameBase} ${side > 0 ? "o'ng" : "chap"} ${j + 1}`, cat: o.cat, step: o.step, mat: "skin",
+          place: { type: "stave", side, e0, e1 }, explode: [side * dir[0] / dl * 0.9, dir[1] / dl * 0.9, 0],
+          paths: [{ kind: "cut", subs: [{ pts: outline }, ...hl.map(h => ({ pts: h.pts }))] }, ...(kerf.length ? [{ kind: "cut", subs: kerf, kerf: true }] : [])],
+          label: labH >= 1.8 && !hl.some(h => Math.abs(h.hy - labY) < 5) ? { at: [0, labY], h: labH } : null });
+        (o.joinTo || []).forEach(k => joints.push([parts.length - 1, k, "glue"]));
+      });
+    }
+    return { cut: o.y1 - Ys.at(-1), yEnd: Ys.at(-1) };
+  };
+  if (prm.cover) {
+    const M = clamp(Math.round((prm.coverN || 12) / 2), 3, 14);
+    const sectionBody = Y => {
+      const w = Wc(Y), Dl = Dp(Y);
+      if (w < 0.05 || Dl < 0.05) return null;
+      const dl = hasRear && !roundBack ? Math.min(Dl, Dk + t) : Dl;
+      const thEnd = Math.asin(Math.min(1, Math.pow(Math.min(1, dl / Dl), pe / 2)));
+      const pts = []; let s = 0, prev = null;
+      for (let i = 0; i <= 48; i++) { const th = thEnd * i / 48, q = [w * Math.pow(Math.cos(th), 2 / pe), Dl * Math.pow(Math.sin(th), 2 / pe)]; if (prev) s += Math.hypot(q[0] - prev[0], q[1] - prev[1]); pts.push([q[0], q[1], s]); prev = q; }
+      return pts;
+    };
+    const ribIdx = parts.map((x, i) => x.key === "rib" ? i : -1).filter(i => i >= 0);
+    const res = makeStaves({ y0: yNE, y1: L - 0.2, ease: true, section: sectionBody, M, key: "stave", nameBase: "Qoplama taxtachasi", cat: "cover", step: 4, stopAfter: yMax, wRef: WcMax, dRef: D, joinTo: [frontIdx, ...ribIdx] });
+    // dum qopqog'i: taxtachalar uchrashmaydigan dum uchini yopadi
+    if (res && res.yEnd) {
+      const Yc = res.yEnd, w = Wc(Yc), Dl = Dp(Yc);
+      if (w > 1.2 && Dl > 1.2) {
+        const pts = [];
+        for (let k = 0; k <= 40; k++) { const th = Math.PI * k / 40, c = Math.cos(th), sn = Math.sin(th); pts.push([w * Math.sign(c) * Math.pow(Math.abs(c), 2 / pe), Dl * Math.pow(sn, 2 / pe)]); }
+        add({ key: "tailCap", name: "Dum qopqog'i", cat: "cover", step: 4, place: { type: "front", Y: Yc + t / 2 }, explode: [0, -0.2, 0.7], paths: [{ kind: "cut", subs: [{ pts }] }] });
+        joints.push([parts.length - 1, frontIdx, "glue"]);
+      }
+    }
+  }
+
+  /* ---------- Burchak tirgaklari (dasta-korpus) ---------- */
+  [-1, 1].forEach(s => {
+    const g0 = yNE + (prm.cover ? t + 0.2 : 0), pts = [[g0, 0], [g0 + gus, 0], [g0, gus * 0.9]];
+    add({ key: "gusset", name: "Burchak tirgagi", cat: "support", step: 2, place: { type: "side", x: s * t }, explode: [s * 0.45, 0.25, 0], paths: [{ kind: "cut", subs: [{ pts }] }] });
+    joints.push([parts.length - 1, spineIdx, "glue"], [parts.length - 1, frontIdx, "glue"]);
+  });
+
+  /* ---------- Dasta: qovurg'alar va qoplama (yopiq) yoki ochiq yonlar ---------- */
+  if (neckCover) {
+    neckRibY.forEach((Y, i) => {
+      const w = wN(Y) - tgn, d = dnI(Y), h = ts / 2, mid = d / 2;
+      const pts = [[-w, 0], [-h, 0], [-h, mid], [h, mid], [h, 0], [w, 0]];
+      for (let k = 1; k < 30; k++) { const th = Math.PI * k / 30; pts.push([w * Math.cos(th), d * Math.sin(th)]); }
+      const p = add({ key: "neckRib", idx: i, name: i === 0 ? "Dasta old devori (ostona ostida)" : `Dasta qovurg'asi ${i}`, cat: "neck", step: 5, place: { type: "front", Y }, explode: [0, -0.3, 0], paths: [{ kind: "cut", subs: [{ pts }] }] });
+      addSlot(p, rect(-h, 0, h, mid), t, "o'zak");
+      joints.push([parts.length - 1, spineIdx, "slot"]);
+    });
+    const sectionNeck = Y => {
+      const w = wN(Y), d = dn(Y), pts = []; let s = 0, prev = null;
+      for (let i = 0; i <= 40; i++) { const th = Math.PI / 2 * i / 40, q = [w * Math.cos(th), d * Math.sin(th)]; if (prev) s += Math.hypot(q[0] - prev[0], q[1] - prev[1]); pts.push([q[0], q[1], s]); prev = q; }
+      return pts;
+    };
+    const Mn = MnN;
+    const holes = symY.map(Y => ({ Y, f: 0.5 / Mn }));
+    const nrIdx = parts.map((x, i) => x.key === "neckRib" ? i : -1).filter(i => i >= 0);
+    makeStaves({ y0: yN, y1: yNE, Ny: 60, section: sectionNeck, M: Mn, key: "neckStave", nameBase: "Dasta qoplamasi", cat: "neck", step: 5, stopAfter: yNE, wRef: wN(yNE), dRef: dn(yNE), holes, joinTo: [spineIdx, ...nrIdx] });
+  } else if (sideOK) {
+    [-1, 1].forEach(s => {
+      const pts = [[yN, 0], [yNE, 0], [yNE, ds(yNE)]];
+      for (let i = 1; i <= 16; i++) { const Y = yNE - (yNE - yN) * i / 16; pts.push([Y, ds(Y)]); }
+      const subs = [{ pts }];
+      if (s > 0) symY.forEach(Y => subs.push({ pts: sq(Y, symD(Y), false) }));
+      add({ key: "neckSide", name: s < 0 ? "Dasta yoni (chap)" : "Dasta yoni (o'ng)", cat: "neck", step: 5, place: { type: "side", x: s * (wAvg - t / 2) }, explode: [s * 0.6, 0, 0], paths: [{ kind: "cut", subs }],
+        label: { at: [lerp(yN, yNE, 0.35), ds(lerp(yN, yNE, 0.35)) * 0.5], h: Math.min(3, ds(yN) * 0.45) } });
+      joints.push([parts.length - 1, spineIdx, "glue"]);
+    });
+  } else W.push({ code: "neck", msg: "Dasta tor — dasta yonlari qo'shilmadi, dasta faqat o'zak va grifdan iborat." });
+
+  /* ---------- Grif ---------- */
+  let fretsFit = 0;
+  {
+    const outline = [[-wN(yN), yN], [wN(yN), yN], [wN(yNE), yNE], [-wN(yNE), yNE]];
+    const cut = [{ pts: outline }], fine = [];
+    const tabL = Math.max(6, 2.5 * t);
+    const gs = spineTopTabs.filter(s => s[1] === "grif").map(([Y]) => rect(-ts / 2, Y - (tabL + prm.clearance) / 2, ts / 2, Y + (tabL + prm.clearance) / 2));
+    gs.forEach(s => cut.push({ pts: s }));
+    const scale = yBr - yN;
+    const nF = clamp(Math.round(meta.frets ?? 12), 0, 30);
+    for (let n = 1; n <= nF; n++) {
+      const Y = yN + scale * (1 - Math.pow(2, -n / 12));
+      if (Y > yNE - 2) break;
+      if (gs.some(s => Math.abs(Y - (s[0][1] + s[2][1]) / 2) < tabL / 2 + 0.8)) { fretsFit++; fine.push({ pts: [[-wN(Y) + 0.8, Y], [-ts / 2 - 0.8, Y]], open: true }, { pts: [[ts / 2 + 0.8, Y], [wN(Y) - 0.8, Y]], open: true }); continue; }
+      fretsFit++;
+      fine.push({ pts: [[-wN(Y) + 0.8, Y], [wN(Y) - 0.8, Y]], open: true });
+    }
+    if (fretsFit < nF) W.push({ code: "frets", msg: `Grifga ${fretsFit} ta parda sig'di (${nF} so'ralgan).` });
+    if (prm.decor === "ornament") fine.push(...diamondChain(0, yN + 6, 0, yN + Math.min(26, (yNE - yN) * 0.08), Math.min(4, wN(yN) * 0.5)));
+    const p = add({ key: "fingerboard", name: "Grif (pardalar bilan)", cat: "neck", step: 6, place: { type: "top", h: 0 }, explode: [0, 0.85, 0],
+      paths: [{ kind: "cut", subs: cut }, ...(fine.length ? [{ kind: "fine", subs: fine }] : [])], label: { at: [0, yNE - 5], h: Math.min(3, wN(yNE) * 0.4) } });
+    gs.forEach(s => addSlot(p, s, t, "tish"));
+    joints.push([parts.length - 1, spineIdx, "slot"]);
+  }
+
+  /* ---------- Bosh yonoqlari va oraliqlari ---------- */
+  {
+    const cheek = [[0, 0], [LhUse, 0], [LhUse, dh1], [0, dh0]].map(q => P(...q));
+    const subs = [{ pts: cheek }];
+    pegU.forEach(u => subs.push(pegHoleHead(u)));
+    const xc = t / 2 + m * t + t / 2;
+    [-1, 1].forEach(s => {
+      const fine = [];
+      if (prm.decor === "ornament") { const a = P(LhUse * 0.05, dh(0) * 0.85), b = P(LhUse * 0.95, dh(LhUse) * 0.85); fine.push(...diamondChain(a[0], a[1], b[0], b[1], Math.min(3.5, hs * 0.6))); }
+      add({ key: "cheek", name: s < 0 ? "Bosh yonog'i (chap)" : "Bosh yonog'i (o'ng)", cat: "head", step: 7, place: { type: "side", x: s * xc }, explode: [s * 0.75, 0.1, 0],
+        paths: [{ kind: "cut", subs }, ...(fine.length ? [{ kind: "fine", subs: fine }] : [])] });
+      joints.push([parts.length - 1, spineIdx, "glue"]);
+    });
+    const spacer = [[0, dh0 - hs], [LhUse, dh1 - hs], [LhUse, dh1], [0, dh0]].map(q => P(...q));
+    [-1, 1].forEach(s => { for (let k = 0; k < m; k++) {
+      add({ key: "spacer", name: "Bosh oralig'i", cat: "head", step: 7, place: { type: "side", x: s * (t + k * t) }, explode: [s * (0.35 + 0.08 * k), 0, 0], paths: [{ kind: "cut", subs: [{ pts: spacer }] }] });
+      joints.push([parts.length - 1, spineIdx, "glue"]);
+    } });
+  }
+
+  /* ---------- Quloqlar ---------- */
+  const pegPart = (Ls, rx, ry) => {
+    const ang = Math.asin(Math.min(0.95, (t / 2) / ry)), cx = Ls + rx * Math.cos(ang);
+    const pts = [[0, -t / 2], [Ls, -t / 2]];
+    const a0 = Math.PI + ang, a1 = 3 * Math.PI - ang;
+    for (let i = 1; i < 30; i++) { const a = a0 + (a1 - a0) * i / 30; pts.push([cx + rx * Math.cos(a), ry * Math.sin(a)]); }
+    pts.push([Ls, t / 2], [0, t / 2]);
+    const subs = [{ pts }];
+    const hr = Math.min(rx, ry) * 0.36;
+    if (2 * hr >= Math.max(t, 2) && ry - hr >= 2) subs.push({ circle: [cx + rx * 0.2, 0, hr] });
+    return subs;
+  };
+  {
+    const Ls = boxW + 1.5;
+    const subs = pegPart(Ls, Math.max(0.022 * L, 2.2 * t), Math.max(0.015 * L, 1.3 * t + 1));
+    pegU.forEach((u, i) => {
+      const side = i % 2 ? 1 : -1, [Y, d] = P(u, pegV(u));
+      add({ key: "peg", idx: i, name: "Quloq (asosiy)", cat: "peg", step: 8, place: { type: "peg", Y, d, side, x0: boxW / 2, Ls, rot: true }, explode: [side * 1.2, 0, 0], paths: [{ kind: "cut", subs }] });
+      joints.push([parts.length - 1, spineIdx, "peg"]);
+    });
+    if (nSym) {
+      const gap = wAvg - 1.5 * t;
+      symY.forEach((Y, i) => {
+        const x0 = neckCover ? symX(Y) : wAvg, Ls2 = neckCover ? Math.round((x0 + t / 2 + 1) * 10) / 10 : 2 * t + gap + 1;
+        const subs2 = pegPart(Ls2, Math.max(0.012 * L, 1.6 * t), Math.max(0.009 * L, 1.1 * t + 0.8));
+        add({ key: "symPeg", idx: i, name: "Yon quloq (simpatik)", cat: "peg", step: 8, place: { type: "peg", Y, d: symD(Y), side: 1, x0, Ls: Ls2, rot: false }, explode: [1.0, 0, 0], paths: [{ kind: "cut", subs: subs2 }] });
+        joints.push([parts.length - 1, spineIdx, "peg"]);
+      });
+    }
+  }
+
+  /* ---------- Shoxlar (yon bezak elementlari) ---------- */
+  {
+    const right = front.filter(([x]) => x >= 0);
+    const runs = []; let run = [];
+    for (const q of prof.outline.map(([x, u]) => [x * L * fxAt(u * L), u * L])) {
+      if (q[0] > 0 && q[0] > Wc(q[1]) + Math.max(2.5, 0.03 * WcMax) && q[1] > yNE + 0.5) run.push(q); else { if (run.length > 3) runs.push(run); run = []; }
+    }
+    if (run.length > 3) runs.push(run);
+    void right;
+    const layers = clamp(Math.round(0.1 * D / t), 1, 3);
+    runs.forEach(rn => {
+      const ya = rn[0][1], yb = rn.at(-1)[1];
+      if (Math.abs(yb - ya) < 3) return;
+      const back = []; for (let i = 1; i < 12; i++) { const Y = lerp(yb, ya, i / 12); back.push([Wc(Y) - 0.6, Y]); }
+      const poly = [[Wc(ya) - 0.6, ya], ...rn, [Wc(yb) - 0.6, yb], ...back];
+      const bb = poly.reduce((a, [x, y]) => [Math.min(a[0], x), Math.max(a[1], x), Math.min(a[2], y), Math.max(a[3], y)], [1e9, -1e9, 1e9, -1e9]);
+      if (bb[1] - bb[0] < 3 || Math.abs(polyArea(poly)) < 20) return;
+      [-1, 1].forEach(s => { for (let k = 0; k < layers; k++) {
+        const pp = s > 0 ? poly : poly.map(([x, y]) => [-x, y]).reverse();
+        add({ key: "horn", name: s < 0 ? "Shox (chap)" : "Shox (o'ng)", cat: "decor", step: 5, place: { type: "top", h: -(k + 1) * t }, explode: [s * 0.55, 0.55 - 0.1 * k, 0], paths: [{ kind: "cut", subs: [{ pts: pp }] }] });
+        joints.push([parts.length - 1, frontIdx, "glue"]);
+      } });
+    });
+  }
+
+  /* ---------- Ostona, xarrak, dum ushlagich ---------- */
+  const hn = Math.max(3, 0.006 * L + 1.5, 0.8 * t);
+  {
+    const wn = wN(yN), pts = [[-wn, 0], [wn, 0], [wn * 0.92, -hn]];
+    for (let i = nStr - 1; i >= 0; i--) { const x = (nStr === 1 ? 0 : i / (nStr - 1) - 0.5) * wn * 1.2, nd = Math.min(1, hn * 0.3); pts.push([x + nd / 2, -hn], [x, -hn + nd], [x - nd / 2, -hn]); }
+    pts.push([-wn * 0.92, -hn]);
+    add({ key: "nut", name: "Ostona", cat: "bridge", step: 9, place: { type: "front", Y: yN + t / 2, h: t }, explode: [0, 1.25, 0], paths: [{ kind: "cut", subs: [{ pts }] }] });
+    joints.push([parts.length - 1, parts.findIndex(x => x.key === "fingerboard"), "glue"]);
+  }
+  const BH = Math.max(6, 0.018 * L);
+  {
+    const BW = Math.max(12, nStr * Math.max(3, 0.013 * L) + 6) / 2, foot = BW * 0.28, arch = BH * 0.38;
+    const pts = [[-BW, 0], [-BW + foot, 0]];
+    for (let i = 1; i < 12; i++) { const a = Math.PI * i / 12; pts.push([-(BW - foot) * Math.cos(a), -arch * Math.sin(a)]); }
+    pts.push([BW - foot, 0], [BW, 0], [BW * 0.86, -BH]);
+    for (let i = nStr - 1; i >= 0; i--) { const x = (nStr === 1 ? 0 : i / (nStr - 1) - 0.5) * (2 * BW - 6), nd = Math.max(0.9, BH * 0.1); pts.push([x + nd / 2, -BH], [x, -BH + nd], [x - nd / 2, -BH]); }
+    pts.push([-BW * 0.86, -BH]);
+    add({ key: "bridge", name: "Xarrak", cat: "bridge", step: 9, place: { type: "front", Y: yBr, h: t }, explode: [0, 1.5, 0], paths: [{ kind: "cut", subs: [{ pts }] }] });
+    joints.push([parts.length - 1, frontIdx, "glue"]);
+  }
+  {
+    const { tpW, tpTab } = design._tp, H = Math.max(6, 0.016 * L);
+    const pts = [[-tpW / 2, 0], [-tpTab / 2, 0], [-tpTab / 2, t], [tpTab / 2, t], [tpTab / 2, 0], [tpW / 2, 0], [tpW * 0.42, -H]];
+    for (let i = nStr - 1; i >= 0; i--) { const x = (nStr === 1 ? 0 : i / (nStr - 1) - 0.5) * (tpW - 2 * t), nd = Math.max(1, H * 0.15); pts.push([x + nd / 2, -H], [x, -H + nd * 1.4], [x - nd / 2, -H]); }
+    pts.push([-tpW * 0.42, -H]);
+    const p = add({ key: "tail", name: "Dum ushlagich", cat: "bridge", step: 9, place: { type: "front", Y: yTail, h: t }, explode: [0, 1.3, 0.35], paths: [{ kind: "cut", subs: [{ pts }] }] });
+    joints.push([parts.length - 1, frontIdx, "slot"]);
+    void p;
+  }
+
+  /* ---------- Dum tugmasi (torlar bog'lanadigan joy) ---------- */
+  {
+    const r = clamp(0.012 * L, 3, 9), stem = Math.max(t + 1, r * 0.9), sw = Math.max(t, r * 0.7);
+    const Yb0 = L + (prm.cover ? 0.2 : 0);
+    // yon ko'rinish profili: dumaloq bosh + ichkariga kiradigan tish
+    const pts = [[0, -sw / 2], [stem, -sw / 2]];
+    const ang = Math.asin(Math.min(0.95, (sw / 2) / r)), cx = stem + r * Math.cos(ang);
+    for (let k = 1; k < 30; k++) { const a = Math.PI + ang + (2 * Math.PI - 2 * ang) * k / 30; pts.push([cx + r * Math.cos(a), r * Math.sin(a)]); }
+    pts.push([stem, sw / 2], [0, sw / 2]);
+    const dB = Math.min(Dp(L - 0.5 * Lb * 0.06) * 0.35, r + 2);
+    add({ key: "tailButton", name: "Dum tugmasi", cat: "bridge", step: 9, place: { type: "button", Y: Yb0, d: Math.max(dB, sw / 2 + 0.5) }, explode: [0, -0.1, 0.9], paths: [{ kind: "cut", subs: [{ pts }] }] });
+    joints.push([parts.length - 1, frontIdx, "glue"]);
+  }
+
+  /* ---------- Stend ---------- */
+  if (prm.stand) {
+    const base = hasRear ? Dk + t : D;
+    const H0 = base + Math.max(10, 0.04 * L);
+    const cradle = (Yc, label, isNeck) => {
+      let profile, w, Htop;
+      if (!isNeck) {
+        w = Wc(Yc); const Dl = Dp(Yc);
+        Htop = H0 - 0.45 * Dl;
+        profile = x => H0 - Math.min(Dl * Math.pow(Math.max(0, 1 - Math.pow(Math.min(1, Math.abs(x) / w), pe)), 1 / pe), hasRear ? Dk + t : Dl);
+      } else {
+        w = wN(Yc) + 0.4; const dl = dn(Yc);
+        Htop = H0 - 0.4 * dl;
+        profile = x => H0 - dl * Math.sqrt(Math.max(0, 1 - (x / w) ** 2));
+      }
+      let xe = 0; for (let x = 0; x <= w; x += 0.25) if (profile(x) < Htop) xe = x;
+      const Wd = 2 * (xe + Math.max(8, 0.18 * w));
+      const hc = profile(0);
+      const notch = []; for (let i = 0; i <= 32; i++) { const x = xe - 2 * xe * i / 32; notch.push([x, profile(x)]); }
+      const A = [[-Wd / 2, 0], [-ts / 2, 0], [-ts / 2, hc / 2], [ts / 2, hc / 2], [ts / 2, 0], [Wd / 2, 0], [Wd / 2, Htop], ...notch, [-Wd / 2, Htop]];
+      const Lf = Math.max(Wd * 0.8, 0.9 * hc + 20);
+      const B = [[-Lf / 2, 0], [Lf / 2, 0], [Lf / 2, hc * 0.92], [ts / 2, hc * 0.92], [ts / 2, hc / 2], [-ts / 2, hc / 2], [-ts / 2, hc * 0.92], [-Lf / 2, hc * 0.92]];
+      const flip = pts => pts.map(([a, b]) => [a, -b]);
+      add({ key: "stand", name: `${label} (o'yiqli)`, cat: "stand", step: 10, place: { type: "standFront", Y: Yc, base: -H0 }, explode: [0, -1.7, 0], paths: [{ kind: "cut", subs: [{ pts: flip(A) }] }] });
+      const ia = parts.length - 1;
+      add({ key: "stand", name: `${label} (oyoq)`, cat: "stand", step: 10, place: { type: "standSide", Y: Yc, base: -H0 }, explode: [0, -1.85, 0], paths: [{ kind: "cut", subs: [{ pts: flip(B) }] }] });
+      addSlot(parts[ia], rect(-ts / 2, -hc / 2, ts / 2, 0), t, "stend");
+      addSlot(parts.at(-1), rect(-ts / 2, -hc * 0.92, ts / 2, -hc / 2), t, "stend");
+      joints.push([ia, parts.length - 1, "slot"], [ia, frontIdx, "rest"]);
+    };
+    cradle(yMax, "Stend — kosa tayanchi", false);
+    cradle(lerp(yN, yNE, 0.45), "Stend — dasta tayanchi", true);
+  }
+
+  /* ---------- ID lar va yorliqlar ---------- */
+  parts.forEach((p, i) => { p.pid = "A" + String(i + 1).padStart(2, "0"); p.index = i; });
+  if (prm.labels) parts.forEach(p => {
+    if (!p.label) return;
+    const tp = textPaths(p.pid, p.label.at[0], p.label.at[1], p.label.h);
+    const outer = p.paths[0].subs[0].pts;
+    const ok = tp.subs.every(s => s.pts.every(q => pip(q, outer) && polyDist(q, outer) > 0.8 && !p.paths[0].subs.slice(1).some(h => h.pts ? (pip(q, h.pts) || polyDist(q, h.pts) < 0.8) : Math.hypot(q[0] - h.circle[0], q[1] - h.circle[1]) < h.circle[2] + 0.8)));
+    if (!ok) return;
+    let fine = p.paths.find(x => x.kind === "fine");
+    if (!fine) { fine = { kind: "fine", subs: [] }; p.paths.push(fine); }
+    fine.subs.push(...tp.subs);
+  });
+
+  const geo = { tg: tgc, cover: !!prm.cover, L, t, ts, D, Dk, yN, yNE, yBr, yTail, yMax, WcMax, alpha, LhUse, boxW, hn, BH, nStr, wN0: wN(yN), wNE: wN(yNE), nR: ribY.length, hasRear, H0: prm.stand ? (hasRear ? Dk + t : D) + Math.max(10, 0.04 * L) : 0, fx };
+  return { parts, warnings: W, slots, joints, geo, fretsFit, prof };
+}
+function nf1(v) { return String(Math.round(v * 10) / 10).replace(".", ","); }
+function rect(x0, y0, x1, y1) { return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]; }
+
+</script>
+<script>
+/* ======================================================================
+   Rasmdan siluet ajratish va rubob profilini tiklash
+   Kirish: {width, height, data(RGBA)} — brauzerda canvas ImageData
+   ====================================================================== */
+function segmentImage(img, opt = {}) {
+  const { width: w, height: h, data } = img, n = w * h;
+  const mask = new Uint8Array(n);
+  let alphaBg = 0; for (let i = 0; i < n; i += 7) if (data[i * 4 + 3] < 20) alphaBg++;
+  let thr = 0, bg = [255, 255, 255], mode = "color";
+  if (alphaBg > n / 7 * 0.05) { mode = "alpha"; for (let i = 0; i < n; i++) mask[i] = data[i * 4 + 3] > 40 ? 1 : 0; }
+  else {
+    // fon rangi — chegaradagi piksellarning medianasi
+    const rs = [], gs = [], bs = [];
+    const push = i => { rs.push(data[i * 4]); gs.push(data[i * 4 + 1]); bs.push(data[i * 4 + 2]); };
+    for (let x = 0; x < w; x += 2) { push(x); push((h - 1) * w + x); }
+    for (let y = 0; y < h; y += 2) { push(y * w); push(y * w + w - 1); }
+    const med = a => a.sort((p, q) => p - q)[a.length >> 1];
+    bg = opt.bg || [med(rs), med(gs), med(bs)];
+    const dist = new Float32Array(n), hist = new Uint32Array(256);
+    for (let i = 0; i < n; i++) {
+      const dr = data[i * 4] - bg[0], dg = data[i * 4 + 1] - bg[1], db = data[i * 4 + 2] - bg[2];
+      const d = Math.min(255, Math.sqrt(dr * dr + dg * dg + db * db) * 0.75); dist[i] = d; hist[d | 0]++;
+    }
+    if (opt.threshold) thr = opt.threshold;
+    else { // Otsu
+      let sum = 0; for (let i = 0; i < 256; i++) sum += i * hist[i];
+      let sB = 0, wB = 0, best = 0;
+      for (let i = 0; i < 256; i++) { wB += hist[i]; if (!wB) continue; const wF = n - wB; if (!wF) break; sB += i * hist[i]; const mB = sB / wB, mF = (sum - sB) / wF, v = wB * wF * (mB - mF) ** 2; if (v > best) { best = v; thr = i; } }
+      thr = Math.max(12, thr * 0.85);
+    }
+    for (let i = 0; i < n; i++) mask[i] = dist[i] > thr ? 1 : 0;
+  }
+  // yopish (dilate+erode) — ingichka torlar va choklarni birlashtirish
+  const morph = (m, dil) => { const o = new Uint8Array(n); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let v = dil ? 0 : 1; for (let dy = -1; dy <= 1 && (dil ? !v : v); dy++) for (let dx = -1; dx <= 1; dx++) { const xx = x + dx, yy = y + dy; const s = xx < 0 || yy < 0 || xx >= w || yy >= h ? 0 : m[yy * w + xx]; if (dil && s) { v = 1; break; } if (!dil && !s) { v = 0; break; } } o[y * w + x] = v; } return o; };
+  let m = morph(morph(mask, true), false);
+  // eng katta bog'langan bo'lak
+  const lab = new Int32Array(n).fill(-1); let bestId = -1, bestSz = 0, id = 0;
+  const q = new Int32Array(n);
+  for (let s = 0; s < n; s++) {
+    if (!m[s] || lab[s] >= 0) continue;
+    let qh = 0, qt = 0; q[qt++] = s; lab[s] = id; let sz = 0;
+    while (qh < qt) { const c = q[qh++]; sz++; const x = c % w, y = (c / w) | 0;
+      if (x > 0 && m[c - 1] && lab[c - 1] < 0) { lab[c - 1] = id; q[qt++] = c - 1; }
+      if (x < w - 1 && m[c + 1] && lab[c + 1] < 0) { lab[c + 1] = id; q[qt++] = c + 1; }
+      if (y > 0 && m[c - w] && lab[c - w] < 0) { lab[c - w] = id; q[qt++] = c - w; }
+      if (y < h - 1 && m[c + w] && lab[c + w] < 0) { lab[c + w] = id; q[qt++] = c + w; } }
+    if (sz > bestSz) { bestSz = sz; bestId = id; } id++;
+  }
+  const out = new Uint8Array(n); for (let i = 0; i < n; i++) out[i] = lab[i] === bestId ? 1 : 0;
+  // teshiklarni to'ldirish (fon chegaradan to'ldiriladi)
+  const reach = new Uint8Array(n); let qh = 0, qt = 0;
+  const seed = i => { if (!out[i] && !reach[i]) { reach[i] = 1; q[qt++] = i; } };
+  for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); } for (let y = 0; y < h; y++) { seed(y * w); seed(y * w + w - 1); }
+  while (qh < qt) { const c = q[qh++], x = c % w, y = (c / w) | 0; if (x > 0) seed(c - 1); if (x < w - 1) seed(c + 1); if (y > 0) seed(c - w); if (y < h - 1) seed(c + w); }
+  for (let i = 0; i < n; i++) if (!reach[i]) out[i] = 1;
+  return { mask: out, w, h, area: bestSz / n, comps: id, thr, bg, mode };
+}
+
+function profileFromMask(seg, opt = {}) {
+  const { mask, w, h } = seg;
+  const M = (x, y) => { x = Math.round(x); y = Math.round(y); return x >= 0 && y >= 0 && x < w && y < h ? mask[y * w + x] : 0; };
+  // 1) o'q: berilgan (AI / foydalanuvchi) yoki PCA
+  let head, tail;
+  if (opt.axis) { head = opt.axis.head; tail = opt.axis.tail; }
+  else {
+    let sx = 0, sy = 0, c = 0;
+    for (let y = 0; y < h; y += 1) for (let x = 0; x < w; x += 1) if (mask[y * w + x]) { sx += x; sy += y; c++; }
+    if (c < 50) return { error: "Rasmda cholg'u topilmadi." };
+    const mx = sx / c, my = sy / c; let a = 0, b = 0, d = 0;
+    for (let y = 0; y < h; y += 1) for (let x = 0; x < w; x += 1) if (mask[y * w + x]) { const dx = x - mx, dy = y - my; a += dx * dx; b += dx * dy; d += dy * dy; }
+    const ang = 0.5 * Math.atan2(2 * b, a - d), ux = Math.cos(ang), uy = Math.sin(ang);
+    let tmin = Infinity, tmax = -Infinity;
+    for (let y = 0; y < h; y += 1) for (let x = 0; x < w; x += 1) if (mask[y * w + x]) { const tt = (x - mx) * ux + (y - my) * uy; if (tt < tmin) tmin = tt; if (tt > tmax) tmax = tt; }
+    // qaysi uchi keng (korpus) — o'sha dum
+    const spread = (t0, t1) => { let s = 0; for (let tt = t0; tt < t1; tt += 1) for (let k = -w; k <= w; k += 2) { if (M(mx + ux * tt - uy * k, my + uy * tt + ux * k)) s++; } return s; };
+    const L0 = tmax - tmin, sa = spread(tmin, tmin + 0.2 * L0), sb = spread(tmax - 0.2 * L0, tmax);
+    const A = [mx + ux * tmin, my + uy * tmin], B = [mx + ux * tmax, my + uy * tmax];
+    if (sb >= sa) { head = A; tail = B; } else { head = B; tail = A; }
+  }
+  const sample = (hd, tl) => {
+    const len = Math.hypot(tl[0] - hd[0], tl[1] - hd[1]), ux = (tl[0] - hd[0]) / len, uy = (tl[1] - hd[1]) / len, px = -uy, py = ux;
+    const rows = 360, step = len / rows, maxC = Math.ceil(0.35 * len / step);
+    const runs = [];
+    for (let r = 0; r <= rows; r++) {
+      const cx = hd[0] + ux * r * step, cy = hd[1] + uy * r * step;
+      const row = new Uint8Array(2 * maxC + 1);
+      for (let c = -maxC; c <= maxC; c++) row[c + maxC] = M(cx + px * c * step, cy + py * c * step);
+      runs.push(row);
+    }
+    return { len, ux, uy, px, py, rows, step, maxC, runs };
+  };
+  let S = sample(head, tail);
+  // 2) o'qni markaz chiziqlari bo'yicha aniqlashtirish
+  const coreRun = (row, maxC) => { let c0 = maxC; if (!row[c0]) { let best = -1; for (let d = 1; d < maxC * 0.3; d++) { if (row[maxC + d]) { best = maxC + d; break; } if (row[maxC - d]) { best = maxC - d; break; } } if (best < 0) return null; c0 = best; } let a = c0, b = c0; while (a > 0 && row[a - 1]) a--; while (b < row.length - 1 && row[b + 1]) b++; return [a - maxC, b - maxC]; };
+  {
+    let n = 0, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    for (let r = Math.round(S.rows * 0.08); r <= Math.round(S.rows * 0.97); r++) { const cr = coreRun(S.runs[r], S.maxC); if (!cr) continue; const m = (cr[0] + cr[1]) / 2; const x = r / S.rows; n++; sx += x; sy += m; sxx += x * x; sxy += x * m; }
+    if (n > 10) {
+      const b = (n * sxy - sx * sy) / (n * sxx - sx * sx), a = (sy - b * sx) / n;
+      const off0 = a * S.step, off1 = (a + b) * S.step;
+      const h2 = [head[0] + S.px * off0, head[1] + S.py * off0], t2 = [tail[0] + S.px * off1, tail[1] + S.py * off1];
+      if (!opt.axis) { head = h2; tail = t2; }
+      else { head = h2; tail = t2; }
+      S = sample(head, tail);
+    }
+  }
+  // uchlarni kesish: o'q uchlaridagi bo'sh qatorlar
+  let r0 = 0, r1 = S.rows;
+  while (r0 < S.rows && !S.runs[r0].some(v => v)) r0++;
+  while (r1 > 0 && !S.runs[r1].some(v => v)) r1--;
+  if (r1 - r0 < S.rows * 0.5) return { error: "Siluet juda kichik yoki noto'g'ri ajratildi." };
+  const lenPx = (r1 - r0) * S.step;
+  const headPt = [head[0] + S.ux * r0 * S.step, head[1] + S.uy * r0 * S.step], tailPt = [head[0] + S.ux * r1 * S.step, head[1] + S.uy * r1 * S.step];
+  const rowsN = r1 - r0;
+  const core = [], outerW = [];
+  let asym = 0, asymN = 0;
+  for (let r = r0; r <= r1; r++) {
+    const row = S.runs[r], u = (r - r0) / rowsN;
+    const cr = coreRun(row, S.maxC);
+    const cw = cr ? (cr[1] - cr[0] + 1) / 2 * S.step / lenPx : 0;
+    if (cr) { asym += Math.abs(cr[0] + cr[1]) / Math.max(1, cr[1] - cr[0]); asymN++; }
+    let lo = 0, hi = 0; for (let c = 0; c < row.length; c++) if (row[c]) { lo = Math.min(lo, c - S.maxC); hi = Math.max(hi, c - S.maxC); }
+    core.push([u, cw]); outerW.push([u, (Math.min(-lo, hi) + 0.5) * S.step / lenPx]);
+  }
+  // silliqlash (median 5)
+  const smooth = (arr, k = 2) => arr.map((p, i) => { const win = arr.slice(Math.max(0, i - k), i + k + 1).map(q => q[1]).sort((a, b) => a - b); return [p[0], win[win.length >> 1]]; });
+  const box = (arr, k) => arr.map((p, i) => { const win = arr.slice(Math.max(0, i - k), i + k + 1); return [p[0], win.reduce((a, q) => a + q[1], 0) / win.length]; });
+  const coreS = box(smooth(smooth(core, 3), 2), 2);
+  // 3) belgilar: dasta tugashi (korpus boshlanishi)
+  const at = u => interpTable(coreS, u);
+  const neckSamples = []; for (let u = 0.2; u <= 0.6; u += 0.01) neckSamples.push(at(u));
+  neckSamples.sort((a, b) => a - b);
+  const wNeck = neckSamples[Math.floor(neckSamples.length * 0.3)];
+  let uMaxW = 0.85, wMax = 0; for (let u = 0.35; u <= 0.98; u += 0.005) { const v = at(u); if (v > wMax) { wMax = v; uMaxW = u; } }
+  let uNE = opt.uNE;
+  if (!uNE) { uNE = uMaxW; for (let u = uMaxW; u > 0.15; u -= 0.003) { if (at(u) < wNeck * 1.3) { uNE = u + 0.003; break; } } }
+  let uN = opt.uN;
+  if (!uN) { // bosh: ikki tomonga chiqqan quloqlar dasta kengligidan keskin keng bo'ladigan oxirgi joy
+    const oS = smooth(outerW, 2), outerAt = u => interpTable(oS, u);
+    uN = clamp(uNE * 0.26, 0.08, 0.25);
+    for (let u = uNE * 0.55; u > 0.03; u -= 0.004) if (outerAt(u) > wNeck * 1.4) { uN = clamp(u + 0.012, 0.06, 0.32); break; }
+  }
+  // 4) korpus konturi: simmetrik to'r ustida kontur kuzatish
+  const rNE = r0 + Math.round(uNE * rowsN), C = S.maxC;
+  const G = []; // simmetrik setka (faqat korpus qatorlari)
+  for (let r = rNE; r <= r1; r++) { const row = S.runs[r], o = new Uint8Array(2 * C + 1); for (let c = 0; c <= 2 * C; c++) o[c] = row[c] || row[2 * C - c] ? 1 : 0; G.push(o); }
+  // bitta bo'lakka — o'rta yo'lak bilan bog'langan qismini qoldirish
+  const GH = G.length, GW = 2 * C + 1, lab = new Uint8Array(GH * GW), qq = [];
+  for (let r = 0; r < GH; r++) if (G[r][C]) { lab[r * GW + C] = 1; qq.push(r * GW + C); }
+  while (qq.length) { const i = qq.pop(), r = (i / GW) | 0, c = i % GW; for (const [dr, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const rr = r + dr, cc = c + dc; if (rr >= 0 && cc >= 0 && rr < GH && cc < GW && G[rr][cc] && !lab[rr * GW + cc]) { lab[rr * GW + cc] = 1; qq.push(rr * GW + cc); } } }
+  // o'ng yarmini qator bo'yicha emas, kontur bo'ylab olish (Moore kuzatuvi)
+  const inside = (r, c) => r >= 0 && c >= 0 && r < GH && c < GW && lab[r * GW + c] === 1;
+  let sr = 0, sc = C; while (sc < GW - 1 && inside(0, sc + 1)) sc++;
+  const contour = [];
+  { const dirs = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
+    let r = sr, c = sc, d = 0, guard = 0; const startKey = r * GW + c;
+    do {
+      contour.push([c - C, r]);
+      let found = false;
+      for (let k = 0; k < 8; k++) { const nd = (d + 6 + k) % 8, rr = r + dirs[nd][0], cc = c + dirs[nd][1]; if (inside(rr, cc)) { r = rr; c = cc; d = nd; found = true; break; } }
+      if (!found) break;
+    } while ((r * GW + c !== startKey || contour.length < 3) && ++guard < 200000);
+  }
+  // normallashtirish: x — uzunlik ulushi, u — 0..1
+  let outline = contour.map(([c, r]) => [(c >= 0 ? c + 0.5 : c - 0.5) * S.step / lenPx, (r + rNE - r0) / rowsN]);
+  outline = rdp(outline.concat([outline[0]]), 0.9 * S.step / lenPx).slice(0, -1);
+  outline = chaikinClosed(outline, 3);
+  // aniq simmetriya: o'ng yarmini olib ko'zgu
+  const right = outline.filter(p => p[0] >= 0).sort((a, b) => 0);
+  void right;
+  const bodyCore = coreS.filter(([u]) => u >= uNE - 0.002).map(([u, v]) => [u, v]);
+  bodyCore.push([1, 0]);
+  const wAt = (u0, u1) => { const s = []; for (let u = u0; u <= u1; u += 0.005) s.push(at(u)); s.sort((a, b) => a - b); return s[s.length >> 1] || wNeck; };
+  const w0 = wAt(uN + 0.02, uN + 0.08), w1 = wAt(uNE - 0.08, uNE - 0.02);
+  const headW = wAt(0.02, Math.max(0.03, uN - 0.02));
+  const quality = { area: seg.area, comps: seg.comps, asym: asymN ? asym / asymN : 1, aspect: 1 / (2 * wMax) };
+  const ok = seg.area > 0.02 && seg.area < 0.85 && quality.aspect > 1.8 && quality.asym < 0.35;
+  return { profile: { source: "image", name: "Rasmdan tiklangan", outline, core: bodyCore, uN, uNE, w0, w1, headW, meta: {} },
+    axis: { head: headPt, tail: tailPt, lenPx }, coreS, outerW, uMaxW, quality, ok };
+}
+
+/* AI (Claude) bergan kengliklar asosida profil (piksel ajratish yomon bo'lganda) */
+function profileFromWidths(ai) {
+  const n = ai.widths.length, uNE = clamp(ai.neck_end_u, 0.25, 0.85), uN = clamp(ai.nut_u, 0.05, uNE - 0.1);
+  const core = [], outer = [];
+  for (let i = 0; i < n; i++) { const u = i / (n - 1); core.push([u, Math.max(0, (ai.core_widths?.[i] ?? ai.widths[i]) / 2)]); outer.push([u, Math.max(0, ai.widths[i] / 2)]); }
+  const at = (tab, u) => interpTable(tab, u);
+  const right = []; for (let u = uNE; u <= 1.0001; u += 0.01) right.push([Math.max(at(outer, u), at(core, u)), Math.min(1, u)]);
+  right[right.length - 1][0] = 0;
+  const outline = right.concat(right.slice(0, -1).reverse().map(([x, y]) => [-x, y]));
+  const bodyCore = []; for (let u = uNE; u <= 1.0001; u += 0.01) bodyCore.push([Math.min(1, u), at(core, u)]);
+  bodyCore.at(-1)[1] = 0;
+  const w0 = at(core, uN + 0.03), w1 = at(core, uNE - 0.03), headW = at(core, uN * 0.5);
+  return { source: "ai", name: "AI qayta tiklagan", outline: chaikinClosed(outline, 1), core: bodyCore, uN, uNE, w0, w1, headW, meta: {} };
+}
+
+</script>
+<script>
+/* ======================================================================
+   Joylash (nesting), tekshiruv va eksport
+   ====================================================================== */
+function bboxSubs(subs) {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const s of subs) {
+    if (s.circle) { const [cx, cy, r] = s.circle; x0 = Math.min(x0, cx - r); y0 = Math.min(y0, cy - r); x1 = Math.max(x1, cx + r); y1 = Math.max(y1, cy + r); }
+    else for (const [x, y] of s.pts) { if (x < x0) x0 = x; if (y < y0) y0 = y; if (x > x1) x1 = x; if (y > y1) y1 = y; }
+  }
+  return { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0 };
+}
+function partBBox(p) { return bboxSubs(p.paths.flatMap(x => x.subs)); }
+function partArea(p) {
+  const cut = p.paths[0].subs; let a = 0;
+  cut.forEach((s, i) => { if (s.open) return; const v = s.circle ? Math.PI * s.circle[2] ** 2 : Math.abs(polyArea(s.pts)); a += i === 0 ? v : -v; });
+  return Math.max(0, a);
+}
+/* Kerf kompensatsiyasi: tashqi kontur kattalashadi, teshiklar kichrayadi */
+function applyKerf(p, kerf) {
+  if (!kerf) return p;
+  const h = kerf / 2;
+  return { ...p, paths: p.paths.map(path => path.kind !== "cut" ? path : { ...path, subs: path.subs.map((s, i) => {
+    if (s.open) return s;
+    if (s.circle) return { circle: [s.circle[0], s.circle[1], Math.max(0.1, s.circle[2] + (i === 0 ? h : -h))] };
+    return { pts: offsetPoly(s.pts, i === 0 ? h : -h) };
+  }) }) };
+}
+function placePart(p, rot, dx, dy) {
+  const bb = partBBox(p);
+  const f = rot ? ([x, y]) => [(bb.y1 - y) + dx, (x - bb.x0) + dy] : ([x, y]) => [x - bb.x0 + dx, y - bb.y0 + dy];
+  return { ...p, rot, paths: p.paths.map(path => ({ ...path, subs: path.subs.map(s => s.circle ? { circle: [...f(s.circle.slice(0, 2)), s.circle[2]] } : { pts: s.pts.map(f), open: s.open }) })) };
+}
+/* MaxRects (eng qisqa tomon bo'yicha) — aylantirish bilan */
+function nestOnce(parts, W, H, margin, gap, order, heur) {
+  const items = parts.map(p => { const bb = partBBox(p); return { p, w: bb.w + gap, h: bb.h + gap, area: bb.w * bb.h }; });
+  const iw = W - 2 * margin + gap, ih = H - 2 * margin + gap;
+  for (const it of items) {
+    const fit = (it.w <= iw && it.h <= ih) || (it.h <= iw && it.w <= ih);
+    if (!fit) return { error: { pid: it.p.pid, msg: `${it.p.pid} "${it.p.name}" (${(it.w - gap).toFixed(0)} × ${(it.h - gap).toFixed(0)} mm) ${W} × ${H} mm listga sig'maydi.` } };
+  }
+  const sorters = [(a, b) => Math.max(b.w, b.h) - Math.max(a.w, a.h) || b.area - a.area, (a, b) => b.area - a.area, (a, b) => b.h - a.h, (a, b) => (b.w + b.h) - (a.w + a.h)];
+  items.sort(sorters[order || 0]);
+  const bins = [];
+  const newBin = () => { const b = { free: [{ x: 0, y: 0, w: iw, h: ih }], placed: [] }; bins.push(b); return b; };
+  const findPos = (b, w, h) => {
+    let best = null;
+    for (const r of b.free) for (const [ww, hh, rot] of [[w, h, false], [h, w, true]]) {
+      if (ww <= r.w + 1e-9 && hh <= r.h + 1e-9) {
+        const s1 = heur === 1 ? r.y + hh : Math.min(r.w - ww, r.h - hh), s2 = Math.max(r.w - ww, r.h - hh), sy = heur === 1 ? r.x : r.y + hh * 0.001;
+        if (!best || s1 < best.s1 - 1e-9 || (Math.abs(s1 - best.s1) < 1e-9 && sy < best.sy)) best = { x: r.x, y: r.y, w: ww, h: hh, rot, s1, s2, sy };
+      }
+    }
+    return best;
+  };
+  const split = (b, pl) => {
+    const out = [];
+    for (const r of b.free) {
+      if (pl.x >= r.x + r.w || pl.x + pl.w <= r.x || pl.y >= r.y + r.h || pl.y + pl.h <= r.y) { out.push(r); continue; }
+      if (pl.x > r.x) out.push({ x: r.x, y: r.y, w: pl.x - r.x, h: r.h });
+      if (pl.x + pl.w < r.x + r.w) out.push({ x: pl.x + pl.w, y: r.y, w: r.x + r.w - pl.x - pl.w, h: r.h });
+      if (pl.y > r.y) out.push({ x: r.x, y: r.y, w: r.w, h: pl.y - r.y });
+      if (pl.y + pl.h < r.y + r.h) out.push({ x: r.x, y: pl.y + pl.h, w: r.w, h: r.y + r.h - pl.y - pl.h });
+    }
+    // ichma-ich bo'sh joylarni olib tashlash
+    b.free = out.filter((r, i) => r.w > 0.5 && r.h > 0.5 && !out.some((q, j) => j !== i && r.x >= q.x && r.y >= q.y && r.x + r.w <= q.x + q.w && r.y + r.h <= q.y + q.h && (j < i || r.w !== q.w || r.h !== q.h || r.x !== q.x || r.y !== q.y)));
+  };
+  for (const it of items) {
+    let done = false;
+    for (const b of bins) { const pos = findPos(b, it.w, it.h); if (pos) { b.placed.push({ it, pos }); split(b, pos); done = true; break; } }
+    if (!done) { const b = newBin(); const pos = findPos(b, it.w, it.h); b.placed.push({ it, pos }); split(b, pos); }
+  }
+  return { sheets: bins.map(b => b.placed.map(({ it, pos }) => placePart(it.p, pos.rot, margin + pos.x, margin + pos.y))), score: bins.length * 1e9 + bins.map(b => b.placed.reduce((a, q) => a + q.pos.w * q.pos.h, 0)).at(-1) };
+}
+/* Kichik U-qovurg'alarni kattarog'ining ichiga joylash (material tejash) */
+function groupRibs(parts, gap) {
+  const ribs = parts.filter(p => p.key === "rib" && p.ribGeo), rest = parts.filter(p => !(p.key === "rib" && p.ribGeo));
+  ribs.sort((a, b) => b.ribGeo.w - a.ribGeo.w);
+  const chains = [];
+  for (const r of ribs) {
+    const c = chains.find(ch => { const big = ch.at(-1).ribGeo; return big.band && r.ribGeo.w + gap <= big.wi && r.ribGeo.dOut + gap <= big.dIn && r.ribGeo.tabH < 0.5 * big.dIn; });
+    if (c) c.push(r); else chains.push([r]);
+  }
+  const groups = chains.map(ch => ch.length === 1 ? ch[0] : { pid: ch.map(p => p.pid).join("+"), name: "qovurg'alar to'plami", members: ch,
+    paths: ch.flatMap((p, mi) => p.paths.map(pa => ({ ...pa, m: mi, subs: pa.subs.map(s => s.circle ? { circle: s.circle.slice() } : { pts: s.pts.map(q => [q[0], q[1] + (mi ? gap * 0 : 0)]), open: s.open }) }))) });
+  return rest.concat(groups);
+}
+function ungroup(placed) {
+  const out = [];
+  for (const p of placed) {
+    if (!p.members) { out.push(p); continue; }
+    p.members.forEach((mp, mi) => out.push({ ...mp, rot: p.rot, paths: p.paths.filter(pa => pa.m === mi).map(({ m, ...pa }) => pa) }));
+  }
+  return out;
+}
+function nest(parts, W, H, margin, gap) {
+  parts = groupRibs(parts, gap);
+  let best = null;
+  for (let o = 0; o < 4; o++) for (let h = 0; h < 2; h++) {
+    const r = nestOnce(parts, W, H, margin, gap, o, h);
+    if (r.error) return r;
+    if (!best || r.score < best.score) best = r;
+  }
+  best.sheets = best.sheets.map(ungroup);
+  return best;
+}
+
+function pathLen(s) {
+  if (s.circle) return 2 * Math.PI * s.circle[2];
+  let L = 0; for (let i = 1; i < s.pts.length; i++) L += Math.hypot(s.pts[i][0] - s.pts[i - 1][0], s.pts[i][1] - s.pts[i - 1][1]);
+  if (!s.open) L += Math.hypot(s.pts[0][0] - s.pts.at(-1)[0], s.pts[0][1] - s.pts.at(-1)[1]);
+  return L;
+}
+function sheetStats(parts, W, H) {
+  let cut = 0, fine = 0, area = 0;
+  for (const p of parts) { area += partArea(p); for (const path of p.paths) for (const s of path.subs) { if (path.kind === "cut") cut += pathLen(s); else fine += pathLen(s); } }
+  return { cut, fine, area, util: area / (W * H) };
+}
+
+/* ======================= TEKSHIRUV ======================= */
+function inMaterial(q, p) {
+  const subs = p.paths[0].subs; if (!subs[0].pts || !pip(q, subs[0].pts)) return false;
+  return !subs.slice(1).some(h => h.circle ? Math.hypot(q[0] - h.circle[0], q[1] - h.circle[1]) < h.circle[2] : pip(q, h.pts));
+}
+function partsOverlap(a, b) {
+  const pa = a.paths[0].subs[0].pts, pb = b.paths[0].subs[0].pts; if (!pa || !pb) return false;
+  for (const q of pa) if (inMaterial(q, b) && polyDist(q, pb) > 0.3) return true;
+  for (const q of pb) if (inMaterial(q, a) && polyDist(q, pa) > 0.3) return true;
+  return false;
+}
+function validate(model, sheets, prm) {
+  const out = []; // {level:'error'|'warn'|'info', pid, msg, fix}
+  const t = prm.tActual;
+  for (const w of model.warnings) out.push({ level: "info", pid: "", msg: w.msg });
+  // ochiq konturlar
+  for (const p of model.parts) p.paths.forEach(pa => { if (pa.kind === "cut" && !pa.kerf) pa.subs.forEach(s => { if (s.open) out.push({ level: "error", pid: p.pid, msg: `${p.pid}: kesish konturi yopilmagan.`, fix: "close" }); else if (s.pts && Math.hypot(s.pts[0][0] - s.pts.at(-1)[0], s.pts[0][1] - s.pts.at(-1)[1]) > 0 && s.pts.length < 3) out.push({ level: "error", pid: p.pid, msg: `${p.pid}: buzilgan kontur.` }); }); });
+  // tirqishlar
+  for (const sl of model.slots) {
+    const pid = sl.part.pid;
+    const xs = sl.poly.map(q => q[0]), ys = sl.poly.map(q => q[1]);
+    const a = Math.max(...xs) - Math.min(...xs), b = Math.max(...ys) - Math.min(...ys), narrow = Math.min(a, b);
+    if (sl.w + 1e-6 < sl.need) out.push({ level: "error", pid, msg: `${pid}: tirqish ${sl.w.toFixed(2)} mm — ${sl.need.toFixed(2)} mm materialga tor.`, fix: "clearance" });
+    else if (narrow < 1.5) out.push({ level: "warn", pid, msg: `${pid}: tirqish juda sayoz (${narrow.toFixed(1)} mm) — ulanish bo'sh bo'ladi.`, fix: "thin" });
+    const outer = sl.part.paths[0].subs[0].pts;
+    const inner = sl.poly.every(q => pip(q, outer) || polyDist(q, outer) < 0.05);
+    if (inner) { const wall = Math.min(...sl.poly.map(q => polyDist(q, outer))); if (wall < Math.max(1.2, 0.4 * t) && wall > 0.05) out.push({ level: "warn", pid, msg: `${pid}: tirqish chetga juda yaqin (${wall.toFixed(1)} mm devor).`, fix: "thin" }); }
+  }
+  // detallar ichidagi uzilgan bo'laklar va ingichka joylar
+  for (const p of model.parts) {
+    const subs = p.paths[0].subs, outer = subs[0].pts;
+    if (!outer) continue;
+    const bb = bboxSubs([subs[0]]);
+    if (Math.min(bb.w, bb.h) < Math.max(2, 0.7 * t)) out.push({ level: "warn", pid: p.pid, msg: `${p.pid}: detal juda ingichka (${Math.min(bb.w, bb.h).toFixed(1)} mm).`, fix: "thin" });
+    subs.slice(1).forEach(h => {
+      const c = h.circle ? [h.circle[0], h.circle[1]] : h.pts[0];
+      if (!pip(c, outer)) out.push({ level: "error", pid: p.pid, msg: `${p.pid}: ichki kontur detal tashqarisida — uzilgan bo'lak.`, fix: "drop" });
+      else if (h.circle) { const wall = polyDist(c, outer) - h.circle[2]; if (wall < Math.max(1.5, 0.5 * t)) out.push({ level: "warn", pid: p.pid, msg: `${p.pid}: teshik atrofida devor ${wall.toFixed(1)} mm — sinishi mumkin.`, fix: "thin" }); if (2 * h.circle[2] < t * 0.9) out.push({ level: "warn", pid: p.pid, msg: `${p.pid}: teshik diametri material qalinligidan kichik.`, fix: "thin" }); }
+    });
+  }
+  // takror konturlar
+  for (const sh of sheets) {
+    const seen = new Map();
+    for (const p of sh.parts) for (const pa of p.paths) for (const s of pa.subs) {
+      const key = pa.kind + ":" + (s.circle ? s.circle.map(v => v.toFixed(2)).join(",") : s.pts.length + ":" + s.pts.slice(0, 3).flat().map(v => v.toFixed(2)).join(","));
+      if (seen.has(key)) out.push({ level: "warn", pid: p.pid, msg: `${p.pid}: takrorlangan kontur (${sh.label}).`, fix: "dedupe" }); else seen.set(key, 1);
+    }
+    // list chetidan chiqish va ustma-ust tushish
+    const bbs = sh.parts.map(p => ({ p, b: partBBox(p) }));
+    for (const { p, b } of bbs) if (b.x0 < -0.01 || b.y0 < -0.01 || b.x1 > prm.sheetW + 0.01 || b.y1 > prm.sheetH + 0.01) out.push({ level: "error", pid: p.pid, msg: `${p.pid}: list chegarasidan chiqib ketgan.`, fix: "nest" });
+    for (let i = 0; i < bbs.length; i++) for (let j = i + 1; j < bbs.length; j++) {
+      const a = bbs[i].b, c = bbs[j].b;
+      if (a.x0 < c.x1 - 0.2 && c.x0 < a.x1 - 0.2 && a.y0 < c.y1 - 0.2 && c.y0 < a.y1 - 0.2 && partsOverlap(bbs[i].p, bbs[j].p)) out.push({ level: "error", pid: bbs[i].p.pid, msg: `${bbs[i].p.pid} va ${bbs[j].p.pid} ustma-ust tushgan.`, fix: "nest" });
+    }
+  }
+  // ulanishlar
+  const linked = new Set(); model.joints.forEach(([a, b]) => { linked.add(a); linked.add(b); });
+  model.parts.forEach((p, i) => { if (!linked.has(i)) out.push({ level: "warn", pid: p.pid, msg: `${p.pid} "${p.name}" hech qaysi detalga ulanmagan.` }); });
+  // qisqartirish: bir xil xabarlar
+  const uniq = []; const keys = new Set();
+  for (const o of out) { const k = o.level + o.msg; if (!keys.has(k)) { keys.add(k); uniq.push(o); } }
+  return uniq;
+}
+
+/* ======================= EKSPORT ======================= */
+const KB = 0.5522847498;
+const f2 = v => { const s = v.toFixed(3).replace(/0+$/, "").replace(/\.$/, ""); return s === "-0" || s === "" ? "0" : s; };
+function svgPathD(subs, k = 1) {
+  let d = "";
+  for (const s of subs) {
+    if (s.circle) {
+      const [x, y, r] = s.circle.map(v => v * k), c = KB * r;
+      d += `M${f2(x + r)} ${f2(y)}C${f2(x + r)} ${f2(y + c)} ${f2(x + c)} ${f2(y + r)} ${f2(x)} ${f2(y + r)}C${f2(x - c)} ${f2(y + r)} ${f2(x - r)} ${f2(y + c)} ${f2(x - r)} ${f2(y)}C${f2(x - r)} ${f2(y - c)} ${f2(x - c)} ${f2(y - r)} ${f2(x)} ${f2(y - r)}C${f2(x + c)} ${f2(y - r)} ${f2(x + r)} ${f2(y - c)} ${f2(x + r)} ${f2(y)}Z`;
+    } else d += "M" + s.pts.map(([x, y]) => `${f2(x * k)} ${f2(y * k)}`).join("L") + (s.open ? "" : "Z");
+  }
+  return d;
+}
+/* Qatlamli SVG (CUT / ENGRAVE / REFERENCE), mm o'lchamda */
+function exportCorelSVG(sheet, prm) {
+  const W = prm.sheetW, H = prm.sheetH, body = [];
+  for (const p of sheet.parts) for (const pa of p.paths) body.push(`  <path class="fil0 ${pa.kind === "cut" ? "str0" : "str1"}" d="${svgPathD(pa.subs, 100)}"/>`);
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<!-- Creator: Rubob Laser Model Generator (CorelDRAW-compatible, 1 birlik = 0.01 mm) -->\n' +
+    `<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${W}mm" height="${H}mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 ${W * 100} ${H * 100}" xmlns:xlink="http://www.w3.org/1999/xlink">\n` +
+    ' <defs>\n  <style type="text/css">\n   <![CDATA[\n    .str1 {stroke:#373435;stroke-width:0.2;stroke-miterlimit:22.9256}\n    .str0 {stroke:#373435;stroke-width:20;stroke-miterlimit:22.9256}\n    .fil0 {fill:none}\n   ]]>\n  </style>\n </defs>\n' +
+    ' <g id="Layer_x0020_1">\n' + body.join("\n") + '\n </g>\n</svg>\n';
+}
+function exportSVG(sheet, prm, colors, opts = {}) {
+  if (opts.corel) return exportCorelSVG(sheet, prm);
+  const W = prm.sheetW, H = prm.sheetH, corel = opts.corel;
+  const k = corel ? 100 : 1, sw = corel ? 10 : 0.1;
+  const g = { cut: [], fine: [], ref: [] };
+  for (const p of sheet.parts) for (const pa of p.paths) g[pa.kind === "cut" ? "cut" : "fine"].push(`<path d="${svgPathD(pa.subs, k)}"/>`);
+  if (opts.reference) g.ref.push(`<rect x="0" y="0" width="${W * k}" height="${H * k}"/>`);
+  const layer = (id, c, arr, w) => `<g id="${id}" inkscape:groupmode="layer" inkscape:label="${id}" fill="none" stroke="${c}" stroke-width="${w}">\n${arr.join("\n")}\n</g>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!-- Rubob Laser Model Generator · ${sheet.label} · ${W}x${H} mm · ${corel ? "1 birlik = 0.01 mm (CorelDRAW)" : "1 birlik = 1 mm"} -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="${W}mm" height="${H}mm" viewBox="0 0 ${W * k} ${H * k}" style="fill-rule:evenodd">
+${layer("CUT", colors.cut, g.cut, sw)}
+${layer("ENGRAVE", colors.engrave, g.fine, sw)}
+${layer("REFERENCE", colors.ref, g.ref, sw)}
+</svg>
+`;
+}
+/* DXF R12 (ASCII), mm, CUT/ENGRAVE/REFERENCE qatlamlari */
+function exportDXF(sheet, prm) {
+  const H = prm.sheetH, o = [];
+  const P = (...a) => o.push(...a.map(String));
+  P(0, "SECTION", 2, "HEADER", 9, "$ACADVER", 1, "AC1009", 9, "$INSUNITS", 70, 4, 9, "$EXTMIN", 10, 0, 20, 0, 30, 0, 9, "$EXTMAX", 10, prm.sheetW, 20, H, 30, 0, 0, "ENDSEC");
+  P(0, "SECTION", 2, "TABLES", 0, "TABLE", 2, "LAYER", 70, 3);
+  for (const [n, c] of [["CUT", 1], ["ENGRAVE", 7], ["REFERENCE", 5]]) P(0, "LAYER", 2, n, 70, 0, 62, c, 6, "CONTINUOUS");
+  P(0, "ENDTAB", 0, "ENDSEC", 0, "SECTION", 2, "ENTITIES");
+  const poly = (pts, closed, layer) => {
+    P(0, "POLYLINE", 8, layer, 66, 1, 10, 0, 20, 0, 30, 0, 70, closed ? 1 : 0);
+    for (const [x, y] of pts) P(0, "VERTEX", 8, layer, 10, x.toFixed(4), 20, (H - y).toFixed(4), 30, 0);
+    P(0, "SEQEND", 8, layer);
+  };
+  for (const p of sheet.parts) for (const pa of p.paths) {
+    const layer = pa.kind === "cut" ? "CUT" : "ENGRAVE";
+    for (const s of pa.subs) {
+      if (s.circle) P(0, "CIRCLE", 8, layer, 10, s.circle[0].toFixed(4), 20, (H - s.circle[1]).toFixed(4), 30, 0, 40, s.circle[2].toFixed(4));
+      else poly(s.pts, !s.open, layer);
+    }
+  }
+  poly([[0, 0], [prm.sheetW, 0], [prm.sheetW, H], [0, H]], true, "REFERENCE");
+  P(0, "ENDSEC", 0, "EOF");
+  return o.join("\r\n") + "\r\n";
+}
+/* Vektor PDF — har list alohida sahifa, haqiqiy o'lchamda */
+function exportPDF(sheets, prm, colors) {
+  const pt = 72 / 25.4, W = prm.sheetW * pt, H = prm.sheetH * pt;
+  const rgb = hex => { const n = parseInt(hex.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255].map(v => v.toFixed(3)).join(" "); };
+  const num = v => v.toFixed(2);
+  const pageStreams = sheets.map(sh => {
+    const s = [];
+    for (const [kind, col, lw] of [["fine", colors.engrave, 0.1], ["cut", colors.cut, 0.1]]) {
+      s.push(`${rgb(col)} RG ${num(lw * pt)} w`);
+      for (const p of sh.parts) for (const pa of p.paths) {
+        if ((pa.kind === "cut") !== (kind === "cut")) continue;
+        for (const sub of pa.subs) {
+          if (sub.circle) {
+            const [cx, cy, r] = sub.circle.map(v => v * pt), c = KB * r, Y = y => num(H - y);
+            s.push(`${num(cx + r)} ${Y(cy)} m ${num(cx + r)} ${Y(cy + c)} ${num(cx + c)} ${Y(cy + r)} ${num(cx)} ${Y(cy + r)} c ${num(cx - c)} ${Y(cy + r)} ${num(cx - r)} ${Y(cy + c)} ${num(cx - r)} ${Y(cy)} c ${num(cx - r)} ${Y(cy - c)} ${num(cx - c)} ${Y(cy - r)} ${num(cx)} ${Y(cy - r)} c ${num(cx + c)} ${Y(cy - r)} ${num(cx + r)} ${Y(cy - c)} ${num(cx + r)} ${Y(cy)} c S`);
+          } else {
+            s.push(sub.pts.map(([x, y], i) => `${num(x * pt)} ${num(H - y * pt)} ${i ? "l" : "m"}`).join(" ") + (sub.open ? " S" : " s"));
+          }
+        }
+      }
+    }
+    return s.join("\n");
+  });
+  const objs = [];
+  objs[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+  const kids = sheets.map((_, i) => `${3 + i * 2} 0 R`).join(" ");
+  objs[2] = `<< /Type /Pages /Kids [${kids}] /Count ${sheets.length} >>`;
+  pageStreams.forEach((st, i) => {
+    objs[3 + i * 2] = `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${num(W)} ${num(H)}] /Contents ${4 + i * 2} 0 R >>`;
+    objs[4 + i * 2] = `<< /Length ${st.length} >>\nstream\n${st}\nendstream`;
+  });
+  let out = "%PDF-1.4\n", offs = [];
+  for (let i = 1; i < objs.length; i++) { offs[i] = out.length; out += `${i} 0 obj\n${objs[i]}\nendobj\n`; }
+  const xref = out.length;
+  out += `xref\n0 ${objs.length}\n0000000000 65535 f \n` + offs.slice(1).map(o => String(o).padStart(10, "0") + " 00000 n \n").join("");
+  out += `trailer\n<< /Size ${objs.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return out;
+}
+/* G-code (GRBL lazer / CNC freza) */
+function exportGcode(sheet, prm, laser) {
+  const H = prm.sheetH, o = [];
+  const X = v => v.toFixed(3);
+  const cnc = laser.machine === "cnc";
+  o.push(`; Rubob Laser Model Generator — ${sheet.label}`, `; Mashina: ${laser.machineName}, material: ${laser.materialName} ${prm.tActual} mm`,
+    `; Kesish: F${laser.cutSpeed} S${laser.cutPower} x${laser.passes} o'tish · Gravyura: F${laser.engSpeed} S${laser.engPower}`,
+    `; Koordinata boshi: listning chap pastki burchagi`, "G21", "G90", cnc ? "M5" : "M5", cnc ? "G0 Z5" : "G0 X0 Y0");
+  const pathPts = s => s.circle ? Array.from({ length: 73 }, (_, i) => { const a = i / 72 * 2 * Math.PI; return [s.circle[0] + s.circle[2] * Math.cos(a), s.circle[1] + s.circle[2] * Math.sin(a)]; }) : (s.open ? s.pts : s.pts.concat([s.pts[0]]));
+  const run = (pts, F, S, z) => {
+    o.push(`G0 X${X(pts[0][0])} Y${X(H - pts[0][1])}`);
+    if (cnc) o.push(`G1 Z${X(z)} F${Math.round(F / 3)}`); else o.push(`M4 S${S}`);
+    o.push(`G1 X${X(pts[1] ? pts[1][0] : pts[0][0])} Y${X(H - (pts[1] ? pts[1][1] : pts[0][1]))} F${F}`);
+    for (const q of pts.slice(2)) o.push(`G1 X${X(q[0])} Y${X(H - q[1])}`);
+    if (cnc) o.push("G0 Z5"); else o.push("M5");
+  };
+  if (cnc) o.push(`M3 S${laser.spindle || 12000}`);
+  // 1) gravyura, 2) ichki konturlar, 3) tashqi konturlar
+  for (const p of sheet.parts) for (const pa of p.paths) if (pa.kind === "fine" && !cnc) for (const s of pa.subs) run(pathPts(s), laser.engSpeed, laser.engPower, 0);
+  const passes = Math.max(1, laser.passes);
+  const depthOf = k => -Math.min(prm.tActual + 0.2, (k + 1) * (prm.tActual + 0.2) / passes);
+  for (const p of sheet.parts) { const cut = p.paths.filter(x => x.kind === "cut").flatMap(x => x.subs);
+    for (const s of cut.slice(1)) for (let k = 0; k < passes; k++) run(pathPts(s), laser.cutSpeed, laser.cutPower, depthOf(k)); }
+  for (const p of sheet.parts) { const s = p.paths[0].subs[0]; for (let k = 0; k < passes; k++) run(pathPts(s), laser.cutSpeed, laser.cutPower, depthOf(k)); }
+  o.push("M5", cnc ? "G0 Z10" : "", "G0 X0 Y0", "M2");
+  return o.filter(Boolean).join("\n") + "\n";
+}
+/* Oddiy ZIP (siqmasdan) */
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files) { // [{name, data: Uint8Array|string}]
+  const enc = new TextEncoder(), chunks = [], central = []; let off = 0;
+  const u16 = v => [v & 255, v >> 8 & 255], u32 = v => [v & 255, v >> 8 & 255, v >> 16 & 255, v >>> 24 & 255];
+  for (const f of files) {
+    const data = typeof f.data === "string" ? enc.encode(f.data) : f.data, name = enc.encode(f.name), crc = crc32(data);
+    const head = [0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0)];
+    chunks.push(new Uint8Array(head), name, data);
+    central.push([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)], name);
+    off += head.length + name.length + data.length;
+  }
+  const cd = []; let cdLen = 0;
+  for (let i = 0; i < central.length; i += 2) { const a = new Uint8Array(central[i]); cd.push(a, central[i + 1]); cdLen += a.length + central[i + 1].length; }
+  const end = new Uint8Array([0x50, 0x4b, 5, 6, 0, 0, 0, 0, ...u16(files.length), ...u16(files.length), ...u32(cdLen), ...u32(off), 0, 0]);
+  const all = [...chunks, ...cd, end], total = all.reduce((a, c) => a + c.length, 0), out = new Uint8Array(total);
+  let p = 0; for (const c of all) { out.set(c, p); p += c.length; }
+  return out;
+}
+function partsCSV(model, sheetOf, prm) {
+  const rows = [["Detal ID", "Nomi", "Soni", "Material", "Qalinlik, mm", "O'lcham, mm", "Kesish/gravyura", "List"]];
+  for (const p of model.parts) { const b = partBBox(p); rows.push([p.pid, p.name, 1, prm.materialName, prm.tActual, `${b.w.toFixed(1)} x ${b.h.toFixed(1)}`, p.paths.some(x => x.kind === "fine") ? "kesish + gravyura" : "kesish", sheetOf[p.pid] || ""]); }
+  return "﻿" + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\r\n");
+}
+
+</script>
+<script>
+(function () {
+"use strict";
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const nf = (v, d = 0) => (+v).toLocaleString("uz-UZ", { minimumFractionDigits: d, maximumFractionDigits: d }).replace(/ /g, " ");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+const S = { shape: "uzbek", profile: templateProfile("uzbek"), ratios: null, img: null, model: null, sheets: [], checks: [], sheetIdx: 0, sel: null, guide: null, sample: null, downloads: null, metaFrom: null };
+const MATS = { plywood: "fanera", mdf: "MDF", acrylic: "akril", cardboard: "karton" };
+const MACH = { diode: "Diod lazer", co2: "CO2 lazer", cnc: "CNC freza" };
+
+/* ---------------- parametrlar ---------------- */
+const radio = n => document.querySelector(`input[name=${n}]:checked`)?.value;
+function ratiosOf(prof) {
+  const coreMax = Math.max(...prof.core.map(c => c[1]));
+  const rW = 2 * coreMax, rD = prof.meta.depth ?? (prof.depthRatio ? prof.depthRatio * rW : 0.42 * rW);
+  return { rW, rD };
+}
+function readPrm() {
+  const tA = clamp(+$("ta").value || +radio("tn") || 3, 0.8, 8);
+  const sw = clamp(+$("sw").value || 600, 100, 3000), sh = clamp(+$("sh").value || 400, 100, 3000);
+  const margin = clamp(+$("margin").value || 0, 0, 30);
+  return {
+    length: +$("len").value, scale: +$("scale").value, bodyW: +$("bw").value, bodyD: +$("bd").value,
+    tActual: tA, clearance: +$("clr").value, ribs: +$("ribs").value <= 7 ? "auto" : +$("ribs").value,
+    cover: $("cover").checked, coverN: +$("coverN").value, coverT: +radio("ct") || 1.5, coverKerf: $("coverKerf").checked, rearFlat: $("rearSel").value === "flat", neckCover: $("neckCover").checked,
+    decor: radio("decor"), cutThrough: $("cutThrough").checked, strings: $("strEng").checked, labels: $("labels").checked, stand: $("stand").checked,
+    override: { pegsMain: +$("pegM").value, pegsSym: +$("pegS").value, strings: +$("strN").value, frets: +$("fretN").value, rosettes: +$("rosN").value, bridgeU: S.profile.meta.bridgeU },
+    sheetW: sw, sheetH: sh, margin, gap: clamp(+$("gap").value || 3, 0.5, 20), maxPart: Math.max(sw, sh) - 2 * margin - 2,
+    materialName: MATS[$("mat").value], material: $("mat").value
+  };
+}
+function laserPrm() {
+  const m = $("mach").value;
+  return { machine: m, machineName: MACH[m], materialName: MATS[$("mat").value], cutSpeed: +$("cutF").value, cutPower: +$("cutS").value, passes: +$("passes").value,
+    engSpeed: +$("engF").value, engPower: Math.round(+$("engI").value / 100 * (m === "co2" ? 600 : 1000)), kerf: m === "cnc" ? +$("tool").value : +$("kerf").value };
+}
+function setLaserDefaults() {
+  const m = $("mach").value, mat = $("mat").value, t = +$("ta").value || 3;
+  const tab = {
+    diode: { plywood: [250, 1000, 1.0], mdf: [220, 1000, 0.9], acrylic: [150, 1000, 1.2], cardboard: [900, 700, 3] },
+    co2: { plywood: [600, 650, 4], mdf: [500, 700, 4], acrylic: [400, 600, 5], cardboard: [1800, 300, 6] },
+    cnc: { plywood: [800, 0, 1], mdf: [900, 0, 1.2], acrylic: [600, 0, 0.8], cardboard: [1200, 0, 3] }
+  }[m][mat];
+  $("cutF").value = tab[0]; $("cutS").value = tab[1]; $("passes").value = Math.max(1, Math.ceil(t / tab[2]));
+  $("engF").value = m === "co2" ? 9000 : m === "diode" ? 2000 : 1200;
+  if (m !== "cnc") $("kerf").value = m === "co2" ? 0.15 : 0.1;
+  $("kerfF").hidden = m === "cnc"; $("toolF").hidden = m !== "cnc";
+  let note = m === "cnc" ? "CNC: gravyura chiziqlari G-code ga kiritilmaydi; frezaning radiusi kesishda hisobga olinadi." : `Taxminiy qiymatlar (${MACH[m]}, ${MATS[mat]} ${nf(t, 1)} mm). Avval sinov bo'lagida tekshiring.`;
+  if (m === "diode" && mat === "acrylic") note = "Diod lazer shaffof va ko'k akrilni deyarli kesmaydi — CO2 lazer yoki fanera tanlang.";
+  $("laserNote").textContent = note;
+  $("kerfOut").textContent = nf(+$("kerf").value, 2) + " mm";
+}
+
+/* proportsiyalar */
+function applyRatios(from) {
+  const r = S.ratios; if (!r) return;
+  const L = +$("len").value, W = +$("bw").value, D = +$("bd").value;
+  if (!$("keep").checked) return;
+  let nL = L;
+  if (from === "bw") nL = W / r.rW; else if (from === "bd") nL = D / r.rD;
+  nL = clamp(nL, 300, 1000);
+  $("len").value = Math.round(nL);
+  $("bw").value = clamp(Math.round(nL * r.rW), 80, 300);
+  $("bd").value = clamp(Math.round(nL * r.rD), 30, 150);
+}
+function setProfile(prof, keepMeta) {
+  S.profile = prof;
+  S.ratios = ratiosOf(prof);
+  if (!keepMeta) {
+    const m = prof.meta;
+    if (m.pegsMain != null) $("pegM").value = m.pegsMain;
+    if (m.pegsSym != null) $("pegS").value = m.pegsSym;
+    if (m.strings != null) $("strN").value = m.strings;
+    if (m.frets != null) $("fretN").value = m.frets;
+    if (m.rosettes != null) $("rosN").value = m.rosettes;
+  }
+  applyRatios("len");
+}
+function syncOutputs() {
+  const p = readPrm();
+  $("lenOut").textContent = `${p.length} mm`; $("bwOut").textContent = `${p.bodyW} mm`; $("bdOut").textContent = `${p.bodyD} mm`;
+  $("scaleOut").textContent = `${p.scale} %`; $("ribsOut").textContent = p.ribs === "auto" ? "avto" : p.ribs;
+  $("taOut").textContent = nf(p.tActual, 2) + " mm"; $("clrOut").textContent = nf(p.clearance, 2) + " mm";
+  $("engIOut").textContent = $("engI").value + " %"; $("kerfOut").textContent = nf(+$("kerf").value, 2) + " mm";
+  $("expOut").textContent = $("exp").value + " %"; $("coverNOut").textContent = $("coverN").value;
+  ["coverN", "rearSel", "coverKerf", "neckCover"].forEach(id => { $(id).disabled = !$("cover").checked; }); document.querySelectorAll('input[name=ct]').forEach(r => { r.disabled = !$("cover").checked; });
+  const L = +$("len").value;
+  document.querySelectorAll("#presets button").forEach(b => b.setAttribute("aria-pressed", b.dataset.l === String(L) || (b.dataset.l === "custom" && ![300, 400, 500, 650].includes(L))));
+  document.querySelectorAll("#sheetPresets button").forEach(b => b.setAttribute("aria-pressed", b.dataset.w === "custom" ? !document.querySelector(`#sheetPresets button[data-w="${p.sheetW}"][data-h="${p.sheetH}"]`) : (+b.dataset.w === p.sheetW && +b.dataset.h === p.sheetH)));
+  const tn = +radio("tn");
+  $("taChips").innerHTML = [-0.2, -0.1, 0, 0.1, 0.2].map(d => `<button type="button" data-t="${(tn + d).toFixed(2)}">${nf(tn + d, tn < 2 ? 2 : 1)}</button>`).join("");
+}
+
+/* ---------------- hisoblash ---------------- */
+let busy = 0;
+function compute(opts = {}) {
+  const prm = readPrm();
+  syncOutputs();
+  let model;
+  try { model = design(prm, S.profile); } catch (e) { console.error(e); status("Geometriyani qurishda xato: " + e.message); return; }
+  const lp = laserPrm();
+  const kerfed = model.parts.map(p => applyKerf(p, lp.kerf));
+  // material qalinligi bo'yicha guruhlab joylash
+  const sameT = !prm.cover || Math.abs(prm.coverT - prm.tActual) < 1e-6;
+  const groups = sameT ? [{ thick: prm.tActual, name: "", parts: kerfed }] : [{ thick: prm.tActual, name: "karkas", parts: kerfed.filter(p => p.mat !== "skin") }, { thick: prm.coverT, name: "qoplama", parts: kerfed.filter(p => p.mat === "skin") }];
+  S.model = model; S.prm = prm; S.nestError = null; S.sheets = [];
+  for (const gr of groups) {
+    if (!gr.parts.length) continue;
+    const n = nest(gr.parts, prm.sheetW, prm.sheetH, prm.margin, prm.gap + (lp.machine === "cnc" ? lp.kerf : 0));
+    if (n.error) { S.nestError = n.error; S.sheets = []; break; }
+    n.sheets.forEach((ps, i) => S.sheets.push({ thick: gr.thick, label: `${nf(gr.thick, gr.thick % 1 ? 1 : 0)} mm${gr.name ? " " + gr.name : ""} · ${i + 1}`, parts: ps, stats: sheetStats(ps, prm.sheetW, prm.sheetH) }));
+  }
+  const n = { error: S.nestError };
+  S.sheetOf = {}; S.sheets.forEach((s, i) => s.parts.forEach(p => { S.sheetOf[p.pid] = i + 1; }));
+  S.checks = validate(model, S.sheets, prm);
+  if (n.error) S.checks.unshift({ level: "error", pid: n.error.pid, msg: n.error.msg + " Kattaroq list tanlang yoki masshtabni kichraytiring.", fix: "sheet" });
+  if (S.sheetIdx >= S.sheets.length) S.sheetIdx = 0;
+  renderAll(opts);
+}
+function status(t) { $("status").textContent = t; }
+
+/* ---------------- chizish ---------------- */
+function renderAll(opts) {
+  const m = S.model, prm = S.prm, g = m.geo;
+  // daraxt
+  const cats = [["rib", "Korpus qovurg'alari"], ["cover", "Korpus qoplamasi (taxtachalar, dum qopqog'i)"], ["support", "Ichki tayanchlar"], ["panel", "Old va orqa panel"], ["neck", "Dasta"], ["head", "Bosh (quloq qutisi)"], ["peg", "Quloqlar"], ["bridge", "Xarrak, ostona, dum"], ["decor", "Shoxlar va bezak"], ["stand", "Ko'rgazma stendi"]];
+  $("tree").innerHTML = cats.map(([c, name]) => {
+    const ps = m.parts.filter(p => p.cat === c); if (!ps.length) return "";
+    return `<details ${c === "rib" || c === "panel" ? "open" : ""}><summary><span>${name}</span><span class="mono">${ps.length}</span></summary><ul>${ps.map(p => `<li><button type="button" data-pid="${p.pid}" aria-current="${S.sel === p.pid}"><span class="mono">${p.pid}</span><span>${esc(p.name)}</span></button></li>`).join("")}</ul></details>`;
+  }).join("");
+  $("treeCount").textContent = m.parts.length;
+  // o'lchamlar
+  const bb = m.parts.reduce((a, p) => a, null);
+  void bb;
+  const totalW = 2 * Math.max(...m.parts.filter(p => p.key === "front").map(p => Math.max(...p.paths[0].subs[0].pts.map(q => q[0]))));
+  const depth = (g.hasRear ? g.Dk + g.t : g.D) + g.t;
+  const dims = [["Uzunligi", `${nf(g.L)} mm`], ["Eni (shoxlar bilan)", `${nf(totalW)} mm`], ["Chuqurligi", `${nf(depth)} mm`], ["Qovurg'alar", `${g.nR} ta`], ["Material", `${MATS[$("mat").value]}, ${nf(prm.tActual, 2)} mm`], ["Qoplama", prm.cover ? `${prm.coverN} taxtacha, ${nf(prm.coverT, 1)} mm` : "yo'q"],
+    ["Tirqish eni", `${nf(g.ts, 2)} mm`], ["Kerf", `${nf(laserPrm().kerf, 2)} mm`], ["Shakl", esc(S.profile.name)]];
+  $("dims").innerHTML = dims.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("");
+  renderSteps();
+  renderSheets();
+  renderPartsTable();
+  renderChecks();
+  renderPartInfo();
+  if (V.ok) buildModel(opts.keepCamera);
+  if (S.img) drawOverlay();
+}
+
+function rangeIds(ps) {
+  if (!ps.length) return "";
+  const nums = ps.map(p => +p.pid.slice(1)).sort((a, b) => a - b), out = [];
+  let a = nums[0], b = nums[0];
+  for (const n of nums.slice(1).concat([null])) { if (n === b + 1) { b = n; continue; } out.push(a === b ? `A${String(a).padStart(2, "0")}` : `A${String(a).padStart(2, "0")}–A${String(b).padStart(2, "0")}`); a = b = n; }
+  return out.join(", ");
+}
+const STEPS = [
+  { n: 1, title: "Korpus qovurg'alari", text: p => `Qovurg'alarni gravyura qilingan ID bo'yicha tartiblang (dastadan dumga). Har birini o'zakdagi pastdan ochilgan tirqishga ustidan kiriting — tirqishlar "tuxum qutisi" kabi kesishadi.` },
+  { n: 2, title: "Ichki tayanchlar", text: p => `O'zakni qovurg'alar bilan to'g'ri burchakda tekislang. Dasta-korpus tutashuviga ikki burchak tirgagini yelimlang.${p.split ? " O'zakning ikki qismini jumboq-ulanish orqali biriktiring." : ""}` },
+  { n: 3, title: "Old panel", text: p => `Old panelni (deka) qovurg'alar va o'zakning ustki tishlariga kiydiring. Tishlar panel tirqishlaridan chiqmaydi — yuzasi tekis bo'ladi.` },
+  { n: 4, title: "Orqa panel va qoplama", text: p => (p.rear ? `Karkasni ag'darib, orqa panelni qovurg'alarning pastki tishlariga kiydiring. ` : ``) + (p.cover ? `Qoplama taxtachalarini bochka kabi qovurg'alar ustiga, old panel chetidan pastga qarab yon-yoniga yelimlang: o'ng va chap tomonni navbat bilan, juft raqamlardan boshlang. ${p.kerf ? "Kesikli tomoni ichkariga qaraydi." : "Egishdan oldin taxtachani 1–2 daqiqa iliq suvga botiring."} Yelim qotguncha rezina yoki lenta bilan bog'lab qo'ying. Taxtachalar dum uchida uchrashmaydigan joyni dum qopqog'i bilan yoping.` : (p.rear ? "" : "Qoplama o'chirilgan — qovurg'alar ochiq qoladi.")) },
+  { n: 5, title: "Dasta", text: p => (p.neckCover ? `Dasta qovurg'alarini o'zakning dasta qismidagi tirqishlarga kiriting (birinchisi — ostona ostidagi yopiq devor). Grifni o'rnatgach, dasta qoplamasi taxtachalarini grif chetidan pastga qarab yopishtiring — dasta osti to'liq yopiladi${p.sym ? "; yon quloq teshiklari bor taxtacha o'ng tomonda, grifga eng yaqin turadi" : ""}` : `Dasta yonlarini o'zakning ikki tomoniga yelimlang`) + (p.horn ? `. Shoxlarni old panelning ostiga, chetlari bir tekis qilib yopishtiring.` : `.`) },
+  { n: 6, title: "Grif", text: p => `Grifni dasta ustiga kiydiring — o'zakning tishlari grif tirqishlariga tushadi. Pardalar chizig'i yuqorida bo'lsin.` },
+  { n: 7, title: "Bosh (quloq qutisi)", text: p => `Oraliq plastinalarni o'zak boshining pastki qirrasiga, ustiga yonoqlarni yelimlang. Yelim qotguncha bitta quloqni teshiklardan o'tkazib qo'ying — teshiklar ustma-ust tushadi.` },
+  { n: 8, title: "Quloqlar", text: p => `Asosiy quloqlarni navbat bilan chap va o'ngdan bosh qutisi orqali o'tkazing${p.sym ? ", yon (simpatik) quloqlarni dastaning o'ng yonidan kiriting" : ""}.` },
+  { n: 9, title: "Xarrak va dum", text: p => `Ostonani grif boshiga, xarrakni old paneldagi belgi ustiga tik qo'ying. Dum ushlagich tishini old panel oxiridagi tirqishga kiriting, dum tugmasini korpusning eng uchiga yopishtiring. Xohlasangiz, ingichka ip bilan torlarni torting.` },
+  { n: 10, title: "Yakuniy yig'ish", text: p => `Choklarni jilvir qog'oz bilan tozalang, moy yoki lak suring.${p.stand ? " Stend plastinalarini kesishtirib yig'ing va maketni o'yiqlarga qo'ying." : ""}` }
+];
+function stepCtx() { const m = S.model; return { neckCover: m.parts.some(p => p.key === "neckStave"), cover: m.parts.some(p => p.key === "stave"), kerf: S.prm && S.prm.coverKerf, split: m.parts.some(p => p.key === "spineNeck"), rear: m.parts.some(p => p.key === "rear"), horn: m.parts.some(p => p.key === "horn"), sym: m.parts.some(p => p.key === "symPeg"), stand: m.parts.some(p => p.key === "stand") }; }
+function renderSteps() {
+  const ctx = stepCtx();
+  $("steps").innerHTML = STEPS.map(s => { const ps = S.model.parts.filter(p => p.step === s.n); return `<li data-step="${s.n}" aria-current="${S.guide === s.n}"><span><b>${s.title}</b><small>${rangeIds(ps) || "—"}</small></span></li>`; }).join("");
+  void ctx;
+}
+
+function renderSheets() {
+  const prm = S.prm, bed = $("bed"), cols = colors();
+  const tot = S.sheets.reduce((a, s) => ({ cut: a.cut + s.stats.cut, fine: a.fine + s.stats.fine, area: a.area + s.stats.area }), { cut: 0, fine: 0, area: 0 });
+  const sheetArea = S.sheets.length * prm.sheetW * prm.sheetH;
+  $("stSheets").innerHTML = S.sheets.length ? `${S.sheets.length} <small>× ${prm.sheetW}×${prm.sheetH}</small>` : "—";
+  $("stUsed").innerHTML = S.sheets.length ? `${nf(tot.area / 1e4, 1)} <small>dm² · ${nf(100 * tot.area / sheetArea)} %</small>` : "—";
+  $("stWaste").innerHTML = S.sheets.length ? `${nf(100 - 100 * tot.area / sheetArea)} <small>%</small>` : "—";
+  $("stCut").innerHTML = `${nf(tot.cut / 1000, 1)} <small>m</small>`;
+  $("stEng").innerHTML = `${nf(tot.fine / 1000, 1)} <small>m</small>`;
+  const lp = laserPrm();
+  const minutes = S.sheets.reduce((a, s) => a + s.stats.cut * passesFor(s, lp), 0) / Math.max(1, lp.cutSpeed) + (lp.machine === "cnc" ? 0 : tot.fine / Math.max(1, lp.engSpeed)) + S.sheets.reduce((a, s) => a + s.parts.length, 0) * 0.05;
+  $("stTime").innerHTML = S.sheets.length ? `${minutes < 90 ? nf(minutes) + " <small>daq</small>" : nf(minutes / 60, 1) + " <small>soat</small>"}` : "—";
+  $("legend").innerHTML = `<span style="--c:${cols.cut}">CUT — kesish</span><span style="--c:${cols.engrave}">ENGRAVE — gravyura</span><span style="--c:${cols.ref}">REFERENCE — yordamchi</span>`;
+  $("sheetTabs").innerHTML = S.sheets.map((s, i) => `<button type="button" role="tab" data-i="${i}" aria-selected="${i === S.sheetIdx}">${s.label} · ${s.parts.length} · ${nf(s.stats.util * 100)} %</button>`).join("");
+  bed.innerHTML = "";
+  if (!S.sheets.length) { bed.innerHTML = `<p style="color:#fff;margin:0">${esc(S.nestError ? S.nestError.msg : "Listlar yo'q")}</p>`; return; }
+  const sh = S.sheets[S.sheetIdx];
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", `-2 -2 ${prm.sheetW + 4} ${prm.sheetH + 4}`);
+  svg.setAttribute("role", "img"); svg.setAttribute("aria-label", `${sh.label}: ${sh.parts.length} ta detal`);
+  let html = `<rect class="sheet" x="0" y="0" width="${prm.sheetW}" height="${prm.sheetH}"/><rect class="ref" x="0" y="0" width="${prm.sheetW}" height="${prm.sheetH}" stroke="${cols.ref}"/>`;
+  html += `<rect class="ref" x="${prm.margin}" y="${prm.margin}" width="${prm.sheetW - 2 * prm.margin}" height="${prm.sheetH - 2 * prm.margin}" stroke="${cols.ref}" opacity=".5"/>`;
+  for (const p of sh.parts) {
+    const hl = p.pid === S.sel;
+    html += `<g class="part" data-pid="${p.pid}"><title>${p.pid} — ${esc(p.name)}</title>`;
+    for (const pa of p.paths) html += `<path class="${pa.kind === "cut" ? "cut" : "fine"}${hl ? " hl" : ""}" stroke="${pa.kind === "cut" ? cols.cut : cols.engrave}" fill-rule="evenodd" d="${svgPathD(pa.subs)}"/>`;
+    html += `</g>`;
+  }
+  svg.innerHTML = html;
+  bed.appendChild(svg);
+}
+function passesFor(sheet, lp) { return Math.max(1, Math.round(lp.passes * (sheet.thick || S.prm.tActual) / S.prm.tActual)); }
+function colors() { return { cut: $("cCut").value, engrave: $("cEng").value, ref: $("cRef").value }; }
+
+function renderPartsTable() {
+  const m = S.model, prm = S.prm, rows = [];
+  const base = n => n.replace(/\s+\d+$/, "").replace(/ \((chap|o'ng)\)$/, "");
+  for (const p of m.parts) {
+    const b = partBBox(p), key = p.cat + "|" + base(p.name);
+    const last = rows.at(-1);
+    const sheet = S.sheetOf[p.pid] || "—";
+    const eng = p.paths.some(x => x.kind === "fine" && x.subs.length) ? "kesish + gravyura" : "kesish";
+    if (last && last.key === key) { last.ps.push(p); last.sheets.add(sheet); last.bw = Math.max(last.bw, b.w); last.bh = Math.max(last.bh, b.h); last.minw = Math.min(last.minw, b.w); if (eng !== "kesish") last.eng = eng; }
+    else rows.push({ key, ps: [p], name: base(p.name), bw: b.w, bh: b.h, minw: b.w, sheets: new Set([sheet]), eng });
+  }
+  $("partsBody").innerHTML = rows.map(r => `<tr><td class="m">${rangeIds(r.ps)}</td><td>${esc(r.name)}</td><td class="m">${r.ps.length} dona</td><td>${MATS[prm.material]}</td><td class="m">${nf(r.ps[0].mat === "skin" ? prm.coverT : prm.tActual, 2)} mm</td><td class="m">${r.ps.length > 1 && Math.abs(r.bw - r.minw) > 1 ? "≤ " : ""}${nf(r.bw, 1)} × ${nf(r.bh, 1)}</td><td>${r.eng}</td><td class="m">${[...r.sheets].join(", ")}</td></tr>`).join("");
+}
+
+function renderChecks() {
+  const c = S.checks, err = c.filter(x => x.level === "error").length, warn = c.filter(x => x.level === "warn").length;
+  $("tabCheck").textContent = `Tekshiruv${err + warn ? ` (${err + warn})` : " ✓"}`;
+  $("checkSum").innerHTML = err + warn ? `<b>${err}</b> xato, <b>${warn}</b> ogohlantirish` : `<span class="okline">Geometriya tekshiruvdan o'tdi: yopiq konturlar, tirqishlar ${nf(S.prm.tActual + S.prm.clearance, 2)} mm, listdan chiqish va ustma-ust tushish yo'q.</span>`;
+  $("checkList").innerHTML = c.map(x => `<li class="${x.level}"><b>${x.level === "error" ? "xato" : x.level === "warn" ? "diqqat" : "ma'lumot"}</b><span>${esc(x.msg)}</span></li>`).join("");
+  $("bFix").disabled = !(err + warn);
+}
+
+function renderPartInfo() {
+  const p = S.model.parts.find(x => x.pid === S.sel);
+  const box = $("partInfo");
+  if (!p) { box.innerHTML = `<dt>—</dt><dd>Daraxtdan, 3D dan yoki listdan tanlang</dd>`; $("selTag").hidden = true; return; }
+  const b = partBBox(p), links = S.model.joints.filter(j => j[0] === p.index || j[1] === p.index).map(j => { const o = S.model.parts[j[0] === p.index ? j[1] : j[0]]; return `${o.pid}${j[2] === "slot" ? " (tirqish)" : j[2] === "peg" ? " (teshik)" : j[2] === "rest" ? " (tayanch)" : " (yelim)"}`; });
+  const slots = S.model.slots.filter(s => s.part === p).length;
+  const rows = [["ID", p.pid], ["Nomi", esc(p.name)], ["O'lchami", `${nf(b.w, 1)} × ${nf(b.h, 1)} mm`], ["Qalinlik", `${nf(p.mat === "skin" ? S.prm.coverT : S.prm.tActual, 2)} mm`], ["List", S.sheetOf[p.pid] ? `${S.sheetOf[p.pid]}-list` : "—"],
+    ["Yig'ish bosqichi", `${p.step}. ${STEPS[p.step - 1].title}`], ["Tirqishlar", slots || "—"], ["Ulanadi", links.slice(0, 6).join(", ") + (links.length > 6 ? ` +${links.length - 6}` : "") || "—"]];
+  box.innerHTML = rows.map(([a, v]) => `<dt>${a}</dt><dd>${v}</dd>`).join("");
+  $("selTag").hidden = false; $("selTag").textContent = `${p.pid} · ${p.name}`;
+}
+function select(pid, from) {
+  S.sel = S.sel === pid && from !== "tree" ? null : pid;
+  document.querySelectorAll("#tree li button").forEach(b => b.setAttribute("aria-current", b.dataset.pid === S.sel));
+  if (S.sel && S.sheetOf[S.sel] && S.sheetOf[S.sel] - 1 !== S.sheetIdx) S.sheetIdx = S.sheetOf[S.sel] - 1;
+  renderSheets(); renderPartInfo(); highlight3D();
+}
+
+/* ======================= 3D ======================= */
+const V = { ok: false, meshes: [], arrows: [] };
+function initViewer() {
+  try {
+    if (!window.THREE) throw new Error("three");
+    const box = $("vp");
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    box.appendChild(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(30, 1, 1, 20000);
+    scene.add(new THREE.HemisphereLight(0xfff5e6, 0x5b544b, 0.9));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.75); sun.position.set(-0.8, 1.6, 1); scene.add(sun);
+    const back = new THREE.DirectionalLight(0xffffff, 0.3); back.position.set(1, -0.6, -1); scene.add(back);
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.dampingFactor = 0.08; controls.screenSpacePanning = true; controls.autoRotateSpeed = 0.8;
+    Object.assign(V, { ok: true, renderer, scene, camera, controls, box, ray: new THREE.Raycaster(), mouse: new THREE.Vector2() });
+    const resize = () => { const w = box.clientWidth, h = box.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
+    new ResizeObserver(resize).observe(box); resize();
+    let visible = true; new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(box);
+    let down = null;
+    renderer.domElement.addEventListener("pointerdown", e => { down = [e.clientX, e.clientY]; });
+    renderer.domElement.addEventListener("pointerup", e => {
+      if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 4) return;
+      const r = renderer.domElement.getBoundingClientRect();
+      V.mouse.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      V.ray.setFromCamera(V.mouse, camera);
+      const hit = V.ray.intersectObjects(V.meshes.filter(m => m.visible), false)[0];
+      if (hit) select(hit.object.userData.pid, "3d");
+    });
+    const clock = new THREE.Clock();
+    (function loop() {
+      requestAnimationFrame(loop); if (!visible) return;
+      const dt = clock.getDelta();
+      animateGuide(dt);
+      controls.update(); renderer.render(scene, camera);
+    })();
+  } catch (e) { $("vmsg").hidden = false; V.ok = false; }
+}
+const COL = { ply: 0xd8b680, ply2: 0xc69c62, front: 0xe8d2a6, grif: 0x8d5b31, peg: 0x7b4a24, stand: 0xb9a888, horn: 0xb4824c, line: 0x3a2313, string: 0xf2ede2, hl: 0x0d6b5b };
+function shapeFrom(subs) {
+  const closed = subs.filter(s => !s.open);
+  const mk = (s, C) => { const sh = new C(); if (s.circle) sh.absarc(s.circle[0], s.circle[1], s.circle[2], 0, Math.PI * 2, false); else { sh.moveTo(s.pts[0][0], s.pts[0][1]); for (const q of s.pts.slice(1)) sh.lineTo(q[0], q[1]); sh.closePath(); } return sh; };
+  const shape = mk(closed[0], THREE.Shape);
+  for (const s of closed.slice(1)) shape.holes.push(mk(s, THREE.Path));
+  return shape;
+}
+function mapper(pl, g) {
+  const t = g.t, Zc = g.L * 0.55;
+  const W = (x, Y, up) => [x, up, Y - Zc];
+  switch (pl.type) {
+    case "side": return (a, b, c) => W(pl.x + c - t / 2, a, -b);
+    case "front": return (a, b, c) => W(a, pl.Y + c - t / 2, (pl.h || 0) - b);
+    case "top": return (a, b, c) => W(a, b, (pl.h || 0) + c);
+    case "standFront": return (a, b, c) => W(a, pl.Y + c - t / 2, pl.base - b);
+    case "standSide": return (a, b, c) => W(c - t / 2, pl.Y + a, pl.base - b);
+    case "button": return (a, b, c) => W(c - t / 2, pl.Y + a, -(pl.d + b));
+    case "peg": {
+      const al = g.alpha, n = pl.rot ? [Math.sin(al), Math.cos(al)] : [0, 1], ax = pl.rot ? [-Math.cos(al), Math.sin(al)] : [1, 0];
+      return (a, b, c) => { const x = pl.side * (pl.x0 - pl.Ls + a); const Y = pl.Y + b * n[0] + (c - t / 2) * ax[0], d = pl.d + b * n[1] + (c - t / 2) * ax[1]; return W(x, Y, -d); };
+    }
+  }
+}
+function colorFor(p) { return { front: COL.front, rear: COL.ply2, rib: COL.ply, spine: COL.ply2, spineNeck: COL.ply2, fingerboard: COL.grif, peg: COL.peg, symPeg: COL.peg, stand: COL.stand, horn: COL.horn, bridge: COL.ply2, nut: COL.ply2, tail: COL.ply2 }[p.key] || COL.ply; }
+function buildModel(keepCamera) {
+  const m = S.model, g = m.geo;
+  if (V.root) { V.scene.remove(V.root); V.root.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material && o.material.dispose) o.material.dispose(); }); }
+  const root = new THREE.Group(); V.meshes = [];
+  const Zc = g.L * 0.55;
+  for (const p of m.parts) {
+    if (p.place.type === "stave") {
+      const sd = p.place.side, A = p.place.e0, B = p.place.e1, pos = [], idx = [];
+      const tg = g.tg || 1.5;
+      // tashqi va ichki sirt (qalinlik bilan), qirralar
+      // haqiqiy sirt normali bo'ylab ichkariga (dum uchida ham to'g'ri qalinlik)
+      const sub = (u, v) => [u[0] - v[0], u[1] - v[1], u[2] - v[2]];
+      const cross = (u, v) => [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+      const nrm = i => {
+        const i0 = Math.max(0, i - 1), i1 = Math.min(A.length - 1, i + 1);
+        const along = sub([(A[i1][0] + B[i1][0]) / 2, (A[i1][1] + B[i1][1]) / 2, (A[i1][2] + B[i1][2]) / 2], [(A[i0][0] + B[i0][0]) / 2, (A[i0][1] + B[i0][1]) / 2, (A[i0][2] + B[i0][2]) / 2]);
+        let n = cross(sub(B[i], A[i]), along); const l = Math.hypot(...n) || 1; n = n.map(v => v / l);
+        const mx = (A[i][0] + B[i][0]) / 2, md = (A[i][2] + B[i][2]) / 2;
+        if (n[0] * mx + n[2] * md < 0) n = n.map(v => -v);      // tashqariga qaratish
+        return n;
+      };
+      const P = (q, n, k) => [sd * (q[0] - k * tg * n[0]), -(q[2] - k * tg * n[2]), q[1] - k * tg * n[1] - Zc];
+      for (let i = 0; i < A.length; i++) { const n = nrm(i); pos.push(...P(A[i], n, 0), ...P(B[i], n, 0), ...P(A[i], n, 1), ...P(B[i], n, 1)); }
+      for (let i = 0; i < A.length - 1; i++) { const a = i * 4, b = a + 4; idx.push(a, b, a + 1, a + 1, b, b + 1, a + 2, a + 3, b + 2, a + 3, b + 3, b + 2, a, a + 2, b, a + 2, b + 2, b, a + 1, b + 1, a + 3, a + 3, b + 1, b + 3); }
+      const geo = new THREE.BufferGeometry(); geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3)); geo.setIndex(idx); geo.computeVertexNormals(); geo.computeBoundingBox();
+      const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: p.idx % 2 ? 0xc79358 : 0xd9ab6c, roughness: 0.75, side: THREE.DoubleSide, transparent: false, opacity: 1 }));
+      mesh.userData = { pid: p.pid, step: p.step, ex: p.explode || [0, 0, 0], stave: true };
+      root.add(mesh); V.meshes.push(mesh); continue;
+    }
+    const cut = p.paths.find(x => x.kind === "cut");
+    let geo;
+    try { geo = new THREE.ExtrudeGeometry(shapeFrom(cut.subs), { depth: g.t, bevelEnabled: false, curveSegments: 20 }); } catch (e) { continue; }
+    const f = mapper(p.place, g), pos = geo.attributes.position;
+    for (let i = 0; i < pos.count; i++) { const q = f(pos.getX(i), pos.getY(i), pos.getZ(i)); pos.setXYZ(i, q[0], q[1], q[2]); }
+    geo.computeVertexNormals(); geo.computeBoundingBox();
+    const mat = new THREE.MeshStandardMaterial({ color: colorFor(p), roughness: 0.8, metalness: 0, side: THREE.DoubleSide, transparent: false, opacity: 1 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.userData = { pid: p.pid, step: p.step, ex: p.explode || [0, 0, 0] };
+    const fine = p.paths.find(x => x.kind === "fine");
+    if (fine && p.place.type === "top" && p.key !== "rear") {
+      const lm = new THREE.LineBasicMaterial({ color: COL.line, transparent: true, opacity: 0.6 });
+      for (const s of fine.subs) {
+        const pts = s.circle ? circlePts(s.circle[0], s.circle[1], s.circle[2], 48).concat([[s.circle[0] + s.circle[2], s.circle[1]]]) : (s.open ? s.pts : s.pts.concat([s.pts[0]]));
+        mesh.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts.map(([a, b]) => new THREE.Vector3(...f(a, b, g.t + 0.06)))), lm));
+      }
+    }
+    root.add(mesh); V.meshes.push(mesh);
+  }
+  // torlar (bezak) — boshdagi quloqlardan dumgacha
+  const strM = new THREE.LineBasicMaterial({ color: COL.string });
+  const nS = g.nStr, BW = Math.max(12, nS * Math.max(3, 0.013 * g.L) + 6);
+  const strings = new THREE.Group();
+  for (let i = 0; i < nS; i++) {
+    const f = nS === 1 ? 0 : i / (nS - 1) - 0.5;
+    const pts = [[0, -0.35 * g.LhUse * Math.sin(g.alpha) - 1, g.yN - 0.35 * g.LhUse * Math.cos(g.alpha)], [f * g.wN0 * 1.2, g.t + g.hn, g.yN], [f * (BW - 6), g.t + g.BH, g.yBr], [f * 4, g.t + 0.8, g.yTail]];
+    strings.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts.map(([x, u, Y]) => new THREE.Vector3(x, u, Y - Zc))), strM));
+  }
+  root.add(strings); V.strings = strings;
+  V.root = root; V.scene.add(root);
+  applyExplode();
+  highlight3D();
+  applyCoverVis();
+  if (!keepCamera || !V.home) setView(V.view || "iso", true);
+}
+function applyExplode() {
+  if (!V.ok || !V.root) return;
+  const E = (+$("exp").value / 100) * S.model.geo.L * 0.32;
+  for (const mesh of V.meshes) { const [x, u, z] = mesh.userData.ex; if (S.guide == null) mesh.position.set(x * E, u * E, z * E); }
+  if (V.strings) V.strings.visible = E < 1 && S.guide == null;
+}
+function highlight3D() {
+  if (!V.ok) return;
+  for (const mesh of V.meshes) { const on = mesh.userData.pid === S.sel; mesh.material.emissive.setHex(on ? COL.hl : 0x000000); mesh.material.emissiveIntensity = on ? 0.55 : 0; }
+}
+function setView(v, instant) {
+  if (!V.ok || !V.root) return;
+  V.view = v;
+  document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === v));
+  const bb = new THREE.Box3().setFromObject(V.root), c = bb.getCenter(new THREE.Vector3()), size = bb.getSize(new THREE.Vector3());
+  const r = size.length() / 2, dist = r / Math.sin(V.camera.fov * Math.PI / 360) * 0.92;
+  const dir = { iso: [-0.55, 0.62, 0.56], front: [0.0001, 1, 0.0002], side: [1, 0.05, 0.0001], rear: [0.0001, -1, 0.0002] }[v];
+  V.camera.up.set(...(v === "front" || v === "rear" ? [0, 0, -1] : [0, 1, 0]));
+  V.camera.position.copy(c).add(new THREE.Vector3(...dir).normalize().multiplyScalar(dist));
+  V.camera.near = dist / 60; V.camera.far = dist * 12; V.camera.updateProjectionMatrix();
+  V.controls.target.copy(c); V.controls.update();
+  V.home = true;
+}
+/* yig'ish qo'llanmasi */
+let gT = 0;
+function showGuide(n) {
+  S.guide = n;
+  $("guide").hidden = n == null;
+  $("bGuide").setAttribute("aria-pressed", n != null);
+  document.querySelectorAll("#steps li").forEach(li => li.setAttribute("aria-current", +li.dataset.step === n));
+  if (V.arrows) { V.arrows.forEach(a => V.scene.remove(a)); V.arrows = []; }
+  if (n == null) { V.meshes.forEach(m => { m.visible = true; m.material.opacity = 1; m.material.transparent = false; m.material.depthWrite = true; m.material.needsUpdate = true; }); applyExplode(); applyCoverVis(); return; }
+  const s = STEPS[n - 1], ps = S.model.parts.filter(p => p.step === n);
+  $("gStep").textContent = `${n} / 10`; $("gTitle").textContent = `${n}-bosqich — ${s.title}`;
+  $("gText").textContent = s.text(stepCtx()); $("gParts").textContent = ps.length ? `Detallar: ${rangeIds(ps)}` : "Bu bosqichda yangi detal yo'q.";
+  $("gPrev").disabled = n === 1; $("gNext").textContent = n === 10 ? "Tugatish" : "Keyingi";
+  if (!V.ok) return;
+  const L = S.model.geo.L;
+  V.meshes.forEach(m => { m.visible = m.userData.step <= n; m.material.opacity = m.userData.step < n ? 0.55 : 1; m.material.transparent = m.material.opacity < 1; m.material.depthWrite = m.material.opacity >= 1; m.material.needsUpdate = true; m.position.set(0, 0, 0); });
+  if (V.strings) V.strings.visible = n >= 9;
+  // yo'nalish strelkalari
+  V.meshes.filter(m => m.userData.step === n).forEach(m => {
+    const [x, u, z] = m.userData.ex, v = new THREE.Vector3(x, u, z); if (v.length() < 1e-3) v.set(0, 1, 0);
+    m.geometry.computeBoundingBox(); const c = m.geometry.boundingBox.getCenter(new THREE.Vector3());
+    const len = L * 0.16, dir = v.clone().normalize().negate(), from = c.clone().add(v.clone().normalize().multiplyScalar(len * 1.25));
+    const ar = new THREE.ArrowHelper(dir, from, len, 0xd3361c, len * 0.25, len * 0.12);
+    V.scene.add(ar); V.arrows.push(ar);
+  });
+  gT = 0;
+  const vis = V.meshes.filter(m => m.visible);
+  if (vis.length) { const bb = new THREE.Box3(); vis.forEach(m => bb.expandByObject(m)); const c = bb.getCenter(new THREE.Vector3()); const d = V.camera.position.clone().sub(V.controls.target); V.controls.target.copy(c); V.camera.position.copy(c).add(d); V.controls.update(); }
+}
+function animateGuide(dt) {
+  if (S.guide == null || !V.ok) return;
+  gT += dt; const k = Math.min(1, (gT % 3.2) / 1.6), e = 1 - Math.pow(1 - k, 3), off = (1 - e) * S.model.geo.L * 0.2;
+  V.meshes.forEach(m => { if (m.userData.step === S.guide) { const [x, u, z] = m.userData.ex, v = new THREE.Vector3(x, u, z); if (v.length() < 1e-3) v.set(0, 1, 0); v.normalize().multiplyScalar(off); m.position.copy(v); } });
+}
+
+/* ======================= RASM ======================= */
+async function loadFile(file) {
+  if (!file) return;
+  if (!/image\/(jpeg|png|webp|svg\+xml)/.test(file.type) && !/\.(jpe?g|png|webp|svg)$/i.test(file.name)) { status("Faqat JPG, PNG, WEBP yoki SVG rasm yuklang."); return; }
+  const url = URL.createObjectURL(file);
+  const im = new Image();
+  im.onload = () => {
+    const max = 720, k = Math.min(1, max / Math.max(im.naturalWidth || 720, im.naturalHeight || 720));
+    const w = Math.max(60, Math.round((im.naturalWidth || 720) * k)), h = Math.max(60, Math.round((im.naturalHeight || 720) * k));
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const ctx = c.getContext("2d");
+    if (/svg/.test(file.type)) { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
+    ctx.drawImage(im, 0, 0, w, h);
+    URL.revokeObjectURL(url);
+    S.img = { file, canvas: c, data: ctx.getImageData(0, 0, w, h), axis: null, uN: null, uNE: null, ai: null, source: "pixel" };
+    $("imgBox").hidden = false; $("imgCtrls").hidden = false; $("aiOut").hidden = true;
+    const opt = $("shapeSrc").querySelector('option[value="image"]'); opt.disabled = false;
+    runExtraction(true);
+  };
+  im.onerror = () => { URL.revokeObjectURL(url); status("Rasmni ochib bo'lmadi — boshqa fayl tanlang."); };
+  im.src = url;
+}
+function runExtraction(fresh) {
+  const I = S.img; if (!I) return;
+  const thr = +$("thr").value;
+  $("thrOut").textContent = thr ? thr : "avto";
+  I.seg = segmentImage(I.data, thr ? { threshold: thr } : {});
+  const opt = {};
+  if (I.axis) opt.axis = I.axis;
+  if (!fresh && I.uN) opt.uN = I.uN;
+  if (!fresh && I.uNE) opt.uNE = I.uNE;
+  const ex = profileFromMask(I.seg, opt);
+  I.ex = ex;
+  if (ex.error) { $("segBadge").className = "badge err"; $("segBadge").textContent = ex.error; drawOverlay(); status(ex.error + " Fonni sozlang yoki AI tanib olishdan foydalaning."); return; }
+  if (!I.axis) I.axis = ex.axis.head && { head: ex.axis.head, tail: ex.axis.tail };
+  I.uN = ex.profile.uN; I.uNE = ex.profile.uNE;
+  $("uN").value = (I.uN * 100).toFixed(1); $("uNE").value = (I.uNE * 100).toFixed(1);
+  $("uNOut").textContent = nf(I.uN * 100, 1) + " %"; $("uNEOut").textContent = nf(I.uNE * 100, 1) + " %";
+  $("segBadge").className = "badge " + (ex.ok ? "ok" : "warn");
+  $("segBadge").textContent = ex.ok ? `Siluet ajratildi · simmetriya ${nf(100 - ex.quality.asym * 100)} %` : "Siluet noaniq — AI tanib olish tavsiya etiladi";
+  useImageProfile(fresh);
+}
+function useImageProfile(fresh) {
+  const I = S.img; if (!I) return;
+  let prof;
+  if (I.source === "ai" && I.ai) prof = profileFromWidths({ ...I.ai, nut_u: I.uN ?? I.ai.nut_u, neck_end_u: I.uNE ?? I.ai.neck_end_u });
+  else if (I.ex && !I.ex.error) prof = I.ex.profile;
+  if (!prof) return;
+  const base = TEMPLATES[I.ai?.type] || TEMPLATES.uzbek;
+  prof.meta = Object.assign({ pegsMain: base.pegsMain, pegsSym: base.pegsSym, strings: base.strings, frets: base.frets, rosettes: base.rosettes }, I.meta || {});
+  const rW = 2 * Math.max(...prof.core.map(c => c[1]));
+  prof.meta.depth = (I.ai?.depth_to_width ? clamp(I.ai.depth_to_width, 0.2, 0.9) : 0.42) * rW;
+  if (I.ai?.bridge_u) prof.meta.bridgeU = clamp(I.ai.bridge_u, prof.uNE + 0.05, 0.98);
+  S.shape = "image"; $("shapeSrc").value = "image";
+  setProfile(prof, !fresh && !I.metaFresh); I.metaFresh = false;
+  compute();
+  status(fresh ? "Rasm yuklandi — siluet ajratildi va 3D korpus tiklandi." : "Model rasm bo'yicha yangilandi.");
+}
+function drawOverlay() {
+  const I = S.img; if (!I) return;
+  const cv = $("imgCanvas"), w = I.canvas.width, h = I.canvas.height;
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext("2d");
+  ctx.drawImage(I.canvas, 0, 0);
+  if (!$("ovShow").checked) return;
+  if (I.seg) {
+    const od = ctx.getImageData(0, 0, w, h), d = od.data, m = I.seg.mask;
+    for (let i = 0; i < m.length; i++) if (!m[i]) { d[i * 4] = d[i * 4] * 0.45; d[i * 4 + 1] = d[i * 4 + 1] * 0.45; d[i * 4 + 2] = d[i * 4 + 2] * 0.45; }
+    ctx.putImageData(od, 0, 0);
+  }
+  const ax = I.axis || (I.ex && I.ex.axis); if (!ax || !ax.head) return;
+  const hx = ax.head[0], hy = ax.head[1], len = Math.hypot(ax.tail[0] - hx, ax.tail[1] - hy), ux = (ax.tail[0] - hx) / len, uy = (ax.tail[1] - hy) / len, px = -uy, py = ux;
+  const lenPx = I.ex && I.ex.axis ? I.ex.axis.lenPx : len;
+  const hp = I.ex && I.ex.axis ? I.ex.axis.head : ax.head;
+  const T = (x, u) => [hp[0] + ux * u * lenPx + px * x * lenPx, hp[1] + uy * u * lenPx + py * x * lenPx];
+  const prof = S.profile; if (prof.source === "template") return;
+  ctx.lineWidth = Math.max(1.5, w / 320);
+  ctx.strokeStyle = "#ff5a3c"; ctx.beginPath();
+  prof.outline.forEach(([x, u], i) => { const [a, b] = T(x, u); i ? ctx.lineTo(a, b) : ctx.moveTo(a, b); }); ctx.closePath(); ctx.stroke();
+  ctx.strokeStyle = "#ffd166"; ctx.beginPath();
+  for (const s of [-1, 1]) { const [a, b] = T(s * prof.w0, prof.uN), [c, d] = T(s * prof.w1, prof.uNE); ctx.moveTo(a, b); ctx.lineTo(c, d); }
+  const [a1, b1] = T(-prof.headW, 0), [a2, b2] = T(prof.headW, 0), [a3, b3] = T(prof.headW, prof.uN), [a4, b4] = T(-prof.headW, prof.uN);
+  ctx.moveTo(a1, b1); ctx.lineTo(a2, b2); ctx.lineTo(a3, b3); ctx.lineTo(a4, b4); ctx.closePath(); ctx.stroke();
+  ctx.setLineDash([6, 5]); ctx.strokeStyle = "#5ee0c8"; ctx.beginPath(); const [s0, t0] = T(0, -0.02), [s1, t1] = T(0, 1.02); ctx.moveTo(s0, t0); ctx.lineTo(s1, t1); ctx.stroke();
+  for (const [u, lab] of [[prof.uN, "ostona"], [prof.uNE, "korpus"]]) { const [x0, y0] = T(-0.16, u), [x1, y1] = T(0.16, u); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.fillStyle = "#5ee0c8"; ctx.font = `${Math.max(11, w / 55)}px IBM Plex Sans, sans-serif`; ctx.fillText(lab, x1 + 4, y1); }
+  ctx.setLineDash([]);
+}
+
+/* AI tanib olish (Claude) */
+async function aiAnalyze() {
+  const I = S.img; if (!I || !S.sample) return;
+  const btn = $("bAI"), out = $("aiOut");
+  btn.disabled = true; out.hidden = false; out.textContent = "Claude rasmni ko'rib chiqmoqda… (odatda 20–60 soniya)";
+  let blob = I.file;
+  if (/svg/.test(I.file.type) || !/jpeg|png|webp/.test(I.file.type)) blob = await new Promise(r => I.canvas.toBlob(r, "image/png"));
+  const prompt = `This image shows a musical instrument (expected: a rubob / rubab from Central Asia). Measure it for building an accurate scale model.
+Return ONLY a JSON object with these fields:
+{
+ "is_rubob": boolean,
+ "type": "uzbek" | "afghan" | "kashgar" | "other",   // uzbek = pear/round skin body + long neck + small horns at neck joint; afghan = waisted deep body with horns at the waist, short neck, side pegs; kashgar = small round bowl, very long neck, big horns
+ "confidence": number 0..1,
+ "head_top": [x, y], "tail_end": [x, y],            // image coordinates normalized 0..1 (x from left, y from top): the very top of the headstock/finial and the very bottom end of the body
+ "nut_u": number, "neck_end_u": number, "bridge_u": number,   // positions along the line head_top->tail_end as fractions 0..1: the nut (end of pegbox), where the neck meets the body, the bridge
+ "widths": [41 numbers],       // full outer width of the instrument outline (including horns/side elements, excluding tuning pegs and strings) at 41 equally spaced stations from head_top (index 0) to tail_end (index 40), each divided by the total head-to-tail length
+ "core_widths": [41 numbers],  // same stations, width of the main body/neck cross-section WITHOUT horns or pegs
+ "pegs_main": integer, "pegs_side": integer, "strings": integer, "frets": integer, "rosettes": integer,
+ "depth_to_width": number,     // estimated body depth / body width (0.2..0.9)
+ "notes_uz": "one or two short sentences in Uzbek (Latin script) describing the instrument shape you see"
+}
+Be precise with positions; if the instrument is photographed at an angle, measure along the instrument's own axis.`;
+  try {
+    const res = await S.sample.json(prompt, { images: [blob], modelTier: "complex", onText: () => { out.textContent = "Javob yozilmoqda…"; } });
+    const ok = res && Array.isArray(res.widths) && res.widths.length >= 10 && Array.isArray(res.head_top) && Array.isArray(res.tail_end);
+    if (!ok) throw { code: "shape" };
+    const n = res.widths.length;
+    res.widths = res.widths.map(v => clamp(+v || 0, 0, 0.6));
+    res.core_widths = (Array.isArray(res.core_widths) && res.core_widths.length === n ? res.core_widths : res.widths).map(v => clamp(+v || 0, 0, 0.6));
+    res.nut_u = clamp(+res.nut_u || 0.15, 0.04, 0.4); res.neck_end_u = clamp(+res.neck_end_u || 0.6, 0.2, 0.9);
+    I.ai = res;
+    I.axis = { head: [clamp(res.head_top[0], 0, 1) * I.canvas.width, clamp(res.head_top[1], 0, 1) * I.canvas.height], tail: [clamp(res.tail_end[0], 0, 1) * I.canvas.width, clamp(res.tail_end[1], 0, 1) * I.canvas.height] };
+    I.meta = { pegsMain: clamp(Math.round(res.pegs_main || 4), 2, 8), pegsSym: clamp(Math.round(res.pegs_side || 0), 0, 15), strings: clamp(Math.round(res.strings || 4), 2, 6), frets: clamp(Math.round(res.frets ?? 12), 0, 30), rosettes: clamp(Math.round(res.rosettes || 0), 0, 5) };
+    I.metaFresh = true;
+    const typeName = { uzbek: "O'zbek rubobi", afghan: "Afg'on rubobi", kashgar: "Kashg'ar rubobi", other: "boshqa cholg'u" }[res.type] || res.type;
+    out.textContent = `${res.is_rubob === false ? "Diqqat: bu rubobga o'xshamaydi. " : ""}Turi: ${typeName} (ishonch ${nf((+res.confidence || 0) * 100)} %).\nQuloqlar: ${I.meta.pegsMain} + ${I.meta.pegsSym} yon · torlar: ${I.meta.strings} · pardalar: ${I.meta.frets}\n${res.notes_uz || ""}`;
+    // AI o'qi bilan piksel siluetini qayta ajratamiz; uN/uNE AI dan
+    I.uN = res.nut_u; I.uNE = res.neck_end_u;
+    const thr = +$("thr").value;
+    I.seg = segmentImage(I.data, thr ? { threshold: thr } : {});
+    I.ex = profileFromMask(I.seg, { axis: I.axis, uN: I.uN, uNE: I.uNE });
+    I.source = I.ex.error || !I.ex.ok ? "ai" : "pixel";
+    $("srcSel").value = I.source;
+    $("uN").value = (I.uN * 100).toFixed(1); $("uNE").value = (I.uNE * 100).toFixed(1);
+    $("uNOut").textContent = nf(I.uN * 100, 1) + " %"; $("uNEOut").textContent = nf(I.uNE * 100, 1) + " %";
+    if (!I.ex.error) { $("segBadge").className = "badge " + (I.ex.ok ? "ok" : "warn"); $("segBadge").textContent = I.ex.ok ? "Siluet AI o'qi bo'yicha ajratildi" : "Piksel siluet noaniq — AI siluet ishlatildi"; }
+    useImageProfile(false);
+  } catch (e) {
+    const code = e && e.code;
+    out.textContent = code === "not_granted" ? "AI tahliliga ruxsat berilmadi. Siluet pikseldan ajratilgan holda qoladi." : code === "rate_limited" ? "Hozir so'rovlar ko'p — birozdan keyin qayta urinib ko'ring." : code === "images_unavailable" || code === "image_rejected" ? "Bu rasmni yuborib bo'lmadi — JPG yoki PNG formatda yuklang." : "AI javobini o'qib bo'lmadi. Qayta urinib ko'ring yoki siluetni qo'lda sozlang.";
+  } finally { btn.disabled = false; }
+}
+
+/* ======================= EKSPORT ======================= */
+function baseName() { const p = S.prm; return `rubob_${Math.round(p.length * p.scale / 100)}mm_${String(p.tActual).replace(".", "-")}mm`; }
+async function save(filename, data) {
+  if (!S.downloads) { manualSave(filename, data); return false; }
+  try { await S.downloads.save({ filename, data }); status(`${filename} saqlandi.`); return true; }
+  catch (e) { const c = e && e.code; status(c === "declined" ? "Yuklab olish bekor qilindi." : c === "rate_limited" ? "Oldingi so'rov hali ochiq — biroz kuting." : `Faylni saqlab bo'lmadi (${c || "xato"}).`); return false; }
+}
+function manualSave(filename, data) {
+  const S0 = S.sheets[S.sheetIdx];
+  let name = filename, text = data;
+  if (typeof data !== "string" || /\.(zip|png)$/i.test(filename)) { name = baseName() + (S.sheets.length > 1 ? `_list${S.sheetIdx + 1}` : "") + ".svg"; text = exportSVG(S0, { ...S.prm, tActual: S0.thick || S.prm.tActual }, colors(), { reference: true }); }
+  $("cName").textContent = name; $("cText").value = text; $("copyModal").hidden = false; $("cCopy").focus();
+  status("Yuklab olish bu ko'rinishda ishlamadi — SVG kodini nusxalash oynasi ochildi.");
+}
+function pngBlob(sheet) {
+  const prm = S.prm, k = Math.min(10, 8000 / Math.max(prm.sheetW, prm.sheetH)), cv = document.createElement("canvas");
+  cv.width = Math.round(prm.sheetW * k); cv.height = Math.round(prm.sheetH * k);
+  const c = cv.getContext("2d"), col = colors();
+  c.fillStyle = "#ffffff"; c.fillRect(0, 0, cv.width, cv.height);
+  c.lineJoin = "round";
+  for (const p of sheet.parts) for (const pa of p.paths) {
+    c.strokeStyle = pa.kind === "cut" ? col.cut : col.engrave; c.lineWidth = pa.kind === "cut" ? Math.max(1, k * 0.2) : Math.max(1, k * 0.12);
+    for (const s of pa.subs) { c.beginPath(); if (s.circle) c.arc(s.circle[0] * k, s.circle[1] * k, s.circle[2] * k, 0, Math.PI * 2); else { s.pts.forEach(([x, y], i) => i ? c.lineTo(x * k, y * k) : c.moveTo(x * k, y * k)); if (!s.open) c.closePath(); } c.stroke(); }
+  }
+  return new Promise(r => cv.toBlob(r, "image/png"));
+}
+async function doExport(kind) {
+  if (!S.sheets.length) { status("Eksport uchun list yo'q — avval xatolarni tuzating."); return; }
+  const prm = S.prm, col = colors(), sh = S.sheets[S.sheetIdx], multi = S.sheets.length > 1, nm = baseName(), lp = laserPrm();
+  const suf = i => (multi ? `_${String(S.sheets[i].thick).replace(".", "-")}mm_list${i + 1}` : "");
+  if (kind === "svg") {
+    if (!multi) return save(`${nm}.svg`, exportSVG(sh, prm, col, { reference: true }));
+    return save(`${nm}_svg.zip`, makeZip(S.sheets.map((s, i) => ({ name: `${nm}${suf(i)}.svg`, data: exportSVG(s, prm, col, { reference: true }) }))));
+  }
+  if (kind === "cdr") {
+    status("CDR — CorelDRAW'ning yopiq formati, uni brauzerda to'g'ri yozib bo'lmaydi. CorelDRAW uchun maxsus SVG beriladi: Fayl → Import qiling, o'lchamlar aynan saqlanadi.");
+    const files = S.sheets.map((s, i) => ({ name: `${nm}${suf(i)}_corel.svg`, data: exportSVG(s, prm, col, { corel: true }) }));
+    return multi ? save(`${nm}_corel.zip`, makeZip(files)) : save(files[0].name, files[0].data);
+  }
+  if (kind === "dxf") return save(`${nm}_dxf.zip`, makeZip(S.sheets.map((s, i) => ({ name: `${nm}${suf(i)}.dxf`, data: exportDXF(s, prm) }))));
+  if (kind === "pdf") return save(`${nm}.pdf`, exportPDF(S.sheets, prm, col));
+  if (kind === "png") {
+    if (!multi) return save(`${nm}.png`, await pngBlob(sh));
+    const files = []; for (let i = 0; i < S.sheets.length; i++) files.push({ name: `${nm}${suf(i)}.png`, data: new Uint8Array(await (await pngBlob(S.sheets[i])).arrayBuffer()) });
+    return save(`${nm}_png.zip`, makeZip(files));
+  }
+  if (kind === "gcode") return save(`${nm}_gcode.zip`, makeZip(S.sheets.map((s, i) => ({ name: `${nm}${suf(i)}_${lp.machine}.nc`, data: exportGcode(s, { ...prm, tActual: s.thick || prm.tActual }, { ...lp, passes: passesFor(s, lp) }) }))));
+  if (kind === "zip") {
+    const files = [];
+    S.sheets.forEach((s, i) => { files.push({ name: `svg/${nm}${suf(i)}.svg`, data: exportSVG(s, prm, col, { reference: true }) }, { name: `corel/${nm}${suf(i)}_corel.svg`, data: exportSVG(s, prm, col, { corel: true }) }, { name: `dxf/${nm}${suf(i)}.dxf`, data: exportDXF(s, prm) }, { name: `gcode/${nm}${suf(i)}_${lp.machine}.nc`, data: exportGcode(s, { ...prm, tActual: s.thick || prm.tActual }, { ...lp, passes: passesFor(s, lp) }) }); });
+    for (let i = 0; i < S.sheets.length; i++) files.push({ name: `png/${nm}${suf(i)}.png`, data: new Uint8Array(await (await pngBlob(S.sheets[i])).arrayBuffer()) });
+    files.push({ name: `${nm}.pdf`, data: exportPDF(S.sheets, prm, col) }, { name: `${nm}_detallar.csv`, data: partsCSV(S.model, S.sheetOf, prm) }, { name: "README.txt", data: readme() });
+    return save(`${nm}_hammasi.zip`, makeZip(files));
+  }
+}
+function readme() {
+  const p = S.prm, lp = laserPrm(), g = S.model.geo;
+  return [`Rubob Laser Model Generator`, ``, `Model: ${S.profile.name}, uzunligi ${Math.round(g.L)} mm`, `Material: ${MATS[p.material]} ${p.tActual} mm (tirqish ${g.ts.toFixed(2)} mm)`, `Mashina: ${lp.machineName}, kerf ${lp.kerf} mm (konturlarga qo'shilgan)`,
+    `Listlar: ${S.sheets.length} ta, ${p.sheetW}x${p.sheetH} mm`, ``, `Qatlamlar: CUT (qizil) — kesish, ENGRAVE (qora) — gravyura, REFERENCE (ko'k) — list chegarasi, kesilmaydi.`,
+    `Tartib: avval gravyura, keyin ichki konturlar, oxirida tashqi konturlar.`, ``, `Yig'ish:`, ...STEPS.map(s => `${s.n}. ${s.title}: ${s.text(stepCtx())}`)].join("\r\n");
+}
+let pendingExport = null;
+function exportGate(kind) {
+  const issues = S.checks.filter(c => c.level !== "info");
+  if (!issues.length) return doExport(kind);
+  pendingExport = kind;
+  $("mText").textContent = `${issues.filter(c => c.level === "error").length} xato va ${issues.filter(c => c.level === "warn").length} ogohlantirish topildi. Avtomatik tuzatish yoki baribir eksport qilish mumkin.`;
+  $("mList").innerHTML = issues.slice(0, 12).map(x => `<li class="${x.level}"><b>${x.level === "error" ? "xato" : "diqqat"}</b><span>${esc(x.msg)}</span></li>`).join("") + (issues.length > 12 ? `<li class="info"><span>… yana ${issues.length - 12} ta</span></li>` : "");
+  $("modal").hidden = false; $("mFix").focus();
+}
+function autoFix() {
+  const done = [];
+  for (let round = 0; round < 4; round++) {
+    const codes = new Set(S.checks.filter(c => c.level !== "info").map(c => c.fix));
+    if (!codes.size) break;
+    if (codes.has("clearance") && +$("clr").value < 0) { $("clr").value = 0; done.push("tirqish bo'shlig'i 0 ga qaytarildi"); }
+    if (codes.has("sheet")) {
+      const sizes = [[300, 200], [400, 300], [600, 400], [600, 900], [900, 600], [1000, 1000], [1300, 900]];
+      const cur = [+$("sw").value, +$("sh").value], nx = sizes.find(([w, h]) => w * h > cur[0] * cur[1] && Math.max(w, h) > Math.max(...cur));
+      if (nx) { $("sw").value = nx[0]; $("sh").value = nx[1]; done.push(`list ${nx[0]}×${nx[1]} mm ga kattalashtirildi`); }
+      else { $("scale").value = Math.max(10, +$("scale").value - 10); done.push("masshtab 10 % kichraytirildi"); }
+    }
+    if (codes.has("thin")) {
+      if ($("cutThrough").checked) { $("cutThrough").checked = false; done.push("rozetkalar gravyuraga o'tkazildi"); }
+      else if (+$("rosN").value > 0) { $("rosN").value = Math.max(0, +$("rosN").value - 1); done.push("rozetkalar soni kamaytirildi"); }
+      else if (+$("ribs").value > 8) { $("ribs").value = +$("ribs").value - 1; done.push("qovurg'alar soni kamaytirildi"); }
+    }
+    if (codes.has("nest") || codes.has("dedupe")) { $("gap").value = Math.min(20, +$("gap").value + 1); done.push("detallar oralig'i oshirildi"); }
+    compute({ keepCamera: true });
+  }
+  const left = S.checks.filter(c => c.level !== "info").length;
+  status(done.length ? `Avto tuzatish: ${[...new Set(done)].join(", ")}.${left ? ` Qolgan muammolar: ${left}.` : " Muammolar qolmadi."}` : (left ? "Avtomatik tuzatib bo'lmadi — ro'yxatdagi muammolarni qo'lda ko'rib chiqing." : "Tuzatadigan muammo yo'q."));
+}
+
+/* ======================= HODISALAR ======================= */
+let tmr = 0;
+const later = (f, ms = 90) => { clearTimeout(tmr); tmr = setTimeout(f, ms); };
+document.querySelector(".left").addEventListener("input", e => {
+  const id = e.target.id;
+  if (["len", "bw", "bd"].includes(id)) applyRatios(id);
+  if (id === "thr") { later(() => runExtraction(false), 200); return; }
+  if (id === "uN" || id === "uNE") {
+    if (!S.img) return;
+    S.img.uN = +$("uN").value / 100; S.img.uNE = Math.max(+$("uNE").value / 100, S.img.uN + 0.1);
+    $("uNOut").textContent = nf(S.img.uN * 100, 1) + " %"; $("uNEOut").textContent = nf(S.img.uNE * 100, 1) + " %";
+    later(() => { const I = S.img; I.ex = profileFromMask(I.seg, { axis: I.axis, uN: I.uN, uNE: I.uNE }); useImageProfile(false); }, 200); return;
+  }
+  if (id === "ta" || e.target.name === "tn" || id === "mach" || id === "mat") { if (e.target.name === "tn") $("ta").value = radio("tn"); setLaserDefaults(); }
+  if (id === "ovShow") { drawOverlay(); return; }
+  if (id === "srcSel") { if (S.img) { S.img.source = $("srcSel").value; if (S.img.source === "ai" && !S.img.ai) { status("Avval \"AI bilan tanib olish\" tugmasini bosing."); $("srcSel").value = "pixel"; S.img.source = "pixel"; return; } useImageProfile(false); } return; }
+  if (id === "shapeSrc") {
+    const v = $("shapeSrc").value;
+    if (v === "image") { if (S.img) useImageProfile(false); return; }
+    S.shape = v; setProfile(templateProfile(v)); compute(); return;
+  }
+  later(() => compute({ keepCamera: true }));
+});
+document.querySelector(".left").addEventListener("change", e => { if (["cCut", "cEng", "cRef"].includes(e.target.id)) renderSheets(); });
+$("presets").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.l === "custom") { $("len").focus(); return; } $("len").value = b.dataset.l; $("scale").value = 100; applyRatios("len"); compute(); });
+$("sheetPresets").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.w === "custom") { $("sw").focus(); return; } $("sw").value = b.dataset.w; $("sh").value = b.dataset.h; compute({ keepCamera: true }); });
+$("taChips").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("ta").value = b.dataset.t; setLaserDefaults(); compute({ keepCamera: true }); });
+$("tree").addEventListener("click", e => { const b = e.target.closest("button[data-pid]"); if (b) select(b.dataset.pid, "tree"); });
+$("bed").addEventListener("click", e => { const g = e.target.closest("g.part"); if (g) select(g.dataset.pid, "sheet"); });
+$("sheetTabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.sheetIdx = +b.dataset.i; renderSheets(); });
+$("steps").addEventListener("click", e => { const li = e.target.closest("li"); if (li) showGuide(+li.dataset.step); });
+// rasm
+const drop = $("drop");
+drop.addEventListener("click", () => $("file").click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } });
+$("file").addEventListener("change", e => loadFile(e.target.files[0]));
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => loadFile(e.dataTransfer.files[0]));
+document.addEventListener("paste", e => { const f = [...(e.clipboardData?.files || [])].find(f => /^image\//.test(f.type)); if (f) loadFile(f); });
+$("bAI").addEventListener("click", aiAnalyze);
+$("bFlip").addEventListener("click", () => { const I = S.img; if (!I || !I.axis) return; I.axis = { head: I.axis.tail, tail: I.axis.head }; runExtraction(true); });
+$("bClear").addEventListener("click", () => { S.img = null; $("imgBox").hidden = true; $("imgCtrls").hidden = true; $("file").value = ""; $("shapeSrc").querySelector('option[value="image"]').disabled = true; $("shapeSrc").value = "uzbek"; setProfile(templateProfile("uzbek")); compute(); });
+// asboblar paneli
+$("bGenerate").addEventListener("click", () => { compute(); setView(V.view || "iso"); status(`Model yaratildi: ${S.model.parts.length} ta detal, ${S.sheets.length} ta list.`); });
+$("bRecalc").addEventListener("click", () => { compute({ keepCamera: true }); status("Qayta hisoblandi."); });
+$("bNest").addEventListener("click", () => { compute({ keepCamera: true }); $("tabSheets").click(); status(`Detallar ${S.sheets.length} ta listga qayta joylandi.`); });
+const setExplode = v => { $("exp").value = v; $("vExploded").setAttribute("aria-pressed", v > 0); $("vAssembled").setAttribute("aria-pressed", v == 0); $("bExplode").setAttribute("aria-pressed", v > 0); syncOutputs(); applyExplode(); };
+let expAnim = 0;
+const animateExplode = target => { cancelAnimationFrame(expAnim); if (S.guide != null) showGuide(null); const start = +$("exp").value, t0 = performance.now(); const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches; const st = now => { const k = reduce ? 1 : Math.min(1, (now - t0) / 600); setExplode(Math.round(start + (target - start) * (1 - Math.pow(1 - k, 3)))); if (k < 1) expAnim = requestAnimationFrame(st); }; expAnim = requestAnimationFrame(st); };
+$("bExplode").addEventListener("click", () => animateExplode(+$("exp").value > 0 ? 0 : 100));
+$("vExploded").addEventListener("click", () => animateExplode(100));
+$("vAssembled").addEventListener("click", () => animateExplode(0));
+$("exp").addEventListener("input", () => { if (S.guide != null) showGuide(null); setExplode(+$("exp").value); });
+$("vCover").addEventListener("click", () => { V.hideCover = !V.hideCover; $("vCover").setAttribute("aria-pressed", !V.hideCover); applyCoverVis(); });
+function applyCoverVis() { if (!V.ok) return; V.meshes.forEach(m => { if (m.userData.stave) m.visible = !V.hideCover && (S.guide == null || m.userData.step <= S.guide); }); }
+$("vSpin").addEventListener("click", () => { if (!V.ok) return; V.controls.autoRotate = !V.controls.autoRotate; $("vSpin").setAttribute("aria-pressed", V.controls.autoRotate); });
+document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+$("bGuide").addEventListener("click", () => { if (S.guide != null) showGuide(null); else { setExplode(0); showGuide(1); } });
+$("gPrev").addEventListener("click", () => showGuide(Math.max(1, S.guide - 1)));
+$("gNext").addEventListener("click", () => showGuide(S.guide >= 10 ? null : S.guide + 1));
+$("gClose").addEventListener("click", () => showGuide(null));
+// pastki yorliqlar
+const tabs = [["tabSheets", "paneSheets"], ["tabParts", "paneParts"], ["tabCheck", "paneCheck"]];
+tabs.forEach(([t, p]) => $(t).addEventListener("click", () => tabs.forEach(([t2, p2]) => { $(t2).setAttribute("aria-selected", t2 === t); $(p2).hidden = p2 !== p; })));
+$("bFix").addEventListener("click", autoFix);
+// eksport
+[["bSVG", "svg"], ["bDXF", "dxf"], ["bCDR", "cdr"], ["bPDF", "pdf"], ["bPNG", "png"], ["bGcode", "gcode"], ["bZip", "zip"]].forEach(([id, k]) => $(id).addEventListener("click", () => exportGate(k)));
+$("mCancel").addEventListener("click", () => { $("modal").hidden = true; pendingExport = null; });
+$("mGo").addEventListener("click", () => { $("modal").hidden = true; const k = pendingExport; pendingExport = null; if (k) doExport(k); });
+$("mFix").addEventListener("click", () => { autoFix(); const issues = S.checks.filter(c => c.level !== "info"); if (!issues.length) { $("modal").hidden = true; const k = pendingExport; pendingExport = null; if (k) doExport(k); } else exportGate(pendingExport); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("modal").hidden) $("mCancel").click(); if (e.key === "Escape" && !$("copyModal").hidden) $("cClose").click(); });
+
+/* ======================= ISHGA TUSHIRISH ======================= */
+setProfile(templateProfile("uzbek"));
+setLaserDefaults();
+initViewer();
+compute();
+const exportBtns = ["bSVG", "bDXF", "bCDR", "bPDF", "bPNG", "bGcode", "bZip"];
+document.querySelectorAll("[data-exp]").forEach(b => b.addEventListener("click", () => exportGate(b.dataset.exp)));
+$("cClose").addEventListener("click", () => { $("copyModal").hidden = true; });
+$("cCopy").addEventListener("click", () => { const ta = $("cText"), ok = () => { $("cCopy").textContent = "Nusxalandi"; setTimeout(() => { $("cCopy").textContent = "Nusxalash"; }, 1800); };
+  const fb = () => { ta.focus(); ta.select(); try { if (document.execCommand("copy")) ok(); } catch (e) {} };
+  try { navigator.clipboard.writeText(ta.value).then(ok, fb); } catch (e) { fb(); } });
+// sinov uchun ichki kirish nuqtasi
+window.__rubob = { S, V, compute, fromImageData(data, file) { const c = document.createElement("canvas"); c.width = data.width; c.height = data.height; S.img = { file: file || { type: "image/png", name: "x.png" }, canvas: c, data, axis: null, uN: null, uNE: null, ai: null, source: "pixel" }; $("imgBox").hidden = false; $("imgCtrls").hidden = false; $("shapeSrc").querySelector('option[value="image"]').disabled = false; runExtraction(true); } };
+const cl = window.claude;
+(cl && cl.use ? cl.use("downloads") : Promise.resolve(null)).then(d => { S.downloads = d; }, () => {});
+(cl && cl.use ? cl.use("sample") : Promise.resolve(null)).then(async s => {
+  if (!s) { $("bAI").hidden = true; $("aiNote").textContent = "AI tanib olish bu ko'rinishda mavjud emas — siluet pikseldan ajratiladi, chegaralarni qo'lda sozlang."; return; }
+  const lim = await s.limits().catch(() => null);
+  if (!lim || !lim.images) { $("bAI").hidden = true; $("aiNote").textContent = "AI ga rasm yuborish bu ko'rinishda mavjud emas — chegaralarni qo'lda sozlang."; return; }
+  S.sample = s;
+}, () => { $("bAI").hidden = true; });
+})();
+</script>
+
+</body></html>

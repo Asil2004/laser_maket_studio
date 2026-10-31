@@ -1,0 +1,268 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Honeycomb Pin Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: chap tomonda sozlamalar paneli, o'ngda lazer stoli (honeycomb) ko'rinishidagi jonli preview; telefonda ustma-ust */
+:root{
+  --bg:#eceeea; --panel:#f8f9f6; --fg:#1d211f; --muted:#5d655f; --line:#cfd4cc;
+  --bed:#262b29; --bed-cell:#323836; --ply:#d4b07c; --ply-edge:#9c7a4a;
+  --accent:#1f5fbf; --accent-fg:#ffffff; --cut:#e0362c;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#151816; --panel:#1d211f; --fg:#e7ebe6; --muted:#9aa39c; --line:#333a36;
+  --bed:#0e100f; --bed-cell:#1b1f1d; --ply:#d9b682; --ply-edge:#a6834f;
+  --accent:#6aa0f0; --accent-fg:#0d1420; --cut:#ff6a5e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151816; --panel:#1d211f; --fg:#e7ebe6; --muted:#9aa39c; --line:#333a36;
+  --bed:#0e100f; --bed-cell:#1b1f1d; --ply:#d9b682; --ply-edge:#a6834f;
+  --accent:#6aa0f0; --accent-fg:#0d1420; --cut:#ff6a5e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,5vw,44px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.main{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:18px}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:10px}
+legend{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding:0}
+.row{display:grid;grid-template-columns:1fr 112px;align-items:center;gap:10px}
+label{font-size:14px}
+label small{display:block;color:var(--muted);font-size:12px;line-height:1.3}
+input[type=number],input[type=text],select{width:100%;font:500 14px var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 8px}
+input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.full{display:grid;gap:6px}
+.check{display:flex;gap:8px;align-items:center;font-size:14px}
+.stage{display:grid;gap:12px;min-width:0}
+.bed{background:var(--bed);border-radius:10px;padding:14px;overflow:auto;position:relative}
+.bed svg{display:block;width:100%;height:auto;min-width:520px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:600 14px var(--body);border-radius:7px;padding:9px 14px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--fg)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+button:hover{filter:brightness(1.06)}
+.stats{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{color:var(--fg);font-weight:500}
+.toast{font-size:13px;color:var(--accent);min-height:1.2em}
+textarea{width:100%;height:140px;font:12px/1.4 var(--mono);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:10px;resize:vertical}
+details summary{cursor:pointer;color:var(--muted);font-size:14px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.notes{font-size:13px;color:var(--muted);max-width:70ch}
+.notes p{margin:0 0 6px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Honeycomb <span>Pin</span> Studio</h1>
+      <p class="sub">Lazer stoli uchun honeycomb pinlar va o‘lcham sinash taroqchasini o‘zingiz yarating. Parametrlarni o‘zgartiring, SVG faylni nusxalab LightBurn yoki boshqa dasturga qo‘ying.</p>
+    </div>
+  </header>
+
+  <div class="main">
+    <form class="panel" id="form" autocomplete="off">
+      <fieldset>
+        <legend>O‘lchamlar (mm)</legend>
+        <div class="full">
+          <label for="sizes">Honeycomb katak o‘lchamlari<small>Vergul bilan ajrating. Har biri uchun alohida pin chiziladi.</small></label>
+          <input type="text" id="sizes" value="4, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 12">
+        </div>
+        <div class="row"><label for="qty">Har o‘lchamdan nechta</label><input type="number" id="qty" value="1" min="1" max="20" step="1"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pin shakli (mm)</legend>
+        <div class="row"><label for="barW">Tepa qismi eni</label><input type="number" id="barW" value="26" min="10" max="80" step="0.5"></div>
+        <div class="row"><label for="barH">Tepa qismi balandligi</label><input type="number" id="barH" value="4" min="2" max="15" step="0.5"></div>
+        <div class="row"><label for="stemL">Oyoq uzunligi<small>Katakka kiradigan qism</small></label><input type="number" id="stemL" value="18" min="6" max="60" step="0.5"></div>
+        <div class="row"><label for="slot">Prujina tirqishi eni<small>0 = tirqishsiz</small></label><input type="number" id="slot" value="1" min="0" max="4" step="0.1"></div>
+        <div class="row"><label for="fit">Siqilish zaxirasi<small>Oyoq katakdan shuncha keng bo‘ladi</small></label><input type="number" id="fit" value="0.3" min="-1" max="2" step="0.05"></div>
+        <div class="row"><label for="kerf">Lazer kerfi</label><input type="number" id="kerf" value="0.1" min="0" max="0.6" step="0.01"></div>
+        <div class="row"><label for="tip">Uchi</label>
+          <select id="tip"><option value="chamfer">Qirqilgan</option><option value="round">Yumaloq</option><option value="flat">To‘g‘ri</option></select></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Qo‘shimcha</legend>
+        <label class="check"><input type="checkbox" id="labels" checked> O‘lcham raqamini gravirovka qilish</label>
+        <label class="check"><input type="checkbox" id="tester" checked> O‘lcham sinash taroqchasini qo‘shish</label>
+        <div class="row"><label for="sheetW">List eni</label><input type="number" id="sheetW" value="300" min="80" max="1500" step="10"></div>
+        <div class="row"><label for="gap">Detallar orasidagi masofa</label><input type="number" id="gap" value="2" min="0.5" max="20" step="0.5"></div>
+      </fieldset>
+    </form>
+
+    <section class="stage">
+      <div class="toolbar">
+        <button type="button" class="primary" id="copySvg">SVG ni nusxalash</button>
+        <button type="button" id="dl">SVG yuklab olish</button>
+        <button type="button" id="reset">Standart holat</button>
+        <span class="toast" id="toast" role="status"></span>
+      </div>
+      <div class="bed"><div id="preview"></div></div>
+      <div class="stats" id="stats"></div>
+      <div class="legend">
+        <span><i class="sw" style="border-color:var(--cut)"></i>Kesish (qizil, 0.1 mm)</span>
+        <span><i class="sw" style="border-color:var(--accent)"></i>Gravirovka (ko‘k)</span>
+      </div>
+      <details>
+        <summary>SVG kodi</summary>
+        <textarea id="code" readonly></textarea>
+      </details>
+      <div class="notes">
+        <p><b>Qanday ishlatiladi:</b> avval taroqchani kesing va stolingizning katagiga qaysi tishi zich kirishini toping. Keyin faqat shu o‘lchamni qoldirib, “Har o‘lchamdan nechta” maydoniga kerakli sonni yozing.</p>
+        <p>Material: 3 mm fanera yoki akril. Fayl millimetrda saqlanadi, dasturga import qilganda masshtab 1:1 bo‘ladi.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const ids = ["sizes","qty","barW","barH","stemL","slot","fit","kerf","tip","labels","tester","sheetW","gap"];
+const defaults = {};
+ids.forEach(i => { const el=$(i); defaults[i] = el.type==="checkbox" ? el.checked : el.value; });
+
+const f = n => +(+n).toFixed(3);
+const fmt = n => String(+(+n).toFixed(2)).replace(".", ",");
+
+function readSizes(){
+  return $("sizes").value.split(/[,;\s]+/).map(s=>parseFloat(s.replace(",", "."))).filter(n=>n>0 && n<100);
+}
+
+// One pin outline, origin at top-left of bar. Returns {d, w, h, labelX, labelY}
+function pinPath(size, p){
+  const B = p.barW + p.kerf, h = p.barH + p.kerf;
+  let w = size + p.fit + p.kerf;
+  const L = p.stemL;
+  const T = h + L;
+  const x0 = (B-w)/2, x1 = (B+w)/2;
+  let s = Math.min(p.slot, w*0.45);
+  const xs0 = (B-s)/2, xs1 = (B+s)/2;
+  const ys = Math.max(h*0.45, 1.2);
+  const r = 0.8;
+  let d = `M${f(r)} 0 H${f(B-r)} Q${f(B)} 0 ${f(B)} ${f(r)} V${f(h-r)} Q${f(B)} ${f(h)} ${f(B-r)} ${f(h)} H${f(x1+r)} Q${f(x1)} ${f(h)} ${f(x1)} ${f(h+r)} `;
+  // right leg down to tip
+  const legW = (w - s)/2;
+  if (p.tip==="chamfer"){ const c=Math.min(1.5, legW*0.6); d+=`V${f(T-c)} L${f(x1-c)} ${f(T)} `; }
+  else if (p.tip==="round"){ const rr=Math.min(legW/2, 2); d+=`V${f(T-rr)} Q${f(x1)} ${f(T)} ${f(x1-rr)} ${f(T)} `; }
+  else d+=`V${f(T)} `;
+  if (s>0){
+    d+=`H${f(xs1)} V${f(ys+s/2)} A${f(s/2)} ${f(s/2)} 0 0 0 ${f(xs0)} ${f(ys+s/2)} V${f(T)} `;
+  }
+  if (p.tip==="chamfer"){ const c=Math.min(1.5, legW*0.6); d+=`H${f(x0+c)} L${f(x0)} ${f(T-c)} `; }
+  else if (p.tip==="round"){ const rr=Math.min(legW/2, 2); d+=`H${f(x0+rr)} Q${f(x0)} ${f(T)} ${f(x0)} ${f(T-rr)} `; }
+  else d+=`H${f(x0)} `;
+  d+=`V${f(h+r)} Q${f(x0)} ${f(h)} ${f(x0-r)} ${f(h)} H${f(r)} Q0 ${f(h)} 0 ${f(h-r)} V${f(r)} Q0 0 ${f(r)} 0 Z`;
+  return {d, w:B, h:T, label:fmt(size), lx:x0/2, ly:h*0.5, fs:Math.min(h*0.62, 3.2, x0*0.45), ok: w>s+0.8};
+}
+
+// Size-test comb: base strip with one prong per size
+function combPath(sizes, p){
+  const pad = 2.5, prongL = 9, baseH = 9;
+  let x = pad, prongs = [];
+  sizes.forEach(sz => { const w = sz + p.kerf; prongs.push({x, w, sz}); x += w + 3; });
+  const W = x - 3 + pad;
+  let d = `M0 0 H${f(W)} V${f(baseH)} `;
+  for (let i = prongs.length-1; i >= 0; i--){
+    const pr = prongs[i];
+    d += `H${f(pr.x+pr.w)} V${f(baseH+prongL-0.6)} L${f(pr.x+pr.w-0.6)} ${f(baseH+prongL)} H${f(pr.x+0.6)} L${f(pr.x)} ${f(baseH+prongL-0.6)} V${f(baseH)} `;
+  }
+  d += `H0 Z`;
+  const labels = prongs.map(pr => ({x: pr.x+pr.w/2, y: baseH-2.2, t: fmt(pr.sz), fs: Math.min(2.4, Math.max(1.4,(pr.w+3)/3))}));
+  return {d, w:W, h:baseH+prongL, labels, title:{x:pad, y:3.4}};
+}
+
+function params(){
+  return {
+    qty: Math.max(1, Math.min(20, parseInt($("qty").value)||1)),
+    barW: +$("barW").value||26, barH: +$("barH").value||4, stemL: +$("stemL").value||18,
+    slot: Math.max(0, +$("slot").value||0), fit: +$("fit").value||0, kerf: Math.max(0,+$("kerf").value||0),
+    tip: $("tip").value, labels: $("labels").checked, tester: $("tester").checked,
+    sheetW: +$("sheetW").value||300, gap: +$("gap").value||2
+  };
+}
+
+let lastSvg = "";
+function build(){
+  const p = params(), sizes = readSizes();
+  const parts = [];
+  sizes.forEach(sz => { for (let i=0;i<p.qty;i++) parts.push(pinPath(sz,p)); });
+
+  // simple shelf packing; pins nest alternately rotated 180° to save material
+  let x = p.gap, y = p.gap, rowH = 0, maxX = 0, items = [];
+  let comb = null;
+  if (p.tester && sizes.length){
+    comb = combPath([...sizes].sort((a,b)=>a-b), p);
+    items.push({type:"comb", x, y, g:comb});
+    y += comb.h + p.gap*2; maxX = Math.max(maxX, comb.w + p.gap);
+  }
+  parts.forEach(pt => {
+    if (x + pt.w + p.gap > p.sheetW && x > p.gap){ x = p.gap; y += rowH + p.gap; rowH = 0; }
+    items.push({type:"pin", x, y, g:pt});
+    x += pt.w + p.gap; rowH = Math.max(rowH, pt.h); maxX = Math.max(maxX, x);
+  });
+  const W = Math.max(maxX, 40), H = y + rowH + p.gap;
+
+  const cut = `fill="none" stroke="#ff0000" stroke-width="0.1"`;
+  const eng = `fill="#0000ff" font-family="Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle" dominant-baseline="central"`;
+  let body = "";
+  items.forEach(it => {
+    if (it.type==="comb"){
+      const c = it.g;
+      body += `<g transform="translate(${f(it.x)} ${f(it.y)})"><path d="${c.d}" ${cut}/>`;
+      if (p.labels){
+        c.labels.forEach(l => body += `<text x="${f(l.x)}" y="${f(l.y)}" font-size="${f(l.fs)}" ${eng}>${l.t}</text>`);
+      }
+      body += `</g>`;
+    } else {
+      const g = it.g;
+      body += `<g transform="translate(${f(it.x)} ${f(it.y)})"><path d="${g.d}" ${cut}/>`;
+      if (p.labels) body += `<text x="${f(g.lx)}" y="${f(g.ly)}" font-size="${f(g.fs)}" ${eng}>${g.label}</text>`;
+      body += `</g>`;
+    }
+  });
+  lastSvg = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${f(W)}mm" height="${f(H)}mm" viewBox="0 0 ${f(W)} ${f(H)}">\n${body}\n</svg>`;
+
+  // preview: same geometry, themed fills
+  const prevBody = body
+    .replaceAll(cut, `fill="var(--ply)" stroke="var(--cut)" stroke-width="0.18" fill-rule="evenodd"`)
+    .replaceAll(`fill="#0000ff"`, `fill="var(--accent)"`);
+  const hex = `<pattern id="hc" width="6" height="10.392" patternUnits="userSpaceOnUse"><path d="M3 0 L6 1.732 L6 5.196 L3 6.928 L0 5.196 L0 1.732Z M0 5.196 L0 8.66 L-3 10.392 M6 5.196 L6 8.66 L9 10.392" fill="none" stroke="var(--bed-cell)" stroke-width="0.5"/></pattern>`;
+  $("preview").innerHTML = `<svg viewBox="-2 -2 ${f(W+4)} ${f(H+4)}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pinlar ko‘rinishi"><defs>${hex}</defs><rect x="-2" y="-2" width="${f(W+4)}" height="${f(H+4)}" fill="url(#hc)"/>${prevBody}</svg>`;
+  $("code").value = lastSvg;
+
+  const bad = parts.filter(pt=>!pt.ok).length;
+  $("stats").innerHTML = `<span>Pinlar: <b>${parts.length}</b></span><span>O‘lchamlar: <b>${sizes.length}</b></span><span>Material: <b>${fmt(W)} × ${fmt(H)} mm</b></span>${bad?`<span style="color:var(--cut)">Diqqat: ${bad} ta pinda tirqish oyoqdan keng</span>`:""}`;
+  if (!sizes.length) $("stats").innerHTML = `<span style="color:var(--cut)">Kamida bitta o‘lcham kiriting, masalan: 6, 8, 10</span>`;
+}
+
+function toast(msg){ $("toast").textContent = msg; clearTimeout(toast.t); toast.t = setTimeout(()=>$("toast").textContent="", 3500); }
+
+$("copySvg").addEventListener("click", () => {
+  navigator.clipboard.writeText(lastSvg).then(()=>toast("SVG nusxalandi. Uni .svg fayl sifatida saqlang."))
+  .catch(()=>{ document.querySelector("details").open = true; $("code").select(); toast("Kod belgilandi, Ctrl+C bosing."); });
+});
+let downloads = null;
+$("dl").hidden = true;
+(async()=>{ try{ downloads = window.claude?.use ? await window.claude.use("downloads") : null; }catch(e){} if (downloads) $("dl").hidden = false; })();
+$("dl").addEventListener("click", async () => {
+  if (!downloads) return;
+  try{ await downloads.save({filename:"honeycomb-pins.svg", data:lastSvg}); toast("Fayl saqlandi."); }
+  catch(e){ if (e && e.code==="declined") return; toast("Saqlab bo‘lmadi. “SVG ni nusxalash” tugmasidan foydalaning."); }
+});
+$("reset").addEventListener("click", () => {
+  ids.forEach(i => { const el=$(i); if (el.type==="checkbox") el.checked = defaults[i]; else el.value = defaults[i]; });
+  build(); toast("Standart sozlamalar tiklandi.");
+});
+$("form").addEventListener("input", build);
+$("form").addEventListener("submit", e => e.preventDefault());
+build();
+</script>
+
+</body></html>

@@ -1,0 +1,537 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Uyacha ustaxonasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: workshop catalogue — short hero, filter chips, 10 model cards drawn as laser-cut plywood, then configurator + order basket side by side */
+:root{
+  --bg:#EDF0EA; --surface:#FAFBF7; --fg:#1F2B26; --muted:#5D6B63; --line:#D3D9CF;
+  --accent:#2F6B4F; --accent-fg:#FFFFFF; --sun:#E8B23A;
+  --ply:#DDBF8F; --ply-edge:#A67C4B; --hole:#2B2119; --stage:#E3E8DE;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141A17; --surface:#1C2420; --fg:#E7ECE6; --muted:#9AA79F; --line:#2E3933;
+  --accent:#6CC199; --accent-fg:#0F1A14; --sun:#F0C25A; --stage:#222C27; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141A17; --surface:#1C2420; --fg:#E7ECE6; --muted:#9AA79F; --line:#2E3933;
+  --accent:#6CC199; --accent-fg:#0F1A14; --sun:#F0C25A; --stage:#222C27; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--f-body);padding-inline:16px}
+.wrap{max-width:1160px;margin:0 auto;padding-block:20px 64px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h2{font-size:clamp(1.4rem,3vw,1.9rem)}
+p{margin:0}
+.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1.1rem}
+.brand svg{width:34px;height:34px}
+.bar nav{display:flex;gap:18px;flex-wrap:wrap}
+.bar nav a{color:var(--fg);text-decoration:none;font-weight:500}
+.bar nav a:hover{color:var(--accent)}
+.cart-pill{background:var(--accent);color:var(--accent-fg);border:0;border-radius:999px;padding:8px 16px;font-weight:700;cursor:pointer}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center}
+.hero h1{font-size:clamp(2rem,5.4vw,3.6rem);letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{max-width:56ch;color:var(--muted);font-size:1.08rem;margin-top:16px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:24px}
+.facts div{display:flex;flex-direction:column}
+.facts b{font-family:var(--f-display);font-size:1.25rem}
+.facts span{color:var(--muted);font-size:.85rem}
+.hero-art{background:var(--stage);border-radius:20px;padding:12px;aspect-ratio:1/1;max-width:100%}
+.hero-art svg{width:100%;height:100%}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:12px 20px;font-weight:700;text-decoration:none;cursor:pointer;border:2px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-fg)}
+.btn.ghost{background:transparent;color:var(--accent)}
+
+/* catalogue */
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:500;font-size:.92rem}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card .art{background:var(--stage);aspect-ratio:4/3;position:relative}
+.card .art svg{width:100%;height:100%;display:block}
+.num{position:absolute;top:10px;left:12px;font:500 .72rem var(--f-mono);color:var(--muted)}
+.card .body{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:1.02rem}
+.card .for{color:var(--muted);font-size:.9rem;min-height:2.8em}
+.specs{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font:500 .78rem/1.5 var(--f-mono);color:var(--muted);margin-top:4px}
+.specs dt{color:var(--muted)} .specs dd{margin:0;color:var(--fg);font-variant-numeric:tabular-nums}
+.card .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:10px;border-top:1px dashed var(--line)}
+.price{font-family:var(--f-display);font-size:1.05rem;font-variant-numeric:tabular-nums}
+.price small{font:500 .7rem var(--f-mono);color:var(--muted)}
+.mini{border:0;border-radius:10px;background:var(--accent);color:var(--accent-fg);padding:8px 12px;font-weight:700;cursor:pointer;font-size:.88rem}
+
+/* svg parts */
+.p{fill:var(--ply);stroke:var(--ply-edge);stroke-width:2;stroke-linejoin:round}
+.pd{fill:var(--ply-edge);stroke:var(--ply-edge);stroke-width:2;stroke-linejoin:round}
+.h{fill:var(--hole)}
+.t{fill:var(--ply-edge)}
+.ln{stroke:var(--ply-edge);stroke-width:1.5;fill:none}
+.gr{stroke:var(--line);stroke-width:2}
+
+/* builder */
+.builder{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.cfg-top{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:center}
+.cfg-art{background:var(--stage);border-radius:14px;aspect-ratio:1/1;max-width:100%}
+.cfg-art svg{width:100%;height:100%}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.field .lab{font-weight:700;font-size:.9rem}
+select,input[type=text],input[type=number]{background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg label{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.92rem}
+.seg input{accent-color:var(--accent)}
+.seg label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.hint{font-size:.85rem;color:var(--muted)}
+.hint b{color:var(--fg);font-family:var(--f-mono)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.total{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:16px}
+.total .price{font-size:1.5rem}
+
+.cart-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.cart-list li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.cart-list .nm{font-weight:700}
+.cart-list .op{font-size:.82rem;color:var(--muted);grid-column:1}
+.cart-list .pr{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.rm{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.8rem;justify-self:end;padding:0}
+.empty{color:var(--muted);font-size:.95rem;padding:12px 0}
+.sum-line{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.sum-line.big{font-family:var(--f-display);font-size:1.25rem}
+.disc{color:var(--accent);font-weight:700}
+textarea{width:100%;min-height:120px;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;font:500 .8rem/1.5 var(--f-mono);color:var(--fg);resize:vertical}
+.toast{font-size:.88rem;color:var(--accent);font-weight:700;min-height:1.3em}
+
+/* guide */
+.guide-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.93rem}
+th{font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:22px}
+.tip{display:flex;flex-direction:column;gap:6px}
+.tip b{font-family:var(--f-display);font-size:.95rem}
+.tip p{color:var(--muted);font-size:.93rem}
+
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:22px}
+footer b{color:var(--fg)}
+
+@media (max-width:860px){
+  .hero,.builder{grid-template-columns:1fr}
+  .hero-art{max-width:420px}
+}
+@media (max-width:480px){
+  .cfg-top{grid-template-columns:1fr}
+  .cfg-art{max-width:220px}
+  .row2{grid-template-columns:1fr}
+  .bar nav{display:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .card{transition:transform .2s ease}
+  .card:hover{transform:translateY(-3px)}
+}
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><polygon class="p" points="6,18 20,5 34,18"/><rect class="p" x="10" y="17" width="20" height="18"/><circle class="h" cx="20" cy="25" r="4.5"/></svg>
+      Uyacha
+    </div>
+    <nav aria-label="Bo‘limlar">
+      <a href="#katalog">Modellar</a>
+      <a href="#yigish">Buyurtma</a>
+      <a href="#qollanma">Qo‘llanma</a>
+    </nav>
+    <button class="cart-pill" id="cartPill" type="button">Savat · 0</button>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Fanera · lazerli kesish · Toshkent</p>
+      <h1 style="margin-top:12px">Har bir qushga <em>o‘z uyasi</em></h1>
+      <p class="lead">Qorabosh, chug‘urchuq, mayna, to‘tiqush va musicha uchun 10 xil model. Hammasi 6 mm qayin fanerasidan, mixsiz, “paz-shpunt” usulida yig‘iladi. Kirish teshigini qush turiga moslab kesib beramiz.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#katalog">Modellarni ko‘rish</a>
+        <a class="btn ghost" href="#yigish">O‘zingiz yig‘ing</a>
+      </div>
+      <div class="facts">
+        <div><b>10</b><span>tayyor model</span></div>
+        <div><b>6 mm</b><span>qayin fanerasi</span></div>
+        <div><b>28–60 mm</b><span>teshik diametri</span></div>
+        <div><b>−10%</b><span>10 donadan ortiq</span></div>
+      </div>
+    </div>
+    <div class="hero-art" id="heroArt" aria-hidden="true"></div>
+  </section>
+
+  <section id="katalog">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Katalog</p>
+        <h2>10 ta model</h2>
+      </div>
+      <div class="chips" role="group" aria-label="Turi bo‘yicha saralash">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">Barchasi</button>
+        <button class="chip" type="button" data-f="wild" aria-pressed="false">Yovvoyi qushlar</button>
+        <button class="chip" type="button" data-f="pet" aria-pressed="false">Uy qushlari</button>
+        <button class="chip" type="button" data-f="feed" aria-pressed="false">Oziqlantirgich</button>
+        <button class="chip" type="button" data-f="kids" aria-pressed="false">Bolalar uchun</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="yigish">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Konfigurator</p>
+        <h2>Uyani o‘zingizga moslang</h2>
+      </div>
+    </div>
+    <div class="builder">
+      <form class="panel" id="cfg">
+        <div class="cfg-top">
+          <div class="cfg-art" id="cfgArt" aria-hidden="true"></div>
+          <div class="field">
+            <label for="cfgModel">Model</label>
+            <select id="cfgModel"></select>
+            <p class="hint" id="cfgDims"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cfgBird">Qaysi qush uchun?</label>
+          <select id="cfgBird"></select>
+          <p class="hint" id="cfgHole"></p>
+        </div>
+
+        <div class="field">
+          <span class="lab" id="finLab">Pardoz</span>
+          <div class="seg" role="radiogroup" aria-labelledby="finLab" id="cfgFinish"></div>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label for="cfgEngr">Gravyura (ixtiyoriy)</label>
+            <input type="text" id="cfgEngr" maxlength="24" placeholder="Masalan: Bog‘imiz 2026">
+            <p class="hint">+20 000 so‘m, 24 belgigacha</p>
+          </div>
+          <div class="field">
+            <label for="cfgQty">Soni</label>
+            <input type="number" id="cfgQty" min="1" max="500" value="1">
+            <p class="hint">10 donadan ortiq: −10%</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="lab" id="asmLab">Holati</span>
+          <div class="seg" role="radiogroup" aria-labelledby="asmLab">
+            <label><input type="radio" name="asm" id="asmReady" value="ready" checked> Yig‘ilgan holda</label>
+            <label><input type="radio" name="asm" id="asmKit" value="kit"> Yig‘ma to‘plam (−10 000)</label>
+          </div>
+        </div>
+
+        <div class="total">
+          <div>
+            <p class="eyebrow">Jami</p>
+            <p class="price" id="cfgTotal">0</p>
+          </div>
+          <button class="btn primary" type="submit">Savatga qo‘shish</button>
+        </div>
+      </form>
+
+      <aside class="panel" id="cart" aria-labelledby="cartTitle">
+        <div>
+          <p class="eyebrow">Buyurtma</p>
+          <h2 id="cartTitle" style="font-size:1.3rem">Savat</h2>
+        </div>
+        <ul class="cart-list" id="cartList"></ul>
+        <div id="cartSums" style="display:flex;flex-direction:column;gap:6px"></div>
+        <div class="field">
+          <label for="custName">Ismingiz</label>
+          <input type="text" id="custName" placeholder="Ism Familiya">
+        </div>
+        <div class="field">
+          <label for="custPhone">Telefon</label>
+          <input type="text" id="custPhone" placeholder="+998 90 123 45 67">
+        </div>
+        <div class="field">
+          <label for="orderText">Buyurtma matni</label>
+          <textarea id="orderText" readonly></textarea>
+          <p class="hint">Matnni nusxalab, Telegram yoki WhatsApp orqali ustaxonaga yuboring.</p>
+        </div>
+        <button class="btn primary" type="button" id="copyBtn">Matnni nusxalash</button>
+        <p class="toast" id="toast" role="status"></p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="qollanma">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Qo‘llanma</p>
+        <h2>Teshik o‘lchami qushni tanlaydi</h2>
+      </div>
+    </div>
+    <div class="guide-wrap">
+      <table>
+        <thead><tr><th>Qush</th><th>Teshik, mm</th><th>Pol, sm</th><th>Osish balandligi</th><th>Mos model</th></tr></thead>
+        <tbody id="guideBody"></tbody>
+      </table>
+    </div>
+    <div class="tips">
+      <div class="tip"><b>Yo‘nalish</b><p>Teshikni sharq yoki janubi-sharqqa qarating. Shimoliy shamol va tushki quyosh tushmasin.</p></div>
+      <div class="tip"><b>Vaqti</b><p>Yovvoyi qushlar uchun fevral oxiri – mart boshida osing. Chug‘urchuqlar mart o‘rtasida qaytadi.</p></div>
+      <div class="tip"><b>Tozalash</b><p>Kuzda eski uyani olib tashlang. Pastki taxta ochiladi, ichini qaynoq suv bilan chaying.</p></div>
+      <div class="tip"><b>Mushukdan himoya</b><p>Daraxtga 2,5 m dan baland osing. Teshik oldiga qo‘ndirg‘ich qo‘ymang, u yirtqichga tayanch bo‘ladi.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><b>Uyacha ustaxonasi</b> · Qush uyalari va oziqlantirgichlar</div>
+    <div>Telefon: <b>+998 90 000 00 00</b> · Telegram: <b>@uyacha_uz</b></div>
+  </footer>
+</div>
+
+<script>
+const SVG = {
+klassik:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<rect class="p" x="58" y="88" width="84" height="94"/>
+<rect class="t" x="56" y="110" width="4" height="12"/><rect class="t" x="140" y="110" width="4" height="12"/><rect class="t" x="56" y="150" width="4" height="12"/><rect class="t" x="140" y="150" width="4" height="12"/>
+<polygon class="p" points="44,98 100,42 108,50 56,102"/>
+<polygon class="p" points="156,98 100,42 92,50 144,102"/>
+<g class="p">${[0,1,2,3].map(i=>`<circle cx="${50+i*7}" cy="${99-i*7}" r="4.5"/><circle cx="${150-i*7}" cy="${99-i*7}" r="4.5"/>`).join('')}</g>
+<polygon class="p" points="44,98 100,42 156,98 144,102 100,58 56,102"/>
+<circle class="h" cx="100" cy="122" r="13"/><path class="h" d="M98 134h4v10h-4z"/>
+<rect class="t" x="78" y="72" width="3" height="12" transform="rotate(45 79 78)"/><rect class="t" x="119" y="72" width="3" height="12" transform="rotate(-45 120 78)"/>`,
+skvorechnik:`<line class="gr" x1="20" y1="186" x2="180" y2="186"/>
+<rect class="p" x="68" y="68" width="64" height="118"/>
+<polygon class="p" points="58,72 142,56 144,66 60,82"/>
+<circle class="h" cx="100" cy="100" r="15"/>
+<rect class="pd" x="96" y="122" width="8" height="14" rx="2"/>
+<rect class="t" x="66" y="96" width="4" height="12"/><rect class="t" x="130" y="96" width="4" height="12"/><rect class="t" x="66" y="150" width="4" height="12"/><rect class="t" x="130" y="150" width="4" height="12"/>
+<line class="ln" x1="72" y1="170" x2="128" y2="170"/>`,
+mayna:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<rect class="p" x="52" y="84" width="96" height="98"/>
+<polygon class="p" points="40,92 100,36 160,92 150,96 100,50 50,96"/>
+<polygon class="p" points="50,96 100,50 150,96 148,86 100,46 52,86" style="display:none"/>
+<circle class="h" cx="100" cy="122" r="19"/>
+<rect class="t" x="50" y="110" width="4" height="14"/><rect class="t" x="146" y="110" width="4" height="14"/><rect class="t" x="50" y="152" width="4" height="14"/><rect class="t" x="146" y="152" width="4" height="14"/>
+<line class="ln" x1="58" y1="166" x2="142" y2="166"/>`,
+bochka:`<line class="gr" x1="20" y1="170" x2="180" y2="170"/>
+<path class="p" d="M68 70 H150 a20 50 0 0 1 0 100 H68 Z"/>
+<g class="ln">${[86,104,122,140].map(x=>`<line x1="${x}" y1="72" x2="${x}" y2="168"/>`).join('')}</g>
+<ellipse class="p" cx="68" cy="120" rx="30" ry="50"/>
+<circle class="h" cx="68" cy="110" r="14"/>
+<rect class="pd" x="64" y="132" width="8" height="14" rx="2"/>`,
+toti:`<line class="gr" x1="20" y1="178" x2="180" y2="178"/>
+<rect class="pd" x="48" y="56" width="6" height="22" rx="2"/><rect class="pd" x="146" y="56" width="6" height="22" rx="2"/>
+<rect class="p" x="46" y="72" width="108" height="12" rx="2"/>
+<rect class="p" x="52" y="84" width="96" height="94"/>
+<circle class="h" cx="80" cy="112" r="15"/>
+<rect class="pd" x="72" y="134" width="16" height="5" rx="2"/>
+<rect class="p" x="110" y="120" width="28" height="40" rx="3"/><circle class="t" cx="132" cy="140" r="2.5"/>
+<line class="ln" x1="58" y1="168" x2="142" y2="168"/>`,
+kommunal:`<line class="gr" x1="14" y1="176" x2="186" y2="176"/>
+<rect class="p" x="24" y="92" width="152" height="84"/>
+<polygon class="p" points="14,98 100,58 186,98 178,102 100,68 22,102"/>
+<line class="ln" x1="74" y1="98" x2="74" y2="176"/><line class="ln" x1="126" y1="98" x2="126" y2="176"/>
+<circle class="h" cx="49" cy="124" r="11"/><circle class="h" cx="100" cy="124" r="11"/><circle class="h" cx="151" cy="124" r="11"/>
+<rect class="pd" x="46" y="140" width="6" height="10" rx="2"/><rect class="pd" x="97" y="140" width="6" height="10" rx="2"/><rect class="pd" x="148" y="140" width="6" height="10" rx="2"/>`,
+platforma:`<line class="gr" x1="20" y1="180" x2="180" y2="180"/>
+<rect class="pd" x="58" y="74" width="84" height="98"/>
+<polygon class="p" points="50,172 58,100 58,172"/><polygon class="p" points="150,172 142,100 142,172"/>
+<rect class="p" x="48" y="168" width="104" height="12"/>
+<polygon class="p" points="40,80 100,38 160,80 152,84 100,48 48,84"/>
+<g class="h">${[[80,162],[94,164],[108,161],[120,163],[88,158]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="3" ry="2"/>`).join('')}</g>`,
+mini:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<rect class="p" x="72" y="92" width="56" height="90"/>
+<polygon class="p" points="62,96 140,78 140,88 62,106"/>
+<circle class="h" cx="100" cy="124" r="9"/>
+<rect class="t" x="70" y="118" width="4" height="10"/><rect class="t" x="126" y="118" width="4" height="10"/><rect class="t" x="70" y="156" width="4" height="10"/><rect class="t" x="126" y="156" width="4" height="10"/>`,
+kormushka:`<line class="gr" x1="20" y1="180" x2="180" y2="180"/>
+<rect class="p" x="44" y="94" width="8" height="70"/><rect class="p" x="148" y="94" width="8" height="70"/>
+<rect class="p" x="36" y="160" width="128" height="14"/>
+<rect class="p" x="36" y="152" width="8" height="10"/><rect class="p" x="156" y="152" width="8" height="10"/>
+<polygon class="p" points="26,104 100,48 174,104 164,108 100,60 36,108"/>
+<g class="h">${[60,72,84,96,108,120,132,66,90,114,138].map((x,i)=>`<ellipse cx="${x}" cy="${i<7?156:152}" rx="3.5" ry="2.2"/>`).join('')}</g>
+<line class="ln" x1="100" y1="48" x2="100" y2="22"/><circle class="ln" cx="100" cy="18" r="5"/>`,
+diy:`<g transform="rotate(-8 70 80)"><polygon class="p" points="34,60 64,36 94,60 94,124 34,124"/><circle class="h" cx="64" cy="78" r="10"/><rect class="t" x="32" y="90" width="4" height="10"/><rect class="t" x="92" y="90" width="4" height="10"/></g>
+<g transform="rotate(10 140 70)"><rect class="p" x="112" y="40" width="58" height="70"/><rect class="t" x="126" y="40" width="10" height="4"/><rect class="t" x="148" y="40" width="10" height="4"/></g>
+<g transform="rotate(4 70 160)"><rect class="p" x="28" y="138" width="80" height="34"/><g class="p">${[0,1,2,3,4,5].map(i=>`<circle cx="${34+i*13}" cy="172" r="5"/>`).join('')}</g><rect class="p" x="28" y="138" width="80" height="34"/></g>
+<g transform="rotate(-12 150 150)"><rect class="p" x="122" y="126" width="54" height="46"/></g>
+<rect class="pd" x="150" y="88" width="6" height="40" rx="3" transform="rotate(35 153 108)"/>`
+};
+
+const MODELS = [
+ {id:'klassik', n:'Klassik “Tishli tom”', cat:'wild', f:'Qorabosh, chumchuq va mayda qushlar uchun', size:'15×15×25', hole:32, price:85000, bird:'qorabosh'},
+ {id:'skvorechnik', n:'Chug‘urchuq uyasi', cat:'wild', f:'Baland, chuqur uya. Chug‘urchuq va mayna sevadi', size:'16×16×35', hole:45, price:110000, bird:'chugurchuq'},
+ {id:'mayna', n:'Mayna uyi', cat:'wild', f:'Keng ichki hajm, yirik teshik. Shahar maynasi uchun', size:'20×20×30', hole:55, price:120000, bird:'mayna'},
+ {id:'bochka', n:'Bochka', cat:'pet', f:'To‘tiqush va zebra amadinlar uchun egilgan faneradan', size:'25×15×15', hole:45, price:95000, bird:'totiqush'},
+ {id:'toti', n:'Qafas uchun quti', cat:'pet', f:'Qafasga ilinadi, yon eshikdan tuxumni ko‘rish mumkin', size:'20×16×16', hole:50, price:75000, bird:'totiqush'},
+ {id:'kommunal', n:'Kommunal', cat:'wild', f:'Uch xonali uya. Chumchuqlar galasi uchun', size:'45×15×20', hole:35, price:160000, bird:'chumchuq'},
+ {id:'platforma', n:'Musicha platformasi', cat:'wild', f:'Old tomoni ochiq. Musicha va qora qushlar uchun', size:'20×20×18', hole:0, price:70000, bird:'musicha'},
+ {id:'mini', n:'Mini “Qiya tom”', cat:'wild', f:'Ixcham uya. Faqat mayda qushlar kira oladi', size:'12×12×20', hole:28, price:65000, bird:'qorabosh'},
+ {id:'kormushka', n:'Oziqlantirgich “Ayvon”', cat:'feed', f:'Qishda don va urug‘ uchun. Har tomondan ochiq', size:'25×20×25', hole:0, price:90000, bird:'barcha'},
+ {id:'diy', n:'Yig‘ma to‘plam “Usta bola”', cat:'kids', f:'Bolalar o‘zi yig‘adi. 4 rangli bo‘yoq va mo‘yqalam bilan', size:'15×15×22', hole:32, price:55000, bird:'qorabosh'}
+];
+
+const BIRDS = {
+ qorabosh:{n:'Qorabosh (sinitsa)', hole:30, floor:'10×10', h:'2–5 m', fit:'Klassik, Mini'},
+ chumchuq:{n:'Chumchuq', hole:35, floor:'12×12', h:'2–4 m', fit:'Kommunal, Klassik'},
+ chugurchuq:{n:'Chug‘urchuq', hole:45, floor:'14×14', h:'3–6 m', fit:'Chug‘urchuq uyasi'},
+ mayna:{n:'Mayna', hole:55, floor:'16×16', h:'3–6 m', fit:'Mayna uyi'},
+ totiqush:{n:'To‘lqinsimon to‘tiqush', hole:45, floor:'14×14', h:'qafasda', fit:'Bochka, Qafas uchun quti'},
+ musicha:{n:'Musicha', hole:0, floor:'20×20', h:'2–4 m', fit:'Musicha platformasi'},
+ barcha:{n:'Barcha qushlar (oziqlantirish)', hole:0, floor:'—', h:'1,5–2 m', fit:'Oziqlantirgich'}
+};
+
+const FINISH = [
+ {id:'tabiiy', n:'Tabiiy fanera', add:0},
+ {id:'lak', n:'Suvga chidamli lak', add:15000},
+ {id:'rang', n:'Bo‘yalgan', add:25000}
+];
+
+const fmt = n => n.toLocaleString('ru-RU').replace(/ /g,' ') + ' so‘m';
+const svg = id => `<svg viewBox="0 0 200 200" role="img">${SVG[id]}</svg>`;
+const $ = s => document.querySelector(s);
+
+/* hero */
+$('#heroArt').innerHTML = `<svg viewBox="0 0 200 200">${SVG.klassik}</svg>`;
+
+/* catalogue */
+function renderGrid(filter){
+  $('#grid').innerHTML = MODELS.map((m,i)=>({m,i})).filter(({m})=>filter==='all'||m.cat===filter).map(({m,i})=>`
+  <article class="card">
+    <div class="art"><span class="num">M-${String(i+1).padStart(2,'0')}</span>${svg(m.id)}</div>
+    <div class="body">
+      <h3>${m.n}</h3>
+      <p class="for">${m.f}</p>
+      <dl class="specs">
+        <dt>O‘lcham</dt><dd>${m.size} sm</dd>
+        <dt>Teshik</dt><dd>${m.hole?('Ø '+m.hole+' mm'):'ochiq'}</dd>
+      </dl>
+      <div class="foot">
+        <span class="price">${fmt(m.price)}</span>
+        <button class="mini" type="button" data-pick="${m.id}">Tanlash</button>
+      </div>
+    </div>
+  </article>`).join('');
+}
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===c));
+  renderGrid(c.dataset.f);
+}));
+$('#grid').addEventListener('click',e=>{
+  const b=e.target.closest('[data-pick]'); if(!b) return;
+  $('#cfgModel').value=b.dataset.pick; onModel();
+  $('#yigish').scrollIntoView({behavior:'smooth',block:'start'});
+});
+renderGrid('all');
+
+/* configurator */
+$('#cfgModel').innerHTML = MODELS.map((m,i)=>`<option value="${m.id}">M-${String(i+1).padStart(2,'0')} · ${m.n}</option>`).join('');
+$('#cfgBird').innerHTML = Object.entries(BIRDS).map(([k,b])=>`<option value="${k}">${b.n}</option>`).join('');
+$('#cfgFinish').innerHTML = FINISH.map((f,i)=>`<label><input type="radio" name="fin" id="fin-${f.id}" value="${f.id}" ${i===0?'checked':''}> ${f.n}${f.add?` (+${(f.add/1000)} 000)`:''}</label>`).join('');
+
+const model = () => MODELS.find(m=>m.id===$('#cfgModel').value);
+function unitPrice(){
+  const m=model();
+  const fin=FINISH.find(f=>f.id===document.querySelector('input[name=fin]:checked').value);
+  let p=m.price+fin.add;
+  if($('#cfgEngr').value.trim()) p+=20000;
+  if(document.querySelector('input[name=asm]:checked').value==='kit') p-=10000;
+  return p;
+}
+function holeFor(){
+  const m=model(), b=BIRDS[$('#cfgBird').value];
+  if(!m.hole) return 0;
+  return b.hole||m.hole;
+}
+function updateCfg(){
+  const m=model(), b=BIRDS[$('#cfgBird').value];
+  $('#cfgArt').innerHTML=svg(m.id);
+  $('#cfgDims').innerHTML=`O‘lcham: <b>${m.size} sm</b> · asos narx <b>${fmt(m.price)}</b>`;
+  const h=holeFor();
+  let msg = h ? `Teshik: <b>Ø ${h} mm</b> qilib kesiladi.` : `Bu model ochiq turdagi, teshik kesilmaydi.`;
+  if(m.hole && b.hole && Math.abs(b.hole-m.hole)>12) msg+=` Bu qush uchun boshqa model qulayroq: ${b.fit}.`;
+  if(m.hole && !b.hole) msg+=` Tanlangan qush yopiq uyaga kirmaydi, tavsiya: ${b.fit}.`;
+  $('#cfgHole').innerHTML=msg;
+  const q=Math.max(1,parseInt($('#cfgQty').value)||1);
+  $('#cfgTotal').textContent=fmt(unitPrice()*q);
+}
+function onModel(){ $('#cfgBird').value=model().bird; updateCfg(); }
+['#cfgModel'].forEach(s=>$(s).addEventListener('change',onModel));
+['#cfgBird','#cfgEngr','#cfgQty'].forEach(s=>$(s).addEventListener('input',updateCfg));
+$('#cfg').addEventListener('change',updateCfg);
+
+/* cart */
+let cart=[
+  {model:'klassik',bird:'qorabosh',fin:'lak',engr:'',qty:2,kit:false,unit:100000,hole:30}
+];
+$('#cfg').addEventListener('submit',e=>{
+  e.preventDefault();
+  const m=model();
+  cart.push({model:m.id,bird:$('#cfgBird').value,fin:document.querySelector('input[name=fin]:checked').value,
+    engr:$('#cfgEngr').value.trim(),qty:Math.max(1,parseInt($('#cfgQty').value)||1),
+    kit:document.querySelector('input[name=asm]:checked').value==='kit',unit:unitPrice(),hole:holeFor()});
+  renderCart();
+  $('#toast').textContent=`${m.n} savatga qo‘shildi`;
+});
+function renderCart(){
+  const list=$('#cartList');
+  if(!cart.length){ list.innerHTML='<li class="empty" style="border:0">Savat bo‘sh. Katalogdan model tanlang.</li>'; }
+  else list.innerHTML=cart.map((c,i)=>{
+    const m=MODELS.find(x=>x.id===c.model), f=FINISH.find(x=>x.id===c.fin);
+    return `<li><span class="nm">${m.n} × ${c.qty}</span><span class="pr">${fmt(c.unit*c.qty)}</span>
+    <span class="op">${BIRDS[c.bird].n}${c.hole?` · Ø${c.hole} mm`:''} · ${f.n}${c.kit?' · yig‘ma':''}${c.engr?` · “${c.engr}”`:''}</span>
+    <button class="rm" type="button" data-rm="${i}">O‘chirish</button></li>`;}).join('');
+  const qty=cart.reduce((s,c)=>s+c.qty,0), sub=cart.reduce((s,c)=>s+c.unit*c.qty,0);
+  const disc= qty>10 ? Math.round(sub*0.1) : 0;
+  $('#cartSums').innerHTML = cart.length ? `
+    <div class="sum-line"><span>Mahsulotlar (${qty} dona)</span><span>${fmt(sub)}</span></div>
+    ${disc?`<div class="sum-line disc"><span>Ulgurji chegirma −10%</span><span>−${fmt(disc)}</span></div>`:`<p class="hint">Yana ${11-qty} dona qo‘shsangiz, 10% chegirma.</p>`}
+    <div class="sum-line big"><span>Jami</span><span>${fmt(sub-disc)}</span></div>` : '';
+  $('#cartPill').textContent=`Savat · ${qty}`;
+  buildText(sub-disc);
+}
+function buildText(total){
+  const lines=['Assalomu alaykum! Buyurtma:'];
+  cart.forEach((c,i)=>{const m=MODELS.find(x=>x.id===c.model), f=FINISH.find(x=>x.id===c.fin);
+    lines.push(`${i+1}) ${m.n} — ${c.qty} dona; ${BIRDS[c.bird].n}${c.hole?`, teshik ${c.hole} mm`:''}; ${f.n}${c.kit?'; yig‘ma':''}${c.engr?`; gravyura: "${c.engr}"`:''}`);});
+  lines.push(`Jami: ${fmt(total)}`);
+  const n=$('#custName').value.trim(), p=$('#custPhone').value.trim();
+  if(n) lines.push(`Ism: ${n}`); if(p) lines.push(`Tel: ${p}`);
+  $('#orderText').value= cart.length ? lines.join('\n') : '';
+}
+$('#cartList').addEventListener('click',e=>{const b=e.target.closest('[data-rm]'); if(!b) return; cart.splice(+b.dataset.rm,1); renderCart(); $('#toast').textContent='O‘chirildi';});
+['#custName','#custPhone'].forEach(s=>$(s).addEventListener('input',renderCart));
+$('#cartPill').addEventListener('click',()=>$('#cart').scrollIntoView({behavior:'smooth'}));
+$('#copyBtn').addEventListener('click',()=>{
+  const t=$('#orderText'); if(!t.value){ $('#toast').textContent='Avval savatga model qo‘shing'; return; }
+  const done=()=>$('#toast').textContent='Nusxalandi. Endi Telegramda @uyacha_uz ga yuboring.';
+  try{ navigator.clipboard.writeText(t.value).then(done).catch(()=>{t.select(); $('#toast').textContent='Matn belgilandi, nusxalash uchun Ctrl+C bosing.';}); }
+  catch(_){ t.select(); $('#toast').textContent='Matn belgilandi, nusxalash uchun Ctrl+C bosing.'; }
+});
+
+/* guide */
+$('#guideBody').innerHTML=Object.values(BIRDS).map(b=>`<tr><td>${b.n}</td><td class="n">${b.hole||'ochiq'}</td><td class="n">${b.floor}</td><td>${b.h}</td><td>${b.fit}</td></tr>`).join('');
+
+onModel(); renderCart();
+</script>
+
+</body></html>

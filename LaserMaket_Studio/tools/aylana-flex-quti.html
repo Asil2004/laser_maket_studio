@@ -1,0 +1,453 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aylana Flex Quti Generatori</title>
+<style>
+:root{
+  --bg:#161514; --panel:#1f1e1c; --panel2:#242220; --line:#3a3733;
+  --ink:#f2ede4; --ink-dim:#a89f92; --red:#e6503c; --amber:#c99a54; --ok:#7fae6b;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ --bg:#f4f0e8; --panel:#fff; --panel2:#f0ebe0; --line:#ddd4c4; --ink:#221f1a; --ink-dim:#6b6152; }
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;}
+.mono{font-family:ui-monospace,Menlo,monospace;}
+header{padding:20px 18px 14px;border-bottom:1px solid var(--line);}
+header h1{margin:0;font-size:1.3rem;letter-spacing:.2px;}
+header p{margin:6px 0 0;color:var(--ink-dim);font-size:.85rem;}
+main{display:flex;flex-direction:column;gap:16px;padding:16px;max-width:1200px;margin:0 auto;}
+@media(min-width:880px){ main{flex-direction:row;align-items:flex-start;} }
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;}
+.form{flex:0 0 300px;display:flex;flex-direction:column;gap:12px;}
+.form h2{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin:4px 0 0;}
+label{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--ink-dim);}
+input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;color:var(--ink);font-size:.95rem;font-family:inherit;}
+input:focus{outline:2px solid var(--red);outline-offset:1px;}
+button{background:var(--red);color:#fff;border:none;border-radius:6px;padding:11px;font-size:.92rem;font-weight:600;cursor:pointer;}
+button:hover{filter:brightness(1.08);}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);}
+.result{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;}
+.stat b{display:block;font-size:1rem;color:var(--red);}
+.stat span{font-size:.72rem;color:var(--ink-dim);}
+.note{background:var(--panel2);border:1px solid var(--amber);border-radius:8px;padding:10px 12px;font-size:.8rem;color:var(--amber);display:none;}
+.canvas-wrap{background:repeating-linear-gradient(0deg,transparent,transparent 19px,var(--line) 20px),repeating-linear-gradient(90deg,transparent,transparent 19px,var(--line) 20px);background-size:20px 20px;border:1px solid var(--line);border-radius:8px;overflow:auto;padding:12px;max-height:70vh;}
+#previewSvg{display:block;width:100%;height:auto;}
+.panel3d h3{margin:0 0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);}
+#view3dContainer{width:100%;height:320px;border-radius:8px;overflow:hidden;background:radial-gradient(circle at 50% 30%, #2a2823, #14130f);touch-action:none;cursor:grab;}
+#view3dContainer:active{cursor:grabbing;}
+.hint3d{font-size:.72rem;color:var(--ink-dim);margin-top:6px;}
+.actions{display:flex;gap:10px;flex-wrap:wrap;}
+.actions button{flex:1;min-width:140px;}
+#errBox{display:none;margin:16px auto;border:1px solid #c0392b;color:#ff8a75;max-width:1168px;}
+footer{color:var(--ink-dim);font-size:.72rem;padding:0 16px 24px;max-width:1200px;margin:0 auto;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Aylana Flex Quti Generatori</h1>
+  <p>Egiluvchan devorli (living-hinge) silindrsimon quti — lazer kesish uchun SVG. Devor stanok maydoniga sig'masa, avtomatik bo'laklarga bo'linadi.</p>
+</header>
+<main>
+  <section class="panel form">
+    <h2>O‘lchamlar</h2>
+    <label>Ichki diametr d (mm)<input type="number" id="d" value="200" min="20" step="1"></label>
+    <label>List qalinligi t (mm)<input type="number" id="t" value="3" min="0.5" step="0.1"></label>
+    <label>Balandlik H (mm)<input type="number" id="H" value="100" min="10" step="1"></label>
+    <h2>Stanok</h2>
+    <label>Ish maydoni — maks. kenglik (mm)<input type="number" id="maxWidth" value="500" min="100" step="10"></label>
+    <h2>Kesim parametrlari</h2>
+    <label>Kesim kengligi — kerf (mm)<input type="number" id="kerfW" value="0.9" min="0.1" step="0.1"></label>
+    <label>Qadam — oraliq (mm)<input type="number" id="kerfStep" value="7" min="2" step="0.5"></label>
+    <h2>Paz o‘lchamlari</h2>
+    <label>Paz kengligi (mm)<input type="number" id="pazW" value="4" min="1" step="0.5"></label>
+    <label>Paz chuqurligi (mm)<input type="number" id="pazD" value="3" min="1" step="0.5"></label>
+    <label>Tablar soni (halqaga)<input type="number" id="nSlots" value="12" min="6" step="1"></label>
+    <button id="genBtn" type="button">Generate</button>
+  </section>
+  <section class="result">
+    <div class="panel stats mono" id="stats"></div>
+    <div class="note" id="splitNote"></div>
+    <div class="panel canvas-wrap"><svg id="previewSvg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div class="panel panel3d">
+      <h3>Tayyor maket — 3D ko‘rinish</h3>
+      <div id="view3dContainer"></div>
+      <p class="hint3d">Sichqoncha/barmoq bilan aylantiring.</p>
+    </div>
+    <div class="actions">
+      <button class="ghost" id="dlBtn" type="button">⬇ SVG yuklab olish</button>
+    </div>
+  </section>
+</main>
+<div id="errBox" class="panel"></div>
+<footer>Barcha o‘lchamlar millimetrda. Devor bir necha bo'lakka bo'lingan bo'lsa, har bo'lakning o'ng chetidagi PAPA-tishlarni keyingi bo'lakning chap chetidagi MAMA-teshigiga kiritib yelimlang (oxirgi bo'lak birinchisiga ham shunday ulanadi).</footer>
+<script>
+function showError(msg){
+  var box = document.getElementById('errBox');
+  box.style.display = 'block';
+  box.textContent = '⚠ Xatolik: ' + msg;
+}
+function clearError(){ document.getElementById('errBox').style.display = 'none'; }
+window.addEventListener('error', function(e){ showError(e.message || 'Nomaʼlum xato'); });
+
+function fmt(n){ return (Math.round(n*1000)/1000).toString(); }
+
+// ---------------- 3D preview (pure SVG wireframe projection, zero external deps) ----------------
+var rot3 = {x:-0.32, y:0.6}, dragging3=false, lastX3=0, lastY3=0, autoRotate3=true, has3D=false, model3=null, svg3el=null, animId3=null;
+
+function project3(x,y,z,rx,ry,camDist,scale,cx,cy){
+  var cosY=Math.cos(ry), sinY=Math.sin(ry);
+  var x1 = x*cosY - z*sinY;
+  var z1 = x*sinY + z*cosY;
+  var cosX=Math.cos(rx), sinX=Math.sin(rx);
+  var y1 = y*cosX - z1*sinX;
+  var z2 = y*sinX + z1*cosX;
+  var f = camDist/(camDist+z2);
+  return {x: cx + x1*f*scale, y: cy - y1*f*scale, z: z2};
+}
+
+function circlePts3(r, y, n){
+  var pts=[];
+  for(var i=0;i<n;i++){ var a=i*2*Math.PI/n; pts.push([r*Math.cos(a), y, r*Math.sin(a)]); }
+  return pts;
+}
+
+function shade3(hex, factor){
+  var r=parseInt(hex.substr(1,2),16), g=parseInt(hex.substr(3,2),16), b=parseInt(hex.substr(5,2),16);
+  r=Math.max(0,Math.min(255,Math.round(r*factor)));
+  g=Math.max(0,Math.min(255,Math.round(g*factor)));
+  b=Math.max(0,Math.min(255,Math.round(b*factor)));
+  return 'rgb('+r+','+g+','+b+')';
+}
+function avgZ(pts){ var s=0; for(var i=0;i<pts.length;i++) s+=pts[i].z; return s/pts.length; }
+function polyStr(pts){ var s=''; for(var i=0;i<pts.length;i++){ s+=pts[i].x.toFixed(1)+','+pts[i].y.toFixed(1)+' '; } return s; }
+
+function render3(){
+  if(!svg3el || !model3) return;
+  var el = document.getElementById('view3dContainer');
+  var w = el.clientWidth || 300, h = el.clientHeight || 300;
+  var m = model3, H2 = m.H/2;
+  var maxR = Math.max(m.ringOuterR, m.wallR);
+  var camDist = maxR*4 + m.H*2;
+  var scale = Math.min(w,h) / (Math.max(maxR*2.5, m.H*1.9));
+  var cx = w/2, cy = h/2 + Math.min(h,w)*0.03;
+  var nSeg = 40;
+  var lightAngle = -0.8;
+
+  function proj(p){ return project3(p[0],p[1],p[2], rot3.x, rot3.y, camDist, scale, cx, cy); }
+
+  var faces = [];
+
+  // closed bottom disc (solid base, for a realistic finished-object look)
+  var botDisc = circlePts3(m.wallR*1.02, -H2, nSeg).map(proj);
+  faces.push({pts:botDisc, z:avgZ(botDisc)+2, fill:shade3('#a9814e',0.62), stroke:'rgba(0,0,0,.25)'});
+
+  // side wall, one shaded quad per segment (brightness follows a fixed world light as the model spins)
+  for(var i=0;i<nSeg;i++){
+    var a0=i*2*Math.PI/nSeg, a1=(i+1)*2*Math.PI/nSeg, aMid=(a0+a1)/2;
+    var p1=proj([m.wallR*Math.cos(a0),H2,m.wallR*Math.sin(a0)]);
+    var p2=proj([m.wallR*Math.cos(a1),H2,m.wallR*Math.sin(a1)]);
+    var p3=proj([m.wallR*Math.cos(a1),-H2,m.wallR*Math.sin(a1)]);
+    var p4=proj([m.wallR*Math.cos(a0),-H2,m.wallR*Math.sin(a0)]);
+    var bright = 0.42 + 0.56*Math.max(0, Math.cos(aMid+rot3.y - lightAngle));
+    faces.push({pts:[p1,p2,p3,p4], z:avgZ([p1,p2,p3,p4]), fill:shade3('#dbb27c',bright), stroke:'rgba(60,30,10,.18)'});
+  }
+
+  // top rim (annulus)
+  for(var j=0;j<nSeg;j++){
+    var b0=j*2*Math.PI/nSeg, b1=(j+1)*2*Math.PI/nSeg, bMid=(b0+b1)/2;
+    var q1=proj([m.ringOuterR*Math.cos(b0),H2,m.ringOuterR*Math.sin(b0)]);
+    var q2=proj([m.ringOuterR*Math.cos(b1),H2,m.ringOuterR*Math.sin(b1)]);
+    var q3=proj([m.ringInnerR*Math.cos(b1),H2,m.ringInnerR*Math.sin(b1)]);
+    var q4=proj([m.ringInnerR*Math.cos(b0),H2,m.ringInnerR*Math.sin(b0)]);
+    var brightT = 0.65 + 0.3*Math.max(0, Math.cos(bMid+rot3.y - lightAngle));
+    faces.push({pts:[q1,q2,q3,q4], z:avgZ([q1,q2,q3,q4])-2, fill:shade3('#e7c08a',brightT), stroke:'rgba(60,30,10,.2)'});
+  }
+
+  // bottom rim (sits on the closed disc, matching the top rim for visual symmetry)
+  for(var k=0;k<nSeg;k++){
+    var c0=k*2*Math.PI/nSeg, c1=(k+1)*2*Math.PI/nSeg, cMid=(c0+c1)/2;
+    var u1=proj([m.ringOuterR*Math.cos(c0),-H2,m.ringOuterR*Math.sin(c0)]);
+    var u2=proj([m.ringOuterR*Math.cos(c1),-H2,m.ringOuterR*Math.sin(c1)]);
+    var u3=proj([m.ringInnerR*Math.cos(c1),-H2,m.ringInnerR*Math.sin(c1)]);
+    var u4=proj([m.ringInnerR*Math.cos(c0),-H2,m.ringInnerR*Math.sin(c0)]);
+    var brightB = 0.5 + 0.25*Math.max(0, Math.cos(cMid+rot3.y - lightAngle));
+    faces.push({pts:[u1,u2,u3,u4], z:avgZ([u1,u2,u3,u4])+1, fill:shade3('#c9a066',brightB), stroke:'rgba(60,30,10,.2)'});
+  }
+
+  faces.sort(function(p,q){ return q.z - p.z; });
+
+  var shadowC = proj([0,-H2,0]);
+  var shadowRx = maxR*scale*1.15, shadowRy = shadowRx*0.24;
+  var s = '<defs><radialGradient id="gsh" cx="50%" cy="50%" r="50%">'
+    + '<stop offset="0%" stop-color="#000" stop-opacity="0.42"/><stop offset="100%" stop-color="#000" stop-opacity="0"/>'
+    + '</radialGradient></defs>';
+  s += '<ellipse cx="'+shadowC.x.toFixed(1)+'" cy="'+(shadowC.y+shadowRy*0.5).toFixed(1)+'" rx="'+shadowRx.toFixed(1)+'" ry="'+shadowRy.toFixed(1)+'" fill="url(#gsh)"/>';
+
+  for(var fi=0; fi<faces.length; fi++){
+    var F = faces[fi];
+    s += '<polygon points="'+polyStr(F.pts)+'" fill="'+F.fill+'" stroke="'+F.stroke+'" stroke-width="0.6"/>';
+  }
+  svg3el.setAttribute('viewBox','0 0 '+w+' '+h);
+  svg3el.innerHTML = s;
+}
+
+
+function init3D(){
+  var el = document.getElementById('view3dContainer');
+  el.innerHTML = '<svg id="svg3d" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"></svg>';
+  svg3el = document.getElementById('svg3d');
+  el.addEventListener('pointerdown', function(e){ dragging3=true; lastX3=e.clientX; lastY3=e.clientY; });
+  window.addEventListener('pointerup', function(){ dragging3=false; });
+  window.addEventListener('pointermove', function(e){
+    if(!dragging3) return;
+    var dx=e.clientX-lastX3, dy=e.clientY-lastY3;
+    rot3.y += dx*0.009;
+    rot3.x = Math.max(-1.3, Math.min(1.3, rot3.x - dy*0.009));
+    lastX3=e.clientX; lastY3=e.clientY; autoRotate3=false;
+  });
+  has3D = true;
+  if(!animId3) animLoop3();
+}
+
+function animLoop3(){
+  animId3 = requestAnimationFrame(animLoop3);
+  if(autoRotate3) rot3.y += 0.0055;
+  if(model3) render3();
+}
+
+function build3D(d0,H,ringOuterR,ringInnerR){
+  model3 = {wallR: d0/2, H: H, ringOuterR: ringOuterR, ringInnerR: ringInnerR};
+}
+
+function ringSVG(outerR, innerR, nSlots, slotW, slotD){
+  var midR = (outerR+innerR)/2;
+  var depth = Math.min(slotD, (outerR-innerR)*1.6);
+  var s = '<circle cx="0" cy="0" r="'+fmt(outerR)+'"/>';
+  s += '<circle cx="0" cy="0" r="'+fmt(innerR)+'"/>';
+  for (var i=0; i<nSlots; i++){
+    var angle = i*360/nSlots;
+    var x = midR - depth/2, y = -slotW/2;
+    s += '<rect x="'+fmt(x)+'" y="'+fmt(y)+'" width="'+fmt(depth)+'" height="'+fmt(slotW)+'" transform="rotate('+fmt(angle)+')"/>';
+  }
+  return s;
+}
+
+// Builds one wall SEGMENT (a piece no wider than the machine's work area).
+// The exterior outline (body + ring-mating tabs on top/bottom + side PAPA teeth) is emitted
+// as ONE continuous closed path, so every tab is a bump in the piece's own perimeter rather
+// than a separate touching rectangle -- a separate rectangle that only shares an edge with the
+// body would be cut free by the laser (the shared edge gets cut too) and fall off as scrap.
+// MAMA slots (material REMOVED, not added) stay as independent rects -- removing a notch at
+// an edge is safe to draw straddling the boundary, since there's no "attached piece" to lose.
+function wallSegmentSVG(segLen, H, localCuts, localTabXs, pazW, pazD, hasSideJoints, nSideTabs){
+  var hw = pazW/2;
+  var topTabs = localTabXs.slice().sort(function(a,b){return a-b;});
+  var pts = [];
+  function pt(x,y){ pts.push(fmt(x)+','+fmt(y)); }
+
+  // top edge, left -> right, bumping outward (negative y) at each ring-mating tab
+  pt(0,0);
+  for (var i=0;i<topTabs.length;i++){
+    var xt = topTabs[i];
+    pt(xt-hw,0); pt(xt-hw,-pazD); pt(xt+hw,-pazD); pt(xt+hw,0);
+  }
+  pt(segLen,0);
+
+  // right edge, top -> bottom, bumping outward (beyond segLen) at each side PAPA tooth
+  if (hasSideJoints){
+    for (var k=0;k<nSideTabs;k++){
+      var cy = (k+0.5)*(H/nSideTabs);
+      pt(segLen,cy-hw); pt(segLen+pazD,cy-hw); pt(segLen+pazD,cy+hw); pt(segLen,cy+hw);
+    }
+  }
+  pt(segLen,H);
+
+  // bottom edge, right -> left, bumping outward (beyond H) at each ring-mating tab
+  for (var j=topTabs.length-1;j>=0;j--){
+    var xb = topTabs[j];
+    pt(xb+hw,H); pt(xb+hw,H+pazD); pt(xb-hw,H+pazD); pt(xb-hw,H);
+  }
+  pt(0,H);
+  pt(0,0);
+
+  var s = '<path d="M'+pts.join(' L')+' Z"/>';
+
+  for (var c=0;c<localCuts.length;c++){
+    var cu = localCuts[c];
+    s += '<line x1="'+fmt(cu.x)+'" y1="'+fmt(cu.y0)+'" x2="'+fmt(cu.x)+'" y2="'+fmt(cu.y1)+'" stroke-width="'+fmt(cu.w)+'"/>';
+  }
+  if (hasSideJoints){
+    for (var k2=0;k2<nSideTabs;k2++){
+      var cy2 = (k2+0.5)*(H/nSideTabs);
+      // MAMA slot on the left edge, straddling the boundary, to receive the previous segment's tooth
+      s += '<rect x="'+fmt(-pazD/2)+'" y="'+fmt(cy2-hw)+'" width="'+fmt(pazD)+'" height="'+fmt(pazW)+'"/>';
+    }
+  }
+  return s;
+}
+
+function generate(){
+  clearError();
+  document.getElementById('splitNote').style.display = 'none';
+  try {
+    var d = +document.getElementById('d').value;
+    var t = +document.getElementById('t').value;
+    var H = +document.getElementById('H').value;
+    var maxWidth = +document.getElementById('maxWidth').value;
+    var kerfW = +document.getElementById('kerfW').value;
+    var kerfStep = +document.getElementById('kerfStep').value;
+    var pazW = +document.getElementById('pazW').value;
+    var pazD = +document.getElementById('pazD').value;
+    var nSlots = Math.max(4, Math.round(+document.getElementById('nSlots').value));
+
+    if (!isFinite(d) || !isFinite(t) || !isFinite(H) || !isFinite(kerfStep) || !isFinite(pazW) || !isFinite(pazD) || !isFinite(maxWidth)) { showError('Barcha maydonlarni to‘g‘ri to‘ldiring.'); return; }
+    if (d<=0 || t<=0 || H<=0 || kerfStep<=0 || pazW<=0 || pazD<=0 || maxWidth<=0) { showError('O‘lchamlar musbat (noldan katta) bo‘lishi kerak.'); return; }
+
+    var d0 = d + t;
+    var C = Math.PI * d0;
+    var outerR = d0/2 + t/2;
+    var innerR = d0/2 - t/2;
+
+    // guard against tabs/slots overlapping each other: cap nSlots so each tab's pitch
+    // leaves at least its own width of material between neighbours, on both the wall
+    // (pitch = C/nSlots) and the ring (pitch = 2*pi*midR/nSlots)
+    var midR = (outerR+innerR)/2;
+    var maxByWall = Math.floor(C / (pazW*2));
+    var maxByRing = Math.floor((2*Math.PI*midR) / (pazW*2));
+    var nSlotsCap = Math.max(4, Math.min(maxByWall, maxByRing));
+    var nSlotsCapped = false;
+    if (nSlots > nSlotsCap){ nSlots = nSlotsCap; nSlotsCapped = true; }
+
+    var gap = Math.max(10, t*4, pazD*2 + 4);
+
+    // ---- split the wall into machine-sized segments ----
+    var segments = Math.max(1, Math.ceil(C / maxWidth));
+    var segLen = C / segments;
+    var nSideTabs = Math.max(2, Math.round(H/35));
+
+    // global ring-mating tab positions (top & bottom), same positions the ring slots use
+    var globalTabXs = [];
+    for (var j=0;j<nSlots;j++) globalTabXs.push((j+0.5)*(C/nSlots));
+
+    // global kerf cut positions, alternating top/bottom by GLOBAL index parity (keeps the
+    // hinge pattern continuous across a cut, even though it's drawn on separate pieces)
+    var nCuts = Math.max(1, Math.floor(C/kerfStep));
+    var cutLen = H*0.82;
+    var globalCuts = [];
+    for (var i=0;i<nCuts;i++){
+      var gx = (i+0.5)*(C/nCuts);
+      var fromTop = i%2===0;
+      globalCuts.push({x:gx, y0: fromTop ? H-cutLen : 0, y1: fromTop ? H : cutLen, w:kerfW});
+    }
+
+    var segBodies = [];
+    for (var si=0; si<segments; si++){
+      var gStart = si*segLen, gEnd = (si+1)*segLen;
+      var localTabs = [];
+      for (var a=0;a<globalTabXs.length;a++){
+        if (globalTabXs[a] >= gStart && globalTabXs[a] < gEnd) localTabs.push(globalTabXs[a]-gStart);
+      }
+      var localCuts = [];
+      for (var b=0;b<globalCuts.length;b++){
+        if (globalCuts[b].x >= gStart && globalCuts[b].x < gEnd){
+          var cc = globalCuts[b];
+          localCuts.push({x:cc.x-gStart, y0:cc.y0, y1:cc.y1, w:cc.w});
+        }
+      }
+      segBodies.push(wallSegmentSVG(segLen, H, localCuts, localTabs, pazW, pazD, segments>1, nSideTabs));
+    }
+
+    // ---- layout on canvas: two rings on top row, wall segment(s) stacked below ----
+    var padSide = pazD + 6;
+    var ringsW = outerR*4 + gap*3;
+    var segRowW = segLen + padSide*2;
+    var canvasW = Math.max(ringsW, segRowW) + gap*2;
+
+    var r1x = gap+outerR, r1y = gap+outerR;
+    var r2x = gap+outerR*3+gap, r2y = gap+outerR;
+    var rowsTopY = outerR*2 + gap*2;
+
+    var body = '';
+    body += '<g transform="translate('+fmt(r1x)+','+fmt(r1y)+')">'+ringSVG(outerR,innerR,nSlots,pazW,pazD)+'</g>';
+    body += '<g transform="translate('+fmt(r2x)+','+fmt(r2y)+')">'+ringSVG(outerR,innerR,nSlots,pazW,pazD)+'</g>';
+
+    var rowY = rowsTopY;
+    var segX = (canvasW - segLen)/2;
+    for (var s2=0; s2<segments; s2++){
+      body += '<g transform="translate('+fmt(segX)+','+fmt(rowY)+')">'+segBodies[s2]+'</g>';
+      rowY += H + gap*2;
+    }
+    var canvasH = rowY;
+
+    var fullSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+fmt(canvasW)+'mm" height="'+fmt(canvasH)+'mm" viewBox="0 0 '+fmt(canvasW)+' '+fmt(canvasH)+'">'
+      + '<g fill="none" stroke="#e6503c" stroke-width="0.35" stroke-linejoin="round">' + body + '</g></svg>';
+
+    var svgEl = document.getElementById('previewSvg');
+    svgEl.setAttribute('viewBox', '0 0 '+fmt(canvasW)+' '+fmt(canvasH));
+    svgEl.innerHTML = '<g fill="none" stroke="#e6503c" stroke-width="0.35" stroke-linejoin="round">' + body + '</g>';
+
+    document.getElementById('stats').innerHTML =
+      '<div class="stat"><b>'+d0.toFixed(1)+' mm</b><span>Neytral diametr d\u2080</span></div>'+
+      '<div class="stat"><b>'+C.toFixed(1)+' mm</b><span>Devor uzunligi C</span></div>'+
+      '<div class="stat"><b>'+(outerR*2).toFixed(1)+' mm</b><span>Halqa tashqi D</span></div>'+
+      '<div class="stat"><b>'+segments+' x '+segLen.toFixed(1)+' mm</b><span>Devor bo\u2018laklari</span></div>';
+
+    if (segments>1 || nSlotsCapped){
+      var noteEl = document.getElementById('splitNote');
+      noteEl.style.display = 'block';
+      var msgs = [];
+      if (segments>1){
+        msgs.push('Devor '+segments+' ta bo\u2018lakka bo\u2018lindi (har biri '+segLen.toFixed(1)+' mm, stanok maydoni '+maxWidth+' mm). Har bo\u2018lakning o\u2018ng chetidagi PAPA-tishlarni keyingi bo\u2018lakning chap chetidagi MAMA-teshigiga kiritib yelimlang; oxirgi bo\u2018lak halqani yopish uchun birinchisiga ham xuddi shunday ulanadi.');
+      }
+      if (nSlotsCapped){
+        msgs.push('Tablar soni juda ko\u2018p edi (bir-biriga tiqilib qolardi), shuning uchun avtomatik ravishda '+nSlotsCap+' taga kamaytirildi.');
+      }
+      noteEl.textContent = msgs.join(' ');
+    }
+
+    window._svgData = fullSvg;
+    try { build3D(d0, H, outerR, innerR); } catch(e3){ /* 3D preview is best-effort; SVG result above still stands */ }
+  } catch(err){
+    showError(err.message);
+  }
+}
+
+document.getElementById('genBtn').addEventListener('click', generate);
+document.getElementById('dlBtn').addEventListener('click', function(){
+  if (!window._svgData){ showError('Avval Generate tugmasini bosing.'); return; }
+  saveSvgFile(window._svgData);
+});
+
+function legacyDownload(svgText){
+  var blob = new Blob([svgText], {type:'image/svg+xml'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flexbox.svg';
+  a.click();
+}
+function saveSvgFile(svgText){
+  if (window.claude && typeof window.claude.use === 'function'){
+    window.claude.use('downloads').then(function(downloads){
+      if (!downloads){ legacyDownload(svgText); return; }
+      downloads.save({filename:'flexbox.svg', data:svgText}).catch(function(){ /* viewer declined, or save unsupported here; nothing more to do */ });
+    }).catch(function(){ legacyDownload(svgText); });
+  } else {
+    legacyDownload(svgText);
+  }
+}
+
+init3D();
+generate();
+</script>
+</body>
+</html>
+
+</body></html>

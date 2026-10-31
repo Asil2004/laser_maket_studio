@@ -1,0 +1,1786 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Maket Ustaxonasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2ebdd; --surface:#fbf7ee; --surface2:#efe6d3; --ink:#1e2232; --muted:#645f68; --line:#d9ccb3;
+  --accent:#0b6a76; --accent-ink:#ffffff; --accent-soft:#d3e8e6;
+  --cut:#2448d4; --eng:#cf3a2f; --frame:#2b2b2b; --sheet:#f6eedb;
+  --mat:#dcb676; --shade:#3d2c14; --warn:#9a4a00; --warn-bg:#f8e3c4;
+  --f-head:'Fraunces',Georgia,serif; --f-body:'Instrument Sans',system-ui,sans-serif; --f-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12162a; --surface:#1b2039; --surface2:#242b4a; --ink:#ece6d6; --muted:#9d9cae; --line:#323a5c;
+  --accent:#58c6c9; --accent-ink:#06222a; --accent-soft:#1d3a4a;
+  --cut:#86a6ff; --eng:#ff8479; --frame:#cfc6b0; --sheet:#232a47;
+  --mat:#c69850; --shade:#120c04; --warn:#ffcf8a; --warn-bg:#4a3516; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12162a; --surface:#1b2039; --surface2:#242b4a; --ink:#ece6d6; --muted:#9d9cae; --line:#323a5c;
+  --accent:#58c6c9; --accent-ink:#06222a; --accent-soft:#1d3a4a;
+  --cut:#86a6ff; --eng:#ff8479; --frame:#cfc6b0; --sheet:#232a47;
+  --mat:#c69850; --shade:#120c04; --warn:#ffcf8a; --warn-bg:#4a3516; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding-inline:clamp(16px,4vw,48px);padding-block:0 56px}
+*{box-sizing:border-box}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-head);font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em}
+button,select,input{font:inherit;color:inherit}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* masthead */
+header.top{padding-block:28px 8px;display:grid;gap:10px}
+.kick{font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(30px,5.4vw,54px);line-height:1.04}
+.lede{max-width:62ch;color:var(--muted);margin:0}
+.arches{height:26px;margin-top:10px;color:var(--accent);opacity:.55;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='26' viewBox='0 0 34 26'%3E%3Cpath d='M3 26V13C3 7 11 4 17 0c6 4 14 7 14 13v13' fill='none' stroke='%230b6a76' stroke-width='1.4'/%3E%3C/svg%3E") repeat-x left bottom}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .arches{filter:brightness(1.7)}}
+
+/* monument picker */
+.city{margin-top:22px;display:grid;gap:10px}
+.city h2{font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pick{appearance:none;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 10px 10px;cursor:pointer;display:grid;gap:6px;min-width:0}
+.pick:hover{border-color:var(--accent)}
+.pick[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--accent-soft)}
+.pick .th{height:64px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pick b{font:600 13px/1.2 var(--f-body)}
+.pick small{color:var(--muted);font:400 11.5px/1.2 var(--f-mono)}
+
+/* main grid */
+main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;margin-top:22px;align-items:start}
+@media (max-width:860px){main{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}
+.stage h2{font-size:26px}
+.stage .meta{display:flex;gap:8px 14px;flex-wrap:wrap;color:var(--muted);font:400 12.5px/1.4 var(--f-mono);margin:4px 0 10px}
+.stage p{margin:0 0 12px;max-width:60ch;color:var(--muted)}
+.view{background:var(--surface2);border-radius:12px;aspect-ratio:16/10;max-height:560px;overflow:hidden}
+.dimline{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font:500 13px/1.3 var(--f-mono)}
+.dimline span{color:var(--muted);font-weight:400}
+
+/* viewer */
+.view{position:relative;touch-action:none;cursor:grab;user-select:none}
+.view:active{cursor:grabbing}
+.view canvas{display:block;width:100%;height:100%}
+.vbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:10px}
+.vbar .f{flex:1 1 200px}
+.vbar .btn{padding:8px 12px;font-size:13px}
+@media (max-width:520px){.hint{display:none}}
+.hint{position:absolute;left:12px;bottom:10px;font:400 11.5px/1 var(--f-mono);color:var(--muted);pointer-events:none}
+.nogl{padding:24px;color:var(--muted);align-self:center;text-align:center}
+.pick .th img{height:100%;width:100%;object-fit:contain;display:block}
+.pick .th{background:linear-gradient(var(--surface2),var(--surface2));border-radius:8px}
+
+/* controls */
+.ctl{display:grid;gap:16px}
+.ctl h3{font-size:19px}
+.f{display:grid;gap:7px}
+.f label,.f .lb{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.f .lb output{color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{appearance:none;flex:1 1 0;min-width:52px;border:1px solid var(--line);background:var(--surface2);border-radius:9px;padding:8px 6px;cursor:pointer;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+select{appearance:none;width:100%;border:1px solid var(--line);background:var(--surface2);border-radius:9px;padding:9px 10px}
+.chk{display:flex;gap:10px;align-items:center;cursor:pointer;font-size:14px}
+.chk input{width:18px;height:18px;accent-color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.stats div{background:var(--surface);padding:10px 12px}
+.stats b{display:block;font:500 20px/1.1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stats span{font:400 11.5px/1.3 var(--f-body);color:var(--muted)}
+.warn{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px}
+
+/* sheets */
+section.sheets{margin-top:20px}
+.sheets header{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;justify-content:space-between;margin-bottom:12px}
+.sheets h2{font-size:26px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;cursor:pointer;font:500 13px/1 var(--f-mono)}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sheetbox{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:10px;overflow:hidden}
+.sheetbox svg{display:block;width:100%;height:auto}
+.sheetbox .frame{fill:none;stroke:var(--frame);stroke-width:1.6;vector-effect:non-scaling-stroke}
+.sheetbox .cut{fill:none;stroke:var(--cut);stroke-width:1.1;vector-effect:non-scaling-stroke}
+.sheetbox .eng{fill:none;stroke:var(--eng);stroke-width:1;vector-effect:non-scaling-stroke}
+.sheetbox .tg{fill:var(--eng);font-family:var(--f-mono)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:22px;height:0;border-top:2.5px solid;vertical-align:middle;margin-right:7px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.btn{appearance:none;border:0;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.note{font-size:13px;color:var(--muted);max-width:70ch}
+textarea.fallback{width:100%;height:120px;margin-top:10px;font:12px/1.4 var(--f-mono);background:var(--surface2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px}
+
+/* assembly + parts */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:20px}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr)}}
+ol.steps{margin:10px 0 0;padding-left:20px;display:grid;gap:8px}
+ol.steps li::marker{font-family:var(--f-mono);color:var(--accent)}
+.tw{overflow-x:auto;margin-top:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font:500 11.5px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+footer{margin-top:28px;color:var(--muted);font-size:13px;max-width:72ch}
+
+/* ---- v2 additions ---- */
+:root{--score:#1a8f3c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--score:#6fd68a}}
+:root[data-theme="dark"]{--score:#6fd68a}
+.sheetbox .score{fill:var(--score);font-family:var(--f-mono)}
+.sheetbox .ref{fill:var(--muted);font-family:var(--f-mono)}
+.sheetbox .tg{fill:var(--score)}
+.sheetbox.hide-CUT .lyr-CUT,.sheetbox.hide-ENGRAVE .lyr-ENGRAVE,.sheetbox.hide-SCORE .lyr-SCORE,.sheetbox.hide-REFERENCE .lyr-REFERENCE{display:none}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fgrid .full{grid-column:1/-1}
+.fgrid .f{align-content:start}
+.fgrid .seg button{min-width:0;padding:8px 2px}
+.in{width:100%;border:1px solid var(--line);background:var(--surface2);border-radius:9px;padding:9px 10px;min-width:0}
+.in:focus-visible,.btn:focus-visible,select:focus-visible,.seg button:focus-visible,.pick:focus-visible,.step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.unit{position:relative}
+.unit .in{padding-right:44px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.unit i{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:400 12px/1 var(--f-mono);color:var(--muted);font-style:normal;pointer-events:none}
+.pre{position:absolute;left:10px;top:50%;transform:translateY(-50%);font:500 14px/1 var(--f-mono);color:var(--muted)}
+.unit.sc .in{padding-left:34px}
+.msg{font-size:13px;color:var(--muted);min-height:1.2em}
+.msg.bad{color:var(--warn)}
+.up{display:flex;gap:10px;align-items:center}
+.up input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.up .thumb{width:54px;height:54px;border-radius:8px;border:1px dashed var(--line);background:var(--surface2) center/cover no-repeat;flex:none}
+.refimg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;opacity:0;mix-blend-mode:normal}
+.viewtools{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.viewtools button{appearance:none;border:1px solid var(--line);background:var(--surface2);border-radius:9px;padding:7px 12px;cursor:pointer;font:500 13px/1 var(--f-body)}
+.viewtools button:hover{border-color:var(--accent)}
+.viewtools button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.actbar{margin-top:20px}
+.actbar h2{font-size:22px;margin-bottom:12px}
+.acts{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.acts .btn{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:11px 14px}
+.acts .btn small{font:400 11.5px/1.25 var(--f-body);opacity:.85}
+.acts .btn.ghost small{color:var(--muted);opacity:1}
+.toast{margin-top:12px}
+.layers{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px}
+.layers label{display:flex;align-items:center;gap:7px;font:500 12.5px/1 var(--f-mono);cursor:pointer}
+.layers input{accent-color:var(--accent);width:16px;height:16px}
+.layers i{display:inline-block;width:14px;height:0;border-top:3px solid}
+.pngout{margin-top:12px}.pngout img{max-width:100%;border:1px solid var(--line);border-radius:10px;background:#fff}
+.guide{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:20px;align-items:start}
+@media (max-width:860px){.guide{grid-template-columns:minmax(0,1fr)}}
+.guide .gv{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+.guide .view{aspect-ratio:4/5;max-height:520px}
+.steps2{display:grid;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.step{appearance:none;width:100%;text-align:left;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;color:var(--ink)}
+.step:hover{border-color:var(--accent)}
+.step[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--accent-soft)}
+.step b.no{font:600 12px/1.6 var(--f-mono);letter-spacing:.08em;color:var(--accent);grid-row:1/3;white-space:nowrap}
+.step .tt{font-weight:600;font-size:14px}
+.step .tx{grid-column:2;font-size:13.5px;color:var(--muted)}
+.step .tx b{color:var(--ink);font-family:var(--f-mono);font-weight:500}
+.ptable{max-height:380px;overflow:auto;margin-top:10px;border:1px solid var(--line);border-radius:10px}
+.ptable table{margin:0}.ptable thead th{position:sticky;top:0;background:var(--surface)}
+.badge{font:500 12px/1 var(--f-mono);padding:3px 6px;border-radius:6px;background:var(--accent-soft);color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="kick">Lazer maket · tarixiy obidalar · tab-slot konstruksiya</div>
+    <h1>Maket Ustaxonasi</h1>
+    <p class="lede">Tarixiy obida nomini tanlang — sayt uni 3 mm MDF yoki fanerada lazerda kesib, qo‘lda yig‘iladigan detallarga ajratadi: halqalar, tishli panellar, egiluvchan belbog‘lar, muqarnas. Natija — SVG/DXF kesish fayllari va qadamma-qadam yig‘ish yo‘riqnomasi.</p>
+    <div class="arches" aria-hidden="true"></div>
+  </header>
+
+  <div class="city"><h2>Samarqand</h2><div class="picks" id="pk-sam"></div></div>
+  <div class="city"><h2>Buxoro</h2><div class="picks" id="pk-bux"></div></div>
+
+  <main id="top3d">
+    <article class="card stage">
+      <h2 id="mName"></h2>
+      <div class="meta" id="mMeta"></div>
+      <p id="mInfo"></p>
+      <div class="view" id="view"><img class="refimg" id="refimg" alt="Reference rasm"><div class="hint">Sichqoncha bilan aylantiring · g‘ildirak — yaqinlashtirish</div></div>
+      <div class="viewtools" id="vtools">
+        <button data-v="front">Old</button><button data-v="side">Yon</button><button data-v="top">Yuqoridan</button>
+        <button data-v="spin" id="spin" aria-pressed="true">360° aylanish</button>
+        <button data-v="exp" id="expBtn" aria-pressed="false">Exploded view</button>
+      </div>
+      <div class="vbar">
+        <div class="f"><div class="lb"><span>Portlatish (detallarga ajratish)</span><output id="oEx">0%</output></div><input type="range" id="explode" min="0" max="100" step="1" value="0" aria-label="Portlatish"></div>
+      </div>
+      <div class="dimline" id="dims"></div>
+    </article>
+
+    <aside class="card ctl">
+      <h3>Maket sozlamalari</h3>
+      <div class="f"><label for="bname">Bino nomi</label>
+        <input class="in" id="bname" list="blist" placeholder="Masalan: Registon minorasi" autocomplete="off">
+        <datalist id="blist"></datalist>
+        <div class="msg" id="nameMsg" role="status"></div></div>
+      <div class="f"><span class="lb">Reference rasm (JPG / PNG / WEBP)</span>
+        <div class="up"><label class="btn ghost" for="refin" style="cursor:pointer;padding:9px 14px">Rasm yuklash</label><input type="file" id="refin" accept="image/jpeg,image/png,image/webp"><span class="thumb" id="refthumb"></span>
+          <div class="f" style="flex:1;min-width:0"><div class="lb"><span>Qoplama</span><output id="oRef">0%</output></div><input type="range" id="refop" min="0" max="100" value="0" aria-label="Rasm shaffofligi"></div></div>
+        <div class="msg" id="refMsg">Rasm 3D ko‘rinish ustiga qo‘yilib solishtiriladi. Rasm avtomatik tahlil qilinmaydi.</div></div>
+      <div class="fgrid">
+        <div class="f"><label for="mat">Material</label><select id="mat"><option value="mdf">MDF</option><option value="fanera">Fanera</option></select></div>
+        <div class="f"><span class="lb">Qalinlik</span><div class="seg" id="segT"></div></div>
+        <div class="f"><label for="inScale">Masshtab</label><div class="unit sc"><span class="pre">1:</span><input class="in" id="inScale" type="number" min="1" step="1" inputmode="numeric"></div></div>
+        <div class="f"><label for="inKerf">Kerf (tirqish +)</label><div class="unit"><input class="in" id="inKerf" type="number" min="0" max="0.6" step="0.05" inputmode="decimal"><i>mm</i></div></div>
+        <div class="f"><label for="inH">Balandlik</label><div class="unit"><input class="in" id="inH" type="number" min="20" step="5" inputmode="numeric"><i>mm</i></div></div>
+        <div class="f"><label for="inW">Kenglik</label><div class="unit"><input class="in" id="inW" type="number" min="20" step="5" inputmode="numeric"><i>mm</i></div></div>
+        <div class="f full" id="densBox"><span class="lb">Gumbaz/minora halqalari zichligi</span><div class="seg" id="segR"></div></div>
+        <div class="f full"><label for="sheet">Material varag‘i</label>
+          <select id="sheet">
+            <option value="1000x600">1000 × 600 mm (fayldagidek)</option>
+            <option value="1200x600">1200 × 600 mm</option>
+            <option value="900x600">900 × 600 mm</option>
+            <option value="600x900">600 × 900 mm</option>
+            <option value="800x500">800 × 500 mm</option>
+            <option value="600x400">600 × 400 mm</option>
+            <option value="600x300">600 × 300 mm</option>
+            <option value="300x200">300 × 200 mm</option>
+          </select></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="eng"> Gravirovka (qizil chiziq) — ixtiyoriy</label>
+      <div class="stats" id="stats"></div>
+      <div id="warn"></div>
+    </aside>
+  </main>
+
+  <section class="card actbar">
+    <h2>Amallar</h2>
+    <div class="acts">
+      <button class="btn" id="aGen">Model yaratish<small>qayta hisoblab 3D ga o‘tish</small></button>
+      <button class="btn ghost" id="a3d">3D ko‘rinish<small>old tomondan, tiklangan kamera</small></button>
+      <button class="btn ghost" id="aExp">Exploded view<small>detallarni ajratib ko‘rsatish</small></button>
+      <button class="btn ghost" id="aNest">Auto Nest<small>varaqqa qayta joylash</small></button>
+      <button class="btn ghost" id="aSvg">SVG<small>qatlamli kod nusxasi</small></button>
+      <button class="btn ghost" id="aDxf">DXF<small>CUT / ENGRAVE / SCORE</small></button>
+      <button class="btn ghost" id="aPng">PNG ko‘rinish<small>rasm sifatida saqlash</small></button>
+      <button class="btn ghost" id="aPdf">PDF<small>kesish maketi haqida</small></button>
+      <button class="btn ghost" id="aGuide">Yig‘ish yo‘riqnomasi<small>STEP 01…</small></button>
+    </div>
+    <div class="note toast" id="toast" role="status"></div>
+  </section>
+
+  <section class="card sheets" id="sheets">
+    <header>
+      <h2>Kesish varaqlari</h2>
+      <div class="tabs" id="tabs"></div>
+    </header>
+    <div class="sheetbox" id="sheetbox"></div>
+    <div class="layers" id="layers">
+      <label><input type="checkbox" data-l="CUT" checked><i style="border-color:var(--cut)"></i>CUT — kesish</label>
+      <label><input type="checkbox" data-l="ENGRAVE" checked><i style="border-color:var(--eng)"></i>ENGRAVE — gravyura</label>
+      <label><input type="checkbox" data-l="SCORE" checked><i style="border-color:var(--score)"></i>SCORE — raqam/belgi</label>
+      <label><input type="checkbox" data-l="REFERENCE" checked><i style="border-color:var(--frame)"></i>REFERENCE — faqat ko‘rish</label>
+    </div>
+    <p class="note" id="nestInfo"></p>
+    <div class="actions">
+      <button class="btn" id="copy">Varaq SVG nusxasi</button>
+      <button class="btn ghost" id="copyAll">Barcha varaqlar SVG</button>
+      <button class="btn ghost" id="copyDxf">Varaq DXF nusxasi</button>
+      <button class="btn ghost" id="copyDxfAll">Barcha varaqlar DXF</button>
+      <span class="note" id="copyMsg" role="status"></span>
+    </div>
+    <p class="note">Nusxalangan matnni <span class="mono">.svg</span> yoki <span class="mono">.dxf</span> kengaytmali fayl qilib saqlang va CorelDRAW / LightBurn / LaserGRBL’da oching. Birliklar — millimetr. Ko‘k chiziq 0,0762 mm (kesish), qizil — gravyura, yashil — raqam va belgilar; kulrang REFERENCE qatlamini kesishga yubormang.</p>
+    <div class="pngout" id="pngout"></div>
+    <textarea class="fallback" id="fb" hidden readonly aria-label="Fayl kodi"></textarea>
+  </section>
+
+  <section class="card" id="guideSec" style="margin-top:20px">
+    <h2 style="font-size:24px">Yig‘ish yo‘riqnomasi</h2>
+    <p class="note" style="margin:6px 0 0">Bosqichni tanlang: 3D ko‘rinishda shu bosqichgacha yig‘ilgan detallar chiqadi, hozir o‘rnatiladiganlari yashil-ko‘k rangda ajratiladi.</p>
+    <div class="guide">
+      <div><ol class="steps2" id="steps"></ol></div>
+      <div class="gv"><div class="view" id="gview"></div><div class="viewtools"><button id="gAll">Hammasi</button><button id="gPrev">← Oldingi</button><button id="gNext">Keyingi →</button></div></div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:20px">
+    <h2 style="font-size:22px">Detallar ro‘yxati</h2>
+    <div class="ptable tw"><table><thead><tr><th>ID</th><th>Detal</th><th>Guruh</th><th class="n">Bosqich</th><th class="n">Eni × bo‘yi, mm</th></tr></thead><tbody id="parts"></tbody></table></div>
+  </section>
+
+  <footer>Obidalar shakli va nisbatlari soddalashtirilgan. Registon minorasining balandligi (33 m), girih naqshi va muqarnas bilan tugashi manbalarda bor; diametri va aniq naqsh chizmasi manbalarda yo‘q, shuning uchun ular reference rasmga asoslangan taxminiy. Kesish vaqti 20 mm/s tezlikda taxminiy hisoblangan. Birinchi marta kesishdan oldin kichik bir bo‘lakda tirqish kengligini (material qalinligi + kerf) va egiluvchan panellarning egilishini sinab ko‘ring.</footer>
+</div>
+
+<script src="../vendor/three.min.js"></script>
+<script>
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.MG = factory();
+})(this, function () {
+  'use strict';
+  const PI = Math.PI, TAU = 2 * PI;
+  const rd = v => { const r = Math.round(v * 100) / 100; if (!isFinite(r)) throw new Error('NaN geometry'); return r === 0 ? 0 : r; };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const DEF = { size: 0, T: 3, fit: 0.15, sheetW: 1000, sheetH: 600, engrave: false, margin: 5, gap: 3, pm: 8, density: 1 };
+
+  /* ================= 2D helpers (y is UP, mm) ================= */
+  const rect = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+  function dedupe(p) {
+    const o = [];
+    p.forEach(q => { const l = o[o.length - 1]; if (!l || Math.abs(l[0] - q[0]) > 1e-6 || Math.abs(l[1] - q[1]) > 1e-6) o.push(q); });
+    while (o.length > 1 && Math.abs(o[0][0] - o[o.length - 1][0]) < 1e-6 && Math.abs(o[0][1] - o[o.length - 1][1]) < 1e-6) o.pop();
+    return o;
+  }
+  function bbox(loops) {
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    loops.forEach(l => l.forEach(p => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }));
+    return { x0, y0, x1, y1 };
+  }
+  const plen = (l, closed) => { let s = 0; for (let i = 1; i < l.length; i++) s += Math.hypot(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1]); if (closed && l.length > 2) s += Math.hypot(l[0][0] - l[l.length - 1][0], l[0][1] - l[l.length - 1][1]); return s; };
+
+  /* pointed (Persian) arch, open polyline from left base to right base */
+  function archPts(cx, by, w, h, kr) {
+    const R = Math.max(w * kr, w / 2 + 0.01);
+    const rise = Math.sqrt(R * R - (R - w / 2) * (R - w / 2));
+    const x0 = cx - w / 2, x1 = cx + w / 2;
+    if (h <= rise + 0.3) return [[x0, by], [x0, by + h], [x1, by + h], [x1, by]];
+    const sp = by + h - rise;
+    const th = Math.atan2(rise, w / 2 - R);
+    const n = Math.max(8, Math.ceil(R * (PI - th) / 1.2));
+    const pts = [[x0, by], [x0, sp]];
+    for (let i = 1; i <= n; i++) { const a = PI + (th - PI) * i / n; pts.push([x0 + R + R * Math.cos(a), sp + R * Math.sin(a)]); }
+    for (let i = 1; i <= n; i++) { const a = (PI - th) * (1 - i / n); pts.push([x1 - R + R * Math.cos(a), sp + R * Math.sin(a)]); }
+    pts.push([x1, by]);
+    return pts;
+  }
+  const oddN = (x, mn) => { let n = Math.max(mn, Math.round(x)); if (n % 2 === 0) n++; return n; };
+
+  /* ================= wall outline with finger joints ================= */
+  function wallLoop(a) {
+    const { W, H, T, n } = a, s = H / n;
+    const inset = (type, i) => !type ? 0 : ((type === 'S' ? i % 2 === 0 : i % 2 === 1) ? 0 : T);
+    const xl = i => inset(a.L, i), xr = i => W - inset(a.R, i);
+    const p = [];
+    p.push([xl(0), 0]);
+    (a.bot || []).forEach(t => { p.push([t[0] - t[1] / 2, 0], [t[0] - t[1] / 2, -T], [t[0] + t[1] / 2, -T], [t[0] + t[1] / 2, 0]); });
+    p.push([xr(0), 0]);
+    for (let i = 0; i < n; i++) { p.push([xr(i), (i + 1) * s]); if (i < n - 1) p.push([xr(i + 1), (i + 1) * s]); }
+    const xa = xr(n - 1), xb = xl(n - 1);
+    if (a.cren) {
+      const m = a.cren.n, mh = a.cren.mh, bw = (xa - xb) / (2 * m - 1);
+      for (let i = 0; i < 2 * m - 1; i++) {
+        const xs = xa - i * bw, xe = xa - (i + 1) * bw;
+        if (i % 2 === 0) { p.push([xs, H + mh], [xe, H + mh]); } else { p.push([xs, H], [xe, H]); }
+      }
+      p.push([xb, H + mh]);
+    } else if (a.top && a.top.length) {
+      [...a.top].reverse().forEach(t => { p.push([t[0] + t[1] / 2, H], [t[0] + t[1] / 2, H + a.T], [t[0] - t[1] / 2, H + a.T], [t[0] - t[1] / 2, H]); });
+    }
+    p.push([xb, H]);
+    for (let i = n - 1; i >= 0; i--) { p.push([xl(i), i * s]); if (i > 0) p.push([xl(i - 1), i * s]); }
+    return dedupe(p);
+  }
+  /* partition: body between side walls, side tabs enter windows */
+  function partLoop(W, H, T, tys, th, bot) {
+    const p = [[T, 0]];
+    (bot || []).forEach(t => { p.push([t[0] - t[1] / 2, 0], [t[0] - t[1] / 2, -T], [t[0] + t[1] / 2, -T], [t[0] + t[1] / 2, 0]); });
+    p.push([W - T, 0]);
+    tys.forEach(ty => { p.push([W - T, ty - th / 2], [W, ty - th / 2], [W, ty + th / 2], [W - T, ty + th / 2]); });
+    p.push([W - T, H], [T, H]);
+    [...tys].reverse().forEach(ty => { p.push([T, ty + th / 2], [0, ty + th / 2], [0, ty - th / 2], [T, ty - th / 2]); });
+    return dedupe(p);
+  }
+
+  /* facade features: arches (through or blind), rects, bands, flutes -> holes + engraving */
+  function features(f, W, H, T, kr0) {
+    const holes = [], eng = [];
+    if (!f) return { holes, eng };
+    const e = Math.max(1.5, 0.04 * Math.min(W, H));
+    (f.arches || []).forEach(a => {
+      const w = a.w * W, cx = a.cx * W;
+      const by = Math.max(a.y * H, 2 * T);
+      const h = Math.min(a.h * H, H - 2 * T - by);
+      if (w < T * 1.8 || h < T * 2.2) return;
+      if (cx - w / 2 < 1.5 * T || cx + w / 2 > W - 1.5 * T) return;
+      const kr = a.kr || kr0;
+      let clr = 1e9;
+      (f.arches || []).forEach(b2 => { if (b2 === a) return; const by2 = Math.max(b2.y * H, 2 * T), h2 = b2.h * H; if (by2 < by + h && by < by2 + h2) clr = Math.min(clr, Math.abs(b2.cx - a.cx) * W - (b2.w + a.w) * W / 2); });
+      const ee = Math.min(e, Math.max(0, clr) / 2.3);
+      if (a.cut === false) {
+        eng.push(archPts(cx, by, w, h, kr));
+        if (w > 9) eng.push(archPts(cx, by, w * 0.72, h * 0.82, kr));
+      } else {
+        holes.push(archPts(cx, by, w, h, kr).concat([[cx + w / 2, by]]).slice(0, -1));
+        if (a.frame !== false && w > 8 && ee > 0.9) { eng.push(archPts(cx, by, w + 2 * ee, h + ee, kr)); if (ee > 1.4 && w > 18) eng.push(archPts(cx, by, w + 3.6 * ee, h + 1.8 * ee, kr)); }
+      }
+    });
+    (f.rects || []).forEach(r => {
+      const w = r.w * W, x = r.cx * W - w / 2, y = Math.max(r.y * H, 2 * T), h = Math.min(r.h * H, H - 2 * T - y);
+      if (w < T * 1.2 || h < T * 1.5 || x < 1.5 * T || x + w > W - 1.5 * T) return;
+      holes.push(rect(x, y, w, h));
+    });
+    (f.bands || []).forEach(b => { const y = b * H; if (y > T && y < H - T) eng.push([[1.6 * T, y], [W - 1.6 * T, y]]); });
+    if (f.flutes) {
+      const fl = f.flutes, y0 = fl.y0 * H, y1 = fl.y1 * H;
+      for (let i = 1; i < fl.n; i++) { const x = W * i / fl.n; if (x > 1.6 * T && x < W - 1.6 * T) eng.push([[x, y0], [x, y1]]); }
+    }
+    if (f.frieze) { // small blind arcade under the cornice
+      const n = f.frieze.n, y = f.frieze.y * H, h = f.frieze.h * H, w = (W - 4 * T) / n * 0.7;
+      for (let i = 0; i < n; i++) { const cx = 2 * T + (W - 4 * T) * (i + 0.5) / n; if (w > 2.2 && h > 2.5) eng.push(archPts(cx, y, w, h, kr0)); }
+    }
+    return { holes, eng };
+  }
+
+  /* ================= tower geometry ================= */
+  function segR(s, t) {
+    if (s.shape === 'cone') return s.r0 + (s.r1 - s.r0) * t;
+    if (s.shape === 'dome') return s.r0 * (1 + (s.b || 0) * Math.sin(PI * Math.pow(t, 0.55))) * Math.sqrt(Math.max(0, 1 - Math.pow(t, s.p || 2.4)));
+    return s.r0;
+  }
+  const segRS = (s, t) => segR(s, t) - (s.off || 0);
+  function prepTower(t, k, T) {
+    let z = 0;
+    const segs = t.segs.map(s => {
+      const h = s.h * k, o = Object.assign({}, s, { h, z0: z, z1: z + h, r0: s.r0 * k, r1: (s.r1 == null ? s.r0 : s.r1) * k }); z += h;
+      const ok = s.skin !== false && !s.lobes && !s.open && (s.shape === 'cyl' || s.shape === 'cone') && h >= 5 * T && Math.min(o.r0, o.r1) - T >= 6 && o.r1 >= 0.6 * o.r0 - 1e-6 && o.r0 >= o.r1 - 1e-6;
+      o.skin = ok; o.off = ok ? T : 0;
+      return o;
+    });
+    const rAt = zz => { for (const s of segs) if (zz <= s.z1 + 1e-6) { const tt = clamp((zz - s.z0) / s.h, 0, 1); return segRS(s, tt); } return 0; };
+    let R = 0, Rs = 0; segs.forEach(s => { for (let i = 0; i <= 20; i++) { R = Math.max(R, segR(s, i / 20)); Rs = Math.max(Rs, segRS(s, i / 20)); } });
+    return { segs, H: z, rAt, R, Rs };
+  }
+
+  /* kerf (living-hinge) lines: dense lines parallel to the axis, cut into short brick-staggered segments, open at the edges */
+  function brickLines(emit, nLines, h, pitchOK, nearTabFn) {
+    const br = 1.5, ls = clamp(h * 0.46, 4, 10), P = ls + br;
+    for (let j = -nLines; j <= nLines; j++) {
+      const ev = ((j % 2) + 2) % 2 === 0, off = ev ? 0 : P / 2;
+      for (let s0 = -off; s0 < h; s0 += P) {
+        const A = Math.max(0, s0), B = Math.min(h, s0 + ls);
+        if (B - A < 2) continue;
+        if (A <= 0.01 && nearTabFn && nearTabFn(j)) continue;
+        emit(j, A, B);
+      }
+    }
+  }
+
+  /* flexible (kerf / living-hinge) wall: development of a cylinder / cone frustum wrapped around ring formers */
+  function skinDev(rn0, rn1, h, T) {
+    const dpt = clamp(h * 0.04, 4, 7), tw = dpt;     // comb seam depth / tooth width
+    const nT = oddN(h / (2 * tw), 3);
+    const dl = Math.abs(rn0 - rn1);
+    const rbig = Math.max(rn0, rn1);
+    const rect = dl < 0.02 * rbig;
+    const pitch = clamp(0.12 * rbig, 1.8, 3.4), ls = 22, br = 2, m = 2.5;
+    const out = [], slits = [], eng = [];
+    if (rect) {
+      const L = TAU * (rn0 + rn1) / 2;
+      const yy = i => h * i / nT;
+      const P = [[0, 0], [L, 0]];
+      for (let i = 0; i < nT; i++) { const x = i % 2 === 0 ? L + dpt : L; P.push([x, yy(i)], [x, yy(i + 1)]); }
+      P.push([L, h], [0, h]);
+      for (let i = nT - 1; i >= 0; i--) { const x = i % 2 === 0 ? dpt + 0.2 : 0; P.push([x, yy(i + 1)], [x, yy(i)]); }
+      out.push(dedupe(P));
+      const x0 = dpt + 3, x1 = L - 3, pp = 1.8, nc = Math.floor((x1 - x0) / pp);
+      brickLines((j, A, B) => { const x = x0 + (j + nc) * pp; if (x <= x1 && j >= 0 - nc) slits.push([[x, A], [x, B]]); }, nc, h);
+      return { out, slits, eng, rect, L, h, dpt };
+    }
+    // frustum development (annular sector)
+    const ell = Math.sqrt(h * h + dl * dl);
+    const Rb = rbig * ell / dl, Rs = Rb - ell, phi = TAU * rbig / Rb;
+    const bigAtBottom = rn0 >= rn1;
+    // we place big radius edge at y = Rb (outer arc) ; bottom of the part = the big edge if bigAtBottom
+    const pol = (rho, th) => [rho * Math.sin(th), rho * Math.cos(th)];
+    const rr = (i) => Rs + ell * i / nT;
+    const P = [];
+    const arcN = Math.max(12, Math.ceil(Rb * phi / 2));
+    for (let i = 0; i <= arcN; i++) P.push(pol(Rs, -phi / 2 + phi * i / arcN));
+    for (let i = 0; i < nT; i++) { const d = i % 2 === 0 ? dpt / ((rr(i) + rr(i + 1)) / 2) : 0; P.push(pol(rr(i), phi / 2 + d), pol(rr(i + 1), phi / 2 + d)); }
+    for (let i = arcN; i >= 0; i--) P.push(pol(Rb, -phi / 2 + phi * i / arcN));
+    for (let i = nT - 1; i >= 0; i--) { const d = i % 2 === 0 ? (dpt + 0.2) / ((rr(i) + rr(i + 1)) / 2) : 0; P.push(pol(rr(i + 1), -phi / 2 + d), pol(rr(i), -phi / 2 + d)); }
+    out.push(dedupe(P));
+    const th0 = -phi / 2 + (dpt + 3) / Rb, th1 = phi / 2 - 3 / Rb, dth = 1.8 / Rb, nc2 = Math.floor((th1 - th0) / dth);
+    brickLines((j, A, B) => { const th = th0 + (j + nc2) * dth; if (th <= th1 && j >= -nc2) slits.push([pol(Rs + A, th), pol(Rs + B, th)]); }, nc2, ell);
+    return { out, slits, eng, rect: false, Rs, Rb, ell, phi, bigAtBottom, dpt };
+  }
+
+  /* quadrant of a ring (tower-centred coords, canonical = x>0,y>0), tongue on y-edge (A) or x-edge (B) */
+  function quadLoop(r, e, tongue, lobes, tl, c) {
+    const xr = Math.sqrt(r * r - e * e);
+    const th0 = Math.asin(e / r), th1 = Math.acos(e / r);
+    const lq = Math.max(0, Math.round(lobes / 4));
+    const arcN = Math.max(8, Math.ceil(r * (th1 - th0) / 1.4), lq * 8);
+    const p = [[e, e]];
+    if (tongue === 'y') p.push([c - tl / 2, e], [c - tl / 2, -e], [c + tl / 2, -e], [c + tl / 2, e]);
+    p.push([xr, e]);
+    for (let i = 1; i <= arcN; i++) {
+      const u = i / arcN, th = th0 + (th1 - th0) * u;
+      const rr = lq ? r * (1 - 0.04 * (0.5 - 0.5 * Math.cos(TAU * lq * u))) : r;
+      p.push([rr * Math.cos(th), rr * Math.sin(th)]);
+    }
+    p.push([e, xr]);
+    if (tongue === 'x') p.push([e, c + tl / 2], [-e, c + tl / 2], [-e, c - tl / 2], [e, c - tl / 2]);
+    return dedupe(p);
+  }
+
+
+  /* ================= helpers for the pattern-minaret example ================= */
+  const plusLoop = (L, w2) => [[-L, -w2], [-w2, -w2], [-w2, -L], [w2, -L], [w2, -w2], [L, -w2], [L, w2], [w2, w2], [w2, L], [-w2, L], [-w2, w2], [-L, w2]];
+  const circLoop = (r, n) => { const N = n || Math.max(32, Math.ceil(r * 1.6)); return Array.from({ length: N }, (_, i) => [r * Math.cos(TAU * i / N), r * Math.sin(TAU * i / N)]); };
+  function sectorHoles(rIn, rOut, webW) {            // 4 pockets centred on the axes, webs on diagonals
+    const L = [];
+    for (let k = 0; k < 4; k++) {
+      const c = k * PI / 2, pts = [];
+      const span = r => PI / 4 - Math.asin(Math.min(1, webW / 2 / r));
+      const n = Math.max(8, Math.ceil(rOut * 0.5));
+      const so = span(rOut), si = span(rIn);
+      for (let i = 0; i <= n; i++) { const a = c - so + 2 * so * i / n; pts.push([rOut * Math.cos(a), rOut * Math.sin(a)]); }
+      for (let i = n; i >= 0; i--) { const a = c - si + 2 * si * i / n; pts.push([rIn * Math.cos(a), rIn * Math.sin(a)]); }
+      L.push(pts);
+    }
+    return L;
+  }
+  function octLoop(a, T, f, tabw) {                   // octagon (apothem a) with open notches for panel tabs, panel i faces angle i*45deg
+    const hc = a * Math.tan(PI / 8), t2 = tabw / 2 + f / 2, p = [];
+    for (let i = 0; i < 8; i++) {
+      const psi = i * PI / 4, c = Math.cos(psi), s = Math.sin(psi);
+      [[a, -hc], [a, -t2], [a - T - f / 2, -t2], [a - T - f / 2, t2], [a, t2], [a, hc]].forEach(q => p.push([q[0] * c - q[1] * s, q[0] * s + q[1] * c]));
+    }
+    return dedupe(p);
+  }
+  function scallop(r, N, ht, phase) {                 // muqarnas-style pointed lobes
+    const p = [], m = 6;
+    for (let i = 0; i < N; i++) for (let j = 0; j < m; j++) {
+      const u = j / m, th = phase + (i + u) * TAU / N;
+      const rad = r + ht * Math.pow(1 - Math.abs(2 * u - 1), 0.85);
+      p.push([rad * Math.cos(th), rad * Math.sin(th)]);
+    }
+    return p;
+  }
+  function kufic(w, h, cs, seed) {                    // square-kufic-like maze lettering (engraving)
+    const cols = Math.max(2, Math.floor(w / cs)), rows = Math.max(2, Math.floor(h / cs));
+    const cw = w / cols, ch = h / rows;
+    let st = seed >>> 0; const rnd = () => { st = (st + 0x6D2B79F5) >>> 0; let t = Math.imul(st ^ st >>> 15, 1 | st); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    const seen = Array.from({ length: rows }, () => Array(cols).fill(false));
+    const vOpen = Array.from({ length: rows }, () => Array(cols + 1).fill(false));   // wall left of cell (r,c) removed
+    const hOpen = Array.from({ length: rows + 1 }, () => Array(cols).fill(false));    // wall above cell (r,c) removed
+    const stack = [[0, 0]]; seen[0][0] = true;
+    while (stack.length) {
+      const [r, c] = stack[stack.length - 1];
+      const nb = [[r, c + 1, 'v'], [r, c - 1, 'v'], [r + 1, c, 'h'], [r - 1, c, 'h']].filter(q => q[0] >= 0 && q[0] < rows && q[1] >= 0 && q[1] < cols && !seen[q[0]][q[1]]);
+      if (!nb.length) { stack.pop(); continue; }
+      const q = nb[Math.floor(rnd() * nb.length)];
+      if (q[2] === 'v') vOpen[r][Math.max(c, q[1])] = true; else hOpen[Math.max(r, q[0])][c] = true;
+      seen[q[0]][q[1]] = true; stack.push([q[0], q[1]]);
+    }
+    const out = [];
+    for (let r = 1; r < rows; r++) { let c = 0; while (c < cols) { if (!hOpen[r][c]) { let e = c; while (e < cols && !hOpen[r][e]) e++; out.push([[c * cw, h - r * ch], [e * cw, h - r * ch]]); c = e; } else c++; } }
+    for (let c = 1; c < cols; c++) { let r = 0; while (r < rows) { if (!vOpen[r][c]) { let e = r; while (e < rows && !vOpen[e][c]) e++; out.push([[c * cw, h - r * ch], [c * cw, h - e * ch]]); r = e; } else r++; } }
+    out.push([[0, 0], [w, 0], [w, h], [0, h], [0, 0]]);
+    return out;
+  }
+
+  /* ================= monument specs (metres) ================= */
+  const rows = (n, span, h, y, extra) => Array.from({ length: n }, (_, i) => { const cell = span / n; return Object.assign({ cx: 0.5 - span / 2 + (i + 0.5) * cell, w: cell * 0.76, h, y }, extra || {}); });
+  const sides2 = (cxL, w, h, ys, extra) => { const o = []; ys.forEach(y => { o.push(Object.assign({ cx: cxL, w, h, y }, extra || {}), Object.assign({ cx: 1 - cxL, w, h, y }, extra || {})); }); return o; };
+  const minaret = (n, x, z, r, h, cap) => ({
+    n, x, z, segs: [
+      { h: h, r0: r, r1: r * 0.86, shape: 'cone', bands: 4 },
+      { h: Math.max(0.7, r * 0.45), r0: r * 1.22, shape: 'cyl', lobes: 12 },
+      { h: cap * 0.95, r0: r * 1.1, r1: r * 0.12, shape: 'cone' }]
+  });
+  const dome = (n, x, z, r, drum, dh, b, lobes, extra) => ({
+    n, x, z, segs: [
+      { h: drum, r0: r, shape: 'cyl', bands: 2 },
+      { h: Math.max(0.6, r * 0.1), r0: r * 1.06, shape: 'cyl', lobes: lobes || 0 },
+      { h: dh, r0: r * 1.04, shape: 'dome', b: b == null ? 0.12 : b, p: 2.2, lobes: lobes || 0 },
+      { h: Math.max(0.8, r * 0.18), r0: r * 0.12, r1: r * 0.03, shape: 'cone' }], ...(extra || {})
+  });
+
+  const MON = {
+    sherdor: {
+      size: 420, code: 'SD', city: 'Samarqand', name: 'Sher-Dor madrasasi', years: '1619–1636', W: 72,
+      info: 'Registon maydonidagi madrasa: baland peshtoq, ikki qavatli hujralar, burchak minoralari va ikkita qovurg‘ali gumbaz.',
+      blocks: [
+        { n: 'Chap qanot', x: 4, w: 20, z: 0, d: 8, h: 15, front: { arches: [...rows(4, 0.86, 0.34, 0.06), ...rows(4, 0.86, 0.3, 0.55)], bands: [0.47, 0.93] }, part: { at: 3.4, arches: rows(4, 0.86, 0.26, 0.06) } },
+        { n: 'Peshtoq', x: 24, w: 24, z: 0, d: 10, h: 28, front: { arches: [{ cx: 0.5, w: 0.56, h: 0.74, y: 0 }, ...sides2(0.1, 0.13, 0.24, [0.06, 0.36, 0.64]), ...sides2(0.1, 0.13, 0.12, [0.88])], bands: [0.9, 0.95], frieze: { n: 10, y: 0.915, h: 0.05 } }, part: { at: 4.2, arches: [{ cx: 0.5, w: 0.42, h: 0.6, y: 0 }] } },
+        { n: 'O‘ng qanot', x: 48, w: 20, z: 0, d: 8, h: 15, front: { arches: [...rows(4, 0.86, 0.34, 0.06), ...rows(4, 0.86, 0.3, 0.55)], bands: [0.47, 0.93] }, part: { at: 3.4, arches: rows(4, 0.86, 0.26, 0.06) } }],
+      towers: [
+        minaret('Minora-1', 1.9, 2.6, 1.8, 24, 3), minaret('Minora-2', 70.1, 2.6, 1.8, 24, 3),
+        dome('Gumbaz-1', 19, 16.8, 5.6, 17, 11, 0.16, 16), dome('Gumbaz-2', 53, 16.8, 5.6, 17, 11, 0.16, 16)]
+    },
+    goriamir: {
+      size: 400, code: 'GA', city: 'Samarqand', name: 'Go‘ri Amir maqbarasi', years: '1403–1404', W: 50,
+      info: 'Amir Temur maqbarasi: baland bo‘yinli feruza qovurg‘ali gumbaz, kirish peshtoqi va uning ikki yonidagi minoralar.',
+      blocks: [
+        { n: 'Chap devor', x: 2, w: 8, z: 0, d: 5, h: 9, front: { arches: rows(2, 0.8, 0.5, 0.1), bands: [0.88] } },
+        { n: 'Peshtoq', x: 15, w: 20, z: 0, d: 9, h: 20, front: { arches: [{ cx: 0.5, w: 0.56, h: 0.74, y: 0 }, ...sides2(0.1, 0.14, 0.26, [0.06, 0.4]), ...sides2(0.1, 0.14, 0.14, [0.72])], bands: [0.9, 0.95] }, part: { at: 3.6, arches: [{ cx: 0.5, w: 0.42, h: 0.6, y: 0 }] } },
+        { n: 'O‘ng devor', x: 40, w: 8, z: 0, d: 5, h: 9, front: { arches: rows(2, 0.8, 0.5, 0.1), bands: [0.88] } }],
+      towers: [
+        minaret('Minora-1', 12.2, 2, 1.8, 20, 2.6), minaret('Minora-2', 37.8, 2, 1.8, 20, 2.6),
+        { n: 'Gumbaz', x: 25, z: 16.4, segs: [{ h: 11, r0: 6.6, shape: 'cyl', bands: 3 }, { h: 1.6, r0: 6.8, shape: 'cyl', lobes: 16 }, { h: 11.5, r0: 6.8, shape: 'dome', b: 0.26, p: 2.2, lobes: 16 }, { h: 1.8, r0: 0.9, r1: 0.2, shape: 'cone' }] }]
+    },
+    bibixonim: {
+      size: 440, code: 'BX', city: 'Samarqand', name: 'Bibixonim masjidi', years: '1399–1404', W: 72,
+      info: 'Temur davrining jome masjidi: ulkan peshtoq, to‘rtta minora, ikki yonda ravoqli galereyalar va orqada katta ko‘k gumbaz.',
+      blocks: [
+        { n: 'Chap galereya', x: 3, w: 14, z: 0, d: 6, h: 11, front: { arches: rows(4, 0.86, 0.62, 0.08), bands: [0.82, 0.9] } },
+        { n: 'Peshtoq', x: 22, w: 28, z: 0, d: 11, h: 36, front: { arches: [{ cx: 0.5, w: 0.58, h: 0.78, y: 0 }, ...sides2(0.1, 0.1, 0.2, [0.06, 0.32, 0.58]), ...sides2(0.1, 0.1, 0.1, [0.84])], bands: [0.9, 0.95], frieze: { n: 12, y: 0.92, h: 0.045 } }, part: { at: 4.4, arches: [{ cx: 0.5, w: 0.44, h: 0.62, y: 0 }] } },
+        { n: 'O‘ng galereya', x: 55, w: 14, z: 0, d: 6, h: 11, front: { arches: rows(4, 0.86, 0.62, 0.08), bands: [0.82, 0.9] } }],
+      towers: [
+        minaret('Minora-1', 19.5, 2.6, 1.9, 24, 3), minaret('Minora-2', 52.5, 2.6, 1.9, 24, 3),
+        dome('Gumbaz-1', 10, 3, 2.7, 1.5, 3.2, 0.1, 10, { on: 0 }), dome('Gumbaz-2', 62, 3, 2.7, 1.5, 3.2, 0.1, 10, { on: 2 }),
+        dome('Bosh gumbaz', 36, 20.5, 8.4, 15, 13, 0.14, 20)]
+    },
+    shohizinda: {
+      size: 400, code: 'SZ', city: 'Samarqand', name: 'Shohizinda ansambli', years: 'XI–XV asrlar', W: 56,
+      info: 'Maqbaralar ko‘chasi: yonma-yon turgan, har xil balandlikdagi peshtoqlar va ularning orqasidagi koshinli gumbazlar.',
+      blocks: [
+        { n: 'Maqbara-1', x: 0, w: 10, z: 0, d: 7, h: 12, front: { arches: [{ cx: 0.5, w: 0.58, h: 0.66, y: 0 }, ...rows(2, 0.7, 0.14, 0.76)], bands: [0.92] }, part: { at: 3, arches: [{ cx: 0.5, w: 0.42, h: 0.5, y: 0 }] } },
+        { n: 'Maqbara-2', x: 10, w: 11, z: 0, d: 7, h: 16, front: { arches: [{ cx: 0.5, w: 0.58, h: 0.66, y: 0 }, { cx: 0.5, w: 0.3, h: 0.14, y: 0.76 }], bands: [0.94] }, part: { at: 3, arches: [{ cx: 0.5, w: 0.42, h: 0.5, y: 0 }] } },
+        { n: 'Maqbara-3', x: 21, w: 14, z: 0, d: 8, h: 21, front: { arches: [{ cx: 0.5, w: 0.58, h: 0.7, y: 0 }, ...sides2(0.1, 0.1, 0.26, [0.06, 0.4]), { cx: 0.5, w: 0.26, h: 0.1, y: 0.8 }], bands: [0.93], frieze: { n: 8, y: 0.94, h: 0.04 } }, part: { at: 3.4, arches: [{ cx: 0.5, w: 0.44, h: 0.56, y: 0 }] } },
+        { n: 'Maqbara-4', x: 35, w: 11, z: 0, d: 7, h: 16, front: { arches: [{ cx: 0.5, w: 0.58, h: 0.66, y: 0 }, { cx: 0.5, w: 0.3, h: 0.14, y: 0.76 }], bands: [0.94] }, part: { at: 3, arches: [{ cx: 0.5, w: 0.42, h: 0.5, y: 0 }] } },
+        { n: 'Maqbara-5', x: 46, w: 10, z: 0, d: 7, h: 12, front: { arches: [{ cx: 0.5, w: 0.58, h: 0.66, y: 0 }, ...rows(2, 0.7, 0.14, 0.76)], bands: [0.92] }, part: { at: 3, arches: [{ cx: 0.5, w: 0.42, h: 0.5, y: 0 }] } }],
+      towers: [
+        dome('Gumbaz-1', 5, 12, 4.1, 5, 5.6, 0.14, 12), dome('Gumbaz-2', 15.5, 12, 4.5, 8, 6, 0.16, 14),
+        dome('Gumbaz-3', 28, 13.4, 5.3, 12, 7.5, 0.18, 16),
+        dome('Gumbaz-4', 40.5, 12, 4.5, 8, 6, 0.16, 14), dome('Gumbaz-5', 51, 12, 4.1, 5, 5.6, 0.14, 12)]
+    },
+    kalon: {
+      size: 420, code: 'KM', city: 'Buxoro', name: 'Kalon minorasi', years: '1127', W: 44,
+      info: 'Poyi Kalon majmuasidagi 45,6 metrlik minora: o‘nta qirrali poydevor, g‘isht belbog‘lari, sharafa karnizi va 16 ravoqli fonus.',
+      blocks: [
+        { n: 'Masjid peshtoqi', x: 20, w: 20, z: 0, d: 9, h: 20, front: { arches: [{ cx: 0.5, w: 0.54, h: 0.74, y: 0 }, ...sides2(0.1, 0.14, 0.26, [0.06, 0.4]), ...sides2(0.1, 0.14, 0.14, [0.72])], bands: [0.9, 0.95], frieze: { n: 8, y: 0.915, h: 0.05 } }, part: { at: 3.6, arches: [{ cx: 0.5, w: 0.4, h: 0.6, y: 0 }] } }],
+      towers: [
+        {
+          n: 'Minora', x: 10, z: 8, segs: [
+            { h: 1.85, r0: 5, shape: 'cyl', lobes: 20 },
+            { h: 33, r0: 4.5, r1: 3.0, shape: 'cone', bands: 9 },
+            { h: 1.2, r0: 3.05, shape: 'cyl' },
+            { h: 1.3, r0: 3.7, shape: 'cyl', lobes: 24 },
+            { h: 5.2, r0: 3.2, shape: 'cyl', open: true },
+            { h: 1.0, r0: 3.5, shape: 'cyl', lobes: 16 },
+            { h: 2.8, r0: 3.4, r1: 0.3, shape: 'cone' }]
+        },
+        dome('Gumbaz', 30, 16.4, 6, 8, 8, 0.2, 16)]
+    },
+    ismoil: {
+      size: 230, code: 'IS', city: 'Buxoro', name: 'Ismoil Somoniy maqbarasi', years: 'IX–X asr', W: 12,
+      info: 'Markaziy Osiyoning eng qadimiy g‘ishtin maqbarasi: kub shakli, to‘rt tomonda kirish ravog‘i, ravoqli friz, yarim shar gumbaz va burchak gumbazchalari.',
+      blocks: [
+        { n: 'Maqbara kubi', x: 0.6, w: 10.8, z: 0.6, d: 10.8, h: 9.4, front: { arches: [{ cx: 0.5, w: 0.34, h: 0.62, y: 0 }], bands: [0.78, 0.82], frieze: { n: 14, y: 0.84, h: 0.1 }, flutes: { n: 16, y0: 0.1, y1: 0.76 } }, back: 'same', side: 'same' }],
+      towers: [
+        { n: 'Gumbaz', x: 6, z: 6, on: 0, segs: [{ h: 1.6, r0: 3.9, shape: 'cyl', bands: 1 }, { h: 3.2, r0: 3.9, shape: 'dome', b: 0, p: 2.1 }] },
+        { n: 'Burchak-1', x: 1.9, z: 1.9, on: 0, segs: [{ h: 0.8, r0: 0.9, shape: 'cyl' }, { h: 0.9, r0: 0.95, shape: 'dome', b: 0, p: 2 }] },
+        { n: 'Burchak-2', x: 10.1, z: 1.9, on: 0, segs: [{ h: 0.8, r0: 0.9, shape: 'cyl' }, { h: 0.9, r0: 0.95, shape: 'dome', b: 0, p: 2 }] },
+        { n: 'Burchak-3', x: 1.9, z: 10.1, on: 0, segs: [{ h: 0.8, r0: 0.9, shape: 'cyl' }, { h: 0.9, r0: 0.95, shape: 'dome', b: 0, p: 2 }] },
+        { n: 'Burchak-4', x: 10.1, z: 10.1, on: 0, segs: [{ h: 0.8, r0: 0.9, shape: 'cyl' }, { h: 0.9, r0: 0.95, shape: 'dome', b: 0, p: 2 }] }]
+    },
+    chorminor: {
+      size: 250, code: 'CM', city: 'Buxoro', name: 'Chor Minor', years: '1807', W: 20,
+      info: 'Madrasa darvozasi: to‘rt burchakdagi minoralar har xil shakldagi gumbazlar bilan tugaydi, o‘rtada ravoqli xona va kichik gumbaz.',
+      blocks: [
+        { n: 'Markaziy xona', x: 5.7, w: 8.6, z: 3.2, d: 12.6, h: 7.5, front: { arches: [{ cx: 0.5, w: 0.44, h: 0.66, y: 0 }, ...sides2(0.12, 0.14, 0.3, [0.2])], bands: [0.86], frieze: { n: 6, y: 0.9, h: 0.07 } }, back: 'same', side: { arches: [{ cx: 0.5, w: 0.2, h: 0.5, y: 0.1 }], bands: [0.86] }, part: { at: 3, arches: [{ cx: 0.5, w: 0.3, h: 0.5, y: 0 }] } }],
+      towers: [
+        { n: 'Minora-1', x: 2.7, z: 2.7, segs: [{ h: 8, r0: 2.4, shape: 'cyl', bands: 3 }, { h: 0.8, r0: 2.7, shape: 'cyl', lobes: 12 }, { h: 3, r0: 2.7, shape: 'dome', b: 0.12, p: 2.2, lobes: 12 }] },
+        { n: 'Minora-2', x: 17.3, z: 2.7, segs: [{ h: 8, r0: 2.4, shape: 'cyl', bands: 3 }, { h: 0.8, r0: 2.7, shape: 'cyl', lobes: 12 }, { h: 3.4, r0: 2.7, r1: 0.3, shape: 'cone' }] },
+        { n: 'Minora-3', x: 2.7, z: 16.3, segs: [{ h: 8, r0: 2.4, shape: 'cyl', bands: 3 }, { h: 0.8, r0: 2.7, shape: 'cyl', lobes: 12 }, { h: 2.2, r0: 2.7, shape: 'dome', b: 0.3, p: 2.6 }] },
+        { n: 'Minora-4', x: 17.3, z: 16.3, segs: [{ h: 8, r0: 2.4, shape: 'cyl', bands: 3 }, { h: 0.8, r0: 2.7, shape: 'cyl', lobes: 12 }, { h: 1.6, r0: 2.7, shape: 'dome', b: 0.1, p: 2.2 }, { h: 1.2, r0: 0.9, shape: 'cyl' }, { h: 1.2, r0: 1, shape: 'dome', b: 0, p: 2 }] },
+        { n: 'Gumbaz', x: 10, z: 9.5, on: 0, segs: [{ h: 1.8, r0: 3.4, shape: 'cyl', bands: 1 }, { h: 3.4, r0: 3.5, shape: 'dome', b: 0.14, p: 2.2, lobes: 12 }, { h: 0.9, r0: 0.4, r1: 0.1, shape: 'cone' }] }]
+    },
+    registon: {
+      size: 260, code: 'RG', city: 'Samarqand', name: 'Registon minorasi', years: 'XV asr · Ulug‘bek madrasasi', W: 62, H: 259, Rmax: 31, pad: 14, custom: 'naqsh', noPlate: true, realMax: 33,
+      info: 'Registondagi Ulug‘bek madrasasining burchak minorasi (33 m). Manbalarga ko‘ra tanasi girih naqshli, tepasi muqarnas bilan tugaydi. Maket kvadrat podiumsiz: yumaloq konus tana to‘g‘ridan-to‘g‘ri tugaydi. Tana — besh egilgan teshikli mozaika panel, kufiy yozuvli egiluvchan belbog‘lar, tojda to‘rt qatorli muqarnas yacheykalar. Aniq diametr manbalarda yo‘q, nisbat sizning rasmingizga (45→60 mm, 260 mm) asoslangan. Standart material 3 mm; mozaika mayda bo‘lishi uchun 2 mm ham mumkin.',
+      blocks: [], towers: []
+    },
+    tvtower: {
+      size: 700, code: 'TB', city: 'Toshkent', name: 'Toshkent teleminorasi', years: '1985 · 375 m', W: 70, H: 375, Rmax: 35, pad: 12, custom: 'tvtower', plateRound: true, realMax: 375,
+      info: 'Toshkent teleminorasi — 375 m. Manbalarga ko‘ra ferma (panjarali) tana uchta qiya oyoqqa tayanadi; aylana ko‘rish maydonchasi 100 m da, restoranlar 105–120 m da, aloqa jihozlari 220 m da, tepasi antenna. Maket: uch qiya oyoq, uchburchak ferma tana (yassi panjarali panellar), egiluvchan devorli pavilion, 220 m platforma va ikki plitali antenna. Oyoq balandligi, tana va pavilion o‘lchamlari manbada yo‘q — taxminiy; taglik plita faqat oyoqlarni ushlab turadigan yupqa stend.',
+      blocks: [], towers: []
+    },
+    ark: {
+      size: 480, code: 'AK', city: 'Buxoro', name: 'Ark qal’asi', years: 'V asrdan', W: 84,
+      info: 'Buxoro hukmdorlari qal’asi: tik buttress qirrali baland devorlar, shinakli darvoza va ikki yonidagi minoralar, orqada ustunli ayvon.',
+      blocks: [
+        { n: 'Chap devor', x: 0, w: 28, z: 0, d: 5, h: 12, cren: { n: 7, mh: 1.8 }, front: { flutes: { n: 14, y0: 0.08, y1: 0.9 }, bands: [0.06] } },
+        { n: 'Darvoza', x: 34, w: 16, z: 0, d: 7, h: 16, cren: { n: 4, mh: 1.8 }, front: { arches: [{ cx: 0.5, w: 0.42, h: 0.66, y: 0 }], bands: [0.9], frieze: { n: 8, y: 0.8, h: 0.07 } }, part: { at: 3, arches: [{ cx: 0.5, w: 0.3, h: 0.5, y: 0 }] } },
+        { n: 'O‘ng devor', x: 56, w: 28, z: 0, d: 5, h: 12, cren: { n: 7, mh: 1.8 }, front: { flutes: { n: 14, y0: 0.08, y1: 0.9 }, bands: [0.06] } },
+        { n: 'Ustunli ayvon', x: 52, w: 22, z: 10, d: 7, h: 10, front: { rects: rows(5, 0.9, 0.7, 0.04, { }).map(r => Object.assign(r, { w: r.w * 0.55 })), bands: [0.88, 0.93] } }],
+      towers: [
+        { n: 'Minora-1', x: 31, z: 2.6, segs: [{ h: 17, r0: 2.4, r1: 2.0, shape: 'cone', bands: 3 }, { h: 1, r0: 2.8, shape: 'cyl', lobes: 12 }, { h: 3.6, r0: 2.8, r1: 0.3, shape: 'cone' }] },
+        { n: 'Minora-2', x: 53, z: 2.6, segs: [{ h: 17, r0: 2.4, r1: 2.0, shape: 'cone', bands: 3 }, { h: 1, r0: 2.8, shape: 'cyl', lobes: 12 }, { h: 3.6, r0: 2.8, r1: 0.3, shape: 'cone' }] }]
+    }
+  };
+  const ORDER = ['registon', 'sherdor', 'goriamir', 'bibixonim', 'shohizinda', 'kalon', 'ismoil', 'chorminor', 'ark', 'tvtower'];
+
+  /* ================= build ================= */
+  function build(id, opt) {
+    const M = MON[id];
+    const o = Object.assign({}, DEF, opt || {});
+    if (!o.size) o.size = M.size;
+    const T = o.T, f = o.fit, pm = o.pm;
+    const kr0 = 0.78;
+    let Hd = M.H || 0;
+    M.blocks.forEach(b => { Hd = Math.max(Hd, b.h); });
+    M.towers.forEach(t => { const th = t.segs.reduce((a, s) => a + s.h, 0) + (t.on != null ? M.blocks[t.on].h : 0); Hd = Math.max(Hd, th); });
+    const k = o.size / Math.max(M.W, Hd);
+    o.k = k;
+    const TW = prep => prep;
+    const tw = prepTowerList(M, k, T);
+    M.towers.forEach((t, i) => {
+      t._z = t.z;
+      if (t.on != null) return;
+      const Rm = tw[i].R / k;
+      M.blocks.forEach(b => { if (t.x + Rm > b.x + 0.01 && t.x - Rm < b.x + b.w - 0.01 && t._z - Rm < b.z + b.d && t._z + Rm > b.z && t.z >= b.z + b.d * 0.5) t._z = Math.max(t._z, b.z + b.d + Rm + 0.15); });
+    });
+    let ext = 0;
+    M.blocks.forEach(b => { ext = Math.max(ext, (b.z + b.d) * k); });
+    M.towers.forEach((t, i) => { if (t.on == null) ext = Math.max(ext, t._z * k + tw[i].R); });
+    let Dp = pm + ext + pm, PW = pm + M.W * k + pm;
+    if (M.custom) { PW = Dp = 2 * (M.Rmax * k + M.pad); }
+    const Zc = yp => Dp - yp; // world Z from plate-local y
+    const parts = [], warnings = [];
+    const plateSlots = [], roofSlots = M.blocks.map(() => []);
+    const roofTop = M.blocks.map(b => T + b.h * k + T);
+    const slot = (arr, x, y, w, h) => arr.push(rect(x - f / 2, y - f / 2, w + f, h + f));
+    const code = M.code;
+    const add = p => {
+      const bb = bbox([p.loops[0]]);
+      p.bx = bb.x0; p.by = bb.y1; p.w = bb.x1 - bb.x0; p.h = bb.y1 - bb.y0;
+      p.slits = p.slits || [];
+      p.len = p.loops.reduce((a, l) => a + plen(l, true), 0) + p.slits.reduce((a, l) => a + plen(l, false), 0);
+      p.eng = p.eng || []; p.tags = p.tags || [];
+      parts.push(p); return p;
+    };
+    const tag = (p, txt) => { if (o.engrave) p.tags.push({ x: 1.2, y: 2.6, t: txt, s: 2.2 }); };
+
+    /* ---- blocks ---- */
+    M.blocks.forEach((b, bi) => {
+      const Xb = pm + b.x * k, W = b.w * k, d = b.d * k, H = b.h * k, yb = pm + b.z * k;
+      const n = oddN(H / 10, 3);
+      const tws = clamp(W * 0.12, 5, 14), twd = clamp(d * 0.14, 5, 14);
+      const cF = W >= 36 ? [W * 0.27, W * 0.73] : [W * 0.5], cD = d >= 36 ? [d * 0.27, d * 0.73] : [d * 0.5];
+      const bot = cs => cs.map(c => [c, cs === cF ? tws : twd]);
+      const hasRoof = !b.cren;
+      const frontF = features(b.front, W, H, T, kr0);
+      const sameF = features(b.front, W, H, T, kr0);
+      const backSpec = b.back === 'same' ? b.front : b.back;
+      const backF = features(backSpec, W, H, T, kr0);
+      const sideSpec = b.side === 'same' ? b.front : b.side;
+      const sideF = features(sideSpec, d, H, T, kr0);
+      const crenSpec = b.cren ? { n: b.cren.n, mh: b.cren.mh * k } : null;
+      const prefix = code + '-B' + (bi + 1);
+      const grp = b.n;
+      const mk = (suffix, name, loops, eng, place, extra) => {
+        const p = add(Object.assign({ id: prefix + suffix, name: grp + ' · ' + name, group: grp, kind: 'panel', loops, eng, place, T }, extra || {}));
+        tag(p, prefix + suffix); return p;
+      };
+      // front / back wall
+      const fl = wallLoop({ W, H, T, n, L: 'S', R: 'S', bot: bot(cF), top: hasRoof ? bot(cF) : null, cren: crenSpec });
+      mk('F', 'old devor', [fl, ...frontF.holes], o.engrave ? frontF.eng : [], { o: [Xb, T, Zc(yb) - T], u: [1, 0, 0], v: [0, 1, 0] }, { front: true });
+      mk('B', 'orqa devor', [wallLoop({ W, H, T, n, L: 'S', R: 'S', bot: bot(cF), top: hasRoof ? bot(cF) : null, cren: crenSpec }), ...backF.holes], o.engrave && b.back ? backF.eng : [], { o: [Xb, T, Zc(yb + d)], u: [1, 0, 0], v: [0, 1, 0] }, { front: false });
+      // side walls (+ windows for partition)
+      let ph = null;
+      if (b.part && b.part.at * k > 2 * T + 1 && d - b.part.at * k - T > 2 * T + 1) {
+        const pd = b.part.at * k;
+        const th = clamp(H * 0.12, 5, 12), tys = [H * 0.28, H * 0.7];
+        ph = { pd, th, tys };
+      }
+      const sideLoops = () => {
+        const L = [wallLoop({ W: d, H, T, n, L: 'Q', R: 'Q', bot: bot(cD), top: hasRoof ? bot(cD) : null, cren: null })];
+        if (ph) ph.tys.forEach(ty => L.push(rect(ph.pd - f / 2, ty - ph.th / 2 - f / 2, T + f, ph.th + f)));
+        return L.concat(sideF.holes);
+      };
+      mk('L', 'chap yon devor', sideLoops(), o.engrave && b.side ? sideF.eng : [], { o: [Xb, T, Zc(yb)], u: [0, 0, -1], v: [0, 1, 0] }, { front: false });
+      mk('R', 'o‘ng yon devor', sideLoops(), o.engrave && b.side ? sideF.eng : [], { o: [Xb + W - T, T, Zc(yb)], u: [0, 0, -1], v: [0, 1, 0] }, { front: false });
+      // partition
+      if (ph) {
+        const pf = features(b.part, W - 2 * T, H, T, kr0);
+        const shift = l => l.map(p => [p[0] + T, p[1]]);
+        const loops = [partLoop(W, H, T, ph.tys, ph.th, bot(cF)), ...pf.holes.map(shift)];
+        mk('P', 'ichki to‘siq', loops, o.engrave ? pf.eng.map(shift) : [], { o: [Xb, T, Zc(yb + ph.pd + T)], u: [1, 0, 0], v: [0, 1, 0] }, { front: true });
+        cF.forEach(c => slot(plateSlots, Xb + c - tws / 2, yb + ph.pd, tws, T));
+      }
+      // plate slots
+      cF.forEach(c => { slot(plateSlots, Xb + c - tws / 2, yb, tws, T); slot(plateSlots, Xb + c - tws / 2, yb + d - T, tws, T); });
+      cD.forEach(c => { slot(plateSlots, Xb, yb + c - twd / 2, T, twd); slot(plateSlots, Xb + W - T, yb + c - twd / 2, T, twd); });
+      // roof
+      if (hasRoof) {
+        const rs = roofSlots[bi];
+        cF.forEach(c => { slot(rs, c - tws / 2, 0, tws, T); slot(rs, c - tws / 2, d - T, tws, T); });
+        cD.forEach(c => { slot(rs, 0, c - twd / 2, T, twd); slot(rs, W - T, c - twd / 2, T, twd); });
+        b._roof = { Xb, W, d, yb, H };
+      }
+    });
+
+    /* ---- towers ---- */
+    const pitch = clamp(2.7 * T, 8, 14) / o.density;
+    M.towers.forEach((t, ti) => {
+      const P = tw[ti];
+      const Xc = pm + t.x * k, yc = pm + t._z * k;
+      const baseY = t.on != null ? roofTop[t.on] : T;
+      const Zcn = Zc(yc);
+      const hs = (T + f) / 2, H = P.H, ymid = H * 0.5;
+      const spine = P.Rs < 15;
+      const cw = clamp(0.42 * P.Rs, hs + 2.4, 6);
+      const R = spine ? cw : P.Rs;
+      const pre = code + '-T' + (ti + 1);
+      // plate or roof slots
+      const R0 = Math.min(P.rAt(0.01), R);
+      const tx = (R0 + hs) / 2, tabw = clamp((R0 - hs) * 0.7, 4, 12);
+      if (R0 < hs + 3) warnings.push(t.n + ': minora juda ingichka — kattaroq o‘lcham tanlang.');
+      let tgt, ox, oy;
+      if (t.on != null) { tgt = roofSlots[t.on]; const rf = M.blocks[t.on]._roof; ox = Xc - rf.Xb; oy = yc - rf.yb; }
+      else { tgt = plateSlots; ox = Xc; oy = yc; }
+      [-1, 1].forEach(sg => {
+        slot(tgt, ox + sg * tx - tabw / 2, oy - T / 2, tabw, T);
+        slot(tgt, ox - T / 2, oy + sg * tx - tabw / 2, T, tabw);
+      });
+      // ring levels
+      const lv = [];
+      P.segs.forEach(s => {
+        if (s.open) { lv.push(s.z0); if (s.h > 2.5 * T) lv.push(s.z1 - T); return; }
+        for (let z = s.z0; z + T <= s.z1 + 1e-6; z += pitch) lv.push(z);
+      });
+      lv.sort((a, b) => a - b);
+      const levels = [];
+      lv.forEach(z => { const l = levels[levels.length - 1]; if (l == null || z - l >= T + 1.2) levels.push(z); });
+      const e = T / 2 + f / 4;
+      const rings = [];
+      levels.forEach(z => {
+        const r = Math.min(P.rAt(z + 0.01), P.rAt(z + T - 0.01)) - 0.2;
+        const seg = P.segs.find(s => z + 0.01 <= s.z1) || P.segs[P.segs.length - 1];
+        if (spine) { if (r >= cw + 2.2) rings.push({ z, r, lobes: seg.lobes || 0 }); return; }
+        const tl = clamp(0.26 * (r - e), 5, 12);
+        const wl = tl + T + 0.7;
+        const c = e + 2 + wl / 2 + 0.1 * Math.max(0, r - 24);
+        if (c + wl / 2 > r - 1.8 || r < 13) return;
+        rings.push({ z, r, tl, wl, c, lobes: seg.lobes || 0 });
+      });
+      // A / B panels
+      const pro = side => {
+        const pts = [];
+        P.segs.forEach(s => {
+          const n = s.shape === 'cyl' ? 1 : Math.max(2, Math.ceil(s.h / 1.4));
+          for (let i = 0; i <= n; i++) { const tt = i / n; pts.push([s.z0 + s.h * tt, spine ? Math.min(cw, segRS(s, tt)) : segRS(s, tt)]); }
+        });
+        return pts;
+      };
+      const prof = pro();
+      const makePanel = isA => {
+        const xr = [], xl = [];
+        let endZ = H, endTrunc = false;
+        for (const [z, r] of prof) {
+          if (isA && z > ymid && r < hs + 0.6) { endZ = z; endTrunc = true; break; }
+          xr.push([R + r, z]); xl.push([R - r, z]);
+        }
+        const loop = [];
+        const R0b = prof[0][1];
+        if (isA) { loop.push([R - R0b, 0], [R - tx - tabw / 2, 0], [R - tx - tabw / 2, -T], [R - tx + tabw / 2, -T], [R - tx + tabw / 2, 0], [R + tx - tabw / 2, 0], [R + tx - tabw / 2, -T], [R + tx + tabw / 2, -T], [R + tx + tabw / 2, 0], [R + R0b, 0]); }
+        else {
+          loop.push([R - R0b, 0], [R - tx - tabw / 2, 0], [R - tx - tabw / 2, -T], [R - tx + tabw / 2, -T], [R - tx + tabw / 2, 0],
+            [R - hs, 0], [R - hs, ymid], [R + hs, ymid], [R + hs, 0],
+            [R + tx - tabw / 2, 0], [R + tx - tabw / 2, -T], [R + tx + tabw / 2, -T], [R + tx + tabw / 2, 0], [R + R0b, 0]);
+        }
+        xr.forEach(p => loop.push(p));
+        if (isA) {
+          if (endTrunc) loop.push([R + hs, endZ]); else loop.push([R + hs, H]);
+          loop.push([R + hs, ymid], [R - hs, ymid]);
+          if (endTrunc) loop.push([R - hs, endZ]); else loop.push([R - hs, H]);
+        }
+        for (let i = xl.length - 1; i >= 0; i--) loop.push(xl[i]);
+        const holes = [], eng = [];
+        // ring windows
+        if (!spine) rings.forEach(rg => {
+          const y0 = rg.z - f / 2, hh = T + f;
+          if (isA) { holes.push(rect(R + rg.c - rg.wl / 2, y0, rg.wl, hh)); holes.push(rect(R - rg.c - rg.wl / 2, y0, rg.wl, hh)); }
+          else { holes.push(rect(R + rg.c - rg.wl / 2, y0, rg.wl, hh)); holes.push(rect(R - rg.c - rg.wl / 2, y0, rg.wl, hh)); }
+        });
+        // open lantern arches
+        if (!spine) P.segs.forEach(s => {
+          if (!s.open) return;
+          const rr = Math.min(segRS(s, 0), segRS(s, 1)), w = rr * 0.6, by = s.z0 + T + 0.8, h = s.h - 2 * T - 1.6;
+          if (w < 4 || h < 6) return;
+          [-1, 1].forEach(sg => { const cx = R + sg * rr * 0.56; holes.push(archPts(cx, by, w, h, kr0)); });
+        });
+        // belts
+        if (o.engrave) P.segs.forEach(s => {
+          if (!s.bands || s.skin) return;
+          for (let i = 1; i <= s.bands; i++) {
+            const z = s.z0 + s.h * i / (s.bands + 1), r = segR(s, i / (s.bands + 1)) - 1;
+            if (r < 4) continue;
+            if (isA && z > ymid) { eng.push([[R - r, z], [R - hs - 0.5, z]], [[R + hs + 0.5, z], [R + r, z]]); }
+            else if (!isA && z < ymid) { eng.push([[R - r, z], [R - hs - 0.5, z]], [[R + hs + 0.5, z], [R + r, z]]); }
+            else eng.push([[R - r, z], [R + r, z]]);
+          }
+        });
+        return { loops: [dedupe(loop), ...holes], eng };
+      };
+      const pa = makePanel(true), pb = makePanel(false);
+      const gname = t.n;
+      const A = add({ id: pre + '-A', name: gname + ' · profil A', group: gname, kind: 'panel', loops: pa.loops, eng: pa.eng, place: { o: [Xc - R, baseY, Zcn - T / 2], u: [1, 0, 0], v: [0, 1, 0] }, T, front: true });
+      const B = add({ id: pre + '-B', name: gname + ' · profil B', group: gname, kind: 'panel', loops: pb.loops, eng: pb.eng, place: { o: [Xc - T / 2, baseY, Zcn + R], u: [0, 0, -1], v: [0, 1, 0] }, T, front: true });
+      tag(A, pre + '-A'); tag(B, pre + '-B');
+      // rings
+      rings.forEach((rg, li) => {
+        if (spine) {
+          const N = Math.max(24, Math.ceil(rg.r * 1.2)), lq = rg.lobes;
+          const disc = [];
+          for (let i = 0; i < N; i++) { const a = TAU * i / N; const rr = lq ? rg.r * (1 - 0.04 * (0.5 - 0.5 * Math.cos(a * lq))) : rg.r; disc.push([rg.r + rr * Math.cos(a), rg.r + rr * Math.sin(a)]); }
+          const L = cw + f / 2, w2 = hs;
+          const plus = [[-L, -w2], [-w2, -w2], [-w2, -L], [w2, -L], [w2, -w2], [L, -w2], [L, w2], [w2, w2], [w2, L], [-w2, L], [-w2, w2], [-L, w2]].map(q => [rg.r + q[0], rg.r + q[1]]);
+          const p = add({ id: pre + '-R' + (li + 1), name: gname + ' · halqa ' + (li + 1), group: gname + ' halqalari', kind: 'ring', loops: [disc, plus], eng: [], place: { o: [Xc - rg.r, baseY + rg.z, Zcn + rg.r], u: [1, 0, 0], v: [0, 0, -1] }, T });
+          if (o.engrave && p.w > 14) p.tags.push({ x: rg.r - 2, y: 2.6, t: String(li + 1), s: 2 });
+          return;
+        }
+        [[1, 1, 'y'], [-1, 1, 'x'], [-1, -1, 'y'], [1, -1, 'x']].forEach((q, qi) => {
+          const base = quadLoop(rg.r, e, q[2], rg.lobes, rg.tl, rg.c);
+          const loop = base.map(p => [p[0] * q[0], p[1] * q[1]]);
+          const bb = bbox([loop]);
+          const sh = loop.map(p => [p[0] - bb.x0, p[1] - bb.y0]);
+          const id = pre + '-R' + (li + 1) + 'abcd'[qi];
+          const p = add({ id, name: gname + ' · halqa ' + (li + 1) + ' (' + (qi + 1) + '/4)', group: gname + ' halqalari', kind: 'ring', loops: [sh], eng: [], place: { o: [Xc + bb.x0, baseY + rg.z, Zcn - bb.y0], u: [1, 0, 0], v: [0, 0, -1] }, T });
+          if (o.engrave && p.w > 14) p.tags.push({ x: 1.6, y: 4, t: (li + 1) + 'abcd'[qi], s: 2 });
+        });
+      });
+      // flexible wall skins around cylindrical / conical segments
+      P.segs.forEach((sg, si) => {
+        if (!sg.skin) return;
+        const rn0 = segRS(sg, 0) + T / 2, rn1 = segRS(sg, 1) + T / 2;
+        const D = skinDev(rn0, rn1, sg.h, T);
+        const eng2 = [];
+        if (o.engrave && sg.bands) {
+          for (let i = 1; i <= sg.bands; i++) {
+            const fr = i / (sg.bands + 1);
+            if (D.rect) eng2.push([[D.dpt + 3, sg.h * fr], [D.L - 3, sg.h * fr]]);
+            else {
+              const rho = D.Rs + D.ell * fr, pts = [], n = 24;
+              for (let q = 0; q <= n; q++) { const th = (-D.phi / 2 + (D.dpt + 3) / D.Rb) + ((D.phi - (D.dpt + 6) / D.Rb) * q / n); pts.push([rho * Math.sin(th), rho * Math.cos(th)]); }
+              eng2.push(pts);
+            }
+          }
+        }
+        const nm = gname + ' · egiluvchan devor' + (P.segs.filter(q => q.skin).length > 1 ? ' ' + (si + 1) : '');
+        const p = add({ id: pre + '-S' + (si + 1), name: nm, group: gname + ' egiluvchan devori', kind: 'skin', loops: D.out, slits: D.slits, eng: eng2, place: null, T,
+          skin: { x: Xc, z: Zcn, y0: baseY + sg.z0, h: sg.h, ri0: segRS(sg, 0), ri1: segRS(sg, 1), T } });
+        tag(p, pre + '-S' + (si + 1));
+        if (p.tags.length) { p.tags[0].x = D.rect ? 8 : 0; }
+      });
+      t._P = { levels: rings.length, H, R };
+    });
+
+    /* ---- pattern minaret (custom): round tapered body, curved perforated skins, muqarnas capital ---- */
+    const plateEng = []; let customH = null;
+    let SKX = 0, SKZ = 0, SKY = 0, SKTAB = 0;
+    { // shared skin / flexible-wall helpers
+      /* ---- development of a (cone | cylinder) skin: azimuth a <-> flat sheet ---- */
+      const devMap = (rm0, rm1, h) => {
+        const dl = rm1 - rm0, rect = Math.abs(dl) < 0.02 * Math.max(rm0, rm1);
+        if (rect) { const r = (rm0 + rm1) / 2; return { rect: true, ell: h, rAt: () => r, zAt: s => s, fwd: (a, s) => [r * a, s], inv: (x, y) => [x / r, y] }; }
+        if (dl < 0) { const ell = Math.hypot(h, dl), kap = -dl / ell, rhoT = rm1 * ell / -dl; return { rect: false, ell, rAt: s => rm0 + dl * s / ell, zAt: s => h * s / ell, fwd: (a, s) => { const rho = rhoT + ell - s, th = kap * a; return [rho * Math.sin(th), -rho * Math.cos(th)]; }, inv: (x, y) => [Math.atan2(x, -y) / kap, ell - (Math.hypot(x, y) - rhoT)] }; }
+        const ell = Math.hypot(h, dl), rho0 = rm0 * ell / dl, kap = dl / ell;
+        return { rect: false, ell, rAt: s => rm0 + dl * s / ell, zAt: s => h * s / ell, fwd: (a, s) => { const rho = rho0 + s, th = kap * a; return [rho * Math.sin(th), rho * Math.cos(th)]; }, inv: (x, y) => [Math.atan2(x, y) / kap, Math.hypot(x, y) - rho0] };
+      };
+      const diam = (m, x, s, hh) => [[x - hh, s], [x, s - hh], [x + hh, s], [x, s + hh]].map(q => m.fwd(q[0] / m.rAt(q[1]), q[1]));
+      const PP = (m, x, s) => m.fwd(x / m.rAt(s), s);
+      const archPoly = (xc, s0, wn, hn) => {
+        const n = 9, u0 = 0.42, wA = u => u <= u0 ? 1 : 1 - Math.pow((u - u0) / (1 - u0), 1.7), R = [], Lh = [];
+        for (let i = 0; i <= n; i++) { const u = i / n; R.push([xc + wn / 2 * wA(u), s0 + hn * u]); Lh.push([xc - wn / 2 * wA(u), s0 + hn * u]); }
+        return R.concat(Lh.reverse());
+      };
+      /* one skin panel: outline (with bottom tab, optional edge notches), holes, engraving, slits, 3D info */
+      const skinPanel = (o2) => {
+        const { id, name, group, z0, h, ro0, ro1, N, i, hole, engF, slitF, notch, tabw, ntab } = o2;
+        SKTAB = tabw || 0;
+        const m = devMap(ro0 - T / 2, ro1 - T / 2, h), ell = m.ell;
+        const rm = (ro0 + ro1) / 2 - T / 2, ah = PI / N - 0.15 / rm;
+        const hw = s => m.rAt(s) * ah;
+        const nA = Math.max(8, Math.ceil(ah * m.rAt(0) * 2 / 1.2)), ta = (tabw / 2) / m.rAt(0);
+        const tabC = ntab > 1 ? Array.from({ length: ntab }, (_, kk) => (kk - (ntab - 1) / 2) * (TAU / ntab)) : [0];
+        const evs = tabC.map(c => [c - ta, c + ta]), bot = []; let ti = 0;
+        for (let q = 0; q <= nA; q++) { const a = -ah + 2 * ah * q / nA;
+          while (ti < evs.length && a >= evs[ti][0]) { bot.push(m.fwd(evs[ti][0], 0), m.fwd(evs[ti][0], -T), m.fwd(evs[ti][1], -T), m.fwd(evs[ti][1], 0)); ti++; }
+          if (ti > 0 && a <= evs[ti - 1][1]) continue; bot.push(m.fwd(a, 0)); }
+        const outline = bot.slice();
+        // right edge (with half-arch notches), then top arc, then left edge
+        const edgePts = sg => { const pts = []; const nots = (notch || []).slice().sort((a, b) => a.s0 - b.s0); let s = 0;
+          nots.forEach(nt => { pts.push(PP(m, sg * hw(nt.s0), nt.s0)); archPoly(0, nt.s0, nt.wn, nt.hn).filter(q2 => q2[0] <= 0.0001).sort((a, b) => a[1] - b[1]).forEach(q2 => { pts.push(PP(m, sg * (hw(q2[1]) + q2[0]), q2[1])); }); pts.push(PP(m, sg * hw(nt.s0 + nt.hn), nt.s0 + nt.hn)); });
+          pts.push(PP(m, sg * hw(ell), ell)); return pts; };
+        const rE = edgePts(1); rE.forEach(p => outline.push(p));
+        for (let q = nA; q >= 0; q--) outline.push(m.fwd(-ah + 2 * ah * q / nA, ell));
+        edgePts(-1).map(p => p).reverse().forEach(p => outline.push(p.slice()));
+        const holes = [], eng = [], slits = [];
+        hole && hole({ m, ell, hw, holes, eng, slits, i, tabC, ta });
+        // shift to origin
+        let x0 = Infinity, y0 = Infinity; outline.forEach(p => { x0 = Math.min(x0, p[0]); y0 = Math.min(y0, p[1]); });
+        const sh = l => l.map(p => [p[0] - x0, p[1] - y0]);
+        const part = add({ id, name, group, kind: 'skin', loops: [dedupe(sh(outline)), ...holes.map(sh)], eng: [], slits: [], place: null, T,
+          skin: { dev: true, x: SKX, z: SKZ, y0: SKY + z0, h, T, a0: (i * TAU / N) + PI / 2, ah, ell, rAt: m.rAt, zAt: m.zAt, inv: (x, y) => m.inv(x + x0, y + y0) } });
+        part._eng = eng; part._slits = slits; part._sh = sh;
+        part.eng = o.engrave ? eng.map(sh) : [];
+        part.slits = slits.map(sh);
+        part.len = part.loops.reduce((a, l) => a + plen(l, true), 0) + part.slits.reduce((a, l) => a + plen(l, false), 0);
+        tag(part, id); if (part.tags[0]) { part.tags[0].x = 1.2; part.tags[0].y = 1.0; }
+        return part;
+      };
+      const rectSlits = (m, ell, hw, slits, edgeM) => {
+        const rm = m.rAt(ell / 2), dA = 1.8 / rm, ahh = hw(ell / 2) / rm, nc = Math.floor((ahh - edgeM / rm) / dA), th = SKTAB / 2 + 1.4;
+        brickLines((j, A, B) => slits.push([m.fwd(j * dA, A), m.fwd(j * dA, B)]), nc, ell, 0, j => SKTAB > 0 && Math.abs(j * dA) * m.rAt(0) < th);
+      };
+      const lineP = (m, x0_, s0, x1_, s1) => [PP(m, x0_, s0), PP(m, x1_, s1)];
+      const kufP = (m, w, hh, cs, seed, ox, oy) => kufic(w, hh, cs, seed).map(l => l.map(q => PP(m, q[0] - w / 2 + ox, q[1] + oy)));
+      const notchRing = (r, N, tabw, dep, ph0) => {
+        const pts = [], t2 = tabw / 2 + f / 2, dl = Math.asin(Math.min(0.99, t2 / r)), dd = dep || (T + f / 2);
+        for (let j = 0; j < N; j++) {
+          const psi = (ph0 || 0) + j * TAU / N, nxt = psi + TAU / N;
+          [[r, -t2], [r - dd, -t2], [r - dd, t2], [r, t2]].forEach(q => pts.push([q[0] * Math.cos(psi) - q[1] * Math.sin(psi), q[0] * Math.sin(psi) + q[1] * Math.cos(psi)]));
+          const a0 = psi + dl, a1 = nxt - dl, n = Math.max(2, Math.ceil(r * (a1 - a0) / 1.4));
+          for (let q = 1; q < n; q++) { const a = a0 + (a1 - a0) * q / n; pts.push([r * Math.cos(a), r * Math.sin(a)]); }
+        }
+        return dedupe(pts);
+      };
+      const tabOf = (ro, N, lim) => clamp(0.32 * 2 * PI * (ro - T / 2) / N, 4, lim || 9);
+      var SK = { devMap, diam, PP, archPoly, skinPanel, rectSlits, lineP, kufP, notchRing, tabOf };
+    }
+    if (M.custom === 'naqsh') {
+      const U = k, Xc = PW / 2, Zc0 = Dp / 2, Y0 = M.noPlate ? 0 : T, hs = (T + f) / 2; SKX = Xc; SKZ = Zc0; SKY = Y0;
+      const { devMap, diam, PP, archPoly, skinPanel, rectSlits, lineP, kufP, notchRing, tabOf } = SK;
+      const cw = Math.max(5 * U, hs + 2.6), plus = plusLoop(cw + f / 2, hs), rBoss = cw + 3.5 * U;
+      /* ---- vertical layout (mm) ---- */
+      const Z = {}; let zc = 0; const tk = T;
+      const ringAt = nm => { Z[nm] = zc; zc += tk; };
+      const skinAt = (nm, hh) => { Z[nm] = zc; zc += hh * U; };
+      ringAt('pr1'); ringAt('pr2'); skinAt('base', 7); ringAt('rb'); skinAt('belt', 12); ringAt('f0'); skinAt('body', 150); ringAt('f1'); skinAt('neck', 8); ringAt('rk'); skinAt('kuf', 27); ringAt('f2'); skinAt('cap', 31); Z.rimTop = zc + tk; Z.rim = zc; customH = Z.rimTop + 2 * T;
+      const HH = Z.rim, mid = HH / 2;
+      const Rb = { base: 22.5 * U, body0: 22.5 * U, body1: 26 * U, kuf: 26 * U, cap0: 26 * U, cap1: 30 * U };
+      /* ---- rings ---- */
+      const ringPart = (id, name, group, z, outer, holes, eng, txt) => {
+        const bb = bbox([outer]);
+        const sh = [outer, ...holes].map(l => l.map(p => [p[0] - bb.x0, p[1] - bb.y0]));
+        const e2 = (eng || []).map(l => l.map(p => [p[0] - bb.x0, p[1] - bb.y0]));
+        const p = add({ id, name, group, kind: 'ring', loops: sh, eng: e2, place: { o: [Xc + bb.x0, Y0 + z, Zc0 - bb.y0], u: [1, 0, 0], v: [0, 0, -1] }, T });
+        if (o.engrave && p.w > 14) p.tags.push({ x: p.w / 2 - 6, y: 3, t: txt, s: 2.2 });
+        return p;
+      };
+      const inner = (r, big) => (r - T - f / 2 - 3 > rBoss + 4 ? [plus, ...sectorHoles(rBoss, r - T - f / 2 - 3, Math.max(3, T))] : [plus]);
+      const eg = (r) => o.engrave ? [circLoop(r - 1.6 * U)] : [];
+      const sA = add({ id: code + '-A', name: 'O‘q plita A', group: 'O‘q plitalari', kind: 'panel', loops: [(() => { const tx = (cw + hs) / 2, tabw2 = Math.max(2.4, (cw - hs) * 0.8); const Lq = M.noPlate ? [[0, 0], [2 * cw, 0], [2 * cw, HH], [cw + hs, HH], [cw + hs, mid], [cw - hs, mid], [cw - hs, HH], [0, HH]] : [[0, 0], [cw - tx - tabw2 / 2, 0], [cw - tx - tabw2 / 2, -T], [cw - tx + tabw2 / 2, -T], [cw - tx + tabw2 / 2, 0], [cw + tx - tabw2 / 2, 0], [cw + tx - tabw2 / 2, -T], [cw + tx + tabw2 / 2, -T], [cw + tx + tabw2 / 2, 0], [2 * cw, 0], [2 * cw, HH], [cw + hs, HH], [cw + hs, mid], [cw - hs, mid], [cw - hs, HH], [0, HH]]; return dedupe(Lq); })()], eng: [], place: { o: [Xc - cw, Y0, Zc0 - T / 2], u: [1, 0, 0], v: [0, 1, 0] }, T });
+      const sB = add({ id: code + '-B', name: 'O‘q plita B', group: 'O‘q plitalari', kind: 'panel', loops: [(() => { const tx = (cw + hs) / 2, tabw2 = Math.max(2.4, (cw - hs) * 0.8); const Lq = M.noPlate ? [[0, 0], [cw - hs, 0], [cw - hs, mid], [cw + hs, mid], [cw + hs, 0], [2 * cw, 0], [2 * cw, HH], [0, HH]] : [[0, 0], [cw - tx - tabw2 / 2, 0], [cw - tx - tabw2 / 2, -T], [cw - tx + tabw2 / 2, -T], [cw - tx + tabw2 / 2, 0], [cw - hs, 0], [cw - hs, mid], [cw + hs, mid], [cw + hs, 0], [cw + tx - tabw2 / 2, 0], [cw + tx - tabw2 / 2, -T], [cw + tx + tabw2 / 2, -T], [cw + tx + tabw2 / 2, 0], [2 * cw, 0], [2 * cw, HH], [0, HH]]; return dedupe(Lq); })()], eng: [], place: { o: [Xc - T / 2, Y0, Zc0 + cw], u: [0, 0, -1], v: [0, 1, 0] }, T });
+      tag(sA, code + '-A'); tag(sB, code + '-B');
+      if (!M.noPlate) { const tx = (cw + hs) / 2, tabw2 = Math.max(2.4, (cw - hs) * 0.8);
+        [-1, 1].forEach(sg => { slot(plateSlots, Xc + sg * tx - tabw2 / 2, Dp / 2 - T / 2, tabw2, T); slot(plateSlots, Xc - T / 2, Dp / 2 + sg * tx - tabw2 / 2, T, tabw2); }); }
+      const NB = 4, NBody = 5, NK = 4, NC = 4;
+      ringPart(code + '-PR1', 'Taglik halqa (disk)', 'Halqalar', Z.pr1, circLoop(Rb.base), [plus, ...sectorHoles(rBoss, Rb.base - 4, Math.max(3, T))], [], 'PR1');
+      ringPart(code + '-PR2', 'Poydevor halqa 2 (tishli)', 'Halqalar', Z.pr2, notchRing(Rb.base, NB, tabOf(Rb.base, NB)), inner(Rb.base), [], 'PR2');
+      ringPart(code + '-RB', 'Belbog‘ osti halqa', 'Halqalar', Z.rb, notchRing(Rb.base, NB, tabOf(Rb.base, NB)), inner(Rb.base), [], 'RB');
+      ringPart(code + '-F0', 'Tana osti halqa', 'Halqalar', Z.f0, notchRing(Rb.body0, NBody, tabOf(Rb.body0, NBody)), inner(Rb.body0), [], 'F0');
+      ringPart(code + '-F1', 'Tana usti halqa', 'Halqalar', Z.f1, notchRing(Rb.body1, NB, tabOf(Rb.body1, NB)), inner(Rb.body1), [], 'F1');
+      ringPart(code + '-RK', 'Yozuv osti halqa', 'Halqalar', Z.rk, notchRing(Rb.kuf, NK, tabOf(Rb.kuf, NK)), inner(Rb.kuf), [], 'RK');
+      ringPart(code + '-F2', 'Toj osti halqa', 'Halqalar', Z.f2, notchRing(Rb.kuf, NC, tabOf(Rb.kuf, NC)), inner(Rb.kuf), [], 'F2');
+      /* support rings (glued to the spine, flush with skin inner face) */
+      const rinAt = (z, ra, rb2, za, zb) => ra + (rb2 - ra) * (z - za) / (zb - za) - T - 0.2;
+      [Z.body + 50 * U, Z.body + 100 * U].forEach((z, q) => { const r = rinAt(z + T / 2, Rb.body0, Rb.body1, Z.body, Z.body + 150 * U); ringPart(code + '-SR' + (q + 1), 'Tana tayanch halqa ' + (q + 1), 'Halqalar', z, circLoop(r), [plus, ...sectorHoles(rBoss, r - 3, Math.max(3, T))], [], 'SR' + (q + 1)); });
+      { const z = Z.kuf + 12 * U, r = Rb.kuf - T - 0.2; ringPart(code + '-SR3', 'Yozuv tayanch halqa', 'Halqalar', z, circLoop(r), [plus, ...sectorHoles(rBoss, r - 3, Math.max(3, T))], [], 'SR3'); }
+      [5, 14, 23].forEach((q, n2) => { const z = Z.cap + q * U, r = rinAt(z + T / 2, Rb.cap0, Rb.cap1, Z.cap, Z.cap + 31 * U) - 2.6 * U; ringPart(code + '-CR' + (n2 + 1), 'Toj ichki halqa ' + (n2 + 1), 'Toj ichki halqalari', z, circLoop(r), [plus, ...sectorHoles(rBoss, r - 3, Math.max(3, T))], [], 'CR' + (n2 + 1)); });
+      ringPart(code + '-RIM', 'Toj qopqog‘i', 'Halqalar', Z.rim, circLoop(30.9 * U), [], o.engrave ? [circLoop(29.4 * U), circLoop(28.4 * U)] : [], 'RIM');
+      /* ---- plain / kufic belts (flexible, kerf cut) ---- */
+      const S2 = Math.max(1.5, 0.55 * T + 0.55), H2 = S2 * 0.75;
+      for (let i = 0; i < NB; i++) skinPanel({ id: code + '-BB' + (i + 1), name: 'Pastki belbog‘ ' + (i + 1), group: 'Egiluvchan belbog‘lar', z0: Z.base, h: 7 * U, ro0: Rb.base, ro1: Rb.base, N: NB, i, tabw: tabOf(Rb.base, NB),
+        hole: ({ m, ell, hw, eng, slits }) => { rectSlits(m, ell, hw, slits, 3); eng.push(lineP(m, -hw(ell / 2) + 3, 1.8 * U, hw(ell / 2) - 3, 1.8 * U), lineP(m, -hw(ell / 2) + 3, ell - 1.8 * U, hw(ell / 2) - 3, ell - 1.8 * U)); } });
+      for (let i = 0; i < NB; i++) skinPanel({ id: code + '-KB' + (i + 1), name: 'Kufiy belbog‘ ' + (i + 1), group: 'Egiluvchan belbog‘lar', z0: Z.belt, h: 12 * U, ro0: Rb.base, ro1: Rb.base, N: NB, i, tabw: tabOf(Rb.base, NB),
+        hole: ({ m, ell, hw, eng, slits }) => { rectSlits(m, ell, hw, slits, 3); const w = 2 * hw(ell / 2) - 7; kufP(m, w, ell - 4.4 * U, 1.9 * U, 777 + i * 31, 0, 2.2 * U).forEach(l => eng.push(l)); } });
+      for (let i = 0; i < NB; i++) skinPanel({ id: code + '-NB' + (i + 1), name: 'Bo‘yin belbog‘i ' + (i + 1), group: 'Egiluvchan belbog‘lar', z0: Z.neck, h: 8 * U, ro0: Rb.body1, ro1: Rb.body1, N: NB, i, tabw: tabOf(Rb.body1, NB),
+        hole: ({ m, ell, hw, eng, slits }) => { rectSlits(m, ell, hw, slits, 3); eng.push(lineP(m, -hw(ell / 2) + 3, 2 * U, hw(ell / 2) - 3, 2 * U), lineP(m, -hw(ell / 2) + 3, ell - 2 * U, hw(ell / 2) - 3, ell - 2 * U)); } });
+      for (let i = 0; i < NK; i++) skinPanel({ id: code + '-KY' + (i + 1), name: 'Kufiy yozuv belbog‘i ' + (i + 1), group: 'Egiluvchan belbog‘lar', z0: Z.kuf, h: 27 * U, ro0: Rb.kuf, ro1: Rb.kuf, N: NK, i, tabw: tabOf(Rb.kuf, NK),
+        hole: ({ m, ell, hw, eng, slits }) => { rectSlits(m, ell, hw, slits, 3); const w = 2 * hw(ell / 2) - 6; kufP(m, w, ell - 6, 2.6 * U, 20261 + i * 17, 0, 3).forEach(l => eng.push(l)); } });
+      /* ---- body: 5 curved perforated mosaic panels ---- */
+      for (let i = 0; i < NBody; i++) skinPanel({ id: code + '-P' + (i + 1), name: 'Naqshli panel ' + (i + 1), group: 'Naqshli panellar', z0: Z.body, h: 150 * U, ro0: Rb.body0, ro1: Rb.body1, N: NBody, i, tabw: tabOf(Rb.body0, NBody, 7),
+        hole: ({ m, ell, hw, holes, eng, slits }) => {
+          const mg = 1.6, ss = 2.8, rail = 1.4, y0 = 9 * U, y1 = ell - 9 * U, half = s => hw(s) - mg, cen = s => half(s) - ss - rail;
+          const ph = (i % 2) * 2;
+          for (let j = Math.ceil(y0 / S2); j * S2 <= y1; j++) {
+            const s = j * S2;
+            for (let ii = -14; ii <= 14; ii++) {
+              if ((((ii + j) % 2) + 2) % 2) continue;
+              const x = ii * S2; if (Math.abs(x) + H2 > cen(s) - 0.2) continue; if (s - H2 < y0 - 0.1 || s + H2 > y1 + 0.1) continue;
+              const a = (ii + j) / 2 + ph, b = (j - ii) / 2 + ph, ua = ((a % 4) + 4) % 4, ub = ((b % 4) + 4) % 4;
+                            if (ua === 0 || ub === 0) { if (o.engrave && Math.abs(x) + H2 * 0.6 < cen(s) - 0.4) { const dq = diam(m, x, s, H2 * 0.62); eng.push(dq.concat([dq[0]])); } continue; }
+              holes.push(diam(m, x, s, H2));
+            }
+          }
+          // side strips: chain of beads
+          for (let s = y0 + 1.6 * U, q = 0; s < y1 - 1.5; s += 3.2, q++) [-1, 1].forEach(sg => holes.push(diam(m, sg * (half(s) - ss / 2), s, q % 2 ? 0.8 : 1.3)));
+          // friezes at both ends
+          [4.8 * U, ell - 4.8 * U].forEach(s => { for (let q = -8; q <= 8; q++) { const x = q * 3.2; if (Math.abs(x) + 1.3 > half(s) - 0.4) continue; holes.push(diam(m, x, s, q % 2 ? 0.8 : 1.3)); } });
+          // kerf slits along the rails
+          [-1, 1].forEach((sg, q) => { let a = 3 + q * 12; while (a < ell - 3) { const A = Math.max(a, 3), B = Math.min(a + 22, ell - 3); if (B - A > 4) slits.push([PP(m, sg * (cen(A) + rail / 2), A), PP(m, sg * (cen(B) + rail / 2), B)]); a += 24; } });
+          if (o.engrave) {
+            // diagonal band lines through the solid cells + frames
+            [1, -1].forEach(sgn => { for (let qd = -6; qd <= 24; qd++) { const c = (4 * qd + (ph ? 2 : 0)) * S2 * 2 / 2 * 1; let run = null;
+              for (let s = y0; s <= y1 + 0.01; s += 0.5) { const x = sgn > 0 ? c - s : s - c; const ok = Math.abs(x) <= cen(s) - 0.4; if (ok) { if (!run) run = []; run.push(PP(m, x, s)); } else if (run) { if (run.length > 3) eng.push(run); run = null; } }
+              if (run && run.length > 3) eng.push(run); } });
+            [-1, 1].forEach(sg => eng.push([PP(m, sg * half(y0 - 1), y0 - 1), PP(m, sg * half(y1 + 1), y1 + 1)]));
+            [y0 - 1, y1 + 1].forEach(s => eng.push([PP(m, -half(s), s), PP(m, half(s), s)]));
+            [1.6 * U, 8 * U, ell - 8 * U, ell - 1.6 * U].forEach(s => eng.push([PP(m, -half(s) + 0.4, s), PP(m, half(s) - 0.4, s)]));
+          }
+        } });
+      /* ---- muqarnas capital: 4 curved skins with staggered pointed-arch niches ---- */
+      for (let i = 0; i < NC; i++) {
+        const rowK = [0, 1, 2, 3], hn = 5.7 * U, vp = 6.5 * U, s0 = 3.0 * U;
+        const notch = rowK.filter(r => r % 2 === 1).flatMap(r => { const mm = devMap(Rb.cap0 - T / 2, Rb.cap1 - T / 2, 31 * U); const sK = s0 + r * vp; const hwk = mm.rAt(sK + hn / 2) * (PI / NC - 0.15 / ((Rb.cap0 + Rb.cap1) / 2 - T / 2)); const p = hwk / 2; return [{ s0: sK, hn, wn: p - 2.6 * U }]; });
+        skinPanel({ id: code + '-C' + (i + 1), name: 'Toj paneli ' + (i + 1), group: 'Muqarnasli toj', z0: Z.cap, h: 31 * U, ro0: Rb.cap0, ro1: Rb.cap1, N: NC, i, tabw: tabOf(Rb.cap0, NC), notch,
+          hole: ({ m, ell, hw, holes, eng }) => {
+            rowK.forEach(r => {
+              const sK = s0 + r * vp, p = hw(sK + hn / 2) / 2, wn = p - 2.6 * U;
+              const xs = r % 2 === 0 ? [-1.5, -0.5, 0.5, 1.5] : [-1, 0, 1];
+              xs.forEach(c => { const poly = archPoly(c * p, sK, wn, hn).map(q => PP(m, q[0], q[1])); holes.push(poly);
+                if (o.engrave) { const ring = archPoly(c * p, sK - 0.9 * U, wn + 1.8 * U, hn + 1.7 * U).map(q => PP(m, q[0], q[1])); eng.push(ring.concat([ring[0]])); } });
+            });
+            if (o.engrave) [1.2 * U, ell - 1.2 * U].forEach(s => eng.push([PP(m, -hw(s) + 0.6, s), PP(m, hw(s) - 0.6, s)]));
+          } });
+      }
+          }
+
+    /* ---- Tashkent TV tower (custom): tripod legs, lattice triangular trunk, pavilion, needle mast ---- */
+    if (M.custom === 'tvtower') {
+      const U = k, Xc = PW / 2, Zc0 = Dp / 2, Y0 = T, SQ3 = Math.sqrt(3), PSI0 = PI / 2;
+      const tabWf = a => clamp(0.6 * SQ3 * a * 0.85, 6, 12);
+      /* levels (mm above plate top) */
+      const zP0 = 94 * U, zl = zP0 - T, zP1 = 126 * U, zPf = 220 * U, zTip = 375 * U;
+      /* trunk outer-face apothems (mm), floors keep walls strong enough */
+      const aU0 = Math.max(4.0 * U, T + 4.5), aU1 = Math.max(3.5 * U, T + 3.5);
+      const aL0 = Math.max(5.9 * U, T + 7), aL1 = Math.max(4.8 * U, T + 6, aU0 + 2.5);
+      const zLo = zl + T, aTube = z => aL0 + (aL1 - aL0) * (z - zLo) / (zP1 - zLo);
+      const zNeck = zP1, zUp = zNeck + T;
+      customH = zTip + 1;
+      const psi = j => PSI0 + j * TAU / 3, phiS = j => psi(j) + PI / 3;
+      const rot = (q, a) => [q[0] * Math.cos(a) - q[1] * Math.sin(a), q[0] * Math.sin(a) + q[1] * Math.cos(a)];
+      /* generic placed part: loops/eng given in plate-style local coords, normalised to bbox origin */
+      const putPart = (id, name, group, loops, eng, o0, u, v) => {
+        const bb = bbox([loops[0]]);
+        const sh = l => l.map(p => [p[0] - bb.x0, p[1] - bb.y0]);
+        const o1 = [o0[0] + u[0] * bb.x0 + v[0] * bb.y0, o0[1] + u[1] * bb.x0 + v[1] * bb.y0, o0[2] + u[2] * bb.x0 + v[2] * bb.y0];
+        return add({ id, name, group, kind: 'panel', loops: loops.map(sh), eng: (eng || []).map(sh), place: { o: o1, u, v }, T });
+      };
+      const ringPart = (id, name, group, z, outer, holes, eng) => {
+        const bb = bbox([outer]);
+        const sh = [outer, ...holes].map(l => l.map(p => [p[0] - bb.x0, p[1] - bb.y0]));
+        const e2 = (eng || []).map(l => l.map(p => [p[0] - bb.x0, p[1] - bb.y0]));
+        return add({ id, name, group, kind: 'ring', loops: sh, eng: e2, place: { o: [Xc + bb.x0, Y0 + z, Zc0 - bb.y0], u: [1, 0, 0], v: [0, 0, -1] }, T });
+      };
+      /* truss (lattice) holes inside a convex strip: chords c, diagonals bar */
+      const clipHP = (poly, px, py, nx, ny, d) => { const out = []; for (let i = 0; i < poly.length; i++) { const a = poly[i], b = poly[(i + 1) % poly.length]; const da = (a[0] - px) * nx + (a[1] - py) * ny - d, db = (b[0] - px) * nx + (b[1] - py) * ny - d; if (da >= 0) out.push(a); if ((da >= 0) !== (db >= 0)) { const t = da / (da - db); out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]); } } return out; };
+      const parea = P => { let s = 0; for (let i = 0; i < P.length; i++) { const a = P[i], b = P[(i + 1) % P.length]; s += a[0] * b[1] - b[0] * a[1]; } return Math.abs(s) / 2; };
+      const truss = (xl, xr, y0, y1, n, c, bar) => {
+        const holes = [];
+        for (let i = 0; i < n; i++) {
+          const ya = y0 + (y1 - y0) * i / n + bar / 2, yb = y0 + (y1 - y0) * (i + 1) / n - bar / 2;
+          const R = [[xl(ya) + c, ya], [xr(ya) - c, ya], [xr(yb) - c, yb], [xl(yb) + c, yb]];
+          if (R[1][0] - R[0][0] < 2.2 || yb - ya < 2.2) continue;
+          const Pp = i % 2 === 0 ? R[0] : R[1], Q = i % 2 === 0 ? R[2] : R[3];
+          let nx = -(Q[1] - Pp[1]), ny = Q[0] - Pp[0]; const Ln = Math.hypot(nx, ny); nx /= Ln; ny /= Ln;
+          [1, -1].forEach(sg => { const pg = clipHP(R, Pp[0], Pp[1], nx * sg, ny * sg, bar / 2); if (pg.length >= 3 && parea(pg) > 1.4) holes.push(dedupe(pg)); });
+        }
+        return holes;
+      };
+      const triPoly = a => [0, 1, 2].map(j => rot([2 * a, 0], psi(j)));
+      const sideRect = (a, t2, depth) => [[a, -t2], [a - depth, -t2], [a - depth, t2], [a, t2]];
+      const triOut = (a, tabw) => {
+        const pts = [], t2 = tabw / 2 + f / 2, hc = a * SQ3;
+        for (let j = 0; j < 3; j++) [[a, -hc], [a, -t2], [a - T - f / 2, -t2], [a - T - f / 2, t2], [a, t2], [a, hc]].forEach(q => pts.push(rot(q, phiS(j))));
+        return dedupe(pts);
+      };
+      /* --- dimensions of legs --- */
+      const Rf = 31 * U, wh = Math.max(14, 8.5 * U), rtc = 2 * aL0 - 10, tl = 5, tf = clamp(wh * 0.6, 4, 7);
+      /* --- base plate slots for feet --- */
+      for (let j = 0; j < 3; j++) { const c = rot([Rf, 0], psi(j)); plateSlots.push(sideRect(0, 0, 0).length ? [[-tf / 2 - f / 2, -(T + f) / 2], [tf / 2 + f / 2, -(T + f) / 2], [tf / 2 + f / 2, (T + f) / 2], [-tf / 2 - f / 2, (T + f) / 2]].map(q => { const r2 = rot(q, psi(j)); return [Xc + c[0] + r2[0], Zc0 + c[1] + r2[1]]; }) : []); }
+      /* --- legs --- */
+      for (let j = 0; j < 3; j++) {
+        const xl = y => Rf - wh / 2 + (rtc - Rf) * y / zl, xr = y => xl(y) + wh;
+        const out = [[xl(0), 0], [Rf - tf / 2, 0], [Rf - tf / 2, -T], [Rf + tf / 2, -T], [Rf + tf / 2, 0], [xr(0), 0], [xr(zl), zl], [rtc + tl / 2, zl], [rtc + tl / 2, zl + T], [rtc - tl / 2, zl + T], [rtc - tl / 2, zl], [xl(zl), zl]];
+        const c = Math.max(2.0, wh * 0.2), holes = wh - 2 * c >= 3.2 ? truss(xl, xr, 5, zl - 4, Math.max(3, Math.round((zl - 9) / (wh * 1.5))), c, Math.max(1.5, wh * 0.16)) : [];
+        const a = psi(j), rh = [Math.cos(a), 0, -Math.sin(a)], nn = [Math.sin(a), 0, Math.cos(a)];
+        const p = putPart(code + '-L' + (j + 1), 'Oyoq ' + (j + 1), 'Uch oyoq', [dedupe(out), ...holes], [], [Xc - nn[0] * T / 2, Y0, Zc0 - nn[2] * T / 2], rh, [0, 1, 0]);
+        tag(p, code + '-L' + (j + 1));
+      }
+      /* --- collar ring (legs + lower trunk) --- */
+      {
+        const tabw = tabWf(aL0), holes = [];
+        const hA = Math.min(aL0 - T - f / 2 - 3.5, (rtc - tl / 2 - 2.2) / 2);
+        if (hA > 2.4) holes.push(triPoly(hA));
+        for (let j = 0; j < 3; j++) holes.push([[-tl / 2 - f / 2, -(T + f) / 2], [tl / 2 + f / 2, -(T + f) / 2], [tl / 2 + f / 2, (T + f) / 2], [-tl / 2 - f / 2, (T + f) / 2]].map(q => { const r2 = rot(q, psi(j)), c = rot([rtc, 0], psi(j)); return [c[0] + r2[0], c[1] + r2[1]]; }));
+        ringPart(code + '-CR', 'Yig‘uvchi halqa', 'Pastki ferma tanasi', zl, triOut(aL0, tabw), holes, []);
+      }
+      /* --- trunk panels (flat, lattice, tilted) --- */
+      const trunk = (idp, name, group, zStart, zEnd, a0, a1) => {
+        const L = zEnd - zStart, alpha = Math.atan2(a1 - a0, L), Lsl = Math.hypot(L, a1 - a0), ca = Math.cos(alpha), sa = Math.sin(alpha);
+        /* corner joint: +x end runs to the outer corner (long), -x end stops at the inner face of its neighbour (short) */
+        const hlb = a0 * SQ3 - 0.25, hlt = a1 * SQ3 - 0.25, hsb = SQ3 * (a0 - T) - 0.4, hst = SQ3 * (a1 - T) - 0.4;
+        const hl = y => hlb + (hlt - hlb) * y / Lsl, hs = y => hsb + (hst - hsb) * y / Lsl, tw = tabWf(a0);
+        for (let j = 0; j < 3; j++) {
+          const out = [[-hsb, 0], [-tw / 2, 0], [-tw / 2, -T], [tw / 2, -T], [tw / 2, 0], [hlb, 0], [hlt, Lsl], [-hst, Lsl]];
+          const c = Math.max(2.4, T * 0.8), bar = Math.max(1.6, T * 0.55), wmin = hsb + hlb - 2 * c;
+          const n = Math.max(1, Math.round((Lsl - 8) / (Math.max(wmin, 8) * 1.35)));
+          const holes = wmin >= 3.4 ? truss(y => -hs(y), y => hl(y), 5, Lsl - 4, n, c, bar) : [];
+          const ph = phiS(j), cs = Math.cos(ph), sn = Math.sin(ph), rad = a0 - T;
+          const u = [-sn, 0, -cs], v = [cs * sa, ca, -sn * sa];
+          const mk = [], mkHole = [[hlb - 8.5, 1.8], [hlb - 4, 3.6], [hlb - 8.5, 5.4]];
+          const p = putPart(code + '-' + idp + (j + 1), name + ' ' + (j + 1), group, [dedupe(out), ...holes, mkHole], mk, [Xc + rad * cs, Y0 + zStart, Zc0 - rad * sn], u, v);
+          tag(p, code + '-' + idp + (j + 1));
+        }
+      };
+      trunk('T', 'Pastki ferma paneli', 'Pastki ferma tanasi', zLo, zP1, aL0, aL1);
+      /* --- pavilion: 4 support rings + flexible (kerf-slit) wall panels: cone / restaurant drum / top cone --- */
+      {
+        SKX = Xc; SKZ = Zc0; SKY = Y0;
+        const { PP, skinPanel, rectSlits, lineP, notchRing, tabOf } = SK;
+        const stag = (m, ell, hw, slits, tw) => { const pitch = clamp(0.12 * m.rAt(0), 1.8, 3.4), half = hw(ell / 2) - 2.6, nc = Math.floor(half / pitch);
+          for (let j = -nc; j <= nc; j++) { const x = j * pitch, ev = ((j % 2) + 2) % 2 === 0; if (ev && Math.abs(x) < tw / 2 + 1.4) continue; const A = ev ? 0 : 0.3 * ell, B = ev ? 0.7 * ell : ell; slits.push([PP(m, x, A), PP(m, x, B)]); } };
+        const NP = 4, avail = zP1 - zP0 - 4 * T, h1 = avail * 0.22, hD = avail * 0.52, h2 = avail - h1 - hD;
+        const zR0 = zP0, zC1 = zR0 + T, zR1 = zC1 + h1, zD = zR1 + T, zR2 = zD + hD, zC2 = zR2 + T, zR3 = zC2 + h2;
+        const rMinN = (z, dep) => 2 * aTube(z) + (dep || T + f) + 3.2;
+        const r1 = Math.max(19 * U, rMinN(zR1 + T / 2)), rD = Math.max(22 * U, r1 + 4);
+        const rDr = Math.max(18 * U, rMinN(zR2 + T / 2), rMinN(zR1 + T / 2)), r3 = Math.max(10 * U, rMinN(zR3 + T / 2) - T);
+        /* cone skins: their bottom tab leans along the slope, so the notch is deeper (and, for the narrowing cap cone, the ring is slightly larger) */
+        let r0 = Math.max(8 * U, rMinN(zR0 + T / 2)), dd1 = T + f;
+        for (let it = 0; it < 4; it++) { const b1 = Math.atan((r1 - r0) / h1); dd1 = T / Math.cos(b1) + T * Math.tan(b1) + f; r0 = Math.max(8 * U, rMinN(zR0 + T / 2, dd1)); }
+        const b2 = Math.atan((rDr - r3) / h2), dd2 = T / Math.cos(b2) + T * Math.tan(b2) + f, rr2 = rDr + T * Math.tan(b2) + 0.15;
+        /* hole that fits the three corner-jointed plates: their long ends poke slightly past the neighbour's face */
+        const triH = z => { const a = aTube(z + T / 2), pts = []; for (let j = 0; j < 3; j++) { const n = [Math.cos(phiS(j)), Math.sin(phiS(j))], t = [-n[1], n[0]], hl = a * SQ3 - 0.25; [a, a - T].forEach(r => pts.push([n[0] * r + t[0] * hl, n[1] * r + t[1] * hl])); }
+          return pts.map(q => { const d = Math.hypot(q[0], q[1]), s = 1 + 0.35 / d; return [q[0] * s, q[1] * s]; }).sort((p, q) => Math.atan2(p[1], p[0]) - Math.atan2(q[1], q[0])); };
+        const PH = PI / 4, NT = 4;
+        const slotAt = (ro, j) => { const t2 = tabOf(ro, NT, 9) / 2 + f / 2, a = PH + j * TAU / NT; return [[ro - T - f / 2, -t2], [ro, -t2], [ro, t2], [ro - T - f / 2, t2]].map(q => rot(q, a)); };
+        const lip = 2.4, slotR = (ri, ro, w, j) => { const t2 = w / 2 + f / 2, a = PH + j * TAU / NT; return [[ri, -t2], [ro, -t2], [ro, t2], [ri, t2]].map(q => rot(q, a)); };
+        const w0s = tabOf(r0, NT, 9) + 0.5, w2s = tabOf(rDr, NT, 9) + 0.5;
+        ringPart(code + '-PR0', 'Pavilion pastki halqa', 'Pavilion halqalari', zR0, circLoop(r0 + lip), [triH(zR0), ...[0, 1, 2, 3].map(j => slotR(r0 - dd1, r0 + 0.15, w0s, j))], o.engrave ? [circLoop(r0 + 0.8)] : []);
+        ringPart(code + '-PR1', 'Ko‘rish maydoncha halqasi (100 m)', 'Pavilion halqalari', zR1, circLoop(rD), [triH(zR1), ...[0, 1, 2, 3].map(j => slotR(rDr - T - f / 2, rDr + 0.15, tabOf(rDr, NT, 9), j))], o.engrave ? [circLoop(rD - 1.6), circLoop(rDr + T + 1.5)] : []);
+        ringPart(code + '-PR2', 'Restoran usti halqa', 'Pavilion halqalari', zR2, circLoop(rr2 + lip), [triH(zR2), ...[0, 1, 2, 3].map(j => slotR(rr2 - dd2, rr2, w2s, j))], o.engrave ? [circLoop(rr2 + 0.8)] : []);
+        ringPart(code + '-PR3', 'Pavilion qopqog‘i', 'Pavilion halqalari', zR3, circLoop(r3), [triH(zR3)], o.engrave ? [circLoop(r3 - 1.2)] : []);
+        /* dense kerf lines parallel to the axis (flexible round wall); alternate lines open to the bottom / top edge so no unbroken strip remains */
+        const dense = (m, ell, hw, slits, tabC, tw, pitch) => {
+          const rm = m.rAt(ell / 2), dA = pitch / rm, ahh = hw(ell / 2) / rm, nc = Math.floor((ahh - 2.0 / rm) / dA);
+          const br = 1.5, ls = clamp(ell * 0.46, 4, 10), P = ls + br;
+          for (let j = -nc; j <= nc; j++) { const a = j * dA, ev = ((j % 2) + 2) % 2 === 0, off = ev ? 0 : P / 2, nearTab = tabC.some(c => Math.abs(a - c) * m.rAt(0) < tw / 2 + 1.4);
+            for (let s0 = -off; s0 < ell; s0 += P) { const A = Math.max(0, s0), B = Math.min(ell, s0 + ls); if (B - A < 2) continue; if (A <= 0.01 && nearTab) continue; slits.push([m.fwd(a, A), m.fwd(a, B)]); } }
+        };
+        const arcAt = (m, a1, s) => { const n = Math.max(8, Math.ceil(2 * a1 * m.rAt(s) / 1.5)), out = []; for (let q = 0; q <= n; q++) out.push(m.fwd(-a1 + 2 * a1 * q / n, s)); return out; };
+        const pit = 1.8;
+        skinPanel({ id: code + '-VC1', name: 'Pastki konus tasma (egiluvchan, butun aylana)', group: 'Egiluvchan pavilion devori', z0: zC1, h: h1, ro0: r0, ro1: r1, N: 1, i: 0, ntab: NT, tabw: tabOf(r0, NT, 9),
+          hole: ({ m, ell, hw, eng, slits, tabC }) => { dense(m, ell, hw, slits, tabC, tabOf(r0, NT, 9), pit); const a1 = hw(ell / 2) / m.rAt(ell / 2) - 3 / m.rAt(ell / 2); eng.push(arcAt(m, a1, 1.6), arcAt(m, a1, ell - 1.6)); } });
+        skinPanel({ id: code + '-VD1', name: 'Restoran devori tasmasi (egiluvchan, butun aylana)', group: 'Egiluvchan pavilion devori', z0: zD, h: hD, ro0: rDr, ro1: rDr, N: 1, i: 0, ntab: NT, tabw: tabOf(rDr, NT, 9),
+          hole: ({ m, ell, hw, holes, eng, slits, tabC }) => {
+            const ww = 3.0, web = 2.2, ys = Math.max(4, 0.18 * ell), ye = ell - ys, avl = 2 * (hw(ell / 2) - 2.4), tw = tabOf(rDr, NT, 9);
+            const n = Math.max(1, Math.floor((avl + web) / (ww + web))), pt = ww + web, rr = m.rAt(0);
+            for (let j = 0; j < n; j++) { const xc = (j - (n - 1) / 2) * pt; holes.push([PP(m, xc - ww / 2, ys), PP(m, xc + ww / 2, ys), PP(m, xc + ww / 2, ye), PP(m, xc - ww / 2, ye)]); }
+            /* kerf lines in the two solid bands (windows themselves are the hinges in between) */
+            const pp = 1.8, nl = Math.floor((hw(ell / 2) - 2.0) / pp);
+            for (let j = -nl; j <= nl; j++) { const x = j * pp, ev = ((j % 2) + 2) % 2 === 0, nearTab = tabC.some(c => Math.abs(x - c * rr) < tw / 2 + 1.4);
+              if (!(ev && nearTab)) slits.push([PP(m, x, ev ? 0 : 1.0), PP(m, x, ev ? ys - 1.0 : ys)]);
+              slits.push([PP(m, x, ev ? ye + 1.0 : ye), PP(m, x, ev ? ell : ell - 1.0)]); }
+          } });
+        skinPanel({ id: code + '-VT1', name: 'Qopqoq konus tasma (egiluvchan, butun aylana)', group: 'Egiluvchan pavilion devori', z0: zC2, h: h2, ro0: rDr, ro1: r3, N: 1, i: 0, ntab: NT, tabw: tabOf(rDr, NT, 9),
+          hole: ({ m, ell, hw, eng, slits, tabC }) => { dense(m, ell, hw, slits, tabC, tabOf(rDr, NT, 9), pit); const a1 = hw(ell / 2) / m.rAt(ell / 2) - 3 / m.rAt(ell / 2); eng.push(arcAt(m, a1, 1.6)); } });
+      }
+      /* --- neck ring + upper trunk + equipment platform (220 m) --- */
+      {
+        const tabw = tabWf(aU0), holes = [];
+        for (let j = 0; j < 3; j++) { const r2 = rot([0, 0], 0); holes.push(sideRect(aU0, tabw / 2 + f / 2, T + f / 2).map(q => rot(q, phiS(j)))); }
+        const hA = aU0 - T - f / 2 - 2.5; if (hA > 1.6) holes.push(triPoly(hA).map(q => q));
+        ringPart(code + '-NR', 'Bo‘yin halqasi', 'Yuqori ferma tanasi', zNeck, triOut(aL1, 0).length ? dedupe([0, 1, 2].flatMap(j => [[aL1, -aL1 * SQ3], [aL1, aL1 * SQ3]].map(q => rot(q, phiS(j))))) : [], holes, []);
+      }
+      trunk('U', 'Yuqori ferma paneli', 'Yuqori ferma tanasi', zUp, zPf, aU0, aU1);
+      const w0 = Math.max(2.4, (aU1 - T) * 0.85), w1 = 0.7, dn = 14, zb = zPf - dn, hN = zTip - zb;
+      const plusH = plusLoop(w0 + f / 2 + 0.1, (T + f) / 2);
+      ringPart(code + '-PF1', 'Platforma halqasi 1 (220 m)', 'Yuqori ferma tanasi', zPf, circLoop(Math.max(15 * U, aU1 + 8)), [plusH], o.engrave ? [circLoop(Math.max(15 * U, aU1 + 8) - 1.5)] : []);
+      ringPart(code + '-PF2', 'Platforma halqasi 2', 'Yuqori ferma tanasi', zPf + T, circLoop(Math.max(11.5 * U, aU1 + 5)), [plusH], []);
+      /* --- needle mast: two crossed plates, A continues to the tip --- */
+      {
+        const sw = (T + f) / 2, half = w0 + 0.5, wA = y => w0 + (w1 - w0) * y / hN, wBmin = sw + 1.0;
+        const yX = Math.min(hN * 0.5, (w0 - wBmin) / (w0 - w1) * hN), ym = yX / 2;
+        const A = dedupe([[half - w0, 0], [half - sw, 0], [half - sw, ym], [half + sw, ym], [half + sw, 0], [half + w0, 0], [half + wA(hN), hN], [half - wA(hN), hN]]);
+        const B = dedupe([[half - w0, 0], [half + w0, 0], [half + wA(yX), yX], [half + sw, yX], [half + sw, ym], [half - sw, ym], [half - sw, yX], [half - wA(yX), yX]]);
+        const pa = putPart(code + '-NA', 'Antenna plita A', 'Antenna', [A], [], [Xc - half, Y0 + zb, Zc0 - T / 2], [1, 0, 0], [0, 1, 0]);
+        const pb = putPart(code + '-NB', 'Antenna plita B', 'Antenna', [B], [], [Xc - T / 2, Y0 + zb, Zc0 + half], [0, 0, -1], [0, 1, 0]);
+        tag(pa, code + '-NA'); tag(pb, code + '-NB');
+      }
+    }
+
+    /* ---- roofs ---- */
+    M.blocks.forEach((b, bi) => {
+      if (!b._roof) return;
+      const r = b._roof;
+      const p = add({ id: code + '-B' + (bi + 1) + 'T', name: b.n + ' · tom', group: b.n, kind: 'panel', loops: [rect(0, 0, r.W, r.d), ...roofSlots[bi]], eng: [], place: { o: [r.Xb, T + r.H, Zc(r.yb)], u: [1, 0, 0], v: [0, 0, -1] }, T });
+      tag(p, code + '-B' + (bi + 1) + 'T');
+    });
+    /* ---- base plate ---- */
+    if (!M.noPlate) {
+      const eng = plateEng.slice();
+      if (o.engrave) M.blocks.forEach(b => { const x = pm + b.x * k, y = pm + b.z * k; eng.push([[x, y], [x + b.w * k, y], [x + b.w * k, y + b.d * k], [x, y + b.d * k], [x, y]]); });
+      const p = add({ id: code + '-PL', name: 'Taglik plita', group: 'Taglik plita', kind: 'plate', loops: [M.plateRound ? circLoop(PW / 2).map(q => [q[0] + PW / 2, q[1] + Dp / 2]) : rect(0, 0, PW, Dp), ...plateSlots], eng, place: { o: [0, 0, Dp], u: [1, 0, 0], v: [0, 0, -1] }, T });
+      if (o.engrave) p.tags.push({ x: pm, y: 3, t: M.name.toUpperCase() + ' · ' + o.size + ' mm', s: 3 });
+    }
+
+    /* ---- numbering (P01…), assembly stages ---- */
+    if (M.custom === 'tvtower') parts.forEach(p => { p.eng = []; p._eng = []; });
+    parts.forEach((p, i) => { p.i0 = i; p.zo = Math.round((p.place ? p.place.o[1] : (p.skin ? p.skin.y0 : 0)) * 100) / 100; });
+    const gOrd = {}; parts.forEach(p => { if (!(p.group in gOrd)) gOrd[p.group] = Object.keys(gOrd).length; });
+    const order = parts.slice().sort((a, b) => (b.kind === 'plate') - (a.kind === 'plate') || a.zo - b.zo || gOrd[a.group] - gOrd[b.group] || a.i0 - b.i0);
+    const padN = parts.length > 99 ? 3 : 2;
+    order.forEach((p, i) => { p.num = 'P' + String(i + 1).padStart(padN, '0'); p.seq = i; });
+    parts.forEach(p => {
+      const t0 = p.tags && p.tags[0];
+      const keepTitle = p.kind === 'plate' ? (p.tags || []).filter(t => t.s > 2.5) : [];
+      p.tags = [{ x: t0 ? t0.x : 1.2, y: t0 ? t0.y : 2.6, t: p.num, s: p.kind === 'ring' || p.kind === 'plate' ? 2.6 : 2.2, id: true }, ...keepTitle];
+    });
+    const sid = p => p.id.slice(code.length + 1);
+    let stageNames, stageOf;
+    if (M.custom === 'naqsh') {
+      stageNames = ['O‘q plitalari (ichki karkas)', 'Taglik va pastki belbog‘', 'Kufiy belbog‘', 'Naqshli tana', 'Bo‘yin va kufiy yozuv', 'Muqarnasli toj', 'Toj qopqog‘i'];
+      stageOf = p => { const s = sid(p); if (/^(A|B)$/.test(s)) return 0; if (/^(PR1|PR2|BB\d)$/.test(s)) return 1; if (/^(RB|KB\d)$/.test(s)) return 2; if (/^(F0|P\d|SR1|SR2)$/.test(s)) return 3; if (/^(F1|NB\d|RK|KY\d|SR3)$/.test(s)) return 4; if (/^(F2|CR\d|C\d)$/.test(s)) return 5; return 6; };
+    } else if (M.custom === 'tvtower') {
+      stageNames = ['Taglik stend', 'Uch oyoq', 'Yig‘uvchi halqa va pastki ferma', 'Pavilion (halqalar + egiluvchan devor)', 'Yuqori ferma va 220 m platforma', 'Antenna'];
+      stageOf = p => { if (p.kind === 'plate') return 0; const s = sid(p); if (/^L\d$/.test(s)) return 1; if (/^(CR|T\d)$/.test(s)) return 2; if (/^(PR\d|VC\d|VD\d|VT\d)$/.test(s)) return 3; if (/^(NR|U\d|PF\d)$/.test(s)) return 4; return 5; };
+    } else {
+      const gs = []; order.forEach(p => { if (!gs.includes(p.group)) gs.push(p.group); });
+      stageNames = gs; stageOf = p => gs.indexOf(p.group);
+    }
+    parts.forEach(p => { p.stage = stageOf(p); });
+    const runs = list => { const idx = list.map(p => p.seq).sort((a, b) => a - b), out = []; let s = null, e = null;
+      idx.forEach(i => { if (s == null) { s = e = i; } else if (i === e + 1) e = i; else { out.push([s, e]); s = e = i; } }); if (s != null) out.push([s, e]);
+      const nm = i => 'P' + String(i + 1).padStart(padN, '0'); return out.map(r => r[0] === r[1] ? nm(r[0]) : r[1] === r[0] + 1 ? nm(r[0]) + ', ' + nm(r[1]) : nm(r[0]) + '–' + nm(r[1])).join(', '); };
+    const sel = re => parts.filter(p => re.test(sid(p)));
+    const R = re => '<b>' + runs(sel(re)) + '</b>';
+    const steps = stageNames.map((nm, i) => ({ n: i + 1, title: nm, nums: parts.filter(p => p.stage === i).map(p => p.num), ids: parts.filter(p => p.stage === i).map(p => p.id) }));
+    if (M.custom === 'naqsh') {
+      const T7 = [
+        'O‘q plitalari ' + R(/^(A|B)$/) + ' ni o‘zaro kesishtiring: A plitaning kesigi yuqoridan, B plitaning kesigi pastdan kirsin. Ular «+» shaklidagi ichki karkasni hosil qiladi.',
+        'Taglik diski ' + R(/^PR1$/) + ' ni karkas pastidan kiydirib yelimlang (u modelning tagi, alohida podium yo‘q). ' + R(/^PR2$/) + ' ni ustiga qo‘ying, pastki belbog‘ panellari ' + R(/^BB\d$/) + ' ni tishlari bilan uning chuqurchalariga kiritib, halqa atrofiga egib o‘rang.',
+        'Halqa ' + R(/^RB$/) + ' ni kiydiring. Kufiy belbog‘ panellari ' + R(/^KB\d$/) + ' ni uning chuqurchalariga tishlari bilan o‘rnating va egib o‘rang.',
+        'Halqa ' + R(/^F0$/) + ' ni kiydiring. Naqshli panellar ' + R(/^P\d$/) + ' ni tishlari bilan uning chuqurchalariga kiriting va konus bo‘ylab egib chiqing; tayanch halqalar ' + R(/^(SR1|SR2)$/) + ' ni o‘q plitalarga yelimlang.',
+        'Halqa ' + R(/^F1$/) + ' ni panellarning yuqori cheti ustiga bosing. Bo‘yin belbog‘i ' + R(/^NB\d$/) + ', halqa ' + R(/^RK$/) + ', kufiy yozuv belbog‘i ' + R(/^KY\d$/) + ' va tayanch halqa ' + R(/^SR3$/) + ' ni shu tartibda qo‘ying.',
+        'Halqa ' + R(/^F2$/) + ' ni qo‘ying. Ichki halqalar ' + R(/^CR\d$/) + ' ni o‘q plitalarga yelimlang, so‘ng toj panellari ' + R(/^C\d$/) + ' ni tishlari bilan o‘rnatib, yon cheklarini tutashtiring.',
+        'Toj qopqog‘i ' + R(/^RIM$/) + ' ni eng tepaga yelimlang.'];
+      steps.forEach((s, i) => { s.text = T7[i]; });
+    } else if (M.custom === 'tvtower') {
+      const Tt = [
+        'Taglik plita ' + R(/^PL$/) + ' ni tekis qo‘ying. Bu podium emas: uchta qiya oyoqning poyini ushlab turuvchi yupqa stend.',
+        'Uch oyoq ' + R(/^L\d$/) + ' ning pastki tishlarini plitadagi tirqishlarga kiriting. Oyoqlar tashqariga qiya turadi, tepa tishlari yuqoriga qaraydi.',
+        'Yig‘uvchi halqa ' + R(/^CR$/) + ' ni uch oyoqning yuqori tishlariga bosing (burchaklardagi tirqishlar). Pastki ferma panellari ' + R(/^T\d$/) + ' ni halqaning yon chuqurchalariga kiritib, uchburchak naycha hosil qiling, burchaklarini yelimlang. Har bir panelning uchburchak teshikli uzun uchi qo‘shni panelning ichki yuziga tiraladi (hammasini bir xil yo‘nalishda aylantirib qo‘ying).',
+        'Pavilion halqalari ' + R(/^PR\d$/) + ' ni naycha tepasidan tartib bilan kiydiring (PR0 eng pastda). Keyin uch egiluvchan tasmani ' + R(/^(VC|VD|VT)\d$/) + ' (har biri butun aylana) birma-bir o‘rang: tasmaning 4 ta pastki tishini halqadagi 4 ta chuqurcha/tirqishga solib, kesikli tasmani halqa bo‘ylab asta egib oling. Tasma kesiklari o‘q bo‘ylab, shuning uchun yumshoq egiladi. Yagona chokini yelimlang: pastdan yuqoriga konus, restoran devori (derazali), qopqoq konusi.',
+        'Bo‘yin halqasi ' + R(/^NR$/) + ' ni naycha tepasiga qo‘ying; yuqori ferma panellari ' + R(/^U\d$/) + ' ni (uchburchak teshikli uzun uchlari bir yo‘nalishda) uning tirqishlariga kiriting va ustiga platforma halqalari ' + R(/^PF\d$/) + ' ni yelimlang (220 m).',
+        'Antenna plitalari ' + R(/^(NA|NB)$/) + ' ni kesishtiring (NA kesigi pastdan, NB kesigi yuqoridan) va platformadagi «+» teshikdan naycha ichiga tushirib yelimlang.'];
+      steps.forEach((s, i) => { s.text = Tt[i]; });
+    } else {
+      steps.forEach(s => { const L = parts.filter(p => p.stage === s.n - 1); s.text = (s.n === 1 && L.some(p => p.kind === 'plate') ? 'Taglik plitani tekis qo‘ying: ' : '“' + s.title + '” detallarini o‘rnating: ') + '<b>' + runs(L) + '</b>.'; });
+    }
+
+    /* ---- nesting ---- */
+    const sheets = bestPack(parts, o);
+    sheets.forEach(s => { if (s.over) warnings.push('Ba’zi detal ' + o.sheetW + '×' + o.sheetH + ' mm varaqqa sig‘maydi — o‘lchamni kamaytiring yoki kattaroq varaq tanlang.'); });
+    const cutLen = parts.reduce((a, p) => a + p.len, 0);
+    return {
+      id, M, o, k, parts, sheets, steps, T, realMax: M.realMax || Math.max(M.W, Hd), scale: Math.round((M.realMax || Math.max(M.W, Hd)) * 1000 / o.size), plate: { w: PW, d: Dp }, world: { W: PW, H: customH != null ? customH + 2 * T : Hd * k + 2 * T, D: Dp },
+      dims: { w: Math.round(M.W * k), h: Math.round(Hd * k), d: Math.round(Dp) },
+      stats: { parts: parts.length, sheets: sheets.length, util: (() => { const ar = parts.reduce((a, p) => a + p.w * p.h, 0); return ar / (sheets.length * o.sheetW * o.sheetH); })(), cutLen, minutes: cutLen / 20 / 60, rings: parts.filter(p => p.kind === 'ring').length },
+      warnings: [...new Set(warnings)]
+    };
+  }
+  function prepTowerList(M, k, T) { return M.towers.map(t => prepTower(t, k, T)); }
+
+  /* ================= nesting ================= */
+  function pack(parts, o, strat) {
+    const SW = o.sheetW, SH = o.sheetH, m = o.margin, g = o.gap;
+    const UW = SW - 2 * m, UH = SH - 2 * m;
+    const fits = (w, h) => w <= UW && h <= UH;
+    const items = parts.map(pt => {
+      let w = pt.w, h = pt.h, rot = false;
+      const flip = () => { rot = true; w = pt.h; h = pt.w; };
+      if (strat.rot === 'wide' && h > w && fits(h, w)) flip();
+      else if (strat.rot === 'tall' && w > h && fits(h, w)) flip();
+      if (!fits(w, h) && fits(pt.h, pt.w) && !rot) flip();
+      return { pt, w, h, rot };
+    }).sort((a, b) => strat.sort === 'w' ? (b.w - a.w || b.h - a.h) : strat.sort === 'a' ? (b.w * b.h - a.w * a.h) : (b.h - a.h || b.w - a.w));
+    const sheets = [];
+    const nw = over => { const s = { shelves: [], y: 0, items: [], over: !!over }; sheets.push(s); return s; };
+    items.forEach(it => {
+      if (it.w > UW || it.h > UH) { const s = nw(true); s.items.push(Object.assign({}, it, { x: m, y: m })); return; }
+      for (const s of sheets) {
+        if (s.over) continue;
+        for (const sh of s.shelves) if (sh.h >= it.h && sh.x + it.w <= UW) { s.items.push(Object.assign({}, it, { x: m + sh.x, y: m + sh.y })); sh.x += it.w + g; return; }
+        if (s.y + it.h <= UH) { const sh = { y: s.y, h: it.h, x: it.w + g }; s.shelves.push(sh); s.y += it.h + g; s.items.push(Object.assign({}, it, { x: m, y: m + sh.y })); return; }
+      }
+      const s = nw(false); const sh = { y: 0, h: it.h, x: it.w + g }; s.shelves.push(sh); s.y = it.h + g; s.items.push(Object.assign({}, it, { x: m, y: m }));
+    });
+    return sheets;
+  }
+  function bestPack(parts, o) {          // "Auto Nest": try several orderings/orientations, keep the least wasteful
+    let best = null, bs = 1e18;
+    ['h', 'w', 'a'].forEach(sort => ['auto', 'wide', 'tall'].forEach(rot => {
+      const sh = pack(parts, o, { sort, rot });
+      const sc = sh.reduce((a, s) => a + (s.over ? 1e7 : 0) + 1e5 + s.y, 0);
+      if (sc < bs) { bs = sc; best = sh; best.strategy = sort + '/' + rot; }
+    }));
+    return best;
+  }
+
+  /* ================= SVG sheets (layers CUT / ENGRAVE / SCORE / REFERENCE) ================= */
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function dOf(loops, bx, by, close) {
+    return loops.map(l => 'M' + l.map(p => rd(p[0] - bx) + ' ' + rd(by - p[1])).join('L') + (close ? 'Z' : '')).join('');
+  }
+  const xf = it => it.rot ? 'translate(' + rd(it.x + it.w) + ' ' + rd(it.y) + ') rotate(90)' : 'translate(' + rd(it.x) + ' ' + rd(it.y) + ')';
+  const LAYERS = ['CUT', 'ENGRAVE', 'SCORE', 'REFERENCE'];
+  function sheetSVG(sheet, o, mode, idx, total) {
+    const SW = o.sheetW, SH = o.sheetH, d = mode === 'display';
+    const A = {
+      cut: d ? 'class="cut"' : 'fill="none" stroke="#0000ff" stroke-width="0.0762"',
+      eng: d ? 'class="eng"' : 'fill="none" stroke="#ff0000" stroke-width="0.0762"',
+      fr: d ? 'class="frame"' : 'fill="none" stroke="#808080" stroke-width="0.3"',
+      sc: d ? 'class="score"' : 'fill="#00a000" stroke="none" font-family="Arial, sans-serif"',
+      rf: d ? 'class="ref"' : 'fill="#808080" stroke="none" font-family="Arial, sans-serif"'
+    };
+    const L = (name, inner) => '<g id="' + name + '"' + (d ? ' class="lyr lyr-' + name + '"' : '') + ' inkscape:groupmode="layer" inkscape:label="' + name + '">' + inner + '</g>';
+    const gid = p => (p.num + '_' + p.id).replace(/[^\w.\-]/g, '_');
+    let s = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 ' + SW + ' ' + SH + '" width="' + SW + 'mm" height="' + SH + 'mm">';
+    if (!d) s += '<desc>Lazer kesish varag‘i ' + (idx + 1) + '/' + total + ' · material ' + o.T + ' mm · kerf/tirqish ' + o.fit + ' mm · qatlamlar: CUT = kesish (ko‘k), ENGRAVE = gravyura (qizil), SCORE = yengil belgi/raqam (yashil), REFERENCE = faqat ko‘rish uchun (kulrang, kesilmaydi)</desc>';
+    s += L('REFERENCE', '<rect ' + A.fr + ' x="0" y="0" width="' + SW + '" height="' + SH + '"/><text ' + A.rf + ' x="' + o.margin + '" y="' + (o.margin - 1.2) + '" font-size="3">' + esc('Varaq ' + (idx + 1) + '/' + total + ' · ' + SW + '×' + SH + ' mm · ' + o.T + ' mm material') + '</text>');
+    s += L('CUT', sheet.items.map(it => { const p = it.pt; return '<g id="' + gid(p) + '" transform="' + xf(it) + '"><path ' + A.cut + (d ? ' fill-rule="evenodd"' : '') + ' d="' + dOf(p.loops, p.bx, p.by, true) + '"/>' + (p.slits.length ? '<path ' + A.cut + ' d="' + dOf(p.slits, p.bx, p.by, false) + '"/>' : '') + '</g>'; }).join(''));
+    s += L('ENGRAVE', sheet.items.filter(it => it.pt.eng.length).map(it => { const p = it.pt; return '<g transform="' + xf(it) + '"><path ' + A.eng + ' d="' + dOf(p.eng, p.bx, p.by, false) + '"/></g>'; }).join(''));
+    s += L('SCORE', sheet.items.map(it => { const p = it.pt; return '<g transform="' + xf(it) + '">' + p.tags.map(t => '<text ' + A.sc + ' x="' + rd(t.x) + '" y="' + rd(p.by - t.y) + '" font-size="' + t.s + '">' + esc(t.t) + '</text>').join('') + '</g>'; }).join(''));
+    return s + '</svg>';
+  }
+
+  /* ================= DXF (R12 ASCII: CUT / ENGRAVE / SCORE / REFERENCE layers, mm) ================= */
+  function sheetDXF(sheet, o) {
+    const SW = o.sheetW, SH = o.sheetH, out = [];
+    const w = (c, v) => out.push(String(c), String(v));
+    const f = v => (Math.round(v * 1000) / 1000).toString();
+    w(0, 'SECTION'); w(2, 'HEADER'); w(9, '$ACADVER'); w(1, 'AC1009'); w(9, '$INSUNITS'); w(70, 4); w(0, 'ENDSEC');
+    w(0, 'SECTION'); w(2, 'TABLES'); w(0, 'TABLE'); w(2, 'LAYER'); w(70, 4);
+    [['CUT', 5], ['ENGRAVE', 1], ['SCORE', 3], ['REFERENCE', 8]].forEach(l => { w(0, 'LAYER'); w(2, l[0]); w(70, 0); w(62, l[1]); w(6, 'CONTINUOUS'); });
+    w(0, 'ENDTAB'); w(0, 'ENDSEC'); w(0, 'SECTION'); w(2, 'ENTITIES');
+    const poly = (layer, pts, closed) => { if (pts.length < 2) return; w(0, 'POLYLINE'); w(8, layer); w(66, 1); w(70, closed ? 1 : 0);
+      pts.forEach(p => { w(0, 'VERTEX'); w(8, layer); w(10, f(p[0])); w(20, f(SH - p[1])); w(30, 0); }); w(0, 'SEQEND'); w(8, layer); };
+    poly('REFERENCE', [[0, 0], [SW, 0], [SW, SH], [0, SH]], true);
+    sheet.items.forEach(it => {
+      const p = it.pt;
+      const T = q => { const X = q[0] - p.bx, Y = p.by - q[1]; return it.rot ? [it.x + it.w - Y, it.y + X] : [it.x + X, it.y + Y]; };
+      p.loops.forEach(l => poly('CUT', l.map(T), true));
+      p.slits.forEach(l => poly('CUT', l.map(T), false));
+      p.eng.forEach(l => poly('ENGRAVE', l.map(T), false));
+      p.tags.forEach(t => { const q = T([p.bx + t.x, t.y]); w(0, 'TEXT'); w(8, 'SCORE'); w(10, f(q[0])); w(20, f(SH - q[1])); w(30, 0); w(40, t.s); w(1, t.t); if (it.rot) w(50, 270); });
+    });
+    w(0, 'ENDSEC'); w(0, 'EOF');
+    return out.join('\n') + '\n';
+  }
+
+  return { MON, ORDER, DEF, LAYERS, build, sheetSVG, sheetDXF };
+});
+
+</script>
+<script>
+(function(){
+  const $=s=>document.querySelector(s);
+  const st={id:'registon',size:null,T:3,fit:0.15,mat:'mdf',density:1,sheet:'1000x600',eng:false,tab:0,explode:0,spin:true,step:0};
+  let model=null, viewer=null, gviewer=null, raf=0, anim=0;
+  const DENS=[['Siyrak',0.7],['O‘rta',1],['Zich',1.45]];
+  const PAL={mdf:{panel:'#b48a5a',ring:'#bf9a6c',plate:'#8d6a44',skin:'#b78e5e',fill:'#b78e5e'},fanera:{panel:'#cfae78',ring:'#d6bd8e',plate:'#9c7a4c',skin:'#c7a56e',fill:'#d3b27b'}};
+  const fmt=(n,d)=>n.toLocaleString('en-US',{maximumFractionDigits:d==null?0:d});
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const toast=(h,bad)=>{ const t=$('#toast'); t.innerHTML=h; t.style.color=bad?'var(--warn)':''; };
+
+  /* ---------- three.js scene from model ---------- */
+  const edgeMat=new THREE.LineBasicMaterial({color:0x3d2a10,transparent:true,opacity:.5});
+  const engMat=new THREE.LineBasicMaterial({color:0x6b3b12,transparent:true,opacity:.85});
+  function shade(base,i){const c=new THREE.Color(base);const hsl={};c.getHSL(hsl);c.setHSL(hsl.h,hsl.s,Math.min(.8,Math.max(.3,hsl.l+((i%5)-2)*.012)));return '#'+c.getHexString();}
+  const mk=hex=>new THREE.MeshStandardMaterial({color:hex,roughness:.82,metalness:0});
+  function buildScene(m){
+    const P=PAL[st.mat], T=m.T, scene=new THREE.Scene();
+    scene.add(new THREE.HemisphereLight(0xfff3df,0x5c4a30,.8));
+    const dl=new THREE.DirectionalLight(0xfff8ee,.7); dl.position.set(-.7,1,.9); scene.add(dl);
+    const grp=new THREE.Group(); scene.add(grp);
+    const W=m.world.W,H=m.world.H,D=m.world.D, C=new THREE.Vector3(W/2,H/2,D/2);
+    const items=[], geos=[]; const gi={};
+    const nSt=Math.max(1,m.steps.length), GST=nSt>1?.8*H/(nSt-1):0, EY=(stage,y)=>stage*GST+y*.3;
+    m.parts.forEach(p=>{
+      if(p.skin&&p.skin.dev){
+        const k=p.skin, NU=Math.max(36,Math.ceil(p.skin.ah*40)), NV=Math.max(8,Math.ceil(k.ell/2.5)), pos=[], uvs=[], idx=[];
+        for(let iv=0;iv<=NV;iv++){ const s=k.ell*iv/NV, r=k.rAt(s)+k.T/2, y=k.y0+k.zAt(s);
+          for(let iu=0;iu<=NU;iu++){ const a=k.a0-k.ah+2*k.ah*iu/NU; pos.push(k.x+r*Math.sin(a),y,k.z+r*Math.cos(a)); uvs.push(iu/NU,iv/NV); } }
+        for(let iv=0;iv<NV;iv++) for(let iu=0;iu<NU;iu++){ const a=iv*(NU+1)+iu,b=a+1,c=a+NU+1,d=c+1; idx.push(a,c,b,b,c,d); }
+        const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2)); g.setIndex(idx); g.computeVertexNormals(); geos.push(g);
+        const wmm=2*k.ah*k.rAt(k.ell/2), ppm=Math.min(14,2000/Math.max(k.ell,wmm)), Wp=Math.max(16,Math.ceil(wmm*ppm)), Hp=Math.max(16,Math.ceil(k.ell*ppm));
+        const cv=document.createElement('canvas'); cv.width=Wp; cv.height=Hp; const cx=cv.getContext('2d');
+        cx.fillStyle=P.fill; cx.fillRect(0,0,Wp,Hp);
+        const mp=q=>{ const r=k.inv(q[0],q[1]); return [(r[0]/k.ah+1)/2*Wp,(1-r[1]/k.ell)*Hp]; };
+        const stroke=(ls,col,w)=>{ cx.strokeStyle=col; cx.lineWidth=w; cx.lineJoin='round'; cx.beginPath(); ls.forEach(l=>{ l.forEach((q,i)=>{ const z=mp(q); i?cx.lineTo(z[0],z[1]):cx.moveTo(z[0],z[1]); }); }); cx.stroke(); };
+        if(p.eng&&p.eng.length) stroke(p.eng,'rgba(70,36,8,.85)',Math.max(1,ppm*.2));
+        if(p.slits&&p.slits.length) stroke(p.slits,'rgba(80,50,20,.55)',Math.max(.8,ppm*.12));
+        cx.globalCompositeOperation='destination-out'; cx.fillStyle='#000';
+        for(let q=1;q<p.loops.length;q++){ cx.beginPath(); p.loops[q].forEach((pt,i)=>{ const z=mp(pt); i?cx.lineTo(z[0],z[1]):cx.moveTo(z[0],z[1]); }); cx.closePath(); cx.fill(); }
+        const tex=new THREE.CanvasTexture(cv); tex.generateMipmaps=false; tex.minFilter=THREE.LinearFilter; tex.magFilter=THREE.LinearFilter; geos.push(tex);
+        const mat=new THREE.MeshStandardMaterial({map:tex,alphaTest:.5,side:THREE.DoubleSide,roughness:.85,metalness:0});
+        const holder=new THREE.Group(); holder.add(new THREE.Mesh(g,mat));
+        if(p.loops.length>1){ const pos2=[]; for(let i=0;i<pos.length;i+=3){ const dx=pos[i]-k.x, dz=pos[i+2]-k.z, rr=Math.hypot(dx,dz), f2=(rr-k.T-.5)/rr; pos2.push(k.x+dx*f2,pos[i+1],k.z+dz*f2); }
+          const g2=new THREE.BufferGeometry(); g2.setAttribute('position',new THREE.Float32BufferAttribute(pos2,3)); g2.setIndex(idx); g2.computeVertexNormals(); geos.push(g2);
+          holder.add(new THREE.Mesh(g2,new THREE.MeshBasicMaterial({color:0x3b2610,side:THREE.DoubleSide}))); }
+        grp.add(holder);
+        items.push({holder,mats:[mat],stage:p.stage,off:new THREE.Vector3(k.x-C.x,0,k.z-C.z).multiplyScalar(.5).add(new THREE.Vector3(Math.sin(k.a0)*8,EY(p.stage,k.y0+k.h/2),Math.cos(k.a0)*8))});
+        return;
+      }
+      if(p.skin){
+        const k=p.skin, pts=[new THREE.Vector2(k.ri0,0),new THREE.Vector2(k.ri0+k.T,0),new THREE.Vector2(k.ri1+k.T,k.h),new THREE.Vector2(k.ri1,k.h),new THREE.Vector2(k.ri0,0)];
+        const g=new THREE.LatheGeometry(pts,56); geos.push(g);
+        const mat=mk(P.skin); mat.side=THREE.DoubleSide; const mesh=new THREE.Mesh(g,mat);
+        mesh.position.set(k.x,k.y0,k.z);
+        const holder=new THREE.Group(); holder.add(mesh); grp.add(holder);
+        items.push({holder,mats:[mat],stage:p.stage,off:new THREE.Vector3(0,EY(p.stage,k.y0+k.h/2),0).add(new THREE.Vector3(k.x-C.x,0,k.z-C.z).multiplyScalar(.5))});
+        return;
+      }
+      const sh=new THREE.Shape(p.loops[0].map(q=>new THREE.Vector2(q[0],q[1])));
+      for(let k=1;k<p.loops.length;k++) sh.holes.push(new THREE.Path(p.loops[k].map(q=>new THREE.Vector2(q[0],q[1]))));
+      const g=new THREE.ExtrudeGeometry(sh,{depth:T,bevelEnabled:false,curveSegments:1}); geos.push(g);
+      const key=p.group; if(!(key in gi)) gi[key]=Object.keys(gi).length;
+      const base=p.kind==='plate'?P.plate:p.kind==='ring'?P.ring:P.panel;
+      const mat=mk(p.kind==='plate'?base:shade(base,gi[key]));
+      const mesh=new THREE.Mesh(g,mat);
+      const u=new THREE.Vector3(...p.place.u), v=new THREE.Vector3(...p.place.v), n=new THREE.Vector3().crossVectors(u,v);
+      mesh.matrixAutoUpdate=false;
+      mesh.matrix.makeBasis(u,v,n).setPosition(new THREE.Vector3(...p.place.o));
+      const eg=new THREE.EdgesGeometry(g,35); geos.push(eg);
+      mesh.add(new THREE.LineSegments(eg,edgeMat));
+      if(p.eng&&p.eng.length){
+        const pos=[];
+        p.eng.forEach(l=>{for(let i=1;i<l.length;i++){[ -.04, T+.04 ].forEach(z=>pos.push(l[i-1][0],l[i-1][1],z,l[i][0],l[i][1],z));}});
+        const lg=new THREE.BufferGeometry(); lg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); geos.push(lg);
+        mesh.add(new THREE.LineSegments(lg,engMat));
+      }
+      const holder=new THREE.Group(); holder.add(mesh); grp.add(holder);
+      const cx=p.bx+p.w/2, cy=p.by-p.h/2;
+      const c=new THREE.Vector3(...p.place.o).addScaledVector(u,cx).addScaledVector(v,cy).addScaledVector(n,T/2);
+      items.push({holder,mats:[mat],stage:p.stage,off:new THREE.Vector3((c.x-C.x)*.5,EY(p.stage,c.y),(c.z-C.z)*.5)});
+    });
+    const S={scene,grp,items,geos,center:new THREE.Vector3(W/2,H*.42,D/2),W,H,D};
+    S.setStep=n=>{ items.forEach(it=>{ it.holder.visible=n===0||it.stage<=n-1; const hl=n>0&&it.stage===n-1; it.mats.forEach(mm=>{ mm.emissive.setHex(hl?0x0c7d88:0); mm.emissiveIntensity=hl?.65:1; }); }); };
+    return S;
+  }
+  function disposeScene(s){ if(!s)return; s.geos.forEach(g=>g.dispose()); }
+  function setExplode(s,f){ if(s){ s.exF=f; s.items.forEach(it=>it.holder.position.copy(it.off).multiplyScalar(f)); } }
+
+  /* ---------- interactive viewer ---------- */
+  function Viewer(el,opts){
+    const self=this; self.el=el; self.opts=opts||{}; self.az=-.55; self.el_=.38; self.dist=500; self.S=null; self.dirty=true; self.ok=true; self.vis=true;
+    try{ self.r=new THREE.WebGLRenderer({antialias:true,alpha:true}); }catch(e){ self.ok=false; el.insertAdjacentHTML('afterbegin','<div class="nogl">3D ko‘rinish bu brauzerda ishlamadi. Kesish varaqlari quyida to‘liq ko‘rinadi.</div>'); return; }
+    self.r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    el.insertBefore(self.r.domElement,el.firstChild);
+    self.cam=new THREE.PerspectiveCamera(32,1,1,20000);
+    new ResizeObserver(()=>self.resize()).observe(el);
+    if('IntersectionObserver' in window) new IntersectionObserver(es=>{ self.vis=es[0].isIntersecting; if(self.vis) self.dirty=true; }).observe(el);
+    let pts={};
+    el.addEventListener('pointerdown',e=>{el.setPointerCapture(e.pointerId);pts[e.pointerId]=[e.clientX,e.clientY];self.stopSpin();});
+    el.addEventListener('pointerup',e=>{delete pts[e.pointerId];});
+    el.addEventListener('pointercancel',e=>{delete pts[e.pointerId];});
+    el.addEventListener('pointermove',e=>{
+      const p=pts[e.pointerId]; if(!p) return;
+      const ids=Object.keys(pts);
+      if(ids.length===2){
+        const o=ids.find(i=>+i!==e.pointerId), q=pts[o];
+        const d0=Math.hypot(p[0]-q[0],p[1]-q[1]); pts[e.pointerId]=[e.clientX,e.clientY];
+        const d1=Math.hypot(e.clientX-q[0],e.clientY-q[1]); if(d1>0&&d0>0) self.zoom(d0/d1);
+      } else {
+        self.az-=(e.clientX-p[0])*.008; self.el_=clamp(self.el_+(e.clientY-p[1])*.006,.03,1.52);
+        pts[e.pointerId]=[e.clientX,e.clientY]; self.dirty=true;
+      }
+    });
+    el.addEventListener('wheel',e=>{e.preventDefault();self.stopSpin();self.zoom(Math.exp(e.deltaY*.0012));},{passive:false});
+    self.loop=()=>{ requestAnimationFrame(self.loop);
+      if(self.opts.spin&&self.opts.spin()&&self.S&&self.vis&&!document.hidden){ self.az+=self.opts.speed||.0025; self.dirty=true; }
+      if(self.dirty&&self.vis){ self.render(); self.dirty=false; } };
+    requestAnimationFrame(self.loop);
+  }
+  Viewer.prototype.stopSpin=function(){ if(this.opts.stop) this.opts.stop(); };
+  Viewer.prototype.zoom=function(f){ this.dist=clamp(this.dist*f,this.minD,this.maxD); this.dirty=true; };
+  Viewer.prototype.resize=function(){ if(!this.ok)return; const w=this.el.clientWidth,h=this.el.clientHeight; if(!w||!h)return; this.r.setSize(w,h,false); this.cam.aspect=w/h; this.cam.updateProjectionMatrix(); this.fit(true); this.dirty=true; };
+  Viewer.prototype.fit=function(keep){ const s=this.S; if(!s)return; const rs=.5*Math.sqrt(s.W*s.W+s.H*s.H+s.D*s.D); const asp=this.cam.aspect||1; const f=this.cam.fov*Math.PI/180/2; let d=rs/Math.sin(Math.min(f,Math.atan(Math.tan(f)*asp)))*.82; d=Math.max(d,s.H*.62/Math.tan(f)*1.08); this.minD=d*.25; this.maxD=d*3; if(!keep||!this.dist) this.dist=d; else this.dist=clamp(this.dist,this.minD,this.maxD); };
+  Viewer.prototype.setScene=function(S,keepCam){ disposeScene(this.S); this.S=S; this.fit(!!keepCam); this.dirty=true; };
+  Viewer.prototype.setView=function(v){ this.stopSpin(); if(v==='front'){ this.az=0; this.el_=.06; } else if(v==='side'){ this.az=Math.PI/2; this.el_=.06; } else if(v==='top'){ this.az=0; this.el_=1.52; } this.fit(false); this.dirty=true; };
+  Viewer.prototype.render=function(){ const s=this.S; if(!s||!this.ok)return; const t=s.center, c=this.cam;
+    const ef=s.exF||0, ty=t.y+ef*s.H*.5, dd=this.dist*(1+ef*1.05), tt=new THREE.Vector3(t.x,ty,t.z);
+    c.position.set(t.x+Math.sin(this.az)*Math.cos(this.el_)*dd,ty+Math.sin(this.el_)*dd,t.z+Math.cos(this.az)*Math.cos(this.el_)*dd); c.lookAt(tt);
+    this.r.render(s.scene,c); };
+
+  /* ---------- thumbnails ---------- */
+  function thumbs(){
+    let r; try{ r=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true}); }catch(e){ return; }
+    r.setSize(360,200,false); const cam=new THREE.PerspectiveCamera(30,1.8,1,20000);
+    const ids=MG.ORDER.slice();
+    (function next(){
+      const id=ids.shift(); if(!id){ r.dispose(); return; }
+      try{
+        const m=MG.build(id,{T:3}); const S=buildScene(m);
+        const rs=.5*Math.sqrt(S.W*S.W+S.H*S.H+S.D*S.D), d=Math.max(rs/Math.sin(15*Math.PI/180)*.72,S.H*.62/Math.tan(15*Math.PI/180)*1.1), a=-.5, e=.3, t=S.center;
+        cam.position.set(t.x+Math.sin(a)*Math.cos(e)*d,t.y+Math.sin(e)*d,t.z+Math.cos(a)*Math.cos(e)*d); cam.lookAt(t);
+        r.render(S.scene,cam);
+        const b=document.querySelector('.pick[data-id="'+id+'"] .th'); if(b){ const im=new Image(); im.alt=''; im.src=r.domElement.toDataURL('image/png'); b.innerHTML=''; b.appendChild(im); }
+        disposeScene(S);
+      }catch(e){}
+      setTimeout(next,30);
+    })();
+  }
+
+  /* ---------- UI ---------- */
+  const norm=s=>String(s).toLowerCase().replace(/[‘’'`ʻʼ]/g,'').replace(/\s+/g,' ').trim();
+  const ALIAS={registan:'registon',ulugbek:'registon','ulug beg':'registon','ulugh beg':'registon','registon minorasi':'registon','registan minaret':'registon','kalyan':'kalon','kalan':'kalon','shah-i-zinda':'shohizinda','shohi zinda':'shohizinda','gur-e-amir':'goriamir','gur emir':'goriamir','bibi khanym':'bibixonim','bibi khanum':'bibixonim','char minar':'chorminor','chor minar':'chorminor','sher dor':'sherdor','sher-dor':'sherdor'};
+  function findMon(q){ q=norm(q); if(!q) return null; if(ALIAS[q]) return ALIAS[q];
+    for(const id of MG.ORDER){ const M=MG.MON[id]; if(norm(M.name)===q||id===q||norm(M.code)===q) return id; }
+    for(const id of MG.ORDER){ const M=MG.MON[id], n=norm(M.name); if(n.includes(q)||q.includes(n.split(' ')[0])&&q.length>3) return id; }
+    for(const k of Object.keys(ALIAS)) if(q.includes(k)) return ALIAS[k];
+    return null; }
+  function applyName(quiet){
+    const q=$('#bname').value; if(!q.trim()){ $('#nameMsg').textContent=''; return true; }
+    const id=findMon(q);
+    if(!id){ $('#nameMsg').textContent='“'+q+'” kutubxonada yo‘q. Ma’lumot yetarli bo‘lmasa bino o‘ylab topilmaydi: ro‘yxatdagi obidani tanlang yoki reference rasm yuklab, o‘lchamlarni qo‘lda kiriting.'; $('#nameMsg').className='msg bad'; return false; }
+    $('#nameMsg').className='msg'; $('#nameMsg').textContent='Topildi: '+MG.MON[id].name+'.';
+    if(id!==st.id){ pick(id); return 'changed'; } return true;
+  }
+  function pick(id){ st.id=id; st.size=null; st.tab=0; st.step=0; st.T=3; st.explode=0; $('#explode').value=0; update(true); }
+  MG.ORDER.forEach(id=>{
+    const M=MG.MON[id];
+    const b=document.createElement('button'); b.className='pick'; b.dataset.id=id; b.setAttribute('aria-pressed','false');
+    b.innerHTML='<span class="th"></span><b>'+M.name+'</b><small>'+M.years+'</small>';
+    b.onclick=()=>{ $('#bname').value=M.name; $('#nameMsg').textContent=''; pick(id); };
+    (M.city==='Samarqand'?$('#pk-sam'):$('#pk-bux')).appendChild(b);
+    $('#blist').insertAdjacentHTML('beforeend','<option value="'+M.name+'">');
+  });
+  [2,3,4,5].forEach(t=>{ const b=document.createElement('button'); b.textContent=t+' mm'; b.dataset.v=t; b.onclick=()=>{st.T=t;update(true);}; $('#segT').appendChild(b); });
+  DENS.forEach(r=>{ const b=document.createElement('button'); b.textContent=r[0]; b.dataset.v=r[1]; b.onclick=()=>{st.density=r[1];update(true);}; $('#segR').appendChild(b); });
+  $('#sheet').onchange=e=>{ st.sheet=e.target.value; st.tab=0; update(false); };
+  $('#mat').onchange=e=>{ st.mat=e.target.value; update(true); };
+  $('#eng').onchange=e=>{ st.eng=e.target.checked; update(true); };
+  $('#inScale').onchange=e=>{ const n=+e.target.value; if(n>0&&model){ st.size=clamp(Math.round(model.realMax*1000/n),30,1500); update(true); } };
+  $('#inH').onchange=e=>{ const h=+e.target.value; if(h>0&&model){ st.size=clamp(Math.round(st.size*h/model.dims.h),30,1500); update(true); } };
+  $('#inW').onchange=e=>{ const w=+e.target.value; if(w>0&&model){ st.size=clamp(Math.round(st.size*w/model.dims.w),30,1500); update(true); } };
+  $('#inKerf').onchange=e=>{ st.fit=clamp(+e.target.value||0,0,.6); update(true); };
+  $('#bname').onchange=()=>applyName();
+  $('#bname').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); applyName(); } });
+  document.querySelectorAll('#layers input').forEach(c=>c.onchange=()=>$('#sheetbox').classList.toggle('hide-'+c.dataset.l,!c.checked));
+
+  /* reference image */
+  let refURL=null;
+  $('#refin').onchange=e=>{
+    const f=e.target.files&&e.target.files[0]; if(!f) return;
+    if(!/^image\/(jpeg|png|webp)$/.test(f.type)){ $('#refMsg').textContent='Faqat JPG, PNG yoki WEBP.'; $('#refMsg').className='msg bad'; return; }
+    if(refURL) URL.revokeObjectURL(refURL); refURL=URL.createObjectURL(f);
+    $('#refimg').src=refURL; $('#refthumb').style.backgroundImage='url("'+refURL+'")';
+    $('#refop').value=50; setRef(50); $('#refMsg').className='msg'; $('#refMsg').textContent='“'+f.name+'” 3D ustiga qo‘yildi. Qoplamani suring: shakl va nisbatni solishtiring. Rasm avtomatik tahlil qilinmaydi.';
+  };
+  function setRef(v){ $('#refimg').style.opacity=v/100; $('#oRef').textContent=v+'%'; }
+  $('#refop').oninput=e=>setRef(+e.target.value);
+
+  /* viewer wiring */
+  function syncSpin(){ $('#spin').setAttribute('aria-pressed',String(st.spin)); }
+  function syncExp(){ $('#expBtn').setAttribute('aria-pressed',String(st.explode>.5)); $('#explode').value=Math.round(st.explode*100); $('#oEx').textContent=Math.round(st.explode*100)+'%'; }
+  function applyExp(){ if(viewer&&viewer.S){ setExplode(viewer.S,st.explode); viewer.dirty=true; } syncExp(); }
+  function animExp(to){ cancelAnimationFrame(anim); const from=st.explode, t0=performance.now(), dur=700; const stepf=t=>{ const u=Math.min(1,(t-t0)/dur), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2; st.explode=from+(to-from)*e; applyExp(); if(u<1) anim=requestAnimationFrame(stepf); }; anim=requestAnimationFrame(stepf); }
+  $('#explode').oninput=e=>{ cancelAnimationFrame(anim); st.explode=+e.target.value/100; applyExp(); };
+  $('#expBtn').onclick=()=>animExp(st.explode>.5?0:1);
+  $('#spin').onclick=()=>{ st.spin=!st.spin; syncSpin(); };
+  document.querySelectorAll('#vtools [data-v="front"],#vtools [data-v="side"],#vtools [data-v="top"]').forEach(b=>b.onclick=()=>{ if(viewer&&viewer.ok){ viewer.setView(b.dataset.v); } });
+  function sched(){ cancelAnimationFrame(raf); raf=requestAnimationFrame(()=>update(true)); }
+
+  let lastKey='';
+  function update(rebuild3d){
+    const M=MG.MON[st.id];
+    if(st.size==null) st.size=M.size;
+    const [sw,sh]=st.sheet.split('x').map(Number);
+    model=MG.build(st.id,{size:st.size,T:st.T,fit:st.fit,density:st.density,sheetW:sw,sheetH:sh,engrave:st.eng});
+    const m=model;
+    document.querySelectorAll('.pick').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.id===st.id)));
+    document.querySelectorAll('#segT button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.v===st.T)));
+    document.querySelectorAll('#segR button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.v===st.density)));
+    $('#densBox').hidden=!!M.custom||!M.towers.length;
+    const setv=(sel,v)=>{ const el=$(sel); if(document.activeElement!==el) el.value=v; };
+    setv('#inScale',m.scale); setv('#inH',m.dims.h); setv('#inW',m.dims.w); setv('#inKerf',st.fit); setv('#sheet',st.sheet); setv('#mat',st.mat);
+    if(document.activeElement!==$('#bname')&&!$('#bname').value) $('#bname').value=M.name;
+    $('#mName').textContent=M.name;
+    $('#mMeta').innerHTML='<span>'+M.city+'</span><span>'+M.years+'</span><span>'+m.stats.parts+' detal</span><span>1:'+m.scale+'</span>';
+    $('#mInfo').textContent=M.info;
+    $('#dims').innerHTML='<div><span>Eni </span>'+m.dims.w+' mm</div><div><span>Balandligi </span>'+m.dims.h+' mm</div><div><span>Chuqurligi </span>'+m.dims.d+' mm</div><div><span>Material </span>'+(st.mat==='mdf'?'MDF':'Fanera')+' '+st.T+' mm</div>';
+    $('#stats').innerHTML=
+      '<div><b>'+m.stats.parts+'</b><span>detal (P'+(m.stats.parts>99?'001':'01')+'…)</span></div>'+
+      '<div><b>'+m.stats.sheets+'</b><span>varaq '+sw+'×'+sh+'</span></div>'+
+      '<div><b>'+fmt(m.stats.cutLen/1000,1)+' m</b><span>kesish uzunligi</span></div>'+
+      '<div><b>~'+fmt(m.stats.minutes)+' daq</b><span>kesish vaqti</span></div>';
+    $('#warn').innerHTML=m.warnings.map(w=>'<div class="warn">'+w+'</div>').join('');
+    if(st.tab>=m.sheets.length) st.tab=0;
+    if(st.step>m.steps.length) st.step=0;
+    renderSheets(); renderSteps(); renderParts();
+    if(viewer&&viewer.ok&&rebuild3d!==false){
+      const keep=viewer.S&&lastKey===st.id; lastKey=st.id;
+      const S=buildScene(m); viewer.setScene(S,keep); setExplode(S,st.explode); viewer.dirty=true;
+      if(gviewer&&gviewer.ok){ const G=buildScene(m); gviewer.setScene(G,keep); G.setStep(st.step); }
+    }
+    syncExp();
+  }
+
+  function renderSheets(){
+    const m=model, n=m.sheets.length;
+    $('#tabs').innerHTML='';
+    m.sheets.forEach((s,i)=>{ const b=document.createElement('button'); b.textContent='Varaq '+(i+1)+'/'+n; b.setAttribute('aria-pressed',String(i===st.tab)); b.onclick=()=>{st.tab=i;renderSheets();}; $('#tabs').appendChild(b); });
+    $('#sheetbox').innerHTML=MG.sheetSVG(m.sheets[st.tab],m.o,'display',st.tab,n);
+    document.querySelectorAll('#layers input').forEach(c=>$('#sheetbox').classList.toggle('hide-'+c.dataset.l,!c.checked));
+    $('#nestInfo').textContent='Joylash (Auto Nest): '+m.stats.parts+' detal · '+n+' varaq · detal chegaralari varaq maydonining '+Math.round(m.stats.util*100)+'% ini egallaydi · strategiya: '+m.sheets.strategy+'. Har bir detal yonida P-raqami bor.';
+    $('#copyMsg').textContent=''; $('#fb').hidden=true; $('#pngout').innerHTML='';
+  }
+  function renderSteps(){
+    const m=model;
+    $('#steps').innerHTML=m.steps.map(s=>'<li><button class="step" data-n="'+s.n+'" aria-pressed="'+(st.step===s.n)+'"><b class="no">STEP '+String(s.n).padStart(2,'0')+'</b><span class="tt">'+s.title+'</span><span class="tx">'+s.text+'</span></button></li>').join('');
+    document.querySelectorAll('#steps .step').forEach(b=>b.onclick=()=>setStep(+b.dataset.n));
+  }
+  function setStep(n){
+    const N=model.steps.length; st.step=clamp(n,0,N);
+    document.querySelectorAll('#steps .step').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.n===st.step)));
+    if(gviewer&&gviewer.S) gviewer.S.setStep(st.step); if(gviewer) gviewer.dirty=true;
+  }
+  $('#gAll').onclick=()=>setStep(0); $('#gPrev').onclick=()=>setStep(st.step<=1?model.steps.length:st.step-1); $('#gNext').onclick=()=>setStep(st.step>=model.steps.length?1:st.step+1);
+  function renderParts(){
+    const m=model; const L=m.parts.slice().sort((a,b)=>a.seq-b.seq);
+    $('#parts').innerHTML=L.map(p=>'<tr><td><span class="badge">'+p.num+'</span></td><td>'+p.name+'</td><td>'+p.group+'</td><td class="n">'+(p.stage+1)+'</td><td class="n">'+fmt(p.w,1)+' × '+fmt(p.h,1)+'</td></tr>').join('');
+  }
+
+  async function copy(text,label){
+    const msg=$('#copyMsg'), fb=$('#fb');
+    try{ await navigator.clipboard.writeText(text); msg.textContent=label+' nusxalandi ('+Math.round(text.length/1024)+' KB). Matn fayliga saqlang.'; fb.hidden=true; toast(label+' nusxalandi.'); }
+    catch(e){ fb.value=text; fb.hidden=false; fb.focus(); fb.select(); msg.textContent='Kod pastdagi maydonda tanlandi — Ctrl/Cmd+C bosing.'; }
+  }
+  const svgOf=i=>MG.sheetSVG(model.sheets[i],model.o,'export',i,model.sheets.length);
+  const copySvg=()=>copy(svgOf(st.tab),'Varaq '+(st.tab+1)+' SVG');
+  const copyDxf=()=>copy(MG.sheetDXF(model.sheets[st.tab],model.o),'Varaq '+(st.tab+1)+' DXF');
+  $('#copy').onclick=copySvg; $('#aSvg').onclick=()=>{ copySvg(); $('#sheets').scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('#copyDxf').onclick=copyDxf; $('#aDxf').onclick=()=>{ copyDxf(); $('#sheets').scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('#copyAll').onclick=()=>copy(model.sheets.map((s,i)=>'<!-- Varaq '+(i+1)+'/'+model.sheets.length+' -->\n'+svgOf(i)).join('\n\n'),'Barcha varaqlar SVG');
+  $('#copyDxfAll').onclick=()=>copy(model.sheets.length>1?'Har bir varaq alohida DXF fayl bo‘lishi kerak — varaqni tanlab “Varaq DXF nusxasi” ni bosing.\n':MG.sheetDXF(model.sheets[0],model.o),'DXF');
+  function png(){
+    const m=model, w=1800, h=Math.round(w*m.o.sheetH/m.o.sheetW);
+    const svg=svgOf(st.tab).replace(/stroke-width="0\.0762"/g,'stroke-width="0.35"').replace(/stroke-width="0\.3"/g,'stroke-width="0.6"').replace(/font-size="([\d.]+)"/g,(a,v)=>'font-size="'+Math.max(3,+v*1.5)+'"');
+    const img=new Image(); img.onload=()=>{ try{ const c=document.createElement('canvas'); c.width=w; c.height=h; const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,w,h); x.drawImage(img,0,0,w,h);
+      $('#pngout').innerHTML='<img alt="Kesish varag‘i PNG ko‘rinishi" src="'+c.toDataURL('image/png')+'"><p class="note">PNG tayyor: rasm ustiga o‘ng tugma (yoki bosib turish) → “Rasmni saqlash”.</p>'; toast('PNG ko‘rinish pastdagi varaq bo‘limida.'); }catch(e){ toast('PNG yaratib bo‘lmadi bu brauzerda.',true); } };
+    img.onerror=()=>toast('PNG yaratib bo‘lmadi bu brauzerda.',true);
+    img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    $('#sheets').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('#aPng').onclick=png;
+  $('#aPdf').onclick=()=>toast('PDF faylni brauzer ichida yaratib saqlab bo‘lmaydi (yuklab olish bloklangan). To‘liq o‘lchamli PDF kesish maketi, SVG, DXF va PNG fayllari suhbatda zip paketda yuboriladi.');
+  $('#aGen').onclick=()=>{ const r=applyName(); if(r==='changed') {} else if(r===false){ toast('Bino nomi topilmadi — yuqoridagi xabarga qarang.',true); return; } update(true); toast('Model yaratildi: '+model.stats.parts+' detal, '+model.stats.sheets+' varaq.'); $('#top3d').scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('#a3d').onclick=()=>{ if(viewer&&viewer.ok) viewer.setView('front'); $('#view').scrollIntoView({behavior:'smooth',block:'center'}); };
+  $('#aExp').onclick=()=>{ animExp(st.explode>.5?0:1); $('#view').scrollIntoView({behavior:'smooth',block:'center'}); };
+  $('#aNest').onclick=()=>{ update(false); toast('Auto Nest: '+model.stats.parts+' detal '+model.stats.sheets+' varaqqa joylandi, strategiya '+model.sheets.strategy+'.'); $('#sheets').scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('#aGuide').onclick=()=>{ if(!st.step) setStep(1); $('#guideSec').scrollIntoView({behavior:'smooth',block:'start'}); };
+
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches; if(reduce) st.spin=false;
+  syncSpin();
+  if(window.THREE){
+    viewer=new Viewer($('#view'),{spin:()=>st.spin,speed:.0025,stop:()=>{ if(st.spin){ st.spin=false; syncSpin(); } }});
+    gviewer=new Viewer($('#gview'),{spin:()=>!reduce,speed:.0018,stop:()=>{}});
+    window.__v=viewer; window.__g=gviewer;
+  } else $('#view').insertAdjacentHTML('afterbegin','<div class="nogl">3D kutubxona yuklanmadi. Kesish varaqlari quyida.</div>');
+  $('#bname').value=MG.MON[st.id].name;
+  update(true);
+  if(viewer&&viewer.ok) setTimeout(thumbs,60);
+})();
+</script>
+
+</body></html>

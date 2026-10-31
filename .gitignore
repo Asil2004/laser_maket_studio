@@ -1,0 +1,6 @@
+# LaserMaket Git Ignore
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+storage/

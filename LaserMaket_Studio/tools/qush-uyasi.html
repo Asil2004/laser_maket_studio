@@ -1,0 +1,1202 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Qush uyasi generatori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: workshop bench — sticky parameter rail (4 numbered steps) beside a dark "laser bay" 3D stage, stat strip, then tabbed outputs (cut sheets / parts / cost / assembly) */
+:root{
+  --bg:#ECEFE8; --surface:#FAFBF7; --sunken:#E2E7DE; --fg:#1C2722; --muted:#5A6860; --line:#D0D7CC;
+  --accent:#2F6B4F; --accent-fg:#FFFFFF; --accent-soft:#DCEBE2; --warn:#B4541C; --sun:#E8B23A; --laser:#E0362C;
+  --ply:#DDBF8F; --ply-edge:#A67C4B; --grain:#8E6538; --burnt:#4A2E1B; --hole:#2B2119; --stage:#E3E8DE; --sheet:#EFE3CC; --engrave:#2456C9;
+  --bay-1:#25332C; --bay-2:#121815; --bay-fg:#E9EFE9; --bay-muted:#9DB0A5;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:16px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121815; --surface:#1A221E; --sunken:#151C18; --fg:#E7ECE6; --muted:#98A69D; --line:#2C3832;
+  --accent:#6CC199; --accent-fg:#0F1A14; --accent-soft:#1F3A2D; --warn:#F09A5E; --sun:#F0C25A; --laser:#FF6A5C;
+  --stage:#1F2924; --sheet:#2B261E; --engrave:#86A8FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1A221E; --sunken:#151C18; --fg:#E7ECE6; --muted:#98A69D; --line:#2C3832;
+  --accent:#6CC199; --accent-fg:#0F1A14; --accent-soft:#1F3A2D; --warn:#F09A5E; --sun:#F0C25A; --laser:#FF6A5C;
+  --stage:#1F2924; --sheet:#2B261E; --engrave:#86A8FF; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);padding-inline:16px}
+.wrap{max-width:1320px;margin:0 auto;padding-block:14px 56px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.15;text-wrap:balance}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.mono{font-family:var(--f-mono)}
+
+/* header */
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding-block:6px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:44px;height:44px;border-radius:12px;background:var(--bay-2);display:grid;place-items:center;flex:none}
+.mark svg{width:30px;height:30px}
+.brand h1{font-size:clamp(1.05rem,2.4vw,1.35rem);font-weight:700}
+.brand p{color:var(--muted);font-size:.86rem}
+.legend{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;font:500 .74rem var(--f-mono);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 11px}
+.pill i{width:14px;height:3px;border-radius:2px;display:inline-block}
+
+.app{display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:18px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:12px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto;padding-right:2px;scrollbar-width:thin}
+.view{display:flex;flex-direction:column;gap:14px;min-width:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.step-h{display:flex;align-items:center;gap:10px}
+.step-h b{width:24px;height:24px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font:600 .72rem var(--f-display);flex:none}
+.step-h h2{font-size:.92rem;font-weight:600}
+.step-h small{margin-left:auto;font:500 .7rem var(--f-mono);color:var(--muted)}
+
+/* model picker */
+.models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.model{display:grid;grid-template-columns:46px minmax(0,1fr);gap:9px;align-items:center;text-align:left;background:var(--sunken);border:1.5px solid transparent;border-radius:12px;padding:6px 8px;cursor:pointer;min-width:0;transition:border-color .15s,background .15s}
+.model:hover{border-color:var(--line)}
+.model svg{width:46px;height:46px;background:var(--stage);border-radius:9px}
+.model b{display:block;font-size:.84rem;line-height:1.2}
+.model small{display:block;color:var(--muted);font:500 .66rem/1.3 var(--f-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.model[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+
+/* fields */
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f label,.lab{font-size:.78rem;font-weight:700;line-height:1.25}
+.in{display:flex;align-items:center;background:var(--sunken);border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.in:focus-within{border-color:var(--accent)}
+.in input{border:0;background:transparent;padding:8px 10px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+.in input:focus{outline:none}
+.in .u{font:500 .7rem var(--f-mono);color:var(--muted);padding-right:10px;white-space:nowrap}
+.f.full{grid-column:1/-1}
+select{background:var(--sunken);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;width:100%}
+.check{display:flex;align-items:center;gap:8px;font-size:.86rem;cursor:pointer}
+.check input{accent-color:var(--accent);width:18px;height:18px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1.5px solid var(--line);background:var(--sunken);border-radius:10px;padding:7px 12px;cursor:pointer;font-size:.84rem;font-weight:700}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);cursor:pointer}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--accent)}
+.hint{font-size:.78rem;color:var(--muted)}
+details.adv summary{cursor:pointer;font-weight:700;font-size:.84rem;color:var(--accent);list-style:none}
+details.adv summary::-webkit-details-marker{display:none}
+details.adv summary::before{content:"+ ";font-family:var(--f-mono)}
+details.adv[open] summary::before{content:"− "}
+details.adv[open] summary{margin-bottom:10px}
+
+/* laser bay (single dark look, both themes) */
+.bay{border-radius:20px;position:relative;overflow:hidden;aspect-ratio:16/10;max-width:100%;touch-action:none;cursor:grab;
+  background:radial-gradient(120% 90% at 50% 30%,var(--bay-1) 0%,var(--bay-2) 75%);color:var(--bay-fg)}
+.bay:active{cursor:grabbing}
+.bay canvas{width:100%;height:100%;display:block}
+.bay .tag{position:absolute;left:18px;top:16px;display:flex;flex-direction:column;gap:4px;pointer-events:none}
+.bay .tag b{font-family:var(--f-display);font-size:clamp(1.05rem,2.6vw,1.5rem);font-weight:600}
+.bay .tag span{font:500 .74rem var(--f-mono);color:var(--bay-muted)}
+.bay .views{position:absolute;right:12px;top:12px;display:flex;gap:4px;background:rgba(0,0,0,.28);border-radius:12px;padding:4px}
+.bay .ctl{position:absolute;right:12px;bottom:12px;display:flex;gap:6px}
+.bay .tip{position:absolute;left:18px;bottom:16px;font:500 .7rem var(--f-mono);color:var(--bay-muted);pointer-events:none}
+.gbtn{border:0;background:transparent;color:var(--bay-fg);border-radius:9px;padding:6px 10px;cursor:pointer;font-size:.78rem;font-weight:700}
+.gbtn:hover{background:rgba(255,255,255,.1)}
+.gbtn.solid{background:rgba(255,255,255,.12);backdrop-filter:blur(6px)}
+.gbtn[aria-pressed="true"]{background:#E9EFE9;color:#121815}
+.laser-line{position:absolute;left:0;right:0;height:2px;top:0;background:linear-gradient(90deg,transparent,#FF5A4E,transparent);opacity:0;pointer-events:none}
+.laser-line.go{animation:sweep 1s ease-out}
+@keyframes sweep{0%{opacity:.9;top:0}100%{opacity:0;top:100%}}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font-family:var(--f-display);font-size:1.15rem;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:.75rem;color:var(--muted)}
+.stat.key{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.stat.key span{color:var(--accent-fg);opacity:.85}
+
+.warns{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.warns li{border-left:3px solid var(--warn);background:color-mix(in srgb,var(--warn) 9%,var(--surface));padding:8px 12px;border-radius:0 10px 10px 0;font-size:.86rem}
+
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--sunken);border-radius:12px;padding:4px;overflow-x:auto}
+.tabs button{border:0;background:transparent;border-radius:9px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:.86rem;white-space:nowrap;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.panel-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.panel-h h2{font-size:1rem;font-weight:600}
+
+.sheets{display:flex;flex-direction:column;gap:16px}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.sheet-h b{font-family:var(--f-display);font-size:.88rem;font-weight:600}
+.sheet-h span{font:500 .72rem var(--f-mono);color:var(--muted)}
+.sheet-svg{overflow-x:auto;background:var(--sunken);border-radius:12px;padding:10px}
+.sheet-svg svg{width:100%;height:auto;display:block;min-width:420px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer;border:2px solid var(--accent);font-size:.86rem}
+.btn.primary{background:var(--accent);color:var(--accent-fg)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.toast{font-size:.84rem;color:var(--accent);font-weight:700;min-height:1.2em}
+
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{font:500 .68rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+td.n,th.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+tr:last-child td{border-bottom:0}
+tr.total td{font-weight:800;border-top:2px solid var(--fg)}
+.cost-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:18px;align-items:start}
+.price-big{font-family:var(--f-display);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;font-variant-numeric:tabular-nums}
+ol.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;font-size:.92rem;max-width:70ch}
+ol.steps li::marker{font-family:var(--f-mono);color:var(--muted)}
+
+.p{fill:var(--ply);stroke:var(--ply-edge);stroke-width:2;stroke-linejoin:round}
+.pd{fill:var(--ply-edge);stroke:var(--ply-edge);stroke-width:2;stroke-linejoin:round}
+.h{fill:var(--hole)} .t{fill:var(--ply-edge)} .ln{stroke:var(--ply-edge);stroke-width:1.5;fill:none} .gr{stroke:var(--line);stroke-width:2}
+
+@media (max-width:1020px){.app{grid-template-columns:1fr}.rail{position:static;max-height:none;overflow:visible;order:2}.view{order:1}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.cost-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.bay .tip{display:none}.bay{aspect-ratio:1/1}.bay .views{top:auto;bottom:12px;left:12px;right:auto}.bay .ctl{bottom:12px}.gbtn{padding:6px 8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat.key{grid-column:1/-1}}
+@media (max-width:400px){.models{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.laser-line.go{animation:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><polygon points="5,19 20,5 35,19" fill="#DDBF8F" stroke="#4A2E1B" stroke-width="1.6"/><rect x="10" y="18" width="20" height="17" fill="#DDBF8F" stroke="#4A2E1B" stroke-width="1.6"/><circle cx="20" cy="25" r="4.2" fill="#121815"/><line x1="2" y1="11" x2="38" y2="11" stroke="#FF5A4E" stroke-width="1.2" stroke-dasharray="2 2"/></svg></div>
+      <div>
+        <h1>Qush uyasi generatori</h1>
+        <p>10 model · tishli birikma · lazer uchun tayyor SVG</p>
+      </div>
+    </div>
+    <div class="legend" aria-label="Chizma ranglari">
+      <span class="pill"><i style="background:#FF0000"></i>kesish</span>
+      <span class="pill"><i style="background:#0000FF"></i>gravyura</span>
+      <span class="pill">mm</span>
+    </div>
+  </header>
+
+  <div class="app">
+    <aside class="rail">
+      <section class="box">
+        <div class="step-h"><b>1</b><h2>Model</h2><small id="modelCode">M-01</small></div>
+        <div class="models" id="models" role="group" aria-label="Model tanlash"></div>
+      </section>
+
+      <section class="box">
+        <div class="step-h"><b>2</b><h2>O‘lchamlar</h2></div>
+        <div class="f full">
+          <label for="bird">Qaysi qush uchun</label>
+          <select id="bird"></select>
+        </div>
+        <div class="fields" id="fields"></div>
+        <label class="check" id="scallopRow"><input type="checkbox" id="scallop"> Tom chekkasi to‘lqinsimon</label>
+      </section>
+
+      <section class="box">
+        <div class="step-h"><b>3</b><h2>Pardoz va yozuv</h2></div>
+        <div class="seg" role="group" aria-label="Pardoz" id="finish">
+          <button type="button" data-fin="tabiiy" aria-pressed="true">Tabiiy</button>
+          <button type="button" data-fin="lak" aria-pressed="false">Lak</button>
+          <button type="button" data-fin="rang" aria-pressed="false">Bo‘yalgan</button>
+        </div>
+        <div id="paintRows" hidden>
+          <div class="f" style="margin-bottom:10px"><span class="lab">Tom rangi</span><div class="sw" id="swRoof"></div></div>
+          <div class="f"><span class="lab">Devor rangi</span><div class="sw" id="swWall"></div></div>
+        </div>
+        <div class="f full">
+          <label for="engr">Old devorga gravyura</label>
+          <div class="in"><input type="text" id="engr" maxlength="22" placeholder="Masalan: Bog‘imiz 2026"><span class="u" id="engrN">0/22</span></div>
+        </div>
+      </section>
+
+      <section class="box">
+        <div class="step-h"><b>4</b><h2>Ishlab chiqarish</h2></div>
+        <div class="fields" id="fieldsProd"></div>
+        <details class="adv">
+          <summary>Lazer sozlamalari</summary>
+          <div class="fields" id="fieldsLaser"></div>
+          <label class="check" style="margin-top:10px"><input type="checkbox" id="labels" checked> Detal nomlarini gravyura qilish</label>
+        </details>
+      </section>
+    </aside>
+
+    <main class="view">
+      <div class="bay" id="stage">
+        <canvas id="gl" hidden aria-label="Qush uyasining 3D ko‘rinishi" role="img"></canvas><canvas id="cv" aria-label="Qush uyasining 3D ko‘rinishi" role="img"></canvas>
+        <div class="laser-line" id="laser"></div>
+        <div class="tag"><b id="mName">Klassik</b><span id="mDims"></span></div>
+        <div class="views" role="group" aria-label="Ko‘rinish burchagi">
+          <button class="gbtn" type="button" data-view="iso">3/4</button>
+          <button class="gbtn" type="button" data-view="front">Old</button>
+          <button class="gbtn" type="button" data-view="side">Yon</button>
+          <button class="gbtn" type="button" data-view="top">Tepa</button>
+        </div>
+        <div class="ctl">
+          <button class="gbtn solid" type="button" id="explode" aria-pressed="false">Ajratish</button>
+          <button class="gbtn solid" type="button" id="zoomOut" aria-label="Kichraytirish">−</button>
+          <button class="gbtn solid" type="button" id="zoomIn" aria-label="Kattalashtirish">+</button>
+        </div>
+        <span class="tip">Suring: aylantirish · ikki barmoq yoki g‘ildirak: kattalashtirish</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b id="sParts">0</b><span>detal</span></div>
+        <div class="stat"><b id="sSheets">0</b><span>list fanera</span></div>
+        <div class="stat"><b id="sCut">0</b><span>kesish uzunligi</span></div>
+        <div class="stat"><b id="sTime">0</b><span>lazer vaqti</span></div>
+        <div class="stat key"><b id="sPrice">0</b><span>bir dona tannarxi</span></div>
+      </div>
+
+      <ul class="warns" id="warns"></ul>
+
+      <div class="tabs" role="tablist" aria-label="Natijalar">
+        <button role="tab" type="button" id="tab-cut" aria-controls="pn-cut" aria-selected="true">Kesish chizmasi</button>
+        <button role="tab" type="button" id="tab-parts" aria-controls="pn-parts" aria-selected="false">Detallar</button>
+        <button role="tab" type="button" id="tab-cost" aria-controls="pn-cost" aria-selected="false">Narx hisobi</button>
+        <button role="tab" type="button" id="tab-steps" aria-controls="pn-steps" aria-selected="false">Yig‘ish</button>
+      </div>
+
+      <section class="box" role="tabpanel" id="pn-cut" aria-labelledby="tab-cut">
+        <div class="panel-h">
+          <h2>Kesish chizmasi</h2>
+          <button class="btn primary" type="button" id="dlAll">Hammasini SVG qilib yuklash</button>
+        </div>
+        <div class="sheets" id="sheets"></div>
+        <p class="toast" id="toast" role="status"></p>
+      </section>
+
+      <section class="box" role="tabpanel" id="pn-parts" aria-labelledby="tab-parts" hidden>
+        <div class="panel-h"><h2>Detallar ro‘yxati</h2><span class="hint" id="partsHint"></span></div>
+        <div class="tbl"><table>
+          <thead><tr><th>Detal</th><th class="n">Bitta uyada</th><th class="n">Jami</th><th class="n">O‘lcham, mm</th></tr></thead>
+          <tbody id="partsBody"></tbody>
+        </table></div>
+      </section>
+
+      <section class="box" role="tabpanel" id="pn-cost" aria-labelledby="tab-cost" hidden>
+        <div class="cost-grid">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <h2 style="font-size:1rem;font-weight:600">Narxlar</h2>
+            <div class="fields" id="fieldsCost"></div>
+            <p class="hint">Fanera detallar egallagan maydon bo‘yicha, 15% chiqindi qo‘shib hisoblanadi. Narxlarni o‘zingizniki bilan almashtiring.</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div><p class="hint">Tavsiya etilgan sotish narxi (1 dona)</p><p class="price-big" id="sellPrice">0</p></div>
+            <div class="tbl"><table><tbody id="costBody"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="box" role="tabpanel" id="pn-steps" aria-labelledby="tab-steps" hidden>
+        <h2 style="font-size:1rem;font-weight:600">Yig‘ish tartibi</h2>
+        <ol class="steps" id="steps"></ol>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="../vendor/three.min.js"></script>
+<script src="../vendor/clipper.js"></script>
+<script>if(!window.ClipperLib)document.write('<script src="../vendor/clipper.js"><\/script>')</script>
+<script>
+/* ===== Geometriya dvigateli: mm, y yuqoriga ===== */
+const BH = (function(root){
+const CL = root.ClipperLib || (typeof require!=='undefined' ? require('./package/clipper.js') : null);
+const SC = 1000;
+const area = p => { let a=0; for(let i=0;i<p.length;i++){const q=p[i],r=p[(i+1)%p.length]; a+=q[0]*r[1]-r[0]*q[1];} return a/2; };
+const ccw = p => area(p) < 0 ? p.slice().reverse() : p;
+const toC = p => ccw(p).map(([x,y])=>({X:Math.round(x*SC),Y:Math.round(y*SC)}));
+const fromC = p => p.map(q=>[q.X/SC,q.Y/SC]);
+const rect = (x,y,w,h) => [[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+function frame(p0,p1){const dx=p1[0]-p0[0],dy=p1[1]-p0[1],L=Math.hypot(dx,dy),d=[dx/L,dy/L];return{L,d,n:[-d[1],d[0]]};}
+function quad(p0,f,a,b,v0,v1){const P=(u,v)=>[p0[0]+f.d[0]*u+f.n[0]*v,p0[1]+f.d[1]*u+f.n[1]*v];return[P(a,v0),P(b,v0),P(b,v1),P(a,v1)];}
+function oddN(len,fw){let n=Math.max(3,Math.round(len/fw)); if(n%2===0) n+=1; return n;}
+/* Barmoq birikma: kontur CCW, ichkari = chap tomon. 'own' burchakni egallaydi, 'notch' bo'shatadi */
+function fingers(p0,p1,o){
+  const f=frame(p0,p1),L=f.L,fl=Math.min(o.flen??L,L),n=oddN(fl,o.fw),s=fl/n,out=[];
+  for(let i=0;i<n;i++){
+    const notched = o.parity==='notch' ? i%2===0 : i%2===1;
+    if(!notched) continue;
+    let a=i*s,b=(i+1)*s;
+    if(o.fromEnd){const t=a;a=L-b;b=L-t;}
+    if(a<1e-6)a=-1; if(b>L-1e-6)b=L+1;
+    out.push(quad(p0,f,a,b,-1,o.T));
+  }
+  return out;
+}
+function tabs(p0,p1,fr,tw,T){const f=frame(p0,p1);return fr.map(t=>quad(p0,f,t*f.L-tw/2,t*f.L+tw/2,0.5,-T));}
+
+function part(name,outline,o={}){
+  let c=new CL.Clipper();
+  c.AddPaths([outline,...(o.tabs||[])].map(toC),CL.PolyType.ptSubject,true);
+  let sol=new CL.Paths();
+  c.Execute(CL.ClipType.ctUnion,sol,CL.PolyFillType.pftNonZero,CL.PolyFillType.pftNonZero);
+  if(o.notches&&o.notches.length){
+    c=new CL.Clipper(); c.AddPaths(sol,CL.PolyType.ptSubject,true);
+    c.AddPaths(o.notches.map(toC),CL.PolyType.ptClip,true);
+    const s2=new CL.Paths(); c.Execute(CL.ClipType.ctDifference,s2,CL.PolyFillType.pftNonZero,CL.PolyFillType.pftNonZero); sol=s2;
+  }
+  sol = CL.Clipper.CleanPolygons(sol, 0.01*SC);
+  return {name, raw:sol.map(fromC).filter(p=>p.length>2&&Math.abs(area(p))>3), circles:o.circles||[], slots:o.slots||[], lines:o.lines||[],
+          places:o.places||[], bend:o.bend||null, bendInfo:o.bendInfo||null, engrave:null};
+}
+
+const FR=[0.28,0.72], FRP=[0.3,0.7];
+const twOf = L => Math.max(8,Math.min(22,L*0.16));
+const hang = (cx,cy) => [{x:cx-12,y:cy,r:2.5},{x:cx+12,y:cy,r:2.5}];
+const drains = (X,Y) => [[0.35,0.35],[0.65,0.35],[0.35,0.65],[0.65,0.65]].map(([a,b])=>({x:X*a,y:Y*b,r:2.5}));
+const vec = {
+  add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]], mul:(a,k)=>[a[0]*k,a[1]*k,a[2]*k],
+};
+const PL = (O,U,V,N) => ({O,U,V,N});
+
+function floorPart(p,X,Y,sides,extra={}){
+  const T=p.T,fw=p.fw,o=[[0,0],[X,0],[X,Y],[0,Y]];
+  const notches=[...fingers(o[0],o[1],{T,fw,parity:'notch'}),...fingers(o[2],o[3],{T,fw,parity:'notch'})];
+  if(sides) notches.push(...fingers(o[1],o[2],{T,fw,parity:'notch'}),...fingers(o[3],o[0],{T,fw,parity:'notch'}));
+  return part('Pol',o,{notches,circles:extra.circles||drains(X,Y),slots:extra.slots||[],places:[PL([0,0,0],[1,0,0],[0,1,0],[0,0,1])]});
+}
+
+/* ---- Ikki qiyalikli tom ---- */
+function gable(p,opt={}){
+  const T=p.T,fw=p.fw,X=p.W+2*T,Y=p.D+2*T,Hw=(opt.aframe?0:p.H)+T,R=p.R,ov=p.ov;
+  const noSides=!!opt.aframe, Hs=noSides?0:((opt.rail?p.rail:p.H)+T);
+  const Ls=Math.hypot(X/2,R), tw=twOf(Ls), parts=[];
+  const np=opt.parts?Math.max(0,Math.round(p.np)):0;
+  const c=(p.W-np*T)/(np+1);
+  const px=[...Array(np)].map((_,i)=>T+(i+1)*c+i*T);
+  const ptw=Math.min(20,p.D*0.2), ptwH=Math.min(20,p.H*0.25);
+  const hl=(opt.openFront?p.frontLow:0)+T;
+  for(const isFront of [true,false]){
+    const low=isFront&&opt.openFront; let o; const notches=[],tb=[],circles=[],slots=[];
+    if(low){
+      o=[[0,0],[X,0],[X,hl],[0,hl]];
+      notches.push(...fingers(o[0],o[1],{T,fw,parity:'own'}),...fingers(o[1],o[2],{T,fw,parity:'own'}),...fingers(o[3],o[0],{T,fw,parity:'own',fromEnd:true}));
+    } else {
+      o=[[0,0],[X,0],[X,Hw],[X/2,Hw+R],[0,Hw]];
+      notches.push(...fingers(o[0],o[1],{T,fw,parity:'own'}));
+      if(!noSides) notches.push(...fingers(o[1],o[2],{T,fw,parity:'own',flen:Hs}),...fingers(o[4],o[0],{T,fw,parity:'own',flen:Hs,fromEnd:true}));
+      tb.push(...tabs(o[2],o[3],FR,tw,T),...tabs(o[3],o[4],FR,tw,T));
+    }
+    if(isFront&&!low&&!opt.noHole){
+      if(np) for(let j=0;j<=np;j++) circles.push({x:T+j*(c+T)+c/2,y:T+p.hh,r:p.d/2});
+      else circles.push({x:X/2,y:T+p.hh,r:p.d/2});
+    }
+    if(!isFront) circles.push(...hang(X/2,Hw+R*0.35));
+    px.forEach(x=>slots.push(rect(x,T+p.H/2-ptwH/2,T,ptwH)));
+    parts.push(part(isFront?(low?'Old to‘siq':'Old devor'):'Orqa devor',o,{notches,tabs:tb,circles,slots,
+      places:[PL([0,isFront?0:Y-T,0],[1,0,0],[0,0,1],[0,1,0])]}));
+  }
+  if(!noSides){
+    const o=[[0,0],[Y,0],[Y,Hs],[0,Hs]];
+    const notches=[...fingers(o[0],o[1],{T,fw,parity:'own'}),...fingers(o[1],o[2],{T,fw,parity:'notch'}),
+      ...fingers(o[3],o[0],{T,fw,parity:'notch',flen:opt.openFront?hl:Hs,fromEnd:true})];
+    const circles=(!opt.rail&&Hs>70)?[{x:Y*0.3,y:Hs-12,r:3},{x:Y*0.7,y:Hs-12,r:3}]:[];
+    parts.push(part(opt.rail?'Yon panjara':'Yon devor',o,{notches,circles,
+      places:[PL([0,0,0],[0,1,0],[0,0,1],[1,0,0]),PL([X-T,0,0],[0,1,0],[0,0,1],[1,0,0])]}));
+  }
+  const fslots=[]; px.forEach(x=>FRP.forEach(f=>fslots.push(rect(x,T+f*p.D-ptw/2,T,ptw))));
+  parts.push(floorPart(p,X,Y,!noSides,{slots:fslots,circles:opt.rail?[...drains(X,Y),{x:X/2,y:Y/2,r:2.5}]:drains(X,Y)}));
+  const Wd=Y+2*ov;
+  const roof=(name,len,right)=>{
+    let o;
+    if(opt.scallop){
+      const n=Math.max(3,Math.round(Wd/24)),r=Wd/(2*n); o=[];
+      for(let i=0;i<n;i++){const cx=r*(2*i+1);for(let k=(i?1:0);k<=12;k++){const t=Math.PI+Math.PI*k/12;o.push([cx+r*Math.cos(t),r*Math.sin(t)]);}}
+      o.push([Wd,len],[0,len]);
+    } else o=[[0,0],[Wd,0],[Wd,len],[0,len]];
+    const slots=[], us=opt.openFront?[ov+Y-T]:[ov,ov+Y-T];
+    us.forEach(u=>FR.forEach(f=>slots.push(rect(u,ov+f*Ls-tw/2,T,tw))));
+    const S=right?[-X/2/Ls,0,R/Ls]:[X/2/Ls,0,R/Ls], N=right?[R/Ls,0,X/2/Ls]:[-R/Ls,0,X/2/Ls];
+    const E=[right?X:0,0,Hw], O=vec.add(vec.add(E,vec.mul(S,-ov)),[0,-ov,0]);
+    return part(name,o,{slots,places:[PL(O,[0,1,0],S,N)]});
+  };
+  const al=Math.atan2(R,X/2), ext=Math.min(3*T,T/Math.max(0.2,Math.sin(2*al)));
+  parts.push(roof('Tom (o‘ng)',Ls+ov+ext,true), roof('Tom (chap)',Ls+ov-Math.max(0,T/Math.tan(2*al)),false));
+  if(np){
+    const o=[[0,0],[p.D,0],[p.D,p.H],[0,p.H]];
+    const tb=[...tabs(o[0],o[1],FRP,ptw,T),...tabs(o[3],o[0],[0.5],ptwH,T),...tabs(o[1],o[2],[0.5],ptwH,T)];
+    parts.push(part('Bo‘linma',o,{tabs:tb,places:px.map(x=>PL([x,T,T],[0,1,0],[0,0,1],[1,0,0]))}));
+  }
+  return {parts, dims:[X+2*ov, Y+2*ov, Hw+R+T]};
+}
+
+/* ---- Bir qiyalikli tom ---- */
+function shed(p){
+  const T=p.T,fw=p.fw,X=p.W+2*T,Y=p.D+2*T,Hf=p.H+T,Hb=Hf-p.drop,ov=p.ov;
+  const Ls=Math.hypot(Y,Hf-Hb),tw=twOf(Ls),Hf2=Hf-T*(Hf-Hb)/Y,parts=[];
+  const wall=(name,h,y0,circles)=>{const o=[[0,0],[X,0],[X,h],[0,h]];
+    return part(name,o,{notches:[...fingers(o[0],o[1],{T,fw,parity:'own'}),...fingers(o[1],o[2],{T,fw,parity:'own'}),...fingers(o[3],o[0],{T,fw,parity:'own',fromEnd:true})],
+      circles,places:[PL([0,y0,0],[1,0,0],[0,0,1],[0,1,0])]});};
+  parts.push(wall('Old devor',Hf2,0,[{x:X/2,y:T+p.hh,r:p.d/2}]));
+  parts.push(wall('Orqa devor',Hb,Y-T,hang(X/2,Hb-22)));
+  const o=[[0,0],[Y,0],[Y,Hb],[0,Hf]];
+  parts.push(part('Yon devor',o,{
+    notches:[...fingers(o[0],o[1],{T,fw,parity:'own'}),...fingers(o[1],o[2],{T,fw,parity:'notch'}),...fingers(o[3],o[0],{T,fw,parity:'notch',flen:Hf2,fromEnd:true})],
+    tabs:tabs(o[2],o[3],FR,tw,T),
+    circles:Hb>80?[{x:Y*0.5,y:Hb-14,r:3}]:[],
+    places:[PL([0,0,0],[0,1,0],[0,0,1],[1,0,0]),PL([X-T,0,0],[0,1,0],[0,0,1],[1,0,0])]}));
+  parts.push(floorPart(p,X,Y,true));
+  const ovF=ov*1.6,ovB=ov*0.6,Wd=X+2*ov,len=Ls+ovF+ovB,slots=[];
+  [ov,ov+X-T].forEach(u=>FR.forEach(f=>slots.push(rect(u,ovB+f*Ls-tw/2,T,tw))));
+  const S=[0,-Y/Ls,(Hf-Hb)/Ls],N=[0,(Hf-Hb)/Ls,Y/Ls];
+  parts.push(part('Tom',rect(0,0,Wd,len),{slots,places:[PL(vec.add([-ov,Y,Hb],vec.mul(S,-ovB)),[1,0,0],S,N)]}));
+  return {parts,dims:[Wd,Y+ovF,Hf+T]};
+}
+
+/* ---- Tekis qopqoqli quti ---- */
+function box(p){
+  const T=p.T,fw=p.fw,X=p.W+2*T,Y=p.D+2*T,Ho=p.H+T,ov=p.ov,parts=[];
+  const wall=(name,y0,circles,slots)=>{const o=[[0,0],[X,0],[X,Ho],[0,Ho]];
+    return part(name,o,{notches:[...fingers(o[0],o[1],{T,fw,parity:'own'}),...fingers(o[1],o[2],{T,fw,parity:'own'}),...fingers(o[3],o[0],{T,fw,parity:'own',fromEnd:true})],
+      circles,slots,places:[PL([0,y0,0],[1,0,0],[0,0,1],[0,1,0])]});};
+  parts.push(wall('Old devor',0,[{x:X/2,y:T+p.hh,r:p.d/2}],[]));
+  parts.push(wall('Orqa devor',Y-T,[],[rect(X*0.25-10,Ho-18,20,4),rect(X*0.75-10,Ho-18,20,4)]));
+  const o=[[0,0],[Y,0],[Y,Ho],[0,Ho]];
+  parts.push(part('Yon devor',o,{notches:[...fingers(o[0],o[1],{T,fw,parity:'own'}),...fingers(o[1],o[2],{T,fw,parity:'notch'}),...fingers(o[3],o[0],{T,fw,parity:'notch',fromEnd:true})],
+    circles:[{x:Y*0.5,y:Ho-14,r:3}],
+    places:[PL([0,0,0],[0,1,0],[0,0,1],[1,0,0]),PL([X-T,0,0],[0,1,0],[0,0,1],[1,0,0])]}));
+  parts.push(floorPart(p,X,Y,true));
+  parts.push(part('Qopqoq',rect(0,0,X+2*ov,Y+2*ov),{circles:[{x:(X+2*ov)/2,y:(Y+2*ov)/2,r:6}],places:[PL([-ov,-ov,Ho],[1,0,0],[0,1,0],[0,0,1])]}));
+  parts.push(part('Qopqoq tiqini',rect(0,0,p.W-1,p.D-1),{places:[PL([T+0.5,T+0.5,Ho-T],[1,0,0],[0,1,0],[0,0,1])]}));
+  return {parts,dims:[X+2*ov,Y+2*ov,Ho+T]};
+}
+
+/* ---- Bochka: egiluvchan fanera ---- */
+function barrel(p){
+  const T=p.T,Wi=p.W,r=Wi/2,Hs=p.H,m=5,e=10,Lf=p.D,Bw=Lf+2*T+2*m;
+  const rho=r+T/2,arcB=Math.PI*rho,P=2*Hs+arcB,parts=[],ft=Math.min(20,Wi*0.15);
+  const o=[[0,0],[Wi,0],[Wi,Hs]];
+  for(let k=1;k<48;k++){const t=Math.PI*k/48;o.push([r+r*Math.cos(t),Hs+r*Math.sin(t)]);}
+  o.push([0,Hs]);
+  const n=o.length, wf=[0.3,0.75];
+  const tb=[...tabs(o[1],o[2],wf,10,T),...tabs(o[n-1],o[0],wf,10,T)];
+  const fs=[rect(Wi*0.25-ft/2,e,ft,T),rect(Wi*0.75-ft/2,e,ft,T)];
+  for(const isFront of [true,false]){
+    parts.push(part(isFront?'Old devor':'Orqa devor',o,{tabs:tb,slots:fs,
+      circles:isFront?[{x:r,y:e+T+p.hh,r:p.d/2}]:hang(r,Hs+r*0.5),
+      places:[PL([0,isFront?m:Bw-m-T,0],[1,0,0],[0,0,1],[0,1,0])]}));
+  }
+  const fo=[[0,0],[Wi,0],[Wi,Lf],[0,Lf]];
+  parts.push(part('Pol',fo,{tabs:[...tabs(fo[0],fo[1],[0.25,0.75],ft,T),...tabs(fo[2],fo[3],[0.25,0.75],ft,T)],
+    circles:drains(Wi,Lf),places:[PL([0,m+T,e],[1,0,0],[0,1,0],[0,0,1])]}));
+  const sl=[];
+  const sPos=[...wf.map(f=>f*Hs),...wf.map(f=>Hs+arcB+f*Hs)];
+  sPos.forEach(s=>{sl.push(rect(s-5,m,10,T),rect(s-5,Bw-m-T,10,T));});
+  const lines=[], dx=T<=3?1.6:T<=4?2:2.6, Lc=18, g=3, per=Lc+g;
+  let row=0;
+  for(let x=Hs+3;x<=Hs+arcB-3;x+=dx,row++){
+    if(row%2===0){for(let y=-Lc/2;y<Bw;y+=per){const a=Math.max(0,y),b=Math.min(Bw,y+Lc);if(b-a>2)lines.push([x,a,x,b]);}}
+    else{for(let y=g;y<Bw-g;y+=per){const a=y+per/2-Lc/2,b=Math.min(Bw-g,a+Lc);const a2=Math.max(g,a);if(b-a2>2)lines.push([x,a2,x,b]);}}
+  }
+  const bend=(s,w,t)=>{
+    if(s<=Hs) return [Wi+t,w,s];
+    if(s<=Hs+arcB){const th=(s-Hs)/rho;return [r+(r+t)*Math.cos(th),w,Hs+(r+t)*Math.sin(th)];}
+    return [-t,w,Hs-(s-Hs-arcB)];
+  };
+  parts.push(part('Egiluvchan tom',rect(0,0,P,Bw),{slots:sl,lines,bend,bendInfo:{P,Bw,brk:[Hs,Hs+arcB]}}));
+  return {parts,dims:[Wi+2*T,Bw,Hs+r+T]};
+}
+
+const BUILD={gable,shed,box,barrel};
+
+/* ---- Kerf va normallashtirish (SVG uchun y pastga) ---- */
+function offsetPaths(paths,delta){
+  if(Math.abs(delta)<1e-9) return paths;
+  const co=new CL.ClipperOffset(2,0.25),sol=new CL.Paths();
+  co.AddPaths(paths.map(toC),CL.JoinType.jtMiter,CL.EndType.etClosedPolygon);
+  co.Execute(sol,delta*SC); return sol.map(fromC);
+}
+function prepare(pt,kerf){
+  const k=kerf/2;
+  const outs=offsetPaths(pt.raw,k);
+  const slots=pt.slots.map(s=>offsetPaths([s],-k)[0]).filter(Boolean);
+  const circles=pt.circles.map(c=>({...c,r:Math.max(0.3,c.r-k)}));
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  outs.forEach(p=>p.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}));
+  const w=x1-x0,h=y1-y0, f=([x,y])=>[x-x0,h-(y-y0)];
+  return {name:pt.name,w,h,
+    paths:outs.map(p=>p.map(f)), slots:slots.map(p=>p.map(f)),
+    circles:circles.map(c=>{const [x,y]=f([c.x,c.y]);return{x,y,r:c.r};}),
+    lines:pt.lines.map(([a,b,c,d])=>{const p1=f([a,b]),p2=f([c,d]);return[...p1,...p2];}),
+    engrave:pt.engrave?(()=>{const [x,y]=f([pt.engrave.x,pt.engrave.y]);return{...pt.engrave,x,y};})():null};
+}
+function cutLength(pp){
+  let L=0; const per=p=>{let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];s+=Math.hypot(b[0]-a[0],b[1]-a[1]);}return s;};
+  pp.paths.forEach(p=>L+=per(p)); pp.slots.forEach(p=>L+=per(p));
+  pp.circles.forEach(c=>L+=2*Math.PI*c.r); pp.lines.forEach(l=>L+=Math.hypot(l[2]-l[0],l[3]-l[1]));
+  return L;
+}
+
+/* ---- Listga joylash (qator usuli) ---- */
+function pack(items,SW,SH,gap=4,margin=6){
+  const it=items.map(o=>{
+    let rot=false,w=o.pp.w,h=o.pp.h;
+    const fitsN=w<=SW-2*margin&&h<=SH-2*margin, fitsR=h<=SW-2*margin&&w<=SH-2*margin;
+    if((!fitsN&&fitsR)||(fitsN&&fitsR&&h>w)){rot=true;[w,h]=[h,w];}
+    return {...o,rot,w,h,over:!(fitsN||fitsR)};
+  }).sort((a,b)=>b.h-a.h);
+  const sheets=[]; let sh=null,x=0,y=0,rowH=0;
+  const newSheet=()=>{sh={w:SW,h:SH,items:[]};sheets.push(sh);x=margin;y=margin;rowH=0;};
+  for(const o of it){
+    if(o.over){sheets.push({w:Math.max(SW,o.w+2*margin),h:Math.max(SH,o.h+2*margin),items:[{...o,x:margin,y:margin}],over:true});continue;}
+    if(!sh)newSheet();
+    if(x+o.w>SW-margin){x=margin;y+=rowH+gap;rowH=0;}
+    if(y+o.h>SH-margin){newSheet();}
+    sh.items.push({...o,x,y}); x+=o.w+gap; rowH=Math.max(rowH,o.h);
+  }
+  return sheets;
+}
+function xf(it){return it.rot?([x,y])=>[it.x+it.pp.h-y,it.y+x]:([x,y])=>[it.x+x,it.y+y];}
+const f2=n=>Math.round(n*100)/100;
+const pathD=(p,t)=>'M'+p.map(q=>{const [x,y]=t(q);return f2(x)+' '+f2(y);}).join('L')+'Z';
+
+function sheetSVG(sheet,{labels=true,model=''}={}){
+  let cut='',eng='';
+  for(const it of sheet.items){
+    const t=xf(it),pp=it.pp;
+    pp.paths.forEach(p=>cut+=`<path d="${pathD(p,t)}"/>`);
+    pp.slots.forEach(p=>cut+=`<path d="${pathD(p,t)}"/>`);
+    pp.circles.forEach(c=>{const [x,y]=t([c.x,c.y]);cut+=`<circle cx="${f2(x)}" cy="${f2(y)}" r="${f2(c.r)}"/>`;});
+    pp.lines.forEach(l=>{const a=t([l[0],l[1]]),b=t([l[2],l[3]]);cut+=`<line x1="${f2(a[0])}" y1="${f2(a[1])}" x2="${f2(b[0])}" y2="${f2(b[1])}"/>`;});
+    if(pp.engrave){const [x,y]=t([pp.engrave.x,pp.engrave.y]);eng+=`<text x="${f2(x)}" y="${f2(y)}" font-size="${f2(pp.engrave.fs)}" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-weight="bold"${it.rot?` transform="rotate(90 ${f2(x)} ${f2(y)})"`:''}>${esc(pp.engrave.text)}</text>`;}
+    if(labels&&!pp.lines.length){
+      const fs=Math.max(2.5,Math.min(5,pp.h/10,pp.w/14));
+      const [x,y]=t([pp.w/2,pp.h-Math.max(fs+8,pp.h*0.16)]);
+      eng+=`<text x="${f2(x)}" y="${f2(y)}" font-size="${f2(fs)}" text-anchor="middle" font-family="Arial, sans-serif"${it.rot?` transform="rotate(90 ${f2(x)} ${f2(y)})"`:''}>${esc(it.label)}</text>`;
+    }
+  }
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${sheet.w}mm" height="${sheet.h}mm" viewBox="0 0 ${sheet.w} ${sheet.h}">\n<!-- ${esc(model)} | qizil = kesish, ko'k = gravyura | o'lchov: mm -->\n<g id="kesish" fill="none" stroke="#FF0000" stroke-width="0.1">${cut}</g>\n<g id="gravyura" fill="#0000FF" stroke="none">${eng}</g>\n</svg>`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function generate(type,p,opt){
+  const res=BUILD[type](p,opt||{});
+  const txt=(p.engr||'').trim(), fr=res.parts.find(x=>x.name==='Old devor');
+  if(txt&&fr){
+    let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity; fr.raw[0].forEach(([x,y])=>{x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);});
+    const W=x1-x0, fs=Math.max(4,Math.min(9,(W*0.8)/(txt.length*0.6)));
+    const c=fr.circles.filter(c=>c.r>4).sort((a,b)=>Math.abs(a.x-(x0+x1)/2)-Math.abs(b.x-(x0+x1)/2))[0];
+    let y; if(c){y=c.y-c.r-fs*0.8-4; if(y-fs/2<y0+p.T+4) y=c.y+c.r+fs*0.8+4;} else y=y0+(y1-y0)*0.45;
+    fr.engrave={x:(x0+x1)/2,y,fs,text:txt};
+  }
+  res.prepared=res.parts.map(pt=>({pt,pp:prepare(pt,p.kerf)}));
+  res.cut=res.prepared.reduce((s,o)=>s+cutLength(o.pp)*Math.max(1,o.pt.places.length||1),0);
+  return res;
+}
+return {generate,pack,sheetSVG,xf,pathD,f2,cutLength};
+})(typeof window!=='undefined'?window:globalThis);
+if(typeof module!=='undefined') module.exports=BH;
+
+</script>
+<script>
+const ICONS = {
+klassik:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<rect class="p" x="58" y="88" width="84" height="94"/>
+<rect class="t" x="56" y="110" width="4" height="12"/><rect class="t" x="140" y="110" width="4" height="12"/><rect class="t" x="56" y="150" width="4" height="12"/><rect class="t" x="140" y="150" width="4" height="12"/>
+<polygon class="p" points="44,98 100,42 108,50 56,102"/>
+<polygon class="p" points="156,98 100,42 92,50 144,102"/>
+<g class="p">${[0,1,2,3].map(i=>`<circle cx="${50+i*7}" cy="${99-i*7}" r="4.5"/><circle cx="${150-i*7}" cy="${99-i*7}" r="4.5"/>`).join('')}</g>
+<polygon class="p" points="44,98 100,42 156,98 144,102 100,58 56,102"/>
+<circle class="h" cx="100" cy="122" r="13"/><path class="h" d="M98 134h4v10h-4z"/>
+<rect class="t" x="78" y="72" width="3" height="12" transform="rotate(45 79 78)"/><rect class="t" x="119" y="72" width="3" height="12" transform="rotate(-45 120 78)"/>`,
+skvorechnik:`<line class="gr" x1="20" y1="186" x2="180" y2="186"/>
+<rect class="p" x="68" y="68" width="64" height="118"/>
+<polygon class="p" points="58,72 142,56 144,66 60,82"/>
+<circle class="h" cx="100" cy="100" r="15"/>
+<rect class="pd" x="96" y="122" width="8" height="14" rx="2"/>
+<rect class="t" x="66" y="96" width="4" height="12"/><rect class="t" x="130" y="96" width="4" height="12"/><rect class="t" x="66" y="150" width="4" height="12"/><rect class="t" x="130" y="150" width="4" height="12"/>
+<line class="ln" x1="72" y1="170" x2="128" y2="170"/>`,
+mayna:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<rect class="p" x="52" y="84" width="96" height="98"/>
+<polygon class="p" points="40,92 100,36 160,92 150,96 100,50 50,96"/>
+<polygon class="p" points="50,96 100,50 150,96 148,86 100,46 52,86" style="display:none"/>
+<circle class="h" cx="100" cy="122" r="19"/>
+<rect class="t" x="50" y="110" width="4" height="14"/><rect class="t" x="146" y="110" width="4" height="14"/><rect class="t" x="50" y="152" width="4" height="14"/><rect class="t" x="146" y="152" width="4" height="14"/>
+<line class="ln" x1="58" y1="166" x2="142" y2="166"/>`,
+bochka:`<line class="gr" x1="20" y1="170" x2="180" y2="170"/>
+<path class="p" d="M68 70 H150 a20 50 0 0 1 0 100 H68 Z"/>
+<g class="ln">${[86,104,122,140].map(x=>`<line x1="${x}" y1="72" x2="${x}" y2="168"/>`).join('')}</g>
+<ellipse class="p" cx="68" cy="120" rx="30" ry="50"/>
+<circle class="h" cx="68" cy="110" r="14"/>
+<rect class="pd" x="64" y="132" width="8" height="14" rx="2"/>`,
+toti:`<line class="gr" x1="20" y1="178" x2="180" y2="178"/>
+<rect class="pd" x="48" y="56" width="6" height="22" rx="2"/><rect class="pd" x="146" y="56" width="6" height="22" rx="2"/>
+<rect class="p" x="46" y="72" width="108" height="12" rx="2"/>
+<rect class="p" x="52" y="84" width="96" height="94"/>
+<circle class="h" cx="80" cy="112" r="15"/>
+<rect class="pd" x="72" y="134" width="16" height="5" rx="2"/>
+<rect class="p" x="110" y="120" width="28" height="40" rx="3"/><circle class="t" cx="132" cy="140" r="2.5"/>
+<line class="ln" x1="58" y1="168" x2="142" y2="168"/>`,
+kommunal:`<line class="gr" x1="14" y1="176" x2="186" y2="176"/>
+<rect class="p" x="24" y="92" width="152" height="84"/>
+<polygon class="p" points="14,98 100,58 186,98 178,102 100,68 22,102"/>
+<line class="ln" x1="74" y1="98" x2="74" y2="176"/><line class="ln" x1="126" y1="98" x2="126" y2="176"/>
+<circle class="h" cx="49" cy="124" r="11"/><circle class="h" cx="100" cy="124" r="11"/><circle class="h" cx="151" cy="124" r="11"/>
+<rect class="pd" x="46" y="140" width="6" height="10" rx="2"/><rect class="pd" x="97" y="140" width="6" height="10" rx="2"/><rect class="pd" x="148" y="140" width="6" height="10" rx="2"/>`,
+platforma:`<line class="gr" x1="20" y1="180" x2="180" y2="180"/>
+<rect class="pd" x="58" y="74" width="84" height="98"/>
+<polygon class="p" points="50,172 58,100 58,172"/><polygon class="p" points="150,172 142,100 142,172"/>
+<rect class="p" x="48" y="168" width="104" height="12"/>
+<polygon class="p" points="40,80 100,38 160,80 152,84 100,48 48,84"/>
+<g class="h">${[[80,162],[94,164],[108,161],[120,163],[88,158]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="3" ry="2"/>`).join('')}</g>`,
+mini:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<rect class="p" x="72" y="92" width="56" height="90"/>
+<polygon class="p" points="62,96 140,78 140,88 62,106"/>
+<circle class="h" cx="100" cy="124" r="9"/>
+<rect class="t" x="70" y="118" width="4" height="10"/><rect class="t" x="126" y="118" width="4" height="10"/><rect class="t" x="70" y="156" width="4" height="10"/><rect class="t" x="126" y="156" width="4" height="10"/>`,
+kormushka:`<line class="gr" x1="20" y1="180" x2="180" y2="180"/>
+<rect class="p" x="44" y="94" width="8" height="70"/><rect class="p" x="148" y="94" width="8" height="70"/>
+<rect class="p" x="36" y="160" width="128" height="14"/>
+<rect class="p" x="36" y="152" width="8" height="10"/><rect class="p" x="156" y="152" width="8" height="10"/>
+<polygon class="p" points="26,104 100,48 174,104 164,108 100,60 36,108"/>
+<g class="h">${[60,72,84,96,108,120,132,66,90,114,138].map((x,i)=>`<ellipse cx="${x}" cy="${i<7?156:152}" rx="3.5" ry="2.2"/>`).join('')}</g>
+<line class="ln" x1="100" y1="48" x2="100" y2="22"/><circle class="ln" cx="100" cy="18" r="5"/>`,
+diy:`<g transform="rotate(-8 70 80)"><polygon class="p" points="34,60 64,36 94,60 94,124 34,124"/><circle class="h" cx="64" cy="78" r="10"/><rect class="t" x="32" y="90" width="4" height="10"/><rect class="t" x="92" y="90" width="4" height="10"/></g>
+<g transform="rotate(10 140 70)"><rect class="p" x="112" y="40" width="58" height="70"/><rect class="t" x="126" y="40" width="10" height="4"/><rect class="t" x="148" y="40" width="10" height="4"/></g>
+<g transform="rotate(4 70 160)"><rect class="p" x="28" y="138" width="80" height="34"/><g class="p">${[0,1,2,3,4,5].map(i=>`<circle cx="${34+i*13}" cy="172" r="5"/>`).join('')}</g><rect class="p" x="28" y="138" width="80" height="34"/></g>
+<g transform="rotate(-12 150 150)"><rect class="p" x="122" y="126" width="54" height="46"/></g>
+<rect class="pd" x="150" y="88" width="6" height="40" rx="3" transform="rotate(35 153 108)"/>`,
+aframe:`<line class="gr" x1="20" y1="182" x2="180" y2="182"/>
+<polygon class="p" points="40,182 100,40 160,182"/>
+<polygon class="p" points="34,184 100,30 108,38 46,184"/>
+<polygon class="p" points="166,184 100,30 92,38 154,184"/>
+<circle class="h" cx="100" cy="130" r="13"/>`
+};
+
+const MODELS = [
+ {id:'klassik',n:'Klassik',s:'tishli tom',icon:'klassik',type:'gable',opt:{scallop:true},bird:'qorabosh',p:{W:120,D:120,H:150,R:70,d:32,hh:105,ov:20}},
+ {id:'chugurchuq',n:'Chug‘urchuq',s:'baland quti',icon:'skvorechnik',type:'shed',bird:'chugurchuq',p:{W:140,D:140,H:300,drop:50,d:48,hh:220,ov:20}},
+ {id:'mayna',n:'Mayna uyi',s:'keng, yirik teshik',icon:'mayna',type:'gable',opt:{},bird:'mayna',p:{W:170,D:170,H:220,R:90,d:55,hh:150,ov:25}},
+ {id:'bochka',n:'Bochka',s:'egiluvchan tom',icon:'bochka',type:'barrel',bird:'totiqush',p:{W:150,D:200,H:60,d:45,hh:90,T:3}},
+ {id:'qafas',n:'Qafas qutisi',s:'qopqog‘i ochiladi',icon:'toti',type:'box',bird:'totiqush',p:{W:150,D:150,H:180,d:45,hh:135,ov:10}},
+ {id:'kommunal',n:'Kommunal',s:'ko‘p xonali',icon:'kommunal',type:'gable',opt:{parts:true},bird:'chumchuq',p:{W:380,D:140,H:160,R:60,d:35,hh:110,ov:20,np:2}},
+ {id:'platforma',n:'Platforma',s:'musicha uchun ochiq',icon:'platforma',type:'gable',opt:{openFront:true},bird:'musicha',p:{W:200,D:180,H:170,R:70,ov:30,frontLow:50}},
+ {id:'mini',n:'Mini',s:'qiya tom',icon:'mini',type:'shed',bird:'qorabosh',p:{W:100,D:100,H:190,drop:35,d:28,hh:130,ov:15}},
+ {id:'oziqlantirgich',n:'Oziqlantirgich',s:'don uchun',icon:'kormushka',type:'gable',opt:{rail:true,noHole:true},bird:'barcha',p:{W:240,D:200,H:200,R:90,ov:30,rail:30}},
+ {id:'uchburchak',n:'Uchburchak',s:'A-shaklidagi tom',icon:'aframe',type:'gable',opt:{aframe:true},bird:'qorabosh',p:{W:180,D:160,H:0,R:220,d:32,hh:70,ov:15}}
+];
+const BIRDS = {
+ qorabosh:{n:'Qorabosh (sinitsa) · 28–32 mm',d:30},
+ chumchuq:{n:'Chumchuq · 35 mm',d:35},
+ chugurchuq:{n:'Chug‘urchuq · 45–50 mm',d:48},
+ mayna:{n:'Mayna · 55 mm',d:55},
+ totiqush:{n:'To‘lqinsimon to‘tiqush · 45 mm',d:45},
+ korella:{n:'Korella (nimfa) · 75 mm',d:75},
+ musicha:{n:'Musicha · ochiq platforma',d:null},
+ barcha:{n:'Barcha qushlar · oziqlantirgich',d:null},
+ custom:{n:'O‘zim kiritaman',d:null}
+};
+const FIELDS = [
+ {k:'W',l:'Ichki eni',u:'mm',min:40,max:800},
+ {k:'D',l:'Ichki chuqurligi',u:'mm',min:40,max:600},
+ {k:'H',l:'Devor balandligi',u:'mm',min:20,max:800,when:m=>!m.opt?.aframe,label:m=>m.type==='barrel'?'Tik devor balandligi':'Devor balandligi'},
+ {k:'R',l:'Tom cho‘qqisi',u:'mm',min:10,max:600,when:m=>m.type==='gable'},
+ {k:'drop',l:'Tom qiyaligi',u:'mm',min:0,max:300,when:m=>m.type==='shed'},
+ {k:'ov',l:'Tom chiqishi',u:'mm',min:0,max:120,when:m=>m.type!=='barrel'},
+ {k:'d',l:'Teshik diametri',u:'mm',min:10,max:150,when:m=>!m.opt?.noHole&&!m.opt?.openFront},
+ {k:'hh',l:'Teshik markazi (poldan)',u:'mm',min:10,max:800,when:m=>!m.opt?.noHole&&!m.opt?.openFront},
+ {k:'np',l:'Bo‘linmalar soni',u:'dona',min:0,max:6,step:1,when:m=>m.opt?.parts},
+ {k:'rail',l:'Panjara balandligi',u:'mm',min:10,max:120,when:m=>m.opt?.rail},
+ {k:'frontLow',l:'Old to‘siq balandligi',u:'mm',min:10,max:200,when:m=>m.opt?.openFront}
+];
+const PROD = [
+ {k:'qty',l:'Nechta uya',u:'dona',min:1,max:200,step:1},
+ {k:'T',l:'Fanera qalinligi',u:'mm',min:2,max:12,step:0.5},
+ {k:'SW',l:'List eni',u:'mm',min:150,max:3000},
+ {k:'SH',l:'List bo‘yi',u:'mm',min:150,max:3000}
+];
+const LASER = [
+ {k:'fw',l:'Tish eni',u:'mm',min:6,max:80},
+ {k:'kerf',l:'Lazer kerfi',u:'mm',min:0,max:1,step:0.01},
+ {k:'speed',l:'Kesish tezligi',u:'mm/s',min:1,max:200}
+];
+const COST = [
+ {k:'sheetPrice',l:'Bir list fanera',u:'so‘m',min:0,max:10000000,step:1000},
+ {k:'laserMin',l:'Lazer, 1 daqiqa',u:'so‘m',min:0,max:1000000,step:100},
+ {k:'paintCost',l:'Lak/bo‘yoq, 1 dona',u:'so‘m',min:0,max:1000000,step:500},
+ {k:'markup',l:'Ustama',u:'%',min:0,max:500,step:1}
+];
+const ROOF_COLORS=['#2F6B4F','#B4412F','#2C5C8A','#3B3B3B','#D9A42B'];
+const WALL_COLORS=['#F1ECE2','#DDBF8F','#9DB9A8','#E7D3B5','#C9D6E3'];
+const STEPS = {
+ gable:m=>[
+  m.opt?.aframe?'Polni old va orqa uchburchak devorlar tishlariga kiydiring.':'Polga ikkala yon devorni tishlari bilan kiydiring.',
+  m.opt?.aframe?null:'Old va orqa devorni yon devorlar va pol tishlariga o‘rnating. Burchaklar 90° ekanini go‘niya bilan tekshiring.',
+  m.opt?.parts?'Bo‘linmalarni poldagi va devorlardagi tirqishlarga tushiring.':null,
+  'O‘ng tomni qo‘ying, so‘ng chap tomni. Devor tepasidagi tilchalar tom tirqishlariga kirishi kerak. O‘ng tom cho‘qqida chapning ustiga chiqib, yomg‘irni yopadi.',
+  'Tutashgan joylarga suvga chidamli PVA (D3) yelim surting va 15–20 daqiqa qisqich bilan siqib turing.',
+  'Tashqi tomonini lak yoki bo‘yoq bilan qoplang. Ichi va teshik atrofi tabiiy qolsin: qushlar hidni yoqtirmaydi.'
+ ],
+ shed:()=>[
+  'Polga ikkala yon devorni tishlari bilan kiydiring.',
+  'Old va orqa devorni o‘rnating. Old devor balandroq, teshik shu tomonda.',
+  'Tomni yon devorlar tepasidagi tilchalarga kiydiring. Uzun chiqishi old tomonda bo‘lib, teshikni yomg‘irdan to‘sadi.',
+  'Suvga chidamli PVA (D3) yelim bilan mahkamlang va 15–20 daqiqa siqib turing.',
+  'Orqa devordagi ikki teshikdan daraxtga burab mahkamlang. Teshik sharq yoki janubi-sharqqa qarasin.'
+ ],
+ box:()=>[
+  'Polga yon devorlarni, so‘ng old va orqa devorni tishlari bilan kiydiring.',
+  'Qopqoq tiqinini qopqoqning o‘rtasiga yelimlang. U qopqoqni joyida ushlab turadi.',
+  'Orqa devordagi ikki tirqishdan sim ilgak o‘tkazib, qafasga osing.',
+  'Qopqoq ochiladi: tuxum va jo‘jalarni tekshirish uchun shu yetarli.'
+ ],
+ barrel:()=>[
+  'Egiluvchan tomni issiq suv bug‘ida 1–2 daqiqa tuting, shunda sinmasdan egiladi.',
+  'Polni old va orqa devordagi pastki tirqishlarga kiydiring.',
+  'Egiluvchan tomni devorlar atrofiga o‘rang. Yon tilchalar tomdagi tirqishlarga kiradi.',
+  'Yoy qismini devor chetiga PVA yelim bilan yopishtiring va rezina bilan tortib qo‘ying.'
+ ]
+};
+
+const $=s=>document.querySelector(s);
+const DEF={T:4,fw:20,kerf:0.1,speed:15,SW:600,SH:400,ov:20,hh:100,d:32,R:70,drop:40,np:2,rail:30,frontLow:50,qty:1,
+  sheetPrice:120000,laserMin:3000,paintCost:8000,markup:60};
+const state={mi:0,model:MODELS[0],p:{...DEF},finish:'tabiiy',roof:ROOF_COLORS[0],wall:WALL_COLORS[0],engr:'',
+  res:null,sheets:[],yaw:-0.62,pitch:0.42,zoom:1,explode:0,expTarget:0,auto:true,tab:'cut'};
+const som=n=>Math.round(n).toLocaleString('ru-RU').replace(/ /g,' ')+' so‘m';
+const store={get(){try{return JSON.parse(localStorage.getItem('uyacha-gen')||'null');}catch(_){return null;}},
+  set(v){try{localStorage.setItem('uyacha-gen',JSON.stringify(v));}catch(_){}}};
+
+/* ---------- controls ---------- */
+$('#models').innerHTML=MODELS.map((m,i)=>`<button type="button" class="model" data-i="${i}" aria-pressed="${i===0}">
+  <svg viewBox="0 0 200 200" aria-hidden="true">${ICONS[m.icon]}</svg><span><b>${m.n}</b><small>M-${String(i+1).padStart(2,'0')} · ${m.s}</small></span></button>`).join('');
+$('#bird').innerHTML=Object.entries(BIRDS).map(([k,b])=>`<option value="${k}">${b.n}</option>`).join('');
+const swHTML=(arr,cur,key)=>arr.map(c=>`<button type="button" data-${key}="${c}" style="background:${c}" aria-label="Rang ${c}" aria-pressed="${c===cur}"></button>`).join('');
+function renderSwatches(){$('#swRoof').innerHTML=swHTML(ROOF_COLORS,state.roof,'roof');$('#swWall').innerHTML=swHTML(WALL_COLORS,state.wall,'wall');}
+
+function fieldHTML(f,m){
+  const lab=f.label?f.label(m):f.l;
+  return `<div class="f"><label for="in-${f.k}">${lab}</label><div class="in"><input type="number" id="in-${f.k}" data-k="${f.k}" min="${f.min}" max="${f.max}" step="${f.step||1}" value="${state.p[f.k]}" inputmode="decimal"><span class="u">${f.u}</span></div></div>`;
+}
+function renderFields(){
+  const m=state.model;
+  $('#fields').innerHTML=FIELDS.filter(f=>!f.when||f.when(m)).map(f=>fieldHTML(f,m)).join('');
+  $('#fieldsProd').innerHTML=PROD.map(f=>fieldHTML(f,m)).join('');
+  $('#fieldsLaser').innerHTML=LASER.map(f=>fieldHTML(f,m)).join('');
+  $('#fieldsCost').innerHTML=COST.map(f=>fieldHTML(f,m)).join('');
+  $('#scallopRow').hidden = m.type!=='gable' || !!m.opt?.aframe;
+}
+function selectModel(i,keepP){
+  const m=MODELS[i], prevBarrel=state.model.type==='barrel'; state.model=m; state.mi=i;
+  document.querySelectorAll('.model').forEach(b=>b.setAttribute('aria-pressed',b.dataset.i==i));
+  $('#modelCode').textContent='M-'+String(i+1).padStart(2,'0');
+  if(!keepP){
+    const keep={};['T','fw','kerf','speed','SW','SH','qty','sheetPrice','laserMin','paintCost','markup'].forEach(k=>keep[k]=state.p[k]);
+    state.p={...state.p,...m.p,...keep};
+    if(m.p.T) state.p.T=m.p.T; else if(prevBarrel) state.p.T=4;
+    if(m.type==='barrel'&&state.p.T>4) state.p.T=3;
+    $('#scallop').checked=!!m.opt?.scallop;
+    $('#bird').value=m.bird;
+  }
+  renderFields(); regen(true); state.auto=true; state.autoStart=performance.now(); kick();
+}
+$('#models').addEventListener('click',e=>{const b=e.target.closest('.model'); if(b) selectModel(+b.dataset.i);});
+document.addEventListener('input',e=>{
+  const k=e.target.dataset?.k; if(!k) return;
+  const v=parseFloat(e.target.value); if(!isFinite(v)) return;
+  state.p[k]=v;
+  if(k==='d'){ const b=Object.entries(BIRDS).find(([,b])=>b.d===v); $('#bird').value=b?b[0]:'custom'; }
+  schedule();
+});
+document.addEventListener('change',e=>{if(e.target.dataset?.k){clearTimeout(tm);regen();}});
+$('#bird').addEventListener('change',e=>{const b=BIRDS[e.target.value]; if(b.d){state.p.d=b.d; const el=$('#in-d'); if(el) el.value=b.d; regen();}});
+$('#scallop').addEventListener('change',()=>regen());
+$('#labels').addEventListener('change',()=>renderSheets());
+$('#engr').addEventListener('input',e=>{state.engr=e.target.value;$('#engrN').textContent=`${e.target.value.length}/22`;schedule();});
+$('#finish').addEventListener('click',e=>{const b=e.target.closest('[data-fin]');if(!b)return;state.finish=b.dataset.fin;
+  document.querySelectorAll('#finish button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#paintRows').hidden=state.finish!=='rang';restyle3();renderCost();save();});
+$('#paintRows').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.roof)state.roof=b.dataset.roof; if(b.dataset.wall)state.wall=b.dataset.wall; renderSwatches(); restyle3(); save();});
+let tm; function schedule(){clearTimeout(tm); tm=setTimeout(regen,450);}
+
+/* tabs */
+function showTab(id){state.tab=id;
+  document.querySelectorAll('[role=tab]').forEach(t=>t.setAttribute('aria-selected',t.id==='tab-'+id));
+  document.querySelectorAll('[role=tabpanel]').forEach(p=>p.hidden=p.id!=='pn-'+id);}
+document.querySelector('.tabs').addEventListener('click',e=>{const t=e.target.closest('[role=tab]');if(t){showTab(t.id.slice(4));save();}});
+
+/* ---------- generation ---------- */
+function clampP(){
+  const p={...state.p};
+  for(const f of [...FIELDS,...PROD,...LASER,...COST]){ if(p[f.k]==null) continue; p[f.k]=Math.min(f.max,Math.max(f.min,p[f.k])); }
+  if(state.model.opt?.aframe) p.H=0;
+  p.fw=Math.max(p.fw,p.T*1.5); p.qty=Math.round(p.qty);
+  p.engr=state.engr;
+  return p;
+}
+function warnings(m,p){
+  const w=[];
+  const hole=!m.opt?.noHole&&!m.opt?.openFront;
+  if(hole){
+    if(m.type!=='barrel'&&!m.opt?.aframe&&p.hh+p.d/2>p.H+(m.type==='gable'?p.R*0.5:0)-4) w.push('Teshik devor tepasidan chiqib ketmoqda. Teshik markazini pastroq qiling yoki devorni baland qiling.');
+    if(p.hh-p.d/2<45&&m.id!=='qafas') w.push(`Teshikning pastki cheti poldan ${Math.round(p.hh-p.d/2)} mm balandda. Jo‘jalar tushib ketmasligi va mushuk panjasi yetmasligi uchun kamida 50–60 mm bo‘lsin.`);
+    if(p.d>p.W-16) w.push('Teshik devor enidan katta. Diametrni kichraytiring yoki uyani kengaytiring.');
+  }
+  if(m.type==='barrel'&&p.T>4) w.push('Egiluvchan tom uchun 3–4 mm fanera kerak. Qalinroq fanera egilganda yoriladi.');
+  if(m.opt?.parts&&p.np>0&&(p.W-p.np*p.T)/(p.np+1)<p.d+10) w.push('Xonalar teshikka nisbatan tor. Bo‘linmalar sonini kamaytiring yoki enini oshiring.');
+  if(state.sheets.some(s=>s.over)) w.push(`Ba’zi detallar ${p.SW}×${p.SH} mm listga sig‘maydi. Ular alohida, kattaroq listga joylandi.`);
+  if(state.p.fw<state.p.T*1.5) w.push('Tish eni fanera qalinligidan kamida 1,5 barobar bo‘lishi kerak, shuning uchun avtomatik kattalashtirildi.');
+  return w;
+}
+function regen(sweep){
+  if(!window.ClipperLib){$('#warns').innerHTML='<li>Chizma kutubxonasi yuklanmadi. Internetni tekshirib, sahifani yangilang.</li>';return;}
+  const m=state.model, p=clampP();
+  try{
+    const res=BH.generate(m.type,p,{...(m.opt||{}),scallop:$('#scallop').checked&&m.type==='gable'&&!m.opt?.aframe});
+    state.res=res; state.pc=p;
+    const items=[];
+    for(let c=0;c<p.qty;c++) res.prepared.forEach(o=>{const q=Math.max(1,o.pt.places.length); for(let i=0;i<q;i++) items.push({pp:o.pp,label:`${o.pt.name} · ${m.n}`});});
+    state.sheets=BH.pack(items,p.SW,p.SH);
+    state.faces=buildFaces(res,p.T);
+    if(GL) try{build3(res,p.T);}catch(e){console.warn(e);disableGL();}
+  }catch(err){ console.error(err); $('#warns').innerHTML=`<li>Chizmani qurib bo‘lmadi: o‘lchamlarni tekshiring (${err.message}).</li>`; return; }
+  const res=state.res;
+  $('#mName').textContent=m.n;
+  $('#mDims').textContent=`${res.dims.map(v=>Math.round(v)).join(' × ')} mm · fanera ${p.T} mm`;
+  const perHouse=res.prepared.reduce((s,o)=>s+Math.max(1,o.pt.places.length),0);
+  $('#sParts').textContent=perHouse*p.qty;
+  $('#sSheets').textContent=state.sheets.length;
+  const cutAll=res.cut*p.qty;
+  $('#sCut').textContent=(cutAll/1000).toFixed(1).replace('.',',')+' m';
+  const min=cutAll/p.speed/60; $('#sTime').textContent=min<1?'<1 daq':min<60?Math.round(min)+' daq':`${Math.floor(min/60)} soat ${Math.round(min%60)} daq`;
+  $('#warns').innerHTML=warnings(m,p).map(t=>`<li>${t}</li>`).join('');
+  $('#partsHint').textContent=p.qty>1?`${p.qty} ta uya uchun`:'';
+  $('#partsBody').innerHTML=res.prepared.map(o=>{const q=Math.max(1,o.pt.places.length);return `<tr><td>${o.pt.name}</td><td class="n">${q}</td><td class="n">${q*p.qty}</td><td class="n">${Math.round(o.pp.w)} × ${Math.round(o.pp.h)}</td></tr>`;}).join('');
+  $('#steps').innerHTML=STEPS[m.type](m).filter(Boolean).map(s=>`<li>${s}</li>`).join('');
+  renderSheets(); renderCost(); draw(); save();
+  if(sweep){const l=$('#laser');l.classList.remove('go');void l.offsetWidth;l.classList.add('go');}
+}
+function renderCost(){
+  const p=state.pc, res=state.res; if(!p||!res) return;
+  const q=p.qty, used=state.sheets.reduce((s,sh)=>s+sh.items.reduce((a,it)=>a+it.w*it.h,0),0), mat=used/(p.SW*p.SH)*p.sheetPrice*1.15, lasr=res.cut*q/p.speed/60*p.laserMin, paint=state.finish==='tabiiy'?0:p.paintCost*q;
+  const total=mat+lasr+paint, one=total/q, sell=one*(1+p.markup/100);
+  $('#sPrice').textContent=som(one);
+  $('#sellPrice').textContent=som(Math.ceil(sell/1000)*1000);
+  $('#costBody').innerHTML=`
+    <tr><td>Fanera · ${(used/(p.SW*p.SH)*1.15).toFixed(2).replace('.',',')} list</td><td class="n">${som(mat)}</td></tr>
+    <tr><td>Lazer · ${Math.round(res.cut*q/p.speed/60)} daqiqa</td><td class="n">${som(lasr)}</td></tr>
+    <tr><td>Pardoz · ${state.finish==='tabiiy'?'tabiiy':state.finish==='lak'?'lak':'bo‘yoq'}</td><td class="n">${som(paint)}</td></tr>
+    <tr class="total"><td>Jami tannarx · ${q} dona</td><td class="n">${som(total)}</td></tr>
+    <tr><td>Bir dona tannarxi</td><td class="n">${som(one)}</td></tr>
+    <tr><td>Ustama ${p.markup}%</td><td class="n">${som(sell-one)}</td></tr>`;
+}
+function save(){store.set({mi:state.mi,p:state.p,finish:state.finish,roof:state.roof,wall:state.wall,engr:state.engr,tab:state.tab,scallop:$('#scallop').checked,bird:$('#bird').value});}
+
+/* ---------- sheet previews ---------- */
+function circD(x,y,r){const f=BH.f2;return `M${f(x-r)} ${f(y)}a${f(r)} ${f(r)} 0 1 0 ${f(2*r)} 0a${f(r)} ${f(r)} 0 1 0 ${f(-2*r)} 0Z`;}
+const escH=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function previewSVG(sh){
+  let body='';
+  const lab=$('#labels').checked;
+  for(const it of sh.items){
+    const t=BH.xf(it),pp=it.pp;
+    let d=pp.paths.map(p=>BH.pathD(p,t)).join('')+pp.slots.map(p=>BH.pathD(p,t)).join('');
+    pp.circles.forEach(c=>{const [x,y]=t([c.x,c.y]);d+=circD(x,y,c.r);});
+    body+=`<path d="${d}" fill="var(--ply)" fill-rule="evenodd" stroke="var(--laser)" stroke-width="0.7"/>`;
+    if(pp.lines.length){body+=`<path d="${pp.lines.map(l=>{const a=t([l[0],l[1]]),b=t([l[2],l[3]]);return `M${BH.f2(a[0])} ${BH.f2(a[1])}L${BH.f2(b[0])} ${BH.f2(b[1])}`;}).join('')}" stroke="var(--laser)" stroke-width="0.4"/>`;}
+    if(pp.engrave){const [x,y]=t([pp.engrave.x,pp.engrave.y]);body+=`<text x="${x}" y="${y}" font-size="${pp.engrave.fs}" font-weight="800" text-anchor="middle" dominant-baseline="middle" fill="var(--burnt)" font-family="Manrope, sans-serif" ${it.rot?`transform="rotate(90 ${x} ${y})"`:''}>${escH(pp.engrave.text)}</text>`;}
+    if(lab&&!pp.lines.length){
+      const fs=Math.max(2.5,Math.min(5,pp.h/10,pp.w/14)); const [x,y]=t([pp.w/2,pp.h-Math.max(fs+8,pp.h*0.16)]);
+      body+=`<text x="${x}" y="${y}" font-size="${fs}" text-anchor="middle" fill="var(--engrave)" font-family="Manrope, sans-serif" ${it.rot?`transform="rotate(90 ${x} ${y})"`:''}>${it.label.split(' · ')[0]}</text>`;
+    }
+  }
+  return `<svg viewBox="-2 -2 ${sh.w+4} ${sh.h+4}" role="img" aria-label="List ${sh.w}×${sh.h} mm"><rect x="0" y="0" width="${sh.w}" height="${sh.h}" rx="2" fill="var(--sheet)" stroke="var(--line)" stroke-width="1"/>${body}</svg>`;
+}
+function renderSheets(){
+  const max=12, shown=state.sheets.slice(0,max);
+  $('#sheets').innerHTML=shown.map((sh,i)=>{
+    const used=sh.items.reduce((s,it)=>s+it.w*it.h,0)/(sh.w*sh.h)*100;
+    return `<div><div class="sheet-h"><div><b>List ${i+1}</b> <span>${sh.w}×${sh.h} mm · ${sh.items.length} detal · ${Math.round(used)}% band</span></div>
+      <button class="btn ghost" type="button" data-dl="${i}">List ${i+1} SVG</button></div>
+      <div class="sheet-svg">${previewSVG(sh)}</div></div>`;}).join('')+
+    (state.sheets.length>max?`<p class="hint">Yana ${state.sheets.length-max} ta list bor. Ular umumiy SVG faylda.</p>`:'');
+}
+
+/* ---------- downloads ---------- */
+let downloads=null;
+(async()=>{try{downloads=await window.claude?.use?.('downloads')??null;}catch(_){downloads=null;}
+  if(!downloads){$('#dlAll').textContent='SVG kodini nusxalash';}})();
+function fname(i){return `${state.model.id}_${state.pc.T}mm${state.pc.qty>1?'_x'+state.pc.qty:''}${i==null?'':'_list'+(i+1)}.svg`;}
+function svgFor(i){
+  const opts={labels:$('#labels').checked,model:`${state.model.n} | fanera ${state.pc.T} mm | kerf ${state.pc.kerf} mm | ${state.pc.qty} dona`};
+  if(i!=null) return BH.sheetSVG(state.sheets[i],opts);
+  let off=0,items=[],w=0; state.sheets.forEach(sh=>{sh.items.forEach(it=>items.push({...it,y:it.y+off})); off+=sh.h+20; w=Math.max(w,sh.w);});
+  return BH.sheetSVG({w,h:off-20,items},opts);
+}
+async function offer(i){
+  const data=svgFor(i), toast=$('#toast');
+  if(downloads){
+    try{await downloads.save({filename:fname(i),data}); toast.textContent=`${fname(i)} saqlandi.`;}
+    catch(e){toast.textContent= e?.code==='declined'?'Yuklab olish bekor qilindi.':'Faylni saqlab bo‘lmadi. Kod nusxalandi, uni .svg fayl sifatida saqlang.'; if(e?.code!=='declined') copy(data);}
+  } else copy(data);
+}
+function copy(text){
+  const toast=$('#toast');
+  try{navigator.clipboard.writeText(text).then(()=>toast.textContent='SVG kodi nusxalandi. Uni matn muharririga qo‘yib, .svg kengaytmasi bilan saqlang.')
+    .catch(()=>toast.textContent='Nusxalab bo‘lmadi. Brauzer ruxsat bermadi.');}catch(_){toast.textContent='Nusxalab bo‘lmadi. Brauzer ruxsat bermadi.';}
+}
+$('#dlAll').addEventListener('click',()=>offer(null));
+$('#sheets').addEventListener('click',e=>{const b=e.target.closest('[data-dl]'); if(b) offer(+b.dataset.dl);});
+
+/* ---------- 2D fallback renderer ---------- */
+function circlePts(c,n=24){const a=[];for(let i=0;i<n;i++){const t=2*Math.PI*i/n;a.push([c.x+c.r*Math.cos(t),c.y+c.r*Math.sin(t)]);}return a;}
+function buildFaces(res,T){
+  const faces=[], [DX,DY,DZ]=res.dims, ctr=[DX/2-20,DY/2,DZ/2];
+  for(const pt of res.parts){
+    if(pt.bend){
+      const {P,Bw,brk}=pt.bendInfo, ss=[];
+      for(let s=0;s<=P;s+=5) ss.push(s); ss.push(...brk,P); ss.sort((a,b)=>a-b);
+      for(const t of [0,T]) for(let i=0;i<ss.length-1;i++){const a=ss[i],b=ss[i+1]; if(b-a<0.05) continue;
+        faces.push({pts:[pt.bend(a,0,t),pt.bend(b,0,t),pt.bend(b,Bw,t),pt.bend(a,Bw,t)],holes:[],kind:'face',dir:[0,0,1]});}
+      continue;
+    }
+    for(const pl of pt.places){
+      const M=(x,y,t)=>[pl.O[0]+pl.U[0]*x+pl.V[0]*y+pl.N[0]*t, pl.O[1]+pl.U[1]*x+pl.V[1]*y+pl.N[1]*t, pl.O[2]+pl.U[2]*x+pl.V[2]*y+pl.N[2]*t];
+      const holes2=[...pt.circles.map(c=>circlePts(c)),...pt.slots];
+      let mx=0,my=0,k=0; pt.raw[0].forEach(([x,y])=>{mx+=x;my+=y;k++;}); const c3=M(mx/k,my/k,T/2);
+      const dir=[c3[0]-ctr[0],c3[1]-ctr[1],c3[2]-ctr[2]]; const dl=Math.hypot(...dir)||1;
+      const ex=[dir[0]/dl,dir[1]/dl,dir[2]/dl];
+      for(const path of pt.raw){
+        for(const t of [0,T]) faces.push({pts:path.map(([x,y])=>M(x,y,t)),holes:holes2.map(h=>h.map(([x,y])=>M(x,y,t))),kind:'face',dir:ex});
+        for(let i=0;i<path.length;i++){const a=path[i],b=path[(i+1)%path.length];
+          faces.push({pts:[M(a[0],a[1],0),M(b[0],b[1],0),M(b[0],b[1],T),M(a[0],a[1],T)],holes:[],kind:'edge',dir:ex});}
+      }
+    }
+  }
+  faces.ctr=ctr; return faces;
+}
+const cv=$('#cv'), ctx=cv.getContext('2d');
+function hexRGB(h){h=h.trim();if(h.startsWith('#')){if(h.length===4)h='#'+[...h.slice(1)].map(c=>c+c).join('');return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}return[200,170,130];}
+function draw(){ if(GL){try{render3();return;}catch(e){console.warn(e);disableGL();}} draw2d(); }
+function draw2d(){
+  const faces=state.faces; if(!faces) return;
+  const r=cv.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  if(!r.width) return;
+  if(cv.width!==Math.round(r.width*dpr)||cv.height!==Math.round(r.height*dpr)){cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);}
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,r.width,r.height);
+  const cs=getComputedStyle(document.documentElement);
+  const ply=hexRGB(cs.getPropertyValue('--ply')), burnt=hexRGB(cs.getPropertyValue('--burnt'));
+  const ca=Math.cos(state.yaw),sa=Math.sin(state.yaw),cb=Math.cos(state.pitch),sb=Math.sin(state.pitch);
+  const c=faces.ctr, ex=state.explode*Math.max(...state.res.dims)*0.18;
+  const L=[0.45,-0.55,0.7], Ll=Math.hypot(...L);
+  const proj=(q,d)=>{const x=q[0]-c[0]+d[0]*ex,y=q[1]-c[1]+d[1]*ex,z=q[2]-c[2]+d[2]*ex;
+    const x1=x*ca-y*sa,y1=x*sa+y*ca;return[x1,z*cb+y1*sb,y1*cb-z*sb];};
+  const list=faces.map(f=>{
+    const P=f.pts.map(q=>proj(q,f.dir));
+    let nx=0,ny=0,nz=0; for(let i=0;i<f.pts.length;i++){const a=f.pts[i],b=f.pts[(i+1)%f.pts.length];nx+=(a[1]-b[1])*(a[2]+b[2]);ny+=(a[2]-b[2])*(a[0]+b[0]);nz+=(a[0]-b[0])*(a[1]+b[1]);}
+    const nl=Math.hypot(nx,ny,nz)||1, lit=Math.abs((nx*L[0]+ny*L[1]+nz*L[2])/(nl*Ll));
+    let dep=0; P.forEach(p=>dep+=p[2]); dep/=P.length;
+    return {f,P,H:f.holes.map(h=>h.map(q=>proj(q,f.dir))),lit,dep};
+  }).sort((a,b)=>b.dep-a.dep);
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;
+  list.forEach(o=>o.P.forEach(p=>{x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}));
+  const pad=56, s=Math.min((r.width-pad*2)/(x1-x0),(r.height-pad*2)/(y1-y0))*state.zoom;
+  const ox=r.width/2-(x0+x1)/2*s, oy=r.height/2+(y0+y1)/2*s+8;
+  const X=p=>ox+p[0]*s, Y=p=>oy-p[1]*s;
+  for(const o of list){
+    const k=0.62+0.38*o.lit, base=o.f.kind==='edge'?burnt:ply;
+    ctx.beginPath();
+    o.P.forEach((p,i)=>i?ctx.lineTo(X(p),Y(p)):ctx.moveTo(X(p),Y(p))); ctx.closePath();
+    o.H.forEach(h=>{h.forEach((p,i)=>i?ctx.lineTo(X(p),Y(p)):ctx.moveTo(X(p),Y(p)));ctx.closePath();});
+    ctx.fillStyle=`rgb(${base.map(v=>Math.round(v*k)).join(',')})`; ctx.fill('evenodd');
+  }
+}
+
+/* ---------- WebGL renderer ---------- */
+let GL=null;
+const texCache={};
+function woodTex(hex){
+  if(texCache[hex]) return texCache[hex];
+  const c=document.createElement('canvas'); c.width=1024; c.height=256; const g=c.getContext('2d');
+  const [r,gg,b]=hexRGB(hex); g.fillStyle=hex; g.fillRect(0,0,1024,256);
+  let seed=7; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+  for(let i=0;i<70;i++){
+    const y0=rnd()*256, amp=2+rnd()*6, fr=0.004+rnd()*0.01, ph=rnd()*6, dark=rnd()<0.5;
+    g.strokeStyle=dark?`rgba(${r*0.55|0},${gg*0.45|0},${b*0.35|0},${0.05+rnd()*0.12})`:`rgba(255,240,215,${0.04+rnd()*0.08})`;
+    g.lineWidth=0.6+rnd()*2.2; g.beginPath();
+    for(let x=0;x<=1024;x+=8){const y=y0+Math.sin(x*fr+ph)*amp+Math.sin(x*fr*3.1+ph*2)*amp*0.3; x?g.lineTo(x,y):g.moveTo(x,y);}
+    g.stroke();
+  }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1/320,1/80);
+  if('encoding' in t) t.encoding=THREE.sRGBEncoding;
+  return texCache[hex]=t;
+}
+function initGL(){
+  if(!window.THREE) return null;
+  try{
+    const canvas=$('#gl');
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    renderer.outputEncoding=THREE.sRGBEncoding;
+    renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+    const scene=new THREE.Scene(), cam=new THREE.PerspectiveCamera(30,1,1,20000);
+    scene.add(new THREE.HemisphereLight(0xfff4e6,0x2a3a32,0.55));
+    const sun=new THREE.DirectionalLight(0xfff1dc,1.05); sun.castShadow=true; sun.shadow.mapSize.set(1024,1024); sun.shadow.bias=-0.0008; scene.add(sun); scene.add(sun.target);
+    const rim=new THREE.DirectionalLight(0x9fd3b8,0.35); rim.position.set(-500,250,-450); scene.add(rim);
+    const ground=new THREE.Mesh(new THREE.PlaneGeometry(4000,4000),new THREE.ShadowMaterial({opacity:0.35}));
+    ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+    const pivot=new THREE.Group(); pivot.rotation.x=-Math.PI/2; scene.add(pivot);
+    const inner=new THREE.Group(); pivot.add(inner);
+    canvas.hidden=false; cv.hidden=true;
+    return {renderer,scene,cam,pivot,inner,sun,ground,wraps:[],disp:[],mats:{}};
+  }catch(e){console.warn(e);return null;}
+}
+function disableGL(){ if(!GL) return; try{GL.renderer.dispose();}catch(_){} GL=null; $('#gl').hidden=true; cv.hidden=false; }
+const v3=a=>new THREE.Vector3(a[0],a[1],a[2]);
+function bandGeo(pt,T){
+  const {P,Bw,brk}=pt.bendInfo, ss=[];
+  for(let s=0;s<=P;s+=4) ss.push(s); ss.push(...brk,P); ss.sort((a,b)=>a-b);
+  const S=ss.filter((v,i)=>i===0||v-ss[i-1]>0.05), pos=[], uv=[], idx=[];
+  const strip=(f)=>{const base=pos.length/3; S.forEach(s=>{const a=f(s,0),b=f(s,1);pos.push(...a,...b);uv.push(s,0,s,Bw);});
+    for(let i=0;i<S.length-1;i++){const k=base+i*2; idx.push(k,k+2,k+1,k+1,k+2,k+3);}};
+  strip((s,j)=>pt.bend(s,j*Bw,0)); strip((s,j)=>pt.bend(s,j*Bw,T));
+  strip((s,j)=>pt.bend(s,0,j*T)); strip((s,j)=>pt.bend(s,Bw,j*T));
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+function finishMats(){
+  const cs=getComputedStyle(document.documentElement);
+  const ply=cs.getPropertyValue('--ply').trim()||'#DDBF8F', burnt=cs.getPropertyValue('--burnt').trim()||'#4A2E1B';
+  const fin=state.finish;
+  const mk=(hex,painted)=>painted
+    ? new THREE.MeshStandardMaterial({color:new THREE.Color(hex).convertSRGBToLinear(),roughness:0.55,metalness:0,side:THREE.DoubleSide})
+    : new THREE.MeshStandardMaterial({map:woodTex(fin==='lak'?'#D3A468':hex),roughness:fin==='lak'?0.38:0.86,metalness:0,side:THREE.DoubleSide});
+  const wallPainted=fin==='rang'&&state.wall!=='#DDBF8F';
+  return {
+    wall:mk(fin==='rang'?state.wall:ply,wallPainted),
+    roof:mk(fin==='rang'?state.roof:ply,fin==='rang'),
+    edge:new THREE.MeshStandardMaterial({color:new THREE.Color(burnt).convertSRGBToLinear(),roughness:0.95,side:THREE.DoubleSide})
+  };
+}
+function restyle3(){
+  if(!GL) {draw();return;}
+  Object.values(GL.mats).forEach(m=>m.dispose()); GL.mats=finishMats();
+  GL.wraps.forEach(w=>w.children.forEach(o=>{ if(o.userData.kind==='flat') o.material=[o.userData.roof?GL.mats.roof:GL.mats.wall,GL.mats.edge]; else if(o.userData.kind==='band') o.material=GL.mats.roof; }));
+  draw();
+}
+function engraveMesh(text,w,h){
+  const c=document.createElement('canvas'); const s=8; c.width=Math.max(64,Math.round(w*s)); c.height=Math.max(32,Math.round(h*s));
+  const g=c.getContext('2d'); g.fillStyle='rgba(74,46,27,0.92)'; g.textAlign='center'; g.textBaseline='middle';
+  g.font=`800 ${Math.round(h*s*0.78)}px Manrope, Arial, sans-serif`; g.fillText(text,c.width/2,c.height/2);
+  const t=new THREE.CanvasTexture(c); if('encoding' in t) t.encoding=THREE.sRGBEncoding;
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));
+  GL.disp.push(m.geometry,m.material,t); return m;
+}
+function build3(res,T){
+  const g=GL; g.disp.forEach(o=>o.dispose()); g.disp=[]; g.wraps=[];
+  while(g.inner.children.length) g.inner.remove(g.inner.children[0]);
+  Object.values(g.mats).forEach(m=>m.dispose()); g.mats=finishMats();
+  const [DX,DY,DZ]=res.dims, ctr=state.faces.ctr;
+  g.inner.position.set(-ctr[0],-ctr[1],-ctr[2]);
+  g.size=Math.hypot(DX,DY,DZ)/2; g.maxDim=Math.max(DX,DY,DZ); g.ctrZ=ctr[2];
+  const sc=g.sun.shadow.camera, S=g.size*2.2; sc.left=-S;sc.right=S;sc.top=S;sc.bottom=-S;sc.near=1;sc.far=g.size*12; sc.updateProjectionMatrix();
+  g.sun.position.set(g.size*1.6,g.size*3.2,g.size*2.1);
+  for(const pt of res.parts){
+    const isRoof=/^Tom|Qopqoq$|Egiluvchan/.test(pt.name);
+    if(pt.bend){
+      const geo=bandGeo(pt,T), w=new THREE.Group(), mesh=new THREE.Mesh(geo,g.mats.roof); g.disp.push(geo);
+      mesh.castShadow=mesh.receiveShadow=true; mesh.userData.kind='band';
+      w.add(mesh); w.userData.dir=[0,0,1]; g.inner.add(w); g.wraps.push(w); continue;
+    }
+    let big=0; pt.raw.forEach((p,i)=>{if(p.length>pt.raw[big].length)big=i;});
+    const shapes=pt.raw.map((path,i)=>{
+      const sh=new THREE.Shape(path.map(([x,y])=>new THREE.Vector2(x,y)));
+      if(i===big){
+        pt.circles.forEach(c=>{const h=new THREE.Path();h.absarc(c.x,c.y,c.r,0,Math.PI*2,true);sh.holes.push(h);});
+        pt.slots.forEach(q=>sh.holes.push(new THREE.Path(q.map(([x,y])=>new THREE.Vector2(x,y)))));
+      }
+      return sh;
+    });
+    const geo=new THREE.ExtrudeGeometry(shapes,{depth:T,bevelEnabled:false,curveSegments:24}); g.disp.push(geo);
+    let mx=0,my=0; pt.raw[big].forEach(([x,y])=>{mx+=x;my+=y;}); mx/=pt.raw[big].length; my/=pt.raw[big].length;
+    for(const pl of pt.places){
+      const m=new THREE.Matrix4().makeBasis(v3(pl.U),v3(pl.V),v3(pl.N)).setPosition(v3(pl.O));
+      const mesh=new THREE.Mesh(geo,[isRoof?g.mats.roof:g.mats.wall,g.mats.edge]);
+      mesh.userData={kind:'flat',roof:isRoof}; mesh.castShadow=mesh.receiveShadow=true;
+      mesh.matrixAutoUpdate=false; mesh.matrix.copy(m);
+      const c3=[pl.O[0]+pl.U[0]*mx+pl.V[0]*my, pl.O[1]+pl.U[1]*mx+pl.V[1]*my, pl.O[2]+pl.U[2]*mx+pl.V[2]*my];
+      const d=[c3[0]-ctr[0],c3[1]-ctr[1],c3[2]-ctr[2]], dl=Math.hypot(...d)||1;
+      const w=new THREE.Group(); w.add(mesh); w.userData.dir=d.map(v=>v/dl);
+      if(pt.engrave&&pl.N[1]===1&&pl.O[1]===0){
+        const e=pt.engrave, tw=Math.min(e.text.length*e.fs*0.62,1e4), em=engraveMesh(e.text,tw,e.fs*1.3);
+        em.rotation.x=Math.PI/2; em.position.set(pl.O[0]+e.x,-0.25,pl.O[2]+e.y); w.add(em);
+      }
+      g.inner.add(w); g.wraps.push(w);
+    }
+  }
+}
+function render3(){
+  const g=GL, r=stage.getBoundingClientRect(); if(!r.width||!r.height) return;
+  const pr=g.renderer.getPixelRatio(), cvs=g.renderer.domElement;
+  if(cvs.width!==Math.round(r.width*pr)||cvs.height!==Math.round(r.height*pr)) g.renderer.setSize(r.width,r.height,false);
+  g.cam.aspect=r.width/r.height; g.cam.updateProjectionMatrix();
+  const ex=state.explode*g.maxDim*0.22;
+  g.wraps.forEach(w=>{const d=w.userData.dir;w.position.set(d[0]*ex,d[1]*ex,d[2]*ex);});
+  g.ground.position.y=-g.ctrZ-0.6-ex*0.95;
+  const vf=g.cam.fov*Math.PI/180, hf=2*Math.atan(Math.tan(vf/2)*g.cam.aspect);
+  const dist=g.size*(1+state.explode*0.35)*1.12/Math.sin(Math.min(vf,hf)/2)/state.zoom;
+  const p=state.pitch,y=state.yaw;
+  g.cam.position.set(dist*Math.cos(p)*Math.sin(y),dist*Math.sin(p),dist*Math.cos(p)*Math.cos(y));
+  g.cam.lookAt(0,-g.size*0.05,0);
+  g.renderer.render(g.scene,g.cam);
+}
+
+/* ---------- interaction ---------- */
+const stage=$('#stage'), ptrs=new Map(); let drag=null,pinch=null;
+const pd=()=>{const [a,b]=[...ptrs.values()];return Math.hypot(a.x-b.x,a.y-b.y);};
+const clampZ=z=>Math.max(0.5,Math.min(4,z));
+stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('button'))return;
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); state.auto=false;
+  try{stage.setPointerCapture(e.pointerId);}catch(_){}
+  if(ptrs.size===2){pinch={d:pd(),z:state.zoom};drag=null;}
+  else drag={x:e.clientX,y:e.clientY,yaw:state.yaw,pitch:state.pitch};
+});
+stage.addEventListener('pointermove',e=>{
+  if(!ptrs.has(e.pointerId))return;
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&ptrs.size>=2){state.zoom=clampZ(pinch.z*pd()/Math.max(1,pinch.d));}
+  else if(drag){state.yaw=drag.yaw-(e.clientX-drag.x)*0.01;state.pitch=Math.max(-0.15,Math.min(1.45,drag.pitch+(e.clientY-drag.y)*0.008));}
+  e.preventDefault(); draw();
+});
+const up=e=>{ptrs.delete(e.pointerId); if(ptrs.size<2)pinch=null;
+  if(ptrs.size===1){const q=[...ptrs.values()][0];drag={x:q.x,y:q.y,yaw:state.yaw,pitch:state.pitch};} else if(!ptrs.size) drag=null;};
+stage.addEventListener('pointerup',up); stage.addEventListener('pointercancel',up); stage.addEventListener('lostpointercapture',up);
+stage.addEventListener('wheel',e=>{e.preventDefault();state.zoom=clampZ(state.zoom*Math.exp(-e.deltaY*0.0012));state.auto=false;draw();},{passive:false});
+$('#zoomIn').addEventListener('click',()=>{state.zoom=clampZ(state.zoom*1.25);draw();});
+$('#zoomOut').addEventListener('click',()=>{state.zoom=clampZ(state.zoom/1.25);draw();});
+const VIEWS={iso:[-0.62,0.42],front:[0,0.12],side:[Math.PI/2,0.12],top:[0,1.45]};
+document.querySelector('.views').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;
+  state.auto=false; state.view=VIEWS[b.dataset.view]; state.zoom=1; kick();});
+$('#explode').addEventListener('click',e=>{state.expTarget=state.expTarget?0:1;e.currentTarget.setAttribute('aria-pressed',!!state.expTarget);e.currentTarget.textContent=state.expTarget?'Yig‘ish':'Ajratish';kick();});
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let raf=0;
+function kick(){if(!raf)raf=requestAnimationFrame(loop);}
+function loop(){
+  raf=0; let more=false;
+  if(Math.abs(state.explode-state.expTarget)>0.002){state.explode+=(state.expTarget-state.explode)*(reduce?1:0.14);more=true;} else state.explode=state.expTarget;
+  if(state.view){const [ty,tp]=state.view; let dy=((ty-state.yaw+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;
+    const k=reduce?1:0.16; state.yaw+=dy*k; state.pitch+=(tp-state.pitch)*k;
+    if(Math.abs(dy)<0.002&&Math.abs(tp-state.pitch)<0.002){state.yaw=ty;state.pitch=tp;state.view=null;} else more=true;}
+  if(state.auto&&!reduce&&performance.now()-state.autoStart<8000){state.yaw+=0.0035;more=true;}
+  draw(); if(more) kick();
+}
+new ResizeObserver(()=>draw()).observe(stage);
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>regen());
+
+/* ---------- boot ---------- */
+GL=initGL();
+renderSwatches();
+(function boot(){
+  const s=store.get();
+  if(s&&MODELS[s.mi]){
+    state.model=MODELS[s.mi]; state.mi=s.mi; state.p={...DEF,...s.p};
+    state.finish=s.finish||'tabiiy'; state.roof=s.roof||ROOF_COLORS[0]; state.wall=s.wall||WALL_COLORS[0]; state.engr=s.engr||'';
+    $('#scallop').checked=!!s.scallop; $('#bird').value=s.bird||state.model.bird; $('#engr').value=state.engr; $('#engrN').textContent=`${state.engr.length}/22`;
+    document.querySelectorAll('#finish button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.fin===state.finish)); $('#paintRows').hidden=state.finish!=='rang';
+    renderSwatches(); showTab(s.tab||'cut'); selectModel(s.mi,true);
+  } else { $('#scallop').checked=true; selectModel(0,false); }
+})();
+</script>
+
+</body></html>

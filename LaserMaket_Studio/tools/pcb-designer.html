@@ -1,0 +1,2113 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>CNC PCB Easy Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout concept: a workbench notebook. One narrow column of numbered steps, big board picture as the hero of steps 4 and 5. */
+:root {
+  --bg: #eceee8; --surface: #fbfbf8; --surface2: #f1f2ec; --ink: #17201c; --muted: #55625b; --line: #d2d8cf;
+  --accent: #b2561b; --accent-ink: #fff; --accent2: #1c6848; --warn: #9a5b00; --bad: #b3261e; --ok: #1c6848;
+  --pv-board: #dde5d6; --cu: #000; --milled: #fff; --cu-muted: #8a5a2e;
+  --d1: #1d6a8a; --d2: #b2561b; --d3: #6a3d9a; --d4: #1c6848; --d5: #9a7b00;
+  --f-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1411; --surface: #171f1b; --surface2: #1d2722; --ink: #e7eee9; --muted: #98a79e; --line: #2b3831;
+    --accent: #e48d4b; --accent-ink: #1c1006; --accent2: #62c99c; --warn: #e0a24a; --bad: #f08a80; --ok: #62c99c;
+    --pv-board: #25322b; --cu-muted: #c98a52; --d1: #5fb4d6; --d2: #e48d4b; --d3: #b48ae0; --d4: #62c99c; --d5: #e0c04a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1411; --surface: #171f1b; --surface2: #1d2722; --ink: #e7eee9; --muted: #98a79e; --line: #2b3831;
+  --accent: #e48d4b; --accent-ink: #1c1006; --accent2: #62c99c; --warn: #e0a24a; --bad: #f08a80; --ok: #62c99c;
+  --pv-board: #25322b; --cu-muted: #c98a52; --d1: #5fb4d6; --d2: #e48d4b; --d3: #b48ae0; --d4: #62c99c; --d5: #e0c04a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; padding-inline: 16px; padding-block: 18px 48px; }
+.app { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+h1, h2, h3 { font-family: var(--f-display); letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(1.5rem, 5vw, 2.1rem); line-height: 1.1; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.02rem; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.top { display: flex; gap: 14px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+.brand { display: flex; gap: 12px; align-items: center; min-width: 0; flex: 1 1 320px; }
+.brand svg { flex: none; width: 46px; height: 46px; }
+.brand p { color: var(--muted); font-size: 0.92rem; margin-top: 2px; }
+.beginner { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; cursor: pointer; flex: none; }
+.beginner input { position: absolute; opacity: 0; pointer-events: none; }
+.track { width: 44px; height: 26px; border-radius: 13px; background: var(--line); position: relative; flex: none; transition: background .15s; }
+.track::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.35); transition: transform .15s; }
+.beginner input:checked + .track { background: var(--accent2); }
+.beginner input:checked + .track::after { transform: translateX(18px); }
+.beginner input:focus-visible + .track { outline: 3px solid var(--accent); outline-offset: 2px; }
+.beginner b { display: block; font-family: var(--f-display); line-height: 1.1; }
+.beginner small { color: var(--muted); font-size: 0.78rem; }
+
+.statusbar { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 0.82rem; font-family: var(--f-mono); }
+.chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; }
+.chip.ok i { background: var(--ok); } .chip.warn i { background: var(--warn); } .chip.bad i { background: var(--bad); }
+.chip.busy i { background: var(--accent); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .chip.busy i { animation: none; } .track, .track::after { transition: none; } }
+
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 5; padding-top: 6px; scrollbar-width: thin; }
+.tab { flex: none; border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-weight: 500; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; }
+.tab em { font-style: normal; font-family: var(--f-mono); font-size: 0.78rem; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tab[aria-selected="true"] em { color: var(--bg); opacity: .7; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.panel > header { display: flex; flex-direction: column; gap: 4px; }
+.panel > header p { color: var(--muted); max-width: 68ch; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field label { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+.field input, .field select { background: var(--surface2); border: 1.5px solid var(--line); border-radius: 9px; padding: 9px 11px; min-width: 0; width: 100%; font-family: var(--f-mono); font-size: 0.95rem; }
+.field input[type="range"] { padding: 0; accent-color: var(--accent); background: none; border: none; }
+.field .hint { font-size: 0.78rem; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { border: 1.5px solid var(--ink); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 9px 14px; font-weight: 600; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; justify-content: center; min-height: 42px; }
+.btn:hover { background: var(--surface2); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.07); }
+.btn.big { padding: 13px 18px; font-size: 1.02rem; }
+.btn.ghost { border-color: var(--line); font-weight: 500; }
+.btn[disabled] { opacity: .5; cursor: progress; }
+.seg { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 10px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface); padding: 9px 14px; cursor: pointer; font-weight: 600; min-height: 42px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+.cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.card { border: 1.5px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 9px; background: var(--surface2); min-width: 0; }
+.card.on { border-color: var(--accent2); background: var(--surface); }
+.card .head { display: flex; gap: 10px; align-items: center; }
+.card .sym { width: 44px; height: 44px; flex: none; border-radius: 10px; border: 1.5px solid var(--line); display: grid; place-items: center; color: var(--ink); background: var(--surface); }
+.card .sym svg { width: 32px; height: 32px; }
+.card h3 { font-size: 0.98rem; line-height: 1.2; }
+.card .volt { font-family: var(--f-mono); font-size: 0.76rem; color: var(--accent); }
+.card p.d { font-size: 0.88rem; color: var(--muted); }
+.pins { display: flex; flex-wrap: wrap; gap: 4px; }
+.pins span { font-family: var(--f-mono); font-size: 0.72rem; padding: 2px 7px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); }
+.card .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: auto; padding-top: 4px; }
+.tog { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
+.tog input { width: 20px; height: 20px; accent-color: var(--accent2); }
+.tag { font-size: 0.72rem; font-family: var(--f-mono); color: var(--muted); }
+
+.tree, .tree ul { list-style: none; margin: 0; padding: 0; font-family: var(--f-mono); font-size: 0.86rem; }
+.tree ul { margin-left: 14px; padding-left: 14px; border-left: 2px solid var(--line); }
+.tree li { padding: 3px 0; position: relative; }
+.tree ul li::before { content: ""; position: absolute; left: -14px; top: 15px; width: 12px; border-top: 2px solid var(--line); }
+.tree .pw { color: var(--accent); font-weight: 600; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.tbl th, .tbl td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.scrollx { overflow-x: auto; max-width: 100%; }
+.notes { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.notes li::marker { color: var(--accent); }
+.diagram { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 6px; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; }
+
+.stage { border: 1px solid var(--line); border-radius: 14px; background: var(--surface2); padding: 10px; }
+.stage svg.pv { display: block; width: 100%; height: auto; max-height: 70vh; }
+.pv-board { fill: var(--pv-board); } .pv-edge { fill: none; stroke: var(--ink); stroke-width: 0.35; }
+.pv-tool { fill: none; stroke: var(--accent); stroke-width: 0.28; stroke-linejoin: round; }
+.pv-pocket { fill: none; stroke: var(--accent); stroke-width: 0.25; stroke-dasharray: 1.2 0.8; }
+.pv-pocketline { fill: none; stroke: var(--accent); stroke-width: 0.15; opacity: .6; }
+.pv-cu { fill: var(--cu-muted); stroke: var(--cu-muted); stroke-width: 0; }
+path.pv-cu { fill: none; stroke: var(--cu-muted); }
+.pv-mill { fill: none; stroke: var(--ink); stroke-width: 0.3; stroke-dasharray: 1 0.7; }
+.pv-grid line { stroke: #888; stroke-width: 0.08; opacity: .55; }
+.pv-jump { stroke: #e0382c; stroke-width: 0.5; stroke-dasharray: 1.4 1; }
+.pv-label { font-family: var(--f-mono); font-size: 2.6px; fill: #e0382c; font-weight: 700; paint-order: stroke; stroke: #fff; stroke-width: 0.5px; }
+.lay-body { fill: none; stroke: var(--muted); stroke-width: 0.3; }
+.lay-ref { font-family: var(--f-mono); font-size: 2.4px; fill: var(--ink); font-weight: 600; }
+.lay-pin { font-family: var(--f-mono); font-size: 1.5px; fill: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.8rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid var(--line); }
+.checks { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.checks li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9rem; background: var(--surface2); border-radius: 10px; padding: 9px 11px; min-width: 0; }
+.checks li b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; flex: none; font-size: 0.8rem; background: var(--ok); color: var(--bg); }
+.checks li.warn b { background: var(--warn); } .checks li.bad b { background: var(--bad); }
+.three { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.three > div { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.three h3 span { font-family: var(--f-mono); color: var(--accent); margin-right: 6px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.stats div { background: var(--surface2); border-radius: 10px; padding: 9px 11px; }
+.stats b { display: block; font-family: var(--f-mono); font-size: 1.15rem; }
+.stats span { font-size: 0.76rem; color: var(--muted); }
+pre.gcode { margin: 0; background: #11161a; color: #cfe3d6; padding: 12px; border-radius: 10px; font-family: var(--f-mono); font-size: 0.76rem; line-height: 1.45; max-height: 280px; overflow: auto; white-space: pre; }
+.files { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-family: var(--f-mono); font-size: 0.84rem; }
+.files li { padding: 6px 9px; background: var(--surface2); border-radius: 8px; word-break: break-all; }
+.exports { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.callout { border-left: 4px solid var(--accent); background: var(--surface2); border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: 0.9rem; }
+.dim { opacity: .45; transition: opacity .2s; }
+#toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 0.9rem; max-width: min(92vw, 520px); box-shadow: 0 6px 24px rgba(0,0,0,.3); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 20; }
+#toast.show { opacity: 1; }
+[hidden] { display: none !important; }
+@media (max-width: 520px) { .panel { padding: 14px; border-radius: 14px; } .tab { padding: 8px 10px; } }
+</style>
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="6" width="44" height="36" rx="5" fill="var(--ink)"/><path d="M9 33h10l5-9h8l4-8h4" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="33" r="3" fill="var(--bg)"/><circle cx="40" cy="16" r="3" fill="var(--bg)"/></svg>
+      <div><h1>CNC PCB Easy Designer</h1><p>Design a single-sided board and cut it on a CNC 3018. No PCB experience needed.</p></div>
+    </div>
+    <label class="beginner" for="beginner"><input type="checkbox" id="beginner" checked><span class="track" aria-hidden="true"></span><span><b>Beginner mode</b><small id="beginnerHint">Everything is set up for you</small></span></label>
+  </header>
+  <div class="statusbar" id="statusbar" aria-live="polite"></div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Steps"></nav>
+
+  <section class="panel" id="tab-setup" role="tabpanel">
+    <header><h2>Project setup</h2><p>Defaults fit a 100 × 70 mm board. Change any value and the board is planned again.</p></header>
+    <div class="grid">
+      <div class="field"><label for="f-W">Board width (mm)</label><input id="f-W" type="number" min="90" max="200" step="1" inputmode="decimal"></div>
+      <div class="field"><label for="f-H">Board height (mm)</label><input id="f-H" type="number" min="62" max="160" step="1" inputmode="decimal"></div>
+      <div class="field"><label for="f-T">PCB thickness (mm)</label><select id="f-T"><option>0.8</option><option>1.0</option><option>1.2</option><option>1.6</option><option>2.0</option></select></div>
+      <div class="field"><label for="f-type">Board type</label><select id="f-type"><option>Single-sided</option><option disabled>Double-sided (not supported)</option></select></div>
+      <div class="field"><label for="f-mach">CNC machine</label><select id="f-mach"><option>CNC 3018</option></select></div>
+      <div class="field"><label for="f-side">Copper side</label><select id="f-side"><option value="bottom">Bottom</option><option value="top">Top</option></select></div>
+      <div class="field"><label for="f-clr">Minimum copper clearance (mm)</label><input id="f-clr" type="number" min="0.3" max="2" step="0.05" inputmode="decimal"><span class="hint" id="clrHint"></span></div>
+    </div>
+    <div class="callout" id="setupNote"></div>
+  </section>
+
+  <section class="panel" id="tab-parts" role="tabpanel" hidden>
+    <header><h2>Pick your parts</h2><p>Switch parts on or off. ESP, power input and converter are always needed. Every part is through-hole, so you can solder it by hand.</p></header>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section class="panel" id="tab-circuit" role="tabpanel" hidden>
+    <header><h2>Your circuit</h2><p id="circuitLead">Beginner mode wired everything for you. Power goes down the tree, signals come from the ESP.</p></header>
+    <div id="expert" hidden>
+      <div class="grid">
+        <div class="field"><label for="f-sig">Signal track width (mm)</label><input id="f-sig" type="number" min="0.4" max="2" step="0.1" inputmode="decimal"></div>
+        <div class="field"><label for="f-pow">Power and pump track width (mm)</label><input id="f-pow" type="number" min="1" max="4" step="0.1" inputmode="decimal"></div>
+        <div class="field"><label for="f-jmp">Wire links</label><select id="f-jmp"><option value="1">Allow (when a track cannot fit)</option><option value="0">Never (may leave gaps)</option></select></div>
+      </div>
+    </div>
+    <div class="two" id="circuitTop"></div>
+    <div id="pinTable" class="scrollx"></div>
+    <div><h3>Wiring diagram</h3><div class="diagram" id="wiring" style="margin-top:8px"></div></div>
+    <div><h3>Before you solder</h3><ul class="notes" id="buildNotes" style="margin-top:8px"></ul></div>
+  </section>
+
+  <section class="panel" id="tab-pcb" role="tabpanel" hidden>
+    <header><h2>Your board</h2><p>Parts sit on the top. Copper is on the bottom, so the copper view is flipped, as you see it with the board turned over.</p></header>
+    <div class="row">
+      <div class="seg" role="group" aria-label="Board view"><button id="v-layout" aria-pressed="true">Parts layout</button><button id="v-copper" aria-pressed="false">Show Copper Bottom</button></div>
+      <button class="btn ghost" id="btnRelayout">Try another layout</button>
+    </div>
+    <div class="row" id="viewOpts">
+      <label class="tog"><input type="checkbox" id="o-grid"> 10 mm grid</label>
+      <label class="tog"><input type="checkbox" id="o-labels"> Part names</label>
+      <label class="tog"><input type="checkbox" id="o-jump" checked> Wire links</label>
+    </div>
+    <div class="stage" id="stage"></div>
+    <div class="legend" id="legend"></div>
+    <div><h3>Design rules</h3><ul class="checks" id="checks" style="margin-top:8px"></ul></div>
+  </section>
+
+  <section class="panel" id="tab-cnc" role="tabpanel" hidden>
+    <header><h2>CNC 3018 milling</h2><p>Three jobs run in order: cut the isolation lines, drill the holes, cut the board out. Each has its own preview.</p></header>
+    <div class="grid">
+      <div class="field"><label for="c-mat">Board material</label><select id="c-mat"><option>FR-4 copper-clad (1 oz)</option></select></div>
+      <div class="field"><label for="c-spin">Spindle</label><select id="c-spin"><option>CNC 3018 (GRBL, ER11)</option></select></div>
+      <div class="field"><label for="c-tool">Tool diameter (mm)</label><input id="c-tool" type="number" min="0.1" max="3" step="0.05" inputmode="decimal"></div>
+      <div class="field"><label for="c-depth">Cut depth: <span class="mono" id="c-depthv"></span> mm</label><input id="c-depth" type="range" min="0.10" max="0.15" step="0.01"><span class="hint">0.10–0.15 mm is deep enough to cut through the copper.</span></div>
+      <div class="field"><label for="c-passes">Number of isolation passes</label><input id="c-passes" type="number" min="1" max="4" step="1" inputmode="numeric"><span class="hint">1 is right for a ground-fill board.</span></div>
+      <div class="field"><label for="c-rpm">Spindle speed (rpm)</label><input id="c-rpm" type="number" min="1000" max="12000" step="500" inputmode="numeric"></div>
+      <div class="field"><label for="c-feed">Feed rate (mm/min)</label><input id="c-feed" type="number" min="20" max="1000" step="10" inputmode="numeric"></div>
+      <div class="field"><label for="c-plunge">Plunge rate (mm/min)</label><input id="c-plunge" type="number" min="10" max="300" step="5" inputmode="numeric"></div>
+      <div class="field"><label for="c-safe">Safe height (mm)</label><input id="c-safe" type="number" min="0.5" max="10" step="0.5" inputmode="decimal"></div>
+      <div class="field"><label for="c-out">Outline cutter (mm)</label><input id="c-out" type="number" min="0.5" max="3.2" step="0.1" inputmode="decimal"></div>
+    </div>
+    <div class="three" id="previews"></div>
+    <div class="stats" id="camStats"></div>
+    <div><h3>G-code preview</h3><pre class="gcode" id="gcodePre" tabindex="0" style="margin-top:8px"></pre></div>
+    <ul class="notes" id="camNotes"></ul>
+  </section>
+
+  <section class="panel" id="tab-export" role="tabpanel" hidden>
+    <header><h2>Export files</h2><p>Single files for your own software, or one package with everything for the CNC 3018.</p></header>
+    <button class="btn primary big" id="btnPackage">Download CNC 3018 Package</button>
+    <ul class="files" id="packList"></ul>
+    <div class="exports">
+      <button class="btn" id="x-svg">Export SVG</button>
+      <button class="btn" id="x-dxf">Export DXF</button>
+      <button class="btn" id="x-gbr">Export Gerber</button>
+      <button class="btn" id="x-drl">Export Drill File</button>
+      <button class="btn" id="x-nc">Export G-code</button>
+    </div>
+    <div class="callout" id="exportNote"></div>
+  </section>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script id="engine">
+/* ============ CNC PCB Easy Designer : part 1 — catalog, nets, helpers ============ */
+const PAD_STD = { d: 1.7, drill: 0.9 };
+const PAD_TERM = { d: 2.6, drill: 1.3 };
+
+function hdr(names, startX, y, pitch) {
+  return names.map((n, i) => ({ n, x: startX + i * pitch, y, d: PAD_STD.d, drill: PAD_STD.drill, shape: i === 0 ? 'r' : 'c' }));
+}
+function term2(a, b) {
+  return [
+    { n: a, x: 2.54, y: 3.75, d: PAD_TERM.d, drill: PAD_TERM.drill, shape: 'r' },
+    { n: b, x: 7.62, y: 3.75, d: PAD_TERM.d, drill: PAD_TERM.drill, shape: 'c' }
+  ];
+}
+
+const ESP_L = ['RST', 'A0', 'D0', 'D5', 'D6', 'D7', 'D8', '3V3'];
+const ESP_R = ['TX', 'RX', 'D1', 'D2', 'D3', 'D4', 'G', '5V'];
+
+const CATALOG = {
+  esp: {
+    id: 'esp', ref: 'U1', name: 'ESP8266 / ESP-12F', symbol: '⌁', group: 'logic', voltage: '5 V in (3.3 V on the module)',
+    desc: 'The brain. ESP-12F module on a 2×8 through-hole carrier (D1-mini style) with its own 3.3 V regulator. Powered from the 5V pin.',
+    w: 25.6, h: 34.2, required: true,
+    pads: ESP_L.map((n, i) => ({ n, x: 1.37, y: 14 + i * 2.54, d: 1.7, drill: 0.9, shape: i === 0 ? 'r' : 'c' }))
+      .concat(ESP_R.map((n, i) => ({ n, x: 24.23, y: 14 + i * 2.54, d: 1.7, drill: 0.9, shape: 'c' }))),
+    keepout: { x: 0, y: 0, w: 25.6, h: 12.5, why: 'WiFi antenna: no copper underneath' },
+    pinInfo: { G: 'GND', '5V': '5 V power in' }
+  },
+  dcin: {
+    id: 'dcin', ref: 'J1', name: '12V DC input', symbol: '⎓', group: 'power', voltage: '12 V', required: true,
+    desc: 'Power comes in here. 2-pin screw terminal, 5.08 mm pitch. Wire your 12 V adapter (2 A or more) to it.',
+    w: 10.2, h: 7.5, pads: term2('+12V', 'GND'), pinInfo: { '+12V': '12 V from adapter', GND: 'Adapter ground' }
+  },
+  buck: {
+    id: 'buck', ref: 'U2', name: '12V → 5V DC-DC converter', symbol: '⇩', group: 'power', voltage: 'In 12 V, out 5 V', required: true,
+    desc: 'LM2596 / MP1584-style buck module with 4 corner pads. Turn the trimmer to exactly 5.0 V before you connect the ESP.',
+    w: 43, h: 21,
+    pads: [
+      { n: 'IN+', x: 2.5, y: 2.5, d: 2.2, drill: 1.0, shape: 'r' }, { n: 'IN-', x: 2.5, y: 18.5, d: 2.2, drill: 1.0, shape: 'c' },
+      { n: 'OUT+', x: 40.5, y: 2.5, d: 2.2, drill: 1.0, shape: 'c' }, { n: 'OUT-', x: 40.5, y: 18.5, d: 2.2, drill: 1.0, shape: 'c' }
+    ],
+    pinInfo: { 'IN+': '12 V in', 'IN-': 'Ground in', 'OUT+': '5 V out', 'OUT-': 'Ground out' }
+  },
+  pump: {
+    id: 'pump', ref: 'J2', name: '12V peristaltic pump', symbol: '◔', group: 'power', voltage: '12 V, about 0.5–1 A',
+    desc: 'The pump wires land on a 2-pin screw terminal. Plus goes to 12 V, minus goes through the MOSFET.',
+    w: 10.2, h: 7.5, pads: term2('PUMP+', 'PUMP-'), pinInfo: { 'PUMP+': 'Red wire → 12 V', 'PUMP-': 'Black wire → MOSFET' }
+  },
+  mosfet: {
+    id: 'mosfet', ref: 'Q1', name: 'MOSFET module', symbol: '⏻', group: 'power', voltage: '12 V load, 3.3–5 V signal',
+    desc: 'Switches the pump. Use a logic-level module (IRLZ44N or D4184 type) that works with 3.3 V. A plain IRF520 module will not switch fully.',
+    w: 34, h: 10,
+    pads: [
+      { n: 'SIG', x: 3, y: 3.5, d: 1.7, drill: 0.9, shape: 'r' }, { n: 'VCC', x: 5.54, y: 3.5, d: 1.7, drill: 0.9, shape: 'c' }, { n: 'GND', x: 8.08, y: 3.5, d: 1.7, drill: 0.9, shape: 'c' },
+      { n: 'V+', x: 25, y: 4, d: 2.6, drill: 1.3, shape: 'c' }, { n: 'V-', x: 30.08, y: 4, d: 2.6, drill: 1.3, shape: 'c' }
+    ],
+    pinInfo: { SIG: 'Gate signal from ESP', VCC: '5 V logic', GND: 'Ground', 'V+': '12 V supply', 'V-': 'Switched minus to pump' }
+  },
+  servo: {
+    id: 'servo', ref: 'SV1', name: 'SG90 servo', symbol: '↻', group: 'logic', voltage: '5 V, up to 0.7 A when moving',
+    desc: '3-pin header. Brown wire = GND, red = 5 V, orange = signal. Add a 470 µF capacitor across 5 V and GND near the plug.',
+    w: 8, h: 4, pads: hdr(['GND', '5V', 'SIG'], 1.5, 2, 2.54), pinInfo: { GND: 'Brown', '5V': 'Red', SIG: 'Orange' }, edge: true
+  },
+  ir: {
+    id: 'ir', ref: 'IR1', name: 'IR sensor', symbol: '◉', group: 'logic', voltage: '5 V',
+    desc: 'Obstacle sensor module (FC-51 style). 3-pin header: OUT, GND, VCC. Check your module silkscreen, the order can differ.',
+    w: 8, h: 4, pads: hdr(['OUT', 'GND', 'VCC'], 1.5, 2, 2.54), pinInfo: { OUT: 'Digital output', GND: 'Ground', VCC: '5 V' }, edge: true
+  },
+  oled: {
+    id: 'oled', ref: 'OLED1', name: '0.96" OLED I2C', symbol: '▭', group: 'logic', voltage: '3.3–5 V',
+    desc: '128×64 display, 4-pin header: GND, VCC, SCL, SDA. Plug it in or use short wires. Put it near the board edge.',
+    w: 12, h: 4, pads: hdr(['GND', 'VCC', 'SCL', 'SDA'], 1.5, 2, 2.54), pinInfo: { GND: 'Ground', VCC: '5 V', SCL: 'Clock', SDA: 'Data' }, edge: true
+  },
+  button: {
+    id: 'button', ref: 'SW1', name: 'Start/Stop push button', symbol: '⏺', group: 'logic', voltage: '3.3 V logic',
+    desc: '2-pin header for a panel push button. One wire to the signal pad, one to GND. The ESP uses its internal pull-up.',
+    w: 6, h: 4, pads: hdr(['BTN', 'GND'], 1.5, 2, 2.54), pinInfo: { BTN: 'To ESP D7', GND: 'Ground' }, edge: true
+  },
+  term: {
+    id: 'term', ref: 'J3', name: 'Screw terminal', symbol: '▥', group: 'logic', voltage: '5 V',
+    desc: 'Extra 2-pin terminal wired to 5 V and GND. Use it to power anything else you add later.',
+    w: 10.2, h: 7.5, pads: term2('5V', 'GND'), pinInfo: { '5V': '5 V out', GND: 'Ground' }, edge: true, optional: true
+  },
+  led: {
+    id: 'led', ref: 'D1', name: 'LED', symbol: '◐', group: 'logic', voltage: '3.3 V logic',
+    desc: 'Status light. Use a ready-made LED module, or solder a 330 Ω resistor in series with the LED on the SIG pad.',
+    w: 6, h: 4, pads: hdr(['SIG', 'GND'], 1.5, 2, 2.54), pinInfo: { SIG: 'To ESP D4 (via 330 Ω)', GND: 'Ground' }, edge: true, optional: true
+  },
+  buzzer: {
+    id: 'buzzer', ref: 'BZ1', name: 'Buzzer', symbol: '♪', group: 'logic', voltage: '3.3–5 V',
+    desc: 'Active buzzer (it beeps by itself when powered). Pins are 7.6 mm apart. Keep it under 12 mA from the ESP pin.',
+    w: 10, h: 5,
+    pads: [{ n: 'SIG', x: 1.2, y: 2.5, d: 1.8, drill: 1.0, shape: 'r' }, { n: 'GND', x: 8.8, y: 2.5, d: 1.8, drill: 1.0, shape: 'c' }],
+    pinInfo: { SIG: 'To ESP D8', GND: 'Ground' }, edge: true, optional: true
+  }
+};
+
+// Card order shown in the UI
+const CARD_ORDER = ['esp', 'dcin', 'buck', 'pump', 'mosfet', 'servo', 'ir', 'oled', 'button', 'term', 'led', 'buzzer'];
+
+// Beginner circuit: net name -> list of [partId, padName]
+function beginnerNets(on) {
+  const has = (id) => on[id];
+  const N = {};
+  const add = (net, id, pad) => { if (has(id)) (N[net] = N[net] || []).push([id, pad]); };
+  add('12V', 'dcin', '+12V'); add('12V', 'pump', 'PUMP+'); add('12V', 'mosfet', 'V+'); add('12V', 'buck', 'IN+');
+  add('PUMP-', 'pump', 'PUMP-'); add('PUMP-', 'mosfet', 'V-');
+  add('5V', 'buck', 'OUT+'); add('5V', 'esp', '5V'); add('5V', 'oled', 'VCC'); add('5V', 'ir', 'VCC');
+  add('5V', 'servo', '5V'); add('5V', 'mosfet', 'VCC'); add('5V', 'term', '5V');
+  ['dcin:GND', 'buck:IN-', 'buck:OUT-', 'mosfet:GND', 'esp:G', 'servo:GND', 'ir:GND', 'oled:GND', 'button:GND', 'led:GND', 'buzzer:GND', 'term:GND']
+    .forEach((s) => { const [id, pad] = s.split(':'); add('GND', id, pad); });
+  add('PUMP_GATE', 'esp', 'D6'); add('PUMP_GATE', 'mosfet', 'SIG');
+  add('SERVO', 'esp', 'D5'); add('SERVO', 'servo', 'SIG');
+  add('IR_OUT', 'esp', 'D0'); add('IR_OUT', 'ir', 'OUT');
+  add('SDA', 'esp', 'D2'); add('SDA', 'oled', 'SDA');
+  add('SCL', 'esp', 'D1'); add('SCL', 'oled', 'SCL');
+  add('START', 'esp', 'D7'); add('START', 'button', 'BTN');
+  add('LED', 'esp', 'D4'); add('LED', 'led', 'SIG');
+  add('BUZZER', 'esp', 'D8'); add('BUZZER', 'buzzer', 'SIG');
+  Object.keys(N).forEach((k) => { if (N[k].length < 2) delete N[k]; });
+  return N;
+}
+
+const NET_COLORS = {
+  '12V': '#d6342c', '5V': '#e07a10', GND: '#2b2f36', 'PUMP-': '#8c3fb0',
+  PUMP_GATE: '#0b7a75', SERVO: '#2f6fd0', IR_OUT: '#6a8f1a', SDA: '#c2185b', SCL: '#00838f', START: '#7b5e2a', LED: '#3949ab', BUZZER: '#5d4037'
+};
+const NET_LABELS = {
+  '12V': '12 V power', '5V': '5 V power', GND: 'Ground', 'PUMP-': 'Pump minus (switched)',
+  PUMP_GATE: 'Pump gate signal', SERVO: 'Servo signal', IR_OUT: 'IR sensor output', SDA: 'OLED data (SDA)', SCL: 'OLED clock (SCL)',
+  START: 'Start/Stop button', LED: 'LED signal', BUZZER: 'Buzzer signal'
+};
+const SHORT = { dcin: '12V input', buck: 'Converter', pump: 'Pump', mosfet: 'MOSFET', servo: 'Servo', ir: 'IR sensor', oled: 'OLED', button: 'Button', term: 'Terminal', led: 'LED', buzzer: 'Buzzer', esp: 'ESP' };
+function netClass(net) {
+  if (net === '12V' || net === 'PUMP-') return 'power';
+  if (net === 'GND' || net === '5V') return 'mid';
+  return 'signal';
+}
+
+// ---------- helpers ----------
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const r2 = (v) => Math.round(v * 100) / 100;
+const r3 = (v) => Math.round(v * 1000) / 1000;
+function distPtSeg(px, py, x1, y1, x2, y2) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const l2 = dx * dx + dy * dy;
+  let t = l2 ? ((px - x1) * dx + (py - y1) * dy) / l2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+}
+
+/* ============ part 2 — placement, maze router, DRC ============ */
+const MOUNT_D = 3.2, MOUNT_INSET = 4.0, EDGE_CLR = 1.2;
+
+function makePart(id, def, x, y, rot) {
+  const w0 = def.w, h0 = def.h;
+  const tf = (px, py) => {
+    if (rot === 90) return [h0 - py, px];
+    if (rot === 180) return [w0 - px, h0 - py];
+    if (rot === 270) return [py, w0 - px];
+    return [px, py];
+  };
+  const swap = rot === 90 || rot === 270;
+  const w = swap ? h0 : w0, h = swap ? w0 : h0;
+  const part = { id, ref: def.ref, def, x, y, rot, w, h, pads: [], keepout: null };
+  def.pads.forEach((p) => {
+    const [px, py] = tf(p.x, p.y);
+    part.pads.push({ name: p.n, x: x + px, y: y + py, d: p.d, drill: p.drill, shape: p.shape, net: null, part: id });
+  });
+  if (def.keepout) {
+    const k = def.keepout;
+    const [ax, ay] = tf(k.x, k.y), [bx, by] = tf(k.x + k.w, k.y + k.h);
+    part.keepout = { x: x + Math.min(ax, bx), y: y + Math.min(ay, by), w: Math.abs(bx - ax), h: Math.abs(by - ay) };
+  }
+  return part;
+}
+
+function mountingHoles(W, H) {
+  const i = MOUNT_INSET;
+  return [[i, i], [W - i, i], [i, H - i], [W - i, H - i]].map(([x, y]) => ({ x, y, d: MOUNT_D, type: 'mount' }));
+}
+
+function rectsGap(a, b) {
+  const dx = Math.max(0, Math.max(a.x - (b.x + b.w), b.x - (a.x + a.w)));
+  const dy = Math.max(0, Math.max(a.y - (b.y + b.h), b.y - (a.y + a.h)));
+  return Math.hypot(dx, dy);
+}
+
+// ---- placement: random zone-based candidates, ranked by wire length ----
+function placeOnce(cfg, rnd) {
+  const { W, H, on } = cfg;
+  const gap = 3.2 + rnd() * 1.6;
+  const holes = mountingHoles(W, H);
+  const placed = [];
+  const order = ['esp', 'buck', 'mosfet', 'dcin', 'pump', 'oled', 'servo', 'ir', 'button', 'term', 'led', 'buzzer'].filter((id) => on[id]);
+  const U = (a, b) => a + rnd() * (b - a);
+  const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+
+  function ok(p) {
+    if (p.x < 2 || p.y < 2 || p.x + p.w > W - 2 || p.y + p.h > H - 2) return false;
+    for (const q of placed) if (rectsGap(p, q) < gap) return false;
+    for (const hl of holes) {
+      const dx = Math.max(p.x - hl.x, 0, hl.x - (p.x + p.w)), dy = Math.max(p.y - hl.y, 0, hl.y - (p.y + p.h));
+      if (Math.hypot(dx, dy) < 4.8) return false;
+    }
+    return true;
+  }
+  function cand(id) {
+    const def = CATALOG[id];
+    const sw = (r) => (r === 90 || r === 270);
+    const dims = (r) => (sw(r) ? [def.h, def.w] : [def.w, def.h]);
+    let rot, x, y;
+    if (id === 'esp') {
+      rot = pick([0, 180]); const [w, h] = dims(rot);
+      x = U(W * 0.5, W - 2 - w);
+      y = rot === 0 ? U(2, 10) : H - 2 - h - U(0, 8);
+    } else if (id === 'buck') {
+      rot = pick([0, 0, 90]); const [w, h] = dims(rot);
+      x = U(2, Math.max(2.5, W * 0.5 - w)); y = U(2, H - 2 - h);
+    } else if (id === 'mosfet') {
+      rot = pick([0, 90, 180, 270]); const [w, h] = dims(rot);
+      x = U(2, Math.max(2.5, W * 0.55 - w)); y = U(2, H - 2 - h);
+    } else {
+      const power = def.group === 'power';
+      const edge = power ? pick(['left', 'top', 'bottom', 'bottom']) : pick(['right', 'top', 'bottom', 'right']);
+      const xr = power ? [2, W * 0.5] : [W * 0.3, W - 2];
+      if (edge === 'left' || edge === 'right') {
+        rot = pick([90, 270]); const [w, h] = dims(rot);
+        x = edge === 'left' ? 2 + U(0, 2.5) : W - 2 - w - U(0, 2.5);
+        y = U(2, H - 2 - h);
+      } else {
+        rot = pick([0, 180]); const [w, h] = dims(rot);
+        x = U(xr[0], Math.max(xr[0] + 0.1, xr[1] - w));
+        y = edge === 'top' ? 2 + U(0, 2.5) : H - 2 - h - U(0, 2.5);
+      }
+    }
+    return makePart(id, def, r2(x * 2) / 2, r2(y * 2) / 2, rot);
+  }
+  for (const id of order) {
+    let got = null;
+    for (let t = 0; t < 500 && !got; t++) { const p = cand(id); if (ok(p)) got = p; }
+    if (!got) return null;
+    placed.push(got);
+  }
+  // rule: ESP stays away from the pump side
+  const esp = placed.find((p) => p.id === 'esp');
+  for (const p of placed) {
+    if (p.id === 'pump' || p.id === 'mosfet' || p.id === 'dcin') {
+      if (rectsGap(esp, p) < 12) return null;
+    }
+  }
+  return placed;
+}
+
+function assignNets(parts, netMap) {
+  const lookup = {};
+  Object.entries(netMap).forEach(([net, list]) => list.forEach(([id, pad]) => { lookup[id + ':' + pad] = net; }));
+  parts.forEach((p) => p.pads.forEach((pd) => { pd.net = lookup[p.id + ':' + pd.name] || null; }));
+}
+
+function wireCost(parts, netMap) {
+  const find = (id, pad) => { const p = parts.find((q) => q.id === id); return p ? p.pads.find((d) => d.name === pad) : null; };
+  let cost = 0;
+  Object.entries(netMap).forEach(([net, list]) => {
+    let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    list.forEach(([id, pad]) => { const d = find(id, pad); if (!d) return; x0 = Math.min(x0, d.x); x1 = Math.max(x1, d.x); y0 = Math.min(y0, d.y); y1 = Math.max(y1, d.y); });
+    cost += ((x1 - x0) + (y1 - y0)) * (netClass(net) === 'signal' ? 1 : 1.6);
+  });
+  return cost;
+}
+
+// ---- items for clearance maths ----
+function padItem(p, netId) {
+  if (p.shape === 'r') return { t: 'r', x: p.x, y: p.y, hw: p.d / 2, hh: p.d / 2, net: netId, clr: null };
+  return { t: 's', x1: p.x, y1: p.y, x2: p.x, y2: p.y, hw: p.d / 2, net: netId, clr: null };
+}
+function edgeDist(it, x, y) {
+  if (it.t === 's') return distPtSeg(x, y, it.x1, it.y1, it.x2, it.y2) - it.hw;
+  const cx = (it.x), cy = (it.y);
+  return Math.hypot(Math.max(Math.abs(x - cx) - it.hw, 0), Math.max(Math.abs(y - cy) - it.hh, 0));
+}
+function itemBox(it, pad) {
+  if (it.t === 's') return [Math.min(it.x1, it.x2) - it.hw - pad, Math.min(it.y1, it.y2) - it.hw - pad, Math.max(it.x1, it.x2) + it.hw + pad, Math.max(it.y1, it.y2) + it.hw + pad];
+  return [it.x - it.hw - pad, it.y - it.hh - pad, it.x + it.hw + pad, it.y + it.hh + pad];
+}
+
+// ---- binary heap ----
+function Heap() { this.k = []; this.v = []; }
+Heap.prototype.push = function (key, val) {
+  const k = this.k, v = this.v; let i = k.length; k.push(key); v.push(val);
+  while (i > 0) { const p = (i - 1) >> 1; if (k[p] <= key) break; k[i] = k[p]; v[i] = v[p]; i = p; }
+  k[i] = key; v[i] = val;
+};
+Heap.prototype.pop = function () {
+  const k = this.k, v = this.v; const topV = v[0]; const lastK = k.pop(), lastV = v.pop(); const n = k.length;
+  if (n > 0) {
+    let i = 0;
+    for (;;) { let c = 2 * i + 1; if (c >= n) break; if (c + 1 < n && k[c + 1] < k[c]) c++; if (k[c] >= lastK) break; k[i] = k[c]; v[i] = v[c]; i = c; }
+    k[i] = lastK; v[i] = lastV;
+  }
+  return topV;
+};
+Heap.prototype.size = function () { return this.k.length; };
+
+const DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+
+// ---- DRC ----
+function segSegDist(a, b) {
+  const [p1x, p1y, p2x, p2y] = a, [q1x, q1y, q2x, q2y] = b;
+  const o = (ax, ay, bx, by, cx, cy) => (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+  const d1 = o(p1x, p1y, p2x, p2y, q1x, q1y), d2 = o(p1x, p1y, p2x, p2y, q2x, q2y);
+  const d3 = o(q1x, q1y, q2x, q2y, p1x, p1y), d4 = o(q1x, q1y, q2x, q2y, p2x, p2y);
+  if (((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0)) && d1 !== 0 && d2 !== 0 && d3 !== 0 && d4 !== 0) return 0;
+  return Math.min(distPtSeg(p1x, p1y, q1x, q1y, q2x, q2y), distPtSeg(p2x, p2y, q1x, q1y, q2x, q2y), distPtSeg(q1x, q1y, p1x, p1y, p2x, p2y), distPtSeg(q2x, q2y, p1x, p1y, p2x, p2y));
+}
+function shapeGap(a, b) {
+  if (a.t === 's' && b.t === 's') return segSegDist([a.x1, a.y1, a.x2, a.y2], [b.x1, b.y1, b.x2, b.y2]) - a.hw - b.hw;
+  if (a.t === 'r' && b.t === 'r') return Math.hypot(Math.max(0, Math.abs(a.x - b.x) - a.hw - b.hw), Math.max(0, Math.abs(a.y - b.y) - a.hh - b.hh));
+  const s = a.t === 's' ? a : b, r = a.t === 'r' ? a : b;
+  const rd = (x, y) => Math.hypot(Math.max(Math.abs(x - r.x) - r.hw, 0), Math.max(Math.abs(y - r.y) - r.hh, 0));
+  let m = Math.min(rd(s.x1, s.y1), rd(s.x2, s.y2));
+  for (const [cx, cy] of [[r.x - r.hw, r.y - r.hh], [r.x + r.hw, r.y - r.hh], [r.x + r.hw, r.y + r.hh], [r.x - r.hw, r.y + r.hh]]) m = Math.min(m, distPtSeg(cx, cy, s.x1, s.y1, s.x2, s.y2));
+  return m - s.hw;
+}
+
+function copperItems(parts, tracks, jpads) {
+  const out = [];
+  (jpads || []).forEach((pd) => { const it = padItem(pd, pd.net); it.kind = 'pad'; it.ref = 'JMP'; out.push(it); });
+  parts.forEach((p) => p.pads.forEach((pd) => { const it = padItem(pd, pd.net || ('NC:' + p.id + pd.name)); it.kind = 'pad'; it.ref = p.ref + '.' + pd.name; out.push(it); }));
+  tracks.forEach((t) => { for (let k = 0; k < t.pts.length - 1; k++) out.push({ t: 's', x1: t.pts[k][0], y1: t.pts[k][1], x2: t.pts[k + 1][0], y2: t.pts[k + 1][1], hw: t.w / 2, net: t.net, kind: 'track' }); });
+  return out;
+}
+
+function runDRC(parts, tracks, cfg, jpads) {
+  const items = copperItems(parts, tracks, jpads);
+  const boxes = items.map((it) => itemBox(it, 0));
+  let minGap = 99; const bad = [];
+  for (let a = 0; a < items.length; a++) for (let b = a + 1; b < items.length; b++) {
+    if (items[a].net === items[b].net) continue;
+    const A = boxes[a], B = boxes[b];
+    if (A[2] + cfg.clr + 0.5 < B[0] || B[2] + cfg.clr + 0.5 < A[0] || A[3] + cfg.clr + 0.5 < B[1] || B[3] + cfg.clr + 0.5 < A[1]) continue;
+    const gp = shapeGap(items[a], items[b]);
+    if (gp < minGap) minGap = gp;
+    if (gp < cfg.clr - 0.03) bad.push({ a: items[a], b: items[b], gap: gp });
+  }
+  let inside = true;
+  items.forEach((it) => { const b = itemBox(it, 0); if (b[0] < EDGE_CLR - 0.05 || b[1] < EDGE_CLR - 0.05 || b[2] > cfg.W - EDGE_CLR + 0.05 || b[3] > cfg.H - EDGE_CLR + 0.05) inside = false; });
+  // ESP keep-away from high-current copper
+  const esp = parts.find((p) => p.id === 'esp');
+  let espGap = 99;
+  if (esp) {
+    const rect = { x: esp.x, y: esp.y, w: esp.w, h: esp.h };
+    items.forEach((it) => {
+      const hi = it.net === '12V' || it.net === 'PUMP-';
+      if (!hi || it.kind !== 'track') return;
+      const b = itemBox(it, 0);
+      espGap = Math.min(espGap, rectsGap(rect, { x: b[0], y: b[1], w: b[2] - b[0], h: b[3] - b[1] }));
+    });
+  }
+  return { minGap: r2(minGap), violations: bad.length, sample: bad.slice(0, 5).map((v) => `${v.a.ref || v.a.net} ↔ ${v.b.ref || v.b.net}: ${r2(v.gap)} mm`), inside, espGap: r2(espGap) };
+}
+
+/* ============ part 2b — router with wire jumpers and ground fill analysis ============ */
+const JUMP_PAD = { d: 1.8, drill: 0.9 };
+
+function routeDesign(parts, netMap, cfg, netOrder) {
+  const { W, H } = cfg;
+  const g = 0.5;
+  const nx = Math.floor(W / g) + 1, ny = Math.floor(H / g) + 1, NC = nx * ny;
+  const clr = cfg.clr, INFL = 0.2;
+  const allNets = Object.keys(netMap);
+  const netId = {}; allNets.forEach((n, i) => { netId[n] = i + 1; });
+  const widths = { signal: cfg.sigW, mid: (cfg.sigW + cfg.powW) / 2, power: cfg.powW };
+  const items = [];
+  parts.forEach((p) => p.pads.forEach((pd) => { items.push(padItem(pd, pd.net ? netId[pd.net] : 0)); }));
+  mountingHoles(W, H).forEach((h) => items.push({ t: 's', x1: h.x, y1: h.y, x2: h.x, y2: h.y, hw: 3.0, net: -1, clr: 0.3 }));
+  parts.forEach((p) => { if (p.keepout) { const k = p.keepout; items.push({ t: 'r', x: k.x + k.w / 2, y: k.y + k.h / 2, hw: k.w / 2, hh: k.h / 2, net: -1, clr: 0.3 }); } });
+
+  const blocked = new Uint8Array(NC), blockedPad = new Uint8Array(NC);
+  const G = new Float32Array(NC * 8), PAR = new Int32Array(NC * 8), STAMP = new Int32Array(NC * 8), HOP = new Uint8Array(NC * 8);
+  let stampN = 0;
+  const tracks = [], failed = [], jumpers = [], jumperPads = [];
+  const cellOf = (x, y) => [Math.max(0, Math.min(nx - 1, Math.round(x / g))), Math.max(0, Math.min(ny - 1, Math.round(y / g)))];
+
+  function fillBlocked(arr, net, hw, ownPads, opt) {
+    opt = opt || {};
+    const itemsX = opt.items || items;
+    const infl = opt.infl == null ? INFL : opt.infl;
+    arr.fill(0);
+    const edge = opt.edge == null ? EDGE_CLR + hw : opt.edge;
+    for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+      const x = i * g, y = j * g;
+      if (x < edge || y < edge || x > W - edge || y > H - edge) arr[j * nx + i] = 1;
+    }
+    for (const it of itemsX) {
+      if (it.net === net) continue;
+      const c = it.clr == null ? clr : it.clr;
+      const need = c + hw + infl;
+      const [x0, y0, x1, y1] = itemBox(it, need);
+      const i0 = Math.max(0, Math.floor(x0 / g)), i1 = Math.min(nx - 1, Math.ceil(x1 / g));
+      const j0 = Math.max(0, Math.floor(y0 / g)), j1 = Math.min(ny - 1, Math.ceil(y1 / g));
+      for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) if (edgeDist(it, i * g, j * g) < need) arr[j * nx + i] = 1;
+    }
+    for (const pd of ownPads) {
+      const R = pd.d / 2 + 2.2;
+      const near = itemsX.filter((it) => { if (it.net === net) return false; const b = itemBox(it, clr + hw + 0.01); return !(b[2] < pd.x - R || b[0] > pd.x + R || b[3] < pd.y - R || b[1] > pd.y + R); });
+      const i0 = Math.max(0, Math.floor((pd.x - R) / g)), i1 = Math.min(nx - 1, Math.ceil((pd.x + R) / g));
+      const j0 = Math.max(0, Math.floor((pd.y - R) / g)), j1 = Math.min(ny - 1, Math.ceil((pd.y + R) / g));
+      for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+        const x = i * g, y = j * g;
+        if (x < edge || y < edge || x > W - edge || y > H - edge) continue;
+        let free = true;
+        for (const it of near) { const c = it.clr == null ? clr : it.clr; if (edgeDist(it, x, y) < c + hw) { free = false; break; } }
+        if (free) arr[j * nx + i] = 0;
+      }
+    }
+  }
+
+  function astar(sources, target, hopOK) {
+    stampN++;
+    const heap = new Heap();
+    const [tx, ty] = target;
+    const hfun = (i, j) => { const dx = Math.abs(i - tx), dy = Math.abs(j - ty); return Math.max(dx, dy) + 0.4142 * Math.min(dx, dy); };
+    for (const [si, sj] of sources) for (let d = 0; d < 8; d++) {
+      const s = (sj * nx + si) * 8 + d;
+      G[s] = 0; PAR[s] = -1; HOP[s] = 0; STAMP[s] = stampN; heap.push(hfun(si, sj), s);
+    }
+    let found = -1, iter = 0;
+    while (heap.size()) {
+      const s = heap.pop();
+      const cell = (s / 8) | 0, d = s - cell * 8;
+      const ci = cell % nx, cj = (cell / nx) | 0;
+      if (ci === tx && cj === ty) { found = s; break; }
+      if (++iter > 500000) break;
+      const gs = G[s];
+      for (let nd = 0; nd < 8; nd++) {
+        const ni = ci + DIRS[nd][0], nj = cj + DIRS[nd][1];
+        if (ni < 0 || nj < 0 || ni >= nx || nj >= ny) continue;
+        if (blocked[nj * nx + ni]) continue;
+        if (nd & 1) { if (blocked[cj * nx + ni] || blocked[nj * nx + ci]) continue; }
+        let turn = Math.abs(nd - d); if (turn > 4) turn = 8 - turn;
+        const step = (nd & 1 ? 1.4142 : 1) + turn * 0.18;
+        const ns = (nj * nx + ni) * 8 + nd;
+        const ng = gs + step;
+        if (STAMP[ns] === stampN && G[ns] <= ng) continue;
+        STAMP[ns] = stampN; G[ns] = ng; PAR[ns] = s; HOP[ns] = 0;
+        heap.push(ng + hfun(ni, nj), ns);
+      }
+      if (hopOK && gs >= 5 && !(d & 1) && !blockedPad[cell] && Math.max(Math.abs(ci - tx), Math.abs(cj - ty)) >= 5) {
+        const dx = DIRS[d][0], dy = DIRS[d][1];
+        for (let L = 6; L <= 30; L++) {
+          const ni = ci + dx * L, nj = cj + dy * L;
+          if (ni < 0 || nj < 0 || ni >= nx || nj >= ny) break;
+          if (blockedPad[nj * nx + ni]) continue;
+          if (Math.max(Math.abs(ni - tx), Math.abs(nj - ty)) < 5 && !(ni === tx && nj === ty)) continue;
+          const ns = (nj * nx + ni) * 8 + d;
+          const ng = gs + L + 45;
+          if (STAMP[ns] === stampN && G[ns] <= ng) continue;
+          STAMP[ns] = stampN; G[ns] = ng; PAR[ns] = s; HOP[ns] = 1;
+          heap.push(ng + hfun(ni, nj), ns);
+        }
+      }
+    }
+    if (found < 0) return null;
+    const path = [];
+    for (let s = found; s >= 0; s = PAR[s]) { const cell = (s / 8) | 0; path.push({ i: cell % nx, j: (cell / nx) | 0, hop: HOP[s] === 1 }); }
+    path.reverse();
+    return path;
+  }
+
+  function simplify(pts) {
+    if (pts.length < 3) return pts;
+    const out = [pts[0]];
+    for (let i = 1; i < pts.length - 1; i++) {
+      const a = out[out.length - 1], b = pts[i], c = pts[i + 1];
+      const cr = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]);
+      if (Math.abs(cr) > 1e-6) out.push(b);
+    }
+    out.push(pts[pts.length - 1]);
+    return out;
+  }
+
+  function addJumper(net, id, ax, ay, bx, by) {
+    jumpers.push({ net, a: [ax, ay], b: [bx, by] });
+    [[ax, ay], [bx, by]].forEach(([x, y]) => {
+      const pd = { name: 'J', x, y, d: JUMP_PAD.d, drill: JUMP_PAD.drill, shape: 'c', net, part: 'jumper' };
+      jumperPads.push(pd);
+      items.push({ t: 's', x1: x, y1: y, x2: x, y2: y, hw: JUMP_PAD.d / 2, net: id, clr: null });
+    });
+  }
+
+  function addTrack(net, w, id, pts) {
+    if (pts.length < 2) return;
+    tracks.push({ net, w, pts });
+    for (let k = 0; k < pts.length - 1; k++) items.push({ t: 's', x1: pts[k][0], y1: pts[k][1], x2: pts[k + 1][0], y2: pts[k + 1][1], hw: w / 2, net: id, clr: null });
+  }
+
+  // reserve an escape corridor next to every ground pad so the copper fill can always reach it
+  {
+    const gidS = netId['GND'];
+    const gp = [];
+    parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net === 'GND') gp.push(pd); }));
+    const others = [];
+    parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net !== 'GND') others.push(pd); }));
+    gp.forEach((pd) => {
+      let bestD = null, bestS = -1;
+      for (let d = 0; d < 8; d++) {
+        const L = 3.6 / (d & 1 ? 1.4142 : 1);
+        const ex = pd.x + DIRS[d][0] * L, ey = pd.y + DIRS[d][1] * L;
+        if (ex < 2.6 || ey < 2.6 || ex > W - 2.6 || ey > H - 2.6) continue;
+        let m = 99;
+        for (const o of others) { const dd = Math.min(Math.hypot(ex - o.x, ey - o.y), distPtSeg(o.x, o.y, pd.x, pd.y, ex, ey)); m = Math.min(m, dd - o.d / 2); }
+        for (const h of mountingHoles(W, H)) m = Math.min(m, Math.hypot(ex - h.x, ey - h.y) - 3);
+        if (m > bestS) { bestS = m; bestD = [ex, ey]; }
+      }
+      if (bestD) items.push({ t: 's', x1: pd.x, y1: pd.y, x2: bestD[0], y2: bestD[1], hw: 0.5, net: gidS, clr: null });
+    });
+  }
+  for (const net of netOrder) {
+    if (net === 'GND') continue;
+    const pads = [];
+    parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net === net) pads.push(pd); }));
+    if (pads.length < 2) continue;
+    const w = widths[netClass(net)], hw = w / 2, id = netId[net];
+    fillBlocked(blocked, id, hw, pads);
+    let padBlockedReady = false;
+    const cellsOf = new Map();
+    const padCells = (pd) => { const c = cellOf(pd.x, pd.y); return c; };
+    const addPad = (pd) => {
+      const [ci, cj] = padCells(pd);
+      const cx = ci * g, cy = cj * g;
+      if (Math.hypot(cx - pd.x, cy - pd.y) > 0.01) addTrack(net, w, id, [[pd.x, pd.y], [cx, cy]]);
+    };
+    const rest = pads.slice().sort((a, b) => a.x - b.x);
+    const keyOf = (pd) => pd.part + ':' + pd.name;
+    const byKey = {}; pads.forEach((pd) => { byKey[keyOf(pd)] = pd; });
+    const treeH = (parts.hints || []).find((h) => h.net === net && h.edges);
+    let edges = treeH ? treeH.edges.filter((e) => byKey[e[0]] && byKey[e[1]]) : [];
+    let rootPad = rest[0];
+    if (edges.length) rootPad = byKey[edges[0][0]];
+    rest.splice(rest.indexOf(rootPad), 1);
+    addPad(rootPad);
+    cellsOf.set(rootPad, [padCells(rootPad)]);
+    const connected = [rootPad];
+    while (rest.length) {
+      let bi = 0, bv = null, bd = 1e9, viaH = null;
+      const e = edges.find((q) => connected.includes(byKey[q[0]]) && rest.includes(byKey[q[1]]));
+      if (e) { bi = rest.indexOf(byKey[e[1]]); bv = byKey[e[0]]; viaH = e[2] || null; }
+      else rest.forEach((u, k) => { for (const v of connected) { const d = Math.abs(u.x - v.x) + Math.abs(u.y - v.y); if (d < bd) { bd = d; bi = k; bv = v; } } });
+      const pd = rest.splice(bi, 1)[0];
+      const target = cellOf(pd.x, pd.y);
+      blocked[target[1] * nx + target[0]] = 0;
+      const sources = cellsOf.get(bv);
+      let path = null;
+      if (viaH) {
+        let src = sources, acc = [], okv = true;
+        for (const v of viaH) {
+          const vc = cellOf(v[0], v[1]);
+          if (blocked[vc[1] * nx + vc[0]]) { okv = false; break; }
+          const seg = astar(src, vc, false);
+          if (!seg) { okv = false; break; }
+          acc = acc.concat(acc.length ? seg.slice(1) : seg); src = [vc];
+        }
+        if (okv) { const seg = astar(src, target, false); if (seg) path = acc.concat(seg.slice(1)); }
+      }
+      if (!path) path = astar(sources, target, false);
+      if (!path && cfg.jumpers !== false) {
+        if (!padBlockedReady) { fillBlocked(blockedPad, id, Math.max(hw, JUMP_PAD.d / 2), []); padBlockedReady = true; }
+        path = astar(sources, target, true);
+      }
+      if (!path) { failed.push({ net, pad: pd }); continue; }
+      let cur = [path[0]];
+      const flush = () => { addTrack(net, w, id, simplify(cur.map((c) => [c.i * g, c.j * g]))); };
+      for (let k = 1; k < path.length; k++) {
+        if (path[k].hop) {
+          const a = cur[cur.length - 1];
+          flush();
+          addJumper(net, id, a.i * g, a.j * g, path[k].i * g, path[k].j * g);
+          cur = [path[k]];
+        } else cur.push(path[k]);
+      }
+      flush();
+      addPad(pd);
+      cellsOf.set(pd, path.map((c) => [c.i, c.j]).concat([target]));
+      connected.push(pd);
+    }
+  }
+
+  // ---- ground fill: every GND pad must touch the same copper area; add jumpers if a pad is walled in ----
+  const gid = netId['GND'];
+  const gpads = [];
+  parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net === 'GND') gpads.push(pd); }));
+  let gndInfo = { pads: gpads.length, trapped: 0 };
+  if (gpads.length >= 2) {
+    const anaItems = items.filter((it) => !(it.net === -1 && it.hw === 3.0)).concat(mountingHoles(W, H).map((h) => ({ t: 's', x1: h.x, y1: h.y, x2: h.x, y2: h.y, hw: 1.6, net: -1, clr: 0.4 })));
+    const anaOpt = { items: anaItems, edge: 0.6, infl: 0.05 };
+    fillBlocked(blocked, gid, 0.3, gpads, anaOpt);
+    const label = new Int32Array(NC).fill(-1);
+    let nl = 0;
+    const stack = [];
+    const flood = (si, sj) => {
+      const L = nl++;
+      label[sj * nx + si] = L; stack.push(sj * nx + si);
+      while (stack.length) {
+        const c = stack.pop(), ci = c % nx, cj = (c / nx) | 0;
+        for (let d = 0; d < 8; d++) {
+          const ni = ci + DIRS[d][0], nj = cj + DIRS[d][1];
+          if (ni < 0 || nj < 0 || ni >= nx || nj >= ny) continue;
+          const n = nj * nx + ni;
+          if (blocked[n] || label[n] >= 0) continue;
+          if (d & 1) { if (blocked[cj * nx + ni] || blocked[nj * nx + ci]) continue; }
+          label[n] = L; stack.push(n);
+        }
+      }
+    };
+    if (cfg.debugGnd) cfg.debugGnd.out = { nx, ny, g, label: Array.from(label), blocked: Array.from(blocked) };
+    const padLab = gpads.map((pd) => { const [ci, cj] = cellOf(pd.x, pd.y); blocked[cj * nx + ci] = 0; if (label[cj * nx + ci] < 0) flood(ci, cj); return label[cj * nx + ci]; });
+    const cnt = {}; padLab.forEach((l) => { cnt[l] = (cnt[l] || 0) + 1; });
+    const main = +Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
+    fillBlocked(blockedPad, gid, JUMP_PAD.d / 2, [], { items: anaItems, edge: 2.1, infl: 0.1 });
+    const doneComp = {};
+    gpads.forEach((pd, k) => {
+      if (padLab[k] === main) return;
+      gndInfo.trapped++;
+      const C = padLab[k];
+      if (doneComp[C]) return;
+      doneComp[C] = true;
+      let best = null;
+      for (let c = 0; c < NC; c++) {
+        if (label[c] !== C || blockedPad[c]) continue;
+        const ci = c % nx, cj = (c / nx) | 0;
+        for (let d = 0; d < 8; d += 2) {
+          for (let L = 4; L <= 40; L++) {
+            const ni = ci + DIRS[d][0] * L, nj = cj + DIRS[d][1] * L;
+            if (ni < 0 || nj < 0 || ni >= nx || nj >= ny) break;
+            const n = nj * nx + ni;
+            if (label[n] === main && !blockedPad[n]) {
+              const cost = L + 0.4 * Math.hypot(ci * g - pd.x, cj * g - pd.y);
+              if (!best || cost < best.cost) best = { cost, a: [ci * g, cj * g], b: [ni * g, nj * g] };
+              break;
+            }
+          }
+        }
+      }
+      if (best) addJumper('GND', gid, best.a[0], best.a[1], best.b[0], best.b[1]);
+      else failed.push({ net: 'GND', pad: pd });
+    });
+  }
+  return { tracks, failed, jumpers, jumperPads, gnd: gndInfo };
+}
+
+/* ============ part 2c — planned template layout + ESP pin assignment ============ */
+const ESP_GPIO = { D0: 16, D1: 5, D2: 4, D3: 0, D4: 2, D5: 14, D6: 12, D7: 13, D8: 15 };
+const ESP_OPTIONS = {
+  PUMP_GATE: ['D1', 'D2', 'D5', 'D6', 'D7'],
+  SERVO: ['D5', 'D6', 'D7', 'D1', 'D2'],
+  SDA: ['D1', 'D2', 'D5', 'D6', 'D7'],
+  SCL: ['D1', 'D2', 'D5', 'D6', 'D7'],
+  IR_OUT: ['D0', 'D5', 'D6', 'D7', 'D1', 'D2'],
+  START: ['D1', 'D2', 'D5', 'D6', 'D7', 'D3'],
+  LED: ['D4', 'D1', 'D2', 'D5', 'D6', 'D7'],
+  BUZZER: ['D8', 'D5', 'D6', 'D7']
+};
+
+function placeTemplate(cfg, rnd, jit) {
+  const { W, H, on } = cfg;
+  if (W < 90 || H < 62) return null;
+  const J = (a) => (rnd() * 2 - 1) * a * jit;
+  const placed = [];
+  const add = (id, x, y, rot) => { if (!on[id]) return null; const p = makePart(id, CATALOG[id], Math.round(x * 2) / 2, Math.round(y * 2) / 2, rot); placed.push(p); return p; };
+  add('esp', W * 0.5 + J(2), H - 2.4 - 34.2 + J(0.8), 180);
+  add('buck', 9 + J(1.5), 2.4 + J(0.6), 0);
+  add('dcin', 2.4, H * 0.5 + J(3), 90);
+  const mx = 12 + J(1.5), my = H - 24 + J(1);
+  add('mosfet', mx, my, 180);
+  add('pump', mx + 1.34, my + 14.5, 180);
+  // right column of headers
+  const hdrX = W - 16 + J(0.8);
+  let y = 8.5 + J(1);
+  const col = ['oled', 'servo', 'ir', 'buzzer'].filter((id) => on[id]);
+  const rest = ['button', 'led', 'term'].filter((id) => on[id]);
+  col.forEach((id) => {
+    const rot = rnd() < 0.5 ? 90 : 270;
+    const p = add(id, hdrX, y, rot);
+    y += p.h + 3.6 + J(0.5);
+    if (y > H - 8) return;
+  });
+  const v5 = { oled: 'VCC', servo: '5V', ir: 'VCC' };
+  const colV = col.filter((id) => v5[id]);
+  const edges = [];
+  if (on.buck && on.esp) edges.push(['buck:OUT+', 'esp:5V']);
+  if (on.esp && on.mosfet) edges.push(['esp:5V', 'mosfet:VCC']);
+  const laneX = Math.min(W - 9, hdrX + 7);
+  colV.forEach((id, k) => {
+    const par = k === 0 ? 'buck:OUT+' : colV[k - 1] + ':' + v5[colV[k - 1]];
+    const pt = placed.find((q) => q.id === id), pad = pt.pads.find((d) => d.name === v5[id]);
+    edges.push([par, id + ':' + v5[id], k === 0 ? [[laneX, 5.4], [laneX, pad.y]] : [[laneX, pad.y]]]);
+  });
+  placed.hints = [{ net: '5V', edges }];
+  // button / LED / spare terminal sit in the free area above the ESP, left of the header column
+  let bx = 57 + J(1), by = 11 + J(1);
+  rest.forEach((id) => {
+    const d = CATALOG[id];
+    if (bx + d.w > hdrX - 5) { bx = 57 + J(1); by += 9.5; }
+    add(id, bx, by, 0);
+    bx += d.w + 4;
+  });
+  // validate
+  for (let i = 0; i < placed.length; i++) {
+    const p = placed[i];
+    if (p.x < 2 || p.y < 2 || p.x + p.w > W - 2 || p.y + p.h > H - 2) return null;
+    for (let j = i + 1; j < placed.length; j++) if (rectsGap(p, placed[j]) < 1.6) return null;
+    for (const hl of mountingHoles(W, H)) {
+      const dx = Math.max(p.x - hl.x, 0, hl.x - (p.x + p.w)), dy = Math.max(p.y - hl.y, 0, hl.y - (p.y + p.h));
+      if (Math.hypot(dx, dy) < 4.8) return null;
+    }
+  }
+  return placed;
+}
+
+// Choose which ESP pin each signal uses: short, non-crossing, boot-safe pins.
+function assignEspPins(parts, netMap) {
+  const esp = parts.find((p) => p.id === 'esp');
+  if (!esp) return;
+  const padOf = (id, name) => { const p = parts.find((q) => q.id === id); return p && p.pads.find((d) => d.name === name); };
+  const sigs = Object.keys(netMap).filter((n) => ESP_OPTIONS[n]);
+  const info = sigs.map((n) => { const partner = netMap[n].find((e) => e[0] !== 'esp'); return { n, partner: padOf(partner[0], partner[1]) }; });
+  const ccw = (a, b, c) => (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]);
+  const cross = (a, b, c, d) => ccw(a, c, d) !== ccw(b, c, d) && ccw(a, b, c) !== ccw(a, b, d);
+  info.sort((a, b) => ESP_OPTIONS[a.n].length - ESP_OPTIONS[b.n].length);
+  let best = null;
+  const used = {}, lines = [], pick = [];
+  (function dfs(k, cost) {
+    if (best && cost >= best.cost) return;
+    if (k === info.length) { best = { cost, pick: pick.slice() }; return; }
+    const s = info[k];
+    for (const pin of ESP_OPTIONS[s.n]) {
+      if (used[pin]) continue;
+      const pd = padOf('esp', pin);
+      const d = Math.hypot(pd.x - s.partner.x, pd.y - s.partner.y);
+      let pen = 0;
+      for (const l of lines) if (cross([pd.x, pd.y], [s.partner.x, s.partner.y], l[0], l[1])) pen += 30;
+      used[pin] = true; lines.push([[pd.x, pd.y], [s.partner.x, s.partner.y]]); pick.push(pin);
+      dfs(k + 1, cost + d + pen);
+      used[pin] = false; lines.pop(); pick.pop();
+    }
+  })(0, 0);
+  info.forEach((s, k) => {
+    const entry = netMap[s.n].find((e) => e[0] === 'esp');
+    entry[1] = best.pick[k];
+  });
+}
+
+/* ============ part 3 — design orchestrator ============ */
+const DEFAULT_ON = { esp: true, dcin: true, buck: true, pump: true, mosfet: true, servo: true, ir: true, oled: true, button: true, term: false, led: false, buzzer: false };
+
+function defaultConfig() {
+  return { W: 100, H: 70, thick: 1.6, seed: 1, toolDia: 0.8, minClr: 0.6, sigW: 1.0, powW: 2.0, on: Object.assign({}, DEFAULT_ON) };
+}
+const cloneNets = (m) => { const o = {}; Object.keys(m).forEach((k) => { o[k] = m[k].map((e) => e.slice()); }); return o; };
+
+function buildDesign(cfg0, budgetMs) {
+  const t0 = Date.now();
+  budgetMs = budgetMs || 4500;
+  const cfg = Object.assign(defaultConfig(), cfg0);
+  cfg.on = Object.assign({}, DEFAULT_ON, cfg0 && cfg0.on);
+  cfg.clr = r2(Math.max(cfg.minClr, cfg.toolDia + 0.05));
+  const baseNets = beginnerNets(cfg.on);
+  const rnd = mulberry32((cfg.seed * 7919 + 13) | 0);
+  const cands = [];
+  const push = (parts) => {
+    const nm = cloneNets(baseNets);
+    assignEspPins(parts, nm); assignNets(parts, nm);
+    cands.push({ parts, nets: nm, cost: wireCost(parts, nm) });
+  };
+  // 1) planned layout with a little jitter, 2) random zone layouts as a fallback
+  for (let k = 0; k < 14; k++) { const p = placeTemplate(cfg, rnd, k === 0 ? 0 : Math.min(1.5, 0.4 + k * 0.12)); if (p) push(p); }
+  const nTemplate = cands.length;
+  const rand = [];
+  for (let k = 0; k < 300 && rand.length < 60; k++) { const p = placeOnce(cfg, rnd); if (p) rand.push(p); }
+  const randC = rand.map((p) => { const nm = cloneNets(baseNets); assignEspPins(p, nm); assignNets(p, nm); return { parts: p, nets: nm, cost: wireCost(p, nm) }; }).sort((a, b) => a.cost - b.cost);
+  randC.forEach((c) => cands.push(c));
+  if (!cands.length) return { error: 'The board is too small for the selected parts. Make the board bigger or turn off some parts.', cfg };
+
+  let best = null, tries = 0;
+  for (let k = 0; k < cands.length && Date.now() - t0 < budgetMs; k++) {
+    const c = cands[k];
+    const nets = c.nets;
+    const sig = Object.keys(nets).filter((n) => netClass(n) === 'signal');
+    sig.sort((a, b) => 0);
+    const pw = (a) => a.filter((n) => nets[n]);
+    const orders = [pw(['12V', 'PUMP-', '5V']), pw(['PUMP-', '12V', '5V']), pw(['12V', '5V', 'PUMP-']), pw(['5V', '12V', 'PUMP-'])];
+    const order = orders[k % orders.length].concat(k % 3 === 1 ? sig.slice().reverse() : sig);
+    const res = routeDesign(c.parts, nets, cfg, order.concat(['GND']));
+    tries++;
+    const drc = runDRC(c.parts, res.tracks, cfg, res.jumperPads);
+    let len = 0;
+    res.tracks.forEach((t) => { for (let i = 0; i < t.pts.length - 1; i++) len += Math.hypot(t.pts[i + 1][0] - t.pts[i][0], t.pts[i + 1][1] - t.pts[i][1]); });
+    const score = res.failed.length * 1000 + res.jumpers.length * 60 + drc.violations * 200 + (drc.espGap < 6 ? 300 : 0) + len * 0.6 + c.cost * 0.2;
+    if (!best || score < best.score) best = { parts: c.parts, nets, tracks: res.tracks, failed: res.failed, jumpers: res.jumpers, jumperPads: res.jumperPads, gnd: res.gnd, drc, score, len, template: k < nTemplate };
+    if (res.failed.length === 0 && res.jumpers.length <= 2 && drc.violations === 0 && drc.espGap >= 6 && tries >= 3) break;
+  }
+  const holes = [];
+  best.parts.forEach((p) => p.pads.forEach((pd) => holes.push({ x: pd.x, y: pd.y, d: pd.drill, type: 'pad', ref: p.ref + '.' + pd.name })));
+  best.jumperPads.forEach((pd) => holes.push({ x: pd.x, y: pd.y, d: pd.drill, type: 'jumper', ref: 'JMP' }));
+  mountingHoles(cfg.W, cfg.H).forEach((h) => holes.push(h));
+  return {
+    cfg, nets: best.nets, parts: best.parts, tracks: best.tracks, jumpers: best.jumpers, jumperPads: best.jumperPads, gnd: best.gnd,
+    failed: best.failed.map((f) => ({ net: f.net, x: f.pad.x, y: f.pad.y, part: f.pad.part, pad: f.pad.name })),
+    holes, drc: best.drc, stats: { tries, ms: Date.now() - t0, lengthMm: r2(best.len), score: r2(best.score), template: best.template }
+  };
+}
+
+/* ============ part 4 — CAM: isolation contours, pocket, drill, outline, G-code ============ */
+
+function nonGndShapes(design) {
+  const shapes = [];
+  design.parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net !== 'GND') shapes.push(pd.shape === 'r' ? { t: 'r', x: pd.x, y: pd.y, hw: pd.d / 2 } : { t: 's', x1: pd.x, y1: pd.y, x2: pd.x, y2: pd.y, hw: pd.d / 2 }); }));
+  design.jumperPads.forEach((pd) => { if (pd.net !== 'GND') shapes.push({ t: 's', x1: pd.x, y1: pd.y, x2: pd.x, y2: pd.y, hw: pd.d / 2 }); });
+  design.tracks.forEach((t) => {
+    if (t.net === 'GND') return;
+    for (let k = 0; k < t.pts.length - 1; k++) shapes.push({ t: 's', x1: t.pts[k][0], y1: t.pts[k][1], x2: t.pts[k + 1][0], y2: t.pts[k + 1][1], hw: t.w / 2 });
+  });
+  return shapes;
+}
+
+function rasterize(shapes, W, H, res) {
+  const nx = Math.round(W / res) + 1, ny = Math.round(H / res) + 1;
+  const m = new Uint8Array(nx * ny);
+  for (const s of shapes) {
+    const x0 = (s.t === 'r' ? s.x : Math.min(s.x1, s.x2)) - s.hw, x1 = (s.t === 'r' ? s.x : Math.max(s.x1, s.x2)) + s.hw;
+    const y0 = (s.t === 'r' ? s.y : Math.min(s.y1, s.y2)) - s.hw, y1 = (s.t === 'r' ? s.y : Math.max(s.y1, s.y2)) + s.hw;
+    const i0 = Math.max(0, Math.floor(x0 / res)), i1 = Math.min(nx - 1, Math.ceil(x1 / res));
+    const j0 = Math.max(0, Math.floor(y0 / res)), j1 = Math.min(ny - 1, Math.ceil(y1 / res));
+    for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+      const x = i * res, y = j * res;
+      let inside;
+      if (s.t === 'r') inside = Math.abs(x - s.x) <= s.hw && Math.abs(y - s.y) <= s.hw;
+      else inside = distPtSeg(x, y, s.x1, s.y1, s.x2, s.y2) <= s.hw;
+      if (inside) m[j * nx + i] = 1;
+    }
+  }
+  return { m, nx, ny };
+}
+
+// exact Euclidean distance transform (Felzenszwalb), returns distance in cells (Float32)
+function edt(mask, nx, ny) {
+  const INF = 1e12;
+  const f = new Float32Array(nx * ny);
+  for (let k = 0; k < f.length; k++) f[k] = mask[k] ? 0 : INF;
+  const n = Math.max(nx, ny);
+  const v = new Int32Array(n), z = new Float64Array(n + 1), d = new Float64Array(n);
+  const pass = (len, get, set) => {
+    let k = 0; v[0] = 0; z[0] = -INF; z[1] = INF;
+    for (let q = 1; q < len; q++) {
+      let s;
+      for (;;) {
+        const vq = v[k];
+        s = ((get(q) + q * q) - (get(vq) + vq * vq)) / (2 * q - 2 * vq);
+        if (s <= z[k] && k > 0) k--; else break;
+      }
+      if (s <= z[k]) { k = 0; v[0] = q; z[0] = -INF; z[1] = INF; continue; }
+      k++; v[k] = q; z[k] = s; z[k + 1] = INF;
+    }
+    k = 0;
+    for (let q = 0; q < len; q++) { while (z[k + 1] < q) k++; const dq = q - v[k]; d[q] = dq * dq + get(v[k]); }
+    for (let q = 0; q < len; q++) set(q, d[q]);
+  };
+  const col = new Float64Array(n);
+  for (let i = 0; i < nx; i++) {
+    for (let j = 0; j < ny; j++) col[j] = f[j * nx + i];
+    pass(ny, (q) => col[q], (q, val) => { f[q * nx + i] = val; });
+  }
+  const row = new Float64Array(n);
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) row[i] = f[j * nx + i];
+    pass(nx, (q) => row[q], (q, val) => { f[j * nx + q] = val; });
+  }
+  for (let k = 0; k < f.length; k++) f[k] = Math.sqrt(f[k]);
+  return f;
+}
+
+function marching(D, nx, ny, res, R) {
+  // D in cells; level R in mm
+  const lvl = R / res;
+  const pts = new Map();
+  const sa = [], sb = [];
+  const keyH = (i, j) => (j * nx + i) * 2, keyV = (i, j) => (j * nx + i) * 2 + 1;
+  const ptH = (key, i, j, a, b) => { if (!pts.has(key)) { const t = (a - lvl) / (a - b); pts.set(key, [(i + t) * res, j * res]); } return key; };
+  const ptV = (key, i, j, a, b) => { if (!pts.has(key)) { const t = (a - lvl) / (a - b); pts.set(key, [i * res, (j + t) * res]); } return key; };
+  for (let j = 0; j < ny - 1; j++) {
+    for (let i = 0; i < nx - 1; i++) {
+      const a = D[j * nx + i], b = D[j * nx + i + 1], c = D[(j + 1) * nx + i + 1], d = D[(j + 1) * nx + i];
+      const idx = (a < lvl ? 1 : 0) | (b < lvl ? 2 : 0) | (c < lvl ? 4 : 0) | (d < lvl ? 8 : 0);
+      if (idx === 0 || idx === 15) continue;
+      const T = () => ptH(keyH(i, j), i, j, a, b), B = () => ptH(keyH(i, j + 1), i, j + 1, d, c);
+      const L = () => ptV(keyV(i, j), i, j, a, d), Rr = () => ptV(keyV(i + 1, j), i + 1, j, b, c);
+      const add = (p, q) => { sa.push(p); sb.push(q); };
+      switch (idx) {
+        case 1: case 14: add(L(), T()); break;
+        case 2: case 13: add(T(), Rr()); break;
+        case 3: case 12: add(L(), Rr()); break;
+        case 4: case 11: add(Rr(), B()); break;
+        case 6: case 9: add(T(), B()); break;
+        case 7: case 8: add(L(), B()); break;
+        case 5: { const cv = (a + b + c + d) / 4 < lvl; if (cv) { add(T(), Rr()); add(L(), B()); } else { add(L(), T()); add(Rr(), B()); } break; }
+        case 10: { const cv = (a + b + c + d) / 4 < lvl; if (cv) { add(L(), T()); add(Rr(), B()); } else { add(T(), Rr()); add(L(), B()); } break; }
+      }
+    }
+  }
+  const adj = new Map();
+  for (let s = 0; s < sa.length; s++) {
+    [sa[s], sb[s]].forEach((k) => { const l = adj.get(k); if (l) l.push(s); else adj.set(k, [s]); });
+  }
+  const used = new Uint8Array(sa.length);
+  const loops = [];
+  for (let s = 0; s < sa.length; s++) {
+    if (used[s]) continue;
+    used[s] = 1;
+    const chain = [sa[s], sb[s]];
+    const extend = (endKey, push) => {
+      let key = endKey;
+      for (;;) {
+        const l = adj.get(key);
+        let nxt = -1;
+        for (const q of l) if (!used[q]) { nxt = q; break; }
+        if (nxt < 0) break;
+        used[nxt] = 1;
+        const other = sa[nxt] === key ? sb[nxt] : sa[nxt];
+        push(other); key = other;
+      }
+    };
+    extend(sb[s], (k) => chain.push(k));
+    extend(sa[s], (k) => chain.unshift(k));
+    loops.push(chain.map((k) => pts.get(k)));
+  }
+  return loops;
+}
+
+function rdp(pts, tol) {
+  if (pts.length < 3) return pts;
+  const keep = new Uint8Array(pts.length); keep[0] = keep[pts.length - 1] = 1;
+  const st = [[0, pts.length - 1]];
+  while (st.length) {
+    const [a, b] = st.pop();
+    let md = 0, mi = -1;
+    for (let i = a + 1; i < b; i++) { const dd = distPtSeg(pts[i][0], pts[i][1], pts[a][0], pts[a][1], pts[b][0], pts[b][1]); if (dd > md) { md = dd; mi = i; } }
+    if (md > tol && mi > 0) { keep[mi] = 1; st.push([a, mi], [mi, b]); }
+  }
+  return pts.filter((_, i) => keep[i]);
+}
+
+function clipToRect(path, x0, y0, x1, y1) {
+  const inside = (p) => p[0] >= x0 && p[0] <= x1 && p[1] >= y0 && p[1] <= y1;
+  const out = []; let cur = [];
+  path.forEach((p) => { if (inside(p)) cur.push(p); else { if (cur.length > 1) out.push(cur); cur = []; } });
+  if (cur.length > 1) out.push(cur);
+  // closed loop fully inside stays closed (first==last handled by caller)
+  if (out.length > 1 && inside(path[0]) && inside(path[path.length - 1]) && path.length > 2 && Math.hypot(path[0][0] - path[path.length - 1][0], path[0][1] - path[path.length - 1][1]) < 1e-6) {
+    const last = out.pop(); out[0] = last.concat(out[0].slice(1));
+  }
+  return out;
+}
+
+function orderPaths(paths) {
+  const left = paths.slice(), out = [];
+  let cx = 0, cy = 0;
+  while (left.length) {
+    let bi = 0, bd = 1e18, rev = false;
+    for (let i = 0; i < left.length; i++) {
+      const p = left[i], a = p[0], b = p[p.length - 1];
+      const d1 = (a[0] - cx) ** 2 + (a[1] - cy) ** 2, d2 = (b[0] - cx) ** 2 + (b[1] - cy) ** 2;
+      if (d1 < bd) { bd = d1; bi = i; rev = false; }
+      if (d2 < bd) { bd = d2; bi = i; rev = true; }
+    }
+    let p = left.splice(bi, 1)[0];
+    if (rev) p = p.slice().reverse();
+    out.push(p); cx = p[p.length - 1][0]; cy = p[p.length - 1][1];
+  }
+  return out;
+}
+
+function pathLength(p) { let l = 0; for (let i = 0; i < p.length - 1; i++) l += Math.hypot(p[i + 1][0] - p[i][0], p[i + 1][1] - p[i][1]); return l; }
+
+// groove geometry in design (top-view) coordinates
+function computeIsolation(design, tool, passes, overlap) {
+  const { W, H } = design.cfg;
+  const res = 0.05;
+  const shapes = nonGndShapes(design);
+  const { m, nx, ny } = rasterize(shapes, W, H, res);
+  const D = edt(m, nx, ny);
+  const r = tool / 2, step = tool * (1 - overlap);
+  const inset = 0.35;
+  const all = [];
+  for (let k = 0; k < passes; k++) {
+    const R = r + k * step;
+    marching(D, nx, ny, res, R).forEach((loop) => {
+      const s = rdp(loop, 0.012);
+      clipToRect(s, inset, inset, W - inset, H - inset).forEach((c) => { if (pathLength(c) > 0.3) all.push(c); });
+    });
+  }
+  return { paths: orderPaths(all), pass: passes };
+}
+
+function pocketPaths(design, tool) {
+  const out = [];
+  const step = tool * 0.75, r = tool / 2;
+  design.parts.forEach((p) => {
+    if (!p.keepout) return;
+    const k = p.keepout;
+    const x0 = k.x + r, x1 = k.x + k.w - r;
+    let dir = 1;
+    for (let y = k.y + r; y <= k.y + k.h - r + 1e-6; y += step) {
+      out.push(dir > 0 ? [[x0, y], [x1, y]] : [[x1, y], [x0, y]]);
+      dir = -dir;
+    }
+    out.push([[x0, k.y + k.h - r], [x1, k.y + k.h - r]]);
+  });
+  return out;
+}
+
+function drillGroups(design, opts) {
+  const groups = {};
+  design.holes.forEach((h) => {
+    if (h.type === 'mount' && h.d >= opts.millAbove) return;
+    const key = h.d.toFixed(2);
+    (groups[key] = groups[key] || { d: h.d, holes: [] }).holes.push([h.x, h.y]);
+  });
+  return Object.values(groups).sort((a, b) => a.d - b.d);
+}
+
+function millHoles(design, opts) {
+  return design.holes.filter((h) => h.type === 'mount' && h.d >= opts.millAbove).map((h) => ({ x: h.x, y: h.y, d: h.d }));
+}
+
+function defaultCam() {
+  return { tool: 0.8, depth: 0.12, passes: 1, overlap: 0.4, rpm: 10000, feed: 200, plunge: 60, safeZ: 2.0, drillFeed: 60, drillRpm: 10000, outlineDia: 1.0, outlineFeed: 150, outlinePass: 0.5, millAbove: 2.0, copperSide: 'bottom', pocket: true, includeIso: true, includeDrill: true, includeOutline: true };
+}
+
+function toMachine(design, cam) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  return (x, y) => [mirror ? W - x : x, H - y];
+}
+
+function buildGcode(design, cam, iso) {
+  const { W, H, thick } = design.cfg;
+  const T = toMachine(design, cam);
+  const f = (v) => String(Math.round(v * 100) / 100);
+  const n = (v) => { const s = (Math.round(v * 1000) / 1000).toString(); return s; };
+  const L = [];
+  let timeMin = 0, cutLen = 0;
+  const hdr = [
+    '; CNC PCB Easy Designer for CNC 3018 (GRBL)',
+    `; Board ${W} x ${H} x ${thick} mm, single-sided, copper side: ${cam.copperSide}`,
+    '; Zero X/Y: front-left corner of the board' + (cam.copperSide === 'bottom' ? ' AFTER flipping it left-to-right (copper facing up)' : ''),
+    '; Zero Z: top of the copper surface',
+    `; Generated ${new Date().toISOString().slice(0, 10)}`,
+    'G21 ; millimetres', 'G90 ; absolute', 'G17 ; XY plane', 'G94 ; feed per minute'
+  ];
+  hdr.forEach((l) => L.push(l));
+  const rapid = (x, y) => { const [X, Y] = T(x, y); L.push(`G0 X${n(X)} Y${n(Y)}`); };
+  const lift = () => L.push(`G0 Z${n(cam.safeZ)}`);
+  const toolChange = (msg) => { L.push('M5', lift_(), `M0 ; PAUSE - ${msg}`, `M3 S${cam.rpm}`, 'G4 P2'); };
+  function lift_() { return `G0 Z${n(cam.safeZ)}`; }
+
+  if (cam.includeIso) {
+    L.push('', `; ===== 1. ISOLATION MILLING (${cam.tool} mm cutter, depth ${cam.depth} mm, ${cam.passes} pass${cam.passes > 1 ? 'es' : ''}) =====`);
+    L.push(lift_(), `M0 ; PAUSE - fit the ${cam.tool} mm isolation cutter, touch Z0 on the copper surface`, `M3 S${cam.rpm}`, 'G4 P2');
+    const paths = iso.paths.concat(cam.pocket ? pocketPaths(design, cam.tool) : []);
+    paths.forEach((p) => {
+      rapid(p[0][0], p[0][1]);
+      L.push(`G1 Z${n(-cam.depth)} F${cam.plunge}`);
+      for (let i = 1; i < p.length; i++) { const [X, Y] = T(p[i][0], p[i][1]); L.push(`G1 X${n(X)} Y${n(Y)} F${cam.feed}`); }
+      lift();
+      const len = pathLength(p); cutLen += len; timeMin += len / cam.feed + cam.depth / cam.plunge;
+    });
+    L.push('M5');
+  }
+  if (cam.includeDrill) {
+    const groups = drillGroups(design, cam);
+    groups.forEach((g, gi) => {
+      L.push('', `; ===== 2.${gi + 1} DRILL ${f(g.d)} mm (${g.holes.length} holes) =====`);
+      L.push(lift_(), `M0 ; PAUSE - fit a ${f(g.d)} mm drill bit, touch Z0 on the copper surface`, `M3 S${cam.drillRpm}`, 'G4 P2');
+      const depth = thick + 0.4;
+      const holes = g.holes.slice();
+      const ordered = []; let cx = 0, cy = 0;
+      while (holes.length) { let bi = 0, bd = 1e18; holes.forEach((h, i) => { const d = (h[0] - cx) ** 2 + (h[1] - cy) ** 2; if (d < bd) { bd = d; bi = i; } }); const h = holes.splice(bi, 1)[0]; ordered.push(h); cx = h[0]; cy = h[1]; }
+      ordered.forEach((h) => {
+        rapid(h[0], h[1]);
+        const peck = 0.8; let z = 0;
+        while (z < depth - 1e-6) { z = Math.min(depth, z + peck); L.push(`G1 Z${n(-z)} F${cam.drillFeed}`); if (z < depth - 1e-6) L.push(`G0 Z${n(0.5)}`); }
+        lift();
+        timeMin += depth / cam.drillFeed + 0.02;
+      });
+      L.push('M5');
+    });
+  }
+  if (cam.includeOutline) {
+    L.push('', `; ===== 3. BOARD OUTLINE + LARGE HOLES (${cam.outlineDia} mm cutter) =====`);
+    L.push(lift_(), `M0 ; PAUSE - fit the ${cam.outlineDia} mm end mill, touch Z0 on the copper surface`, `M3 S${cam.rpm}`, 'G4 P2');
+    const depthTotal = thick + 0.3, passN = Math.max(1, Math.ceil(depthTotal / cam.outlinePass));
+    const ro = cam.outlineDia / 2;
+    const holes = millHoles(design, cam);
+    holes.forEach((h) => {
+      const rc = (h.d - cam.outlineDia) / 2;
+      if (rc < 0.05) return;
+      L.push(`; mounting hole ${f(h.d)} mm`);
+      const [X, Y] = T(h.x, h.y);
+      L.push(`G0 X${n(X + rc)} Y${n(Y)}`);
+      for (let k = 1; k <= passN; k++) {
+        const z = Math.min(depthTotal, k * (depthTotal / passN));
+        L.push(`G1 Z${n(-z)} F${cam.plunge}`, `G3 X${n(X + rc)} Y${n(Y)} I${n(-rc)} J0 F${cam.outlineFeed}`);
+        timeMin += 2 * Math.PI * rc / cam.outlineFeed + 0.01;
+      }
+      lift();
+    });
+    L.push('; board outline (cut outside the board edge)');
+    const x0 = -ro, y0 = -ro, x1 = W + ro, y1 = H + ro;
+    const corners = [[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]].map(([x, y]) => (cam.copperSide === 'bottom' ? [W - x, H - y] : [x, H - y]));
+    L.push(`G0 X${n(corners[0][0])} Y${n(corners[0][1])}`);
+    for (let k = 1; k <= passN; k++) {
+      const z = Math.min(depthTotal, k * (depthTotal / passN));
+      L.push(`G1 Z${n(-z)} F${cam.plunge}`);
+      for (let i = 1; i < corners.length; i++) L.push(`G1 X${n(corners[i][0])} Y${n(corners[i][1])} F${cam.outlineFeed}`);
+      timeMin += 2 * (W + H + 4 * ro) / cam.outlineFeed + 0.01;
+    }
+    lift();
+    L.push('M5');
+  }
+  L.push('', 'G0 Z' + n(cam.safeZ + 8), 'G0 X0 Y0', 'M2 ; end of program');
+  return { text: L.join('\n') + '\n', lines: L.length, minutes: Math.round(timeMin * 10) / 10, cutLen: Math.round(cutLen) };
+}
+
+/* ============ part 5a — SVG renderers (copper, outline, drill, CAM previews) ============ */
+const fmt = (v) => String(Math.round(v * 1000) / 1000);
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function padShapeSvg(pd, fill) {
+  return pd.shape === 'r'
+    ? `<rect x="${fmt(pd.x - pd.d / 2)}" y="${fmt(pd.y - pd.d / 2)}" width="${fmt(pd.d)}" height="${fmt(pd.d)}" fill="${fill}"/>`
+    : `<circle cx="${fmt(pd.x)}" cy="${fmt(pd.y)}" r="${fmt(pd.d / 2)}" fill="${fill}"/>`;
+}
+const pathD = (p) => 'M' + p.map((q) => fmt(q[0]) + ' ' + fmt(q[1])).join('L');
+
+// Bottom view: mirrored left-right, as you see the copper side with the board flipped over.
+function svgCopperBottom(design, iso, opts) {
+  opts = opts || {};
+  const { W, H } = design.cfg;
+  const tool = opts.tool || 0.8;
+  const mirror = opts.mirror !== false;
+  const ink = opts.ink || '#000', paper = opts.paper || '#fff';
+  const parts = [];
+  parts.push(`<g${mirror ? ` transform="translate(${W} 0) scale(-1 1)"` : ''}>`);
+  parts.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="${ink}"/>`);
+  // antenna keep-out pocket (copper cleared)
+  if (opts.pocket !== false) design.parts.forEach((p) => { if (p.keepout) { const k = p.keepout; parts.push(`<rect x="${fmt(k.x)}" y="${fmt(k.y)}" width="${fmt(k.w)}" height="${fmt(k.h)}" fill="${paper}"/>`); } });
+  // isolation grooves (milled away)
+  iso.paths.forEach((p) => parts.push(`<path d="${pathD(p)}" fill="none" stroke="${paper}" stroke-width="${fmt(tool)}" stroke-linecap="round" stroke-linejoin="round"/>`));
+  // copper that stays inside the grooves
+  design.tracks.forEach((t) => { if (t.net !== 'GND') parts.push(`<path d="${pathD(t.pts)}" fill="none" stroke="${ink}" stroke-width="${fmt(t.w)}" stroke-linecap="round" stroke-linejoin="round"/>`); });
+  design.parts.forEach((p) => p.pads.forEach((pd) => parts.push(padShapeSvg(pd, ink))));
+  design.jumperPads.forEach((pd) => parts.push(padShapeSvg(pd, ink)));
+  // holes
+  design.holes.forEach((h) => parts.push(`<circle cx="${fmt(h.x)}" cy="${fmt(h.y)}" r="${fmt(h.d / 2)}" fill="${paper}"/>`));
+  parts.push('</g>');
+  return parts.join('');
+}
+
+function svgWrap(W, H, inner, extra) {
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${H}mm" viewBox="0 0 ${W} ${H}"${extra || ''}>${inner}</svg>\n`;
+}
+
+function exportCopperSvg(design, iso, cam) {
+  const { W, H } = design.cfg;
+  const inner = `<rect width="${W}" height="${H}" fill="#fff"/>` + svgCopperBottom(design, iso, { tool: cam.tool, mirror: cam.copperSide === 'bottom' }) +
+    `<rect x="0.05" y="0.05" width="${W - 0.1}" height="${H - 0.1}" fill="none" stroke="#888" stroke-width="0.1" stroke-dasharray="1 1"/>`;
+  return svgWrap(W, H, `<title>Copper ${cam.copperSide} view (black = copper, white = milled)</title>` + inner);
+}
+
+function exportOutlineSvg(design, cam) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  const g = (inner) => `<g${mirror ? ` transform="translate(${W} 0) scale(-1 1)"` : ''}>${inner}</g>`;
+  const holes = design.holes.filter((h) => h.type === 'mount').map((h) => `<circle cx="${h.x}" cy="${h.y}" r="${h.d / 2}" fill="none" stroke="#000" stroke-width="0.1"/>`).join('');
+  const inner = `<rect width="${W}" height="${H}" fill="#fff"/>` + g(`<rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="#000" stroke-width="0.1"/>${holes}`);
+  return svgWrap(W, H, '<title>Board outline and mounting holes</title>' + inner);
+}
+
+function exportDrillSvg(design, cam) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  const holes = design.holes.map((h) => `<circle cx="${fmt(h.x)}" cy="${fmt(h.y)}" r="${fmt(h.d / 2)}" fill="none" stroke="#000" stroke-width="0.1"/><line x1="${fmt(h.x - 0.4)}" y1="${fmt(h.y)}" x2="${fmt(h.x + 0.4)}" y2="${fmt(h.y)}" stroke="#000" stroke-width="0.05"/><line x1="${fmt(h.x)}" y1="${fmt(h.y - 0.4)}" x2="${fmt(h.x)}" y2="${fmt(h.y + 0.4)}" stroke="#000" stroke-width="0.05"/>`).join('');
+  const inner = `<rect width="${W}" height="${H}" fill="#fff"/><g${mirror ? ` transform="translate(${W} 0) scale(-1 1)"` : ''}><rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="#bbb" stroke-width="0.1"/>${holes}</g>`;
+  return svgWrap(W, H, '<title>Drill holes</title>' + inner);
+}
+
+// ---- on-screen previews (themed through CSS variables) ----
+function previewFrame(design, inner, mirror) {
+  const { W, H } = design.cfg;
+  return `<svg viewBox="-2 -2 ${W + 4} ${H + 4}" xmlns="http://www.w3.org/2000/svg" role="img" class="pv"><g${mirror ? ` transform="translate(${W} 0) scale(-1 1)"` : ''}>${inner}</g></svg>`;
+}
+
+function previewIsolation(design, iso, cam) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  let s = `<rect x="0" y="0" width="${W}" height="${H}" class="pv-board"/>`;
+  design.parts.forEach((p) => { if (p.keepout && cam.pocket) { const k = p.keepout; s += `<rect x="${fmt(k.x)}" y="${fmt(k.y)}" width="${fmt(k.w)}" height="${fmt(k.h)}" class="pv-pocket"/>`; pocketPaths(design, cam.tool).forEach(() => 0); } });
+  if (cam.pocket) pocketPaths(design, cam.tool).forEach((p) => { s += `<path d="${pathD(p)}" class="pv-pocketline"/>`; });
+  iso.paths.forEach((p) => { s += `<path d="${pathD(p)}" class="pv-tool"/>`; });
+  design.parts.forEach((p) => p.pads.forEach((pd) => { s += pd.shape === 'r' ? `<rect x="${fmt(pd.x - pd.d / 2)}" y="${fmt(pd.y - pd.d / 2)}" width="${pd.d}" height="${pd.d}" class="pv-cu"/>` : `<circle cx="${fmt(pd.x)}" cy="${fmt(pd.y)}" r="${fmt(pd.d / 2)}" class="pv-cu"/>`; }));
+  design.tracks.forEach((t) => { if (t.net !== 'GND') s += `<path d="${pathD(t.pts)}" fill="none" class="pv-cu" stroke-width="${fmt(t.w)}" stroke-linecap="round" stroke-linejoin="round"/>`; });
+  s += `<rect x="0" y="0" width="${W}" height="${H}" class="pv-edge"/>`;
+  return previewFrame(design, s, mirror);
+}
+
+function previewDrill(design, cam) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  const groups = drillGroups(design, cam);
+  const colors = ['var(--d1)', 'var(--d2)', 'var(--d3)', 'var(--d4)', 'var(--d5)'];
+  let s = `<rect x="0" y="0" width="${W}" height="${H}" class="pv-board"/>`;
+  groups.forEach((g, i) => g.holes.forEach((h) => { s += `<circle cx="${fmt(h[0])}" cy="${fmt(h[1])}" r="${fmt(Math.max(g.d / 2, 0.5))}" fill="${colors[i % 5]}"/>`; }));
+  millHoles(design, cam).forEach((h) => { s += `<circle cx="${fmt(h.x)}" cy="${fmt(h.y)}" r="${fmt(h.d / 2)}" class="pv-mill"/>`; });
+  s += `<rect x="0" y="0" width="${W}" height="${H}" class="pv-edge"/>`;
+  return { svg: previewFrame(design, s, mirror), groups: groups.map((g, i) => ({ d: g.d, n: g.holes.length, color: colors[i % 5] })), milled: millHoles(design, cam).length };
+}
+
+function previewOutline(design, cam) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  const ro = cam.outlineDia / 2;
+  let s = `<rect x="0" y="0" width="${W}" height="${H}" class="pv-board"/>`;
+  s += `<rect x="${-ro}" y="${-ro}" width="${W + 2 * ro}" height="${H + 2 * ro}" class="pv-tool"/>`;
+  millHoles(design, cam).forEach((h) => { const rc = (h.d - cam.outlineDia) / 2; if (rc >= 0.05) s += `<circle cx="${fmt(h.x)}" cy="${fmt(h.y)}" r="${fmt(rc)}" class="pv-tool"/><circle cx="${fmt(h.x)}" cy="${fmt(h.y)}" r="${fmt(h.d / 2)}" class="pv-mill"/>`; });
+  s += `<rect x="0" y="0" width="${W}" height="${H}" class="pv-edge"/>`;
+  return previewFrame(design, s, mirror);
+}
+
+// Interactive bottom-view picture on the page (with optional helpers)
+function viewCopper(design, iso, cam, o) {
+  const { W, H } = design.cfg;
+  const mirror = cam.copperSide === 'bottom';
+  let inner = svgCopperBottom(design, iso, { tool: cam.tool, mirror: false, ink: 'var(--cu)', paper: 'var(--milled)' });
+  if (o.grid) { let g = ''; for (let x = 10; x < W; x += 10) g += `<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`; for (let y = 10; y < H; y += 10) g += `<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`; inner += `<g class="pv-grid">${g}</g>`; }
+  if (o.jumpers) design.jumpers.forEach((j) => { inner += `<line x1="${fmt(j.a[0])}" y1="${fmt(j.a[1])}" x2="${fmt(j.b[0])}" y2="${fmt(j.b[1])}" class="pv-jump"/>`; });
+  if (o.labels) design.parts.forEach((p) => { inner += `<text x="${fmt(p.x + p.w / 2)}" y="${fmt(p.y + p.h / 2)}" class="pv-label" text-anchor="middle" transform="${mirror ? `translate(${fmt(2 * (p.x + p.w / 2))} 0) scale(-1 1)` : ''}">${esc(p.ref)}</text>`; });
+  inner += `<rect x="0" y="0" width="${W}" height="${H}" class="pv-edge"/>`;
+  return previewFrame(design, inner, mirror);
+}
+
+/* ============ part 5b — DXF, Gerber, Excellon, ZIP, maps ============ */
+
+// ---------- DXF (R12 ASCII, machine frame = same as the G-code) ----------
+function exportDxf(design, iso, cam) {
+  const { W, H } = design.cfg;
+  const T = toMachine(design, cam);
+  const out = [];
+  const add = (c, v) => { out.push(String(c)); out.push(String(v)); };
+  const layers = [['BOARD_OUTLINE', 7], ['ISOLATION_TOOLPATH', 1], ['PAD_OUTLINES', 3], ['TRACK_CENTERLINES', 5], ['DRILL_HOLES', 6], ['ANTENNA_POCKET', 4]];
+  add(0, 'SECTION'); add(2, 'HEADER'); add(9, '$ACADVER'); add(1, 'AC1009'); add(9, '$INSUNITS'); add(70, 4); add(0, 'ENDSEC');
+  add(0, 'SECTION'); add(2, 'TABLES'); add(0, 'TABLE'); add(2, 'LAYER'); add(70, layers.length);
+  layers.forEach(([n, c]) => { add(0, 'LAYER'); add(2, n); add(70, 0); add(62, c); add(6, 'CONTINUOUS'); });
+  add(0, 'ENDTAB'); add(0, 'ENDSEC');
+  add(0, 'SECTION'); add(2, 'ENTITIES');
+  const poly = (layer, pts, closed) => {
+    add(0, 'POLYLINE'); add(8, layer); add(66, 1); add(70, closed ? 1 : 0);
+    pts.forEach((p) => { const [x, y] = T(p[0], p[1]); add(0, 'VERTEX'); add(8, layer); add(10, fmt(x)); add(20, fmt(y)); });
+    add(0, 'SEQEND'); add(8, layer);
+  };
+  const circle = (layer, x, y, r) => { const [X, Y] = T(x, y); add(0, 'CIRCLE'); add(8, layer); add(10, fmt(X)); add(20, fmt(Y)); add(40, fmt(r)); };
+  poly('BOARD_OUTLINE', [[0, 0], [W, 0], [W, H], [0, H]], true);
+  iso.paths.forEach((p) => { const closed = Math.hypot(p[0][0] - p[p.length - 1][0], p[0][1] - p[p.length - 1][1]) < 1e-6; poly('ISOLATION_TOOLPATH', p, closed); });
+  pocketPaths(design, cam.tool).forEach((p) => poly('ANTENNA_POCKET', p, false));
+  design.tracks.forEach((t) => { if (t.net !== 'GND') poly('TRACK_CENTERLINES', t.pts, false); });
+  design.parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net !== 'GND') circle('PAD_OUTLINES', pd.x, pd.y, pd.d / 2); }));
+  design.holes.forEach((h) => circle('DRILL_HOLES', h.x, h.y, h.d / 2));
+  add(0, 'ENDSEC'); add(0, 'EOF');
+  return out.join('\n') + '\n';
+}
+
+// ---------- Gerber RS-274X (top-view coordinates, standard for fabs) ----------
+function exportGerberCopper(design, iso, cam) {
+  const ap = {}; let nextAp = 10; const defs = [];
+  const apFor = (kind, a, b) => {
+    const key = kind + a + (b || '');
+    if (!ap[key]) { ap[key] = nextAp++; defs.push(kind === 'C' ? `%ADD${ap[key]}C,${fmt(a)}*%` : `%ADD${ap[key]}R,${fmt(a)}X${fmt(b)}*%`); }
+    return ap[key];
+  };
+  const co = (v) => String(Math.round(v * 1e6) * 1).replace(/^(-?)(\d+)$/, '$1$2');
+  const X = (v) => 'X' + Math.round(v * 1e6), Y = (v) => 'Y' + Math.round((design.cfg.H - v) * 1e6);
+  const body = [];
+  const { W, H } = design.cfg;
+  body.push('G04 Dark: copper area, Clear: milled isolation*', '%LPD*%', 'G36*', `${X(0)}${Y(0)}D02*`, 'G01*', `${X(W)}${Y(0)}D01*`, `${X(W)}${Y(H)}D01*`, `${X(0)}${Y(H)}D01*`, `${X(0)}${Y(0)}D01*`, 'G37*');
+  body.push('%LPC*%');
+  const stroke = (pts, w) => { body.push(`D${apFor('C', w)}*`, `${X(pts[0][0])}${Y(pts[0][1])}D02*`); for (let i = 1; i < pts.length; i++) body.push(`${X(pts[i][0])}${Y(pts[i][1])}D01*`); };
+  iso.paths.forEach((p) => stroke(p, cam.tool));
+  pocketPaths(design, cam.tool).forEach((p) => stroke(p, cam.tool));
+  body.push('%LPD*%');
+  design.tracks.forEach((t) => { if (t.net !== 'GND') stroke(t.pts, t.w); });
+  const flash = (pd) => { body.push(`D${pd.shape === 'r' ? apFor('R', pd.d, pd.d) : apFor('C', pd.d)}*`, `${X(pd.x)}${Y(pd.y)}D03*`); };
+  design.parts.forEach((p) => p.pads.forEach((pd) => { if (pd.net !== 'GND') flash(pd); }));
+  design.jumperPads.forEach((pd) => { if (pd.net !== 'GND') flash(pd); });
+  body.push('%LPC*%');
+  design.holes.forEach((h) => { body.push(`D${apFor('C', h.d)}*`, `${X(h.x)}${Y(h.y)}D03*`); });
+  body.push('M02*');
+  const head = ['G04 CNC PCB Easy Designer - bottom copper (top-view coordinates, not mirrored)*', '%FSLAX46Y46*%', '%MOMM*%', '%TF.FileFunction,Copper,L1,Bot*%', '%TF.FilePolarity,Positive*%'];
+  return head.concat(defs, body).join('\n') + '\n';
+}
+
+function exportGerberOutline(design) {
+  const { W, H } = design.cfg;
+  const X = (v) => 'X' + Math.round(v * 1e6), Y = (v) => 'Y' + Math.round((H - v) * 1e6);
+  return ['G04 Board outline*', '%FSLAX46Y46*%', '%MOMM*%', '%TF.FileFunction,Profile,NP*%', '%ADD10C,0.100*%', 'D10*', `${X(0)}${Y(0)}D02*`, 'G01*', `${X(W)}${Y(0)}D01*`, `${X(W)}${Y(H)}D01*`, `${X(0)}${Y(H)}D01*`, `${X(0)}${Y(0)}D01*`, 'M02*'].join('\n') + '\n';
+}
+
+// ---------- Excellon drill (top-view coordinates) ----------
+function exportExcellon(design) {
+  const H = design.cfg.H;
+  const groups = {};
+  design.holes.forEach((h) => { const k = h.d.toFixed(2); (groups[k] = groups[k] || { d: h.d, holes: [] }).holes.push(h); });
+  const list = Object.values(groups).sort((a, b) => a.d - b.d);
+  const out = ['M48', '; CNC PCB Easy Designer - drill file (top-view coordinates, not mirrored)', 'METRIC,TZ', 'FMAT,2'];
+  list.forEach((g, i) => out.push(`T${String(i + 1).padStart(2, '0')}C${g.d.toFixed(3)}`));
+  out.push('%', 'G90', 'G05');
+  list.forEach((g, i) => { out.push(`T${String(i + 1).padStart(2, '0')}`); g.holes.forEach((h) => out.push(`X${h.x.toFixed(3)}Y${(H - h.y).toFixed(3)}`)); });
+  out.push('M30');
+  return out.join('\n') + '\n';
+}
+
+// ---------- ZIP (store) ----------
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files) {
+  const enc = new TextEncoder();
+  const chunks = [], central = []; let offset = 0;
+  files.forEach((f) => {
+    const name = enc.encode(f.name);
+    const data = typeof f.data === 'string' ? enc.encode(f.data) : f.data;
+    const crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, 0, true); lh.setUint16(12, 0x5A21, true); lh.setUint32(14, crc, true); lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true);
+    lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    chunks.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, 0, true); ch.setUint16(14, 0x5A21, true); ch.setUint32(16, crc, true); ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true);
+    ch.setUint16(28, name.length, true); ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
+  });
+  const cdSize = central.reduce((a, c) => a + c.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+  const all = chunks.concat(central, [new Uint8Array(end.buffer)]);
+  const total = all.reduce((a, c) => a + c.length, 0);
+  const res = new Uint8Array(total); let p = 0;
+  all.forEach((c) => { res.set(c, p); p += c.length; });
+  return res;
+}
+
+// ---------- Component map (top view) ----------
+function svgComponentMap(design) {
+  const { W, H } = design.cfg;
+  const S = 10, pad = 40;
+  const w = W * S + pad * 2, h = H * S + pad * 2 + 70;
+  const o = [];
+  o.push(`<rect width="${w}" height="${h}" fill="#ffffff"/>`);
+  o.push(`<text x="${pad}" y="26" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="bold" fill="#111">Component map - TOP view (parts side), ${W} x ${H} mm</text>`);
+  o.push(`<g transform="translate(${pad} ${pad})">`);
+  o.push(`<rect width="${W * S}" height="${H * S}" fill="#e9eee4" stroke="#333" stroke-width="2"/>`);
+  design.holes.filter((x) => x.type === 'mount').forEach((m) => o.push(`<circle cx="${m.x * S}" cy="${m.y * S}" r="${m.d / 2 * S}" fill="#fff" stroke="#333" stroke-width="2"/>`));
+  design.parts.forEach((p) => {
+    if (p.keepout) { const k = p.keepout; o.push(`<rect x="${k.x * S}" y="${k.y * S}" width="${k.w * S}" height="${k.h * S}" fill="#f6d6e8" fill-opacity="0.6" stroke="#b0307a" stroke-dasharray="8 6" stroke-width="2"/><text x="${(k.x + k.w / 2) * S}" y="${(k.y + k.h / 2) * S}" font-family="Arial, Helvetica, sans-serif" font-size="13" text-anchor="middle" fill="#80205a">antenna - no copper</text>`); }
+    o.push(`<rect x="${p.x * S}" y="${p.y * S}" width="${p.w * S}" height="${p.h * S}" fill="#fff" fill-opacity="0.85" stroke="#444" stroke-width="2" rx="4"/>`);
+    const small = p.w * p.h < 160, rightHalf = p.x + p.w / 2 > W / 2, esp = p.w >= 12 && p.h >= p.w * 0.9;
+    const FF = 'font-family="Arial, Helvetica, sans-serif"';
+    p.pads.forEach((pd) => {
+      const col = pd.net ? (NET_COLORS[pd.net] || '#333') : '#aaa';
+      o.push(`<circle cx="${pd.x * S}" cy="${pd.y * S}" r="${pd.d / 2 * S * 0.75}" fill="${col}"/><circle cx="${pd.x * S}" cy="${pd.y * S}" r="${pd.drill / 2 * S}" fill="#fff"/>`);
+      if (!pd.net) return;
+      if (small && p.w > p.h * 1.2) o.push(`<text x="${pd.x * S}" y="${pd.y * S + 23}" ${FF} font-size="10" text-anchor="middle" fill="#222">${esc(pd.name)}</text>`);
+      else if (small) o.push(`<text x="${pd.x * S + (rightHalf ? 16 : -16)}" y="${pd.y * S + 4}" ${FF} font-size="11" text-anchor="${rightHalf ? 'start' : 'end'}" fill="#222">${esc(pd.name)}</text>`);
+      else if (esp) { const inward = pd.x < p.x + p.w / 2; o.push(`<text x="${pd.x * S + (inward ? 16 : -16)}" y="${pd.y * S + 4}" ${FF} font-size="11" text-anchor="${inward ? 'start' : 'end'}" fill="#222">${esc(pd.name)}</text>`); }
+      else o.push(`<text x="${pd.x * S}" y="${pd.y * S + 23}" ${FF} font-size="10" text-anchor="middle" fill="#222">${esc(pd.name)}</text>`);
+    });
+    const def = p.def, nm = def.name.length > 30 ? def.name.slice(0, 29) + '...' : def.name;
+    if (small) {
+      const lx = rightHalf ? p.x * S - 10 : (p.x + p.w) * S + 10, anc = rightHalf ? 'end' : 'start';
+      o.push(`<text x="${lx}" y="${(p.y + p.h / 2) * S - 2}" ${FF} font-size="15" font-weight="bold" text-anchor="${anc}" fill="#111">${esc(p.ref)}</text><text x="${lx}" y="${(p.y + p.h / 2) * S + 12}" ${FF} font-size="10" text-anchor="${anc}" fill="#333">${esc(nm)}</text>`);
+    } else {
+      o.push(`<text x="${(p.x + p.w / 2) * S}" y="${(p.y + p.h / 2) * S - 4}" ${FF} font-size="18" font-weight="bold" text-anchor="middle" fill="#111">${esc(p.ref)}</text><text x="${(p.x + p.w / 2) * S}" y="${(p.y + p.h / 2) * S + 13}" ${FF} font-size="11" text-anchor="middle" fill="#333">${esc(nm)}</text>`);
+    }
+  });
+  design.jumpers.forEach((j) => o.push(`<line x1="${j.a[0] * S}" y1="${j.a[1] * S}" x2="${j.b[0] * S}" y2="${j.b[1] * S}" stroke="#d00" stroke-width="3" stroke-dasharray="8 5"/>`));
+  design.jumperPads.forEach((j) => o.push(`<circle cx="${j.x * S}" cy="${j.y * S}" r="${j.d / 2 * S * 0.75}" fill="#d00"/><circle cx="${j.x * S}" cy="${j.y * S}" r="${j.drill / 2 * S}" fill="#fff"/>`));
+  o.push('</g>');
+  o.push(`<text x="${pad}" y="${H * S + pad * 2 + 22}" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#222">Coloured pads follow the wire colours in the wiring diagram. Red dashed lines are wire links (solder a short bare wire between the two red holes).</text>`);
+  o.push(`<text x="${pad}" y="${H * S + pad * 2 + 44}" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#222">Parts go on the top (plain) side. Copper and soldering are on the bottom. Pad names are printed next to each pad.</text>`);
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${o.join('')}</svg>`;
+}
+
+function pinTable(design) {
+  const rows = [];
+  const esp = design.parts.find((p) => p.id === 'esp');
+  if (!esp) return rows;
+  Object.keys(design.nets).forEach((n) => {
+    if (!ESP_OPTIONS[n]) return;
+    const e = design.nets[n].find((x) => x[0] === 'esp'); const other = design.nets[n].find((x) => x[0] !== 'esp');
+    rows.push({ net: n, label: NET_LABELS[n], pin: e[1], gpio: ESP_GPIO[e[1]], to: CATALOG[other[0]].name + ' ' + other[1] });
+  });
+  return rows;
+}
+
+// ---------- Wiring diagram ----------
+function svgWiring(design) {
+  const colX = { 1: 30, 2: 450, 3: 880 }, BW = 230, RH = 24, HEAD = 34;
+  const colOf = { dcin: 1, buck: 1, pump: 1, mosfet: 2, esp: 2, oled: 3, servo: 3, ir: 3, button: 3, led: 3, buzzer: 3, term: 3 };
+  const order = ['dcin', 'buck', 'pump', 'mosfet', 'esp', 'oled', 'servo', 'ir', 'button', 'led', 'buzzer', 'term'];
+  const used = {};
+  Object.keys(design.nets).forEach((n) => design.nets[n].forEach(([id, pad]) => { (used[id] = used[id] || []).push({ pad, net: n }); }));
+  const boxes = {}; const cy = { 1: 70, 2: 70, 3: 70 };
+  order.forEach((id) => {
+    if (!used[id]) return;
+    const c = colOf[id]; const pins = used[id];
+    if (id === 'esp') pins.sort((a, b) => ((a.net === 'GND' || a.net === '5V') ? -1 : 0) - ((b.net === 'GND' || b.net === '5V') ? -1 : 0));
+    const h = HEAD + pins.length * RH + 10;
+    boxes[id] = { id, c, x: colX[c], y: cy[c], w: BW, h, pins };
+    cy[c] += h + 30;
+  });
+  const H = Math.max(cy[1], cy[2], cy[3]) + 150, Wd = 1140;
+  const anchor = (id, pad) => {
+    const b = boxes[id]; const k = b.pins.findIndex((p) => p.pad === pad);
+    const y = b.y + HEAD + k * RH + RH / 2 - 2;
+    return { b, y };
+  };
+  const o = [];
+  o.push(`<rect width="${Wd}" height="${H}" fill="#fff"/>`);
+  o.push(`<text x="30" y="30" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#111">Wiring diagram - what connects to what</text>`);
+  o.push(`<text x="30" y="52" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#444">Every wire below is a copper track on the board. GND pins all join the same copper fill (ground symbol).</text>`);
+  const wires = [], labels = [], syms = [];
+  const sideOf = (id, other) => (boxes[id].c < boxes[other].c ? 'R' : boxes[id].c > boxes[other].c ? 'L' : 'R');
+  Object.entries(design.nets).forEach(([net, list]) => {
+    if (net === 'GND') return;
+    const col = NET_COLORS[net] || '#333';
+    const w = netClass(net) === 'power' ? 5 : netClass(net) === 'mid' ? 3.5 : 2.5;
+    const pts = list.filter(([id]) => boxes[id]);
+    // hub = first pin (source); star wires to the rest
+    const hub = pts[0];
+    pts.slice(1).forEach((q) => {
+      const a = anchor(hub[0], hub[1]), b = anchor(q[0], q[1]);
+      const ea = sideOf(hub[0], q[0]), eb = sideOf(q[0], hub[0]);
+      const xa = ea === 'R' ? a.b.x + a.b.w : a.b.x, xb = eb === 'R' ? b.b.x + b.b.w : b.b.x;
+      const dir = (e) => (e === 'R' ? 1 : -1);
+      const d = Math.max(60, Math.abs(xb - xa) / 2);
+      wires.push(`<path d="M${xa} ${a.y} C${xa + dir(ea) * d} ${a.y} ${xb + dir(eb) * d} ${b.y} ${xb} ${b.y}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`);
+    });
+  });
+  o.push(wires.join(''));
+  order.forEach((id) => {
+    const b = boxes[id]; if (!b) return;
+    const def = CATALOG[id];
+    o.push(`<rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="8" fill="#f5f7fa" stroke="#334" stroke-width="2"/>`);
+    o.push(`<rect x="${b.x}" y="${b.y}" width="${b.w}" height="${HEAD - 6}" rx="8" fill="#223" />`);
+    o.push(`<text x="${b.x + 10}" y="${b.y + 18}" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#fff">${esc(def.ref)}  ${esc(def.name.length > 24 ? def.name.slice(0, 23) + '...' : def.name)}</text>`);
+    b.pins.forEach((p, k) => {
+      const y = b.y + HEAD + k * RH + RH / 2 - 2;
+      const col = NET_COLORS[p.net] || '#333';
+      const gp = id === 'esp' && ESP_GPIO[p.pad] != null ? ` (GPIO${ESP_GPIO[p.pad]})` : '';
+      const partner = (design.nets[p.net] || []).find((q) => q[0] !== id);
+      const role = (id === 'esp' ? (p.net === 'GND' ? 'GND' : p.net === '5V' ? '5 V in' : (partner ? SHORT[partner[0]] + ' ' + partner[1] : '')) : ((def.pinInfo && def.pinInfo[p.pad]) || ''));
+      o.push(`<circle cx="${b.x + 12}" cy="${y}" r="5" fill="${col}"/><text x="${b.x + 24}" y="${y + 4}" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#111">${esc(p.pad)}${esc(gp)}</text><text x="${b.x + b.w - 8}" y="${y + 4}" font-family="Arial, Helvetica, sans-serif" font-size="10" text-anchor="end" fill="#555">${esc(role.length > 26 ? role.slice(0, 25) + '..' : role)}</text>`);
+      if (p.net !== 'GND') {
+        const nets = design.nets[p.net]; const first = nets[0];
+        const other = nets.find(([i]) => i !== id && boxes[i]) || first;
+        const side = boxes[other[0]] && boxes[other[0]].c < b.c ? 'L' : (boxes[other[0]] && boxes[other[0]].c > b.c ? 'R' : 'R');
+        const x = side === 'R' ? b.x + b.w : b.x;
+        o.push(`<circle cx="${x}" cy="${y}" r="5" fill="${col}" stroke="#fff" stroke-width="1.5"/>`);
+      } else {
+        const x = (boxes[id].c === 3) ? b.x : b.x + b.w;
+        const dx = boxes[id].c === 3 ? -1 : 1;
+        o.push(`<path d="M${x} ${y} h${dx * 12} M${x + dx * 12} ${y - 6} v12 M${x + dx * 16} ${y - 4} v8 M${x + dx * 20} ${y - 2} v4" stroke="#222" stroke-width="2" fill="none"/>`);
+      }
+    });
+  });
+  // legend
+  let ly = Math.max(cy[1], cy[2], cy[3]) + 10;
+  o.push(`<text x="30" y="${ly}" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#111">Wire colours</text>`);
+  let lx = 30; ly += 22;
+  Object.keys(design.nets).forEach((n) => {
+    if (n === 'GND') return;
+    o.push(`<rect x="${lx}" y="${ly - 10}" width="22" height="6" rx="3" fill="${NET_COLORS[n] || '#333'}"/><text x="${lx + 28}" y="${ly - 3}" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#222">${esc(NET_LABELS[n] || n)}</text>`);
+    lx += 190; if (lx > 900) { lx = 30; ly += 20; }
+  });
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${Wd}" height="${H}" viewBox="0 0 ${Wd} ${H}">${o.join('')}</svg>`;
+}
+
+// Rasterise an SVG string to PNG bytes (browser only)
+function svgToPng(svgText, scale) {
+  return new Promise((resolve, reject) => {
+    try {
+      const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(svgText);
+      const w = Math.round(+m[1] * scale), h = Math.round(+m[2] * scale);
+      const url = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+      const img = new Image();
+      img.onload = () => {
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        c.toBlob((b) => { if (!b) return reject(new Error('png')); b.arrayBuffer().then((ab) => resolve(new Uint8Array(ab))); }, 'image/png');
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('svg image')); };
+      img.src = url;
+    } catch (e) { reject(e); }
+  });
+}
+
+</script>
+<script>
+window.__DEFAULT_DESIGN={"cfg":{"W":100,"H":70,"thick":1.6,"seed":2,"toolDia":0.8,"minClr":0.6,"sigW":1,"powW":2,"on":{"esp":true,"dcin":true,"buck":true,"pump":true,"mosfet":true,"servo":true,"ir":true,"oled":true,"button":true,"term":false,"led":false,"buzzer":false},"clr":0.85},"nets":{"12V":[["dcin","+12V"],["pump","PUMP+"],["mosfet","V+"],["buck","IN+"]],"PUMP-":[["pump","PUMP-"],["mosfet","V-"]],"5V":[["buck","OUT+"],["esp","5V"],["oled","VCC"],["ir","VCC"],["servo","5V"],["mosfet","VCC"]],"GND":[["dcin","GND"],["buck","IN-"],["buck","OUT-"],["mosfet","GND"],["esp","G"],["servo","GND"],["ir","GND"],["oled","GND"],["button","GND"]],"PUMP_GATE":[["esp","D1"],["mosfet","SIG"]],"SERVO":[["esp","D5"],["servo","SIG"]],"IR_OUT":[["esp","D0"],["ir","OUT"]],"SDA":[["esp","D6"],["oled","SDA"]],"SCL":[["esp","D7"],["oled","SCL"]],"START":[["esp","D3"],["button","BTN"]]},"parts":[{"id":"esp","ref":"U1","x":50,"y":32.5,"rot":180,"w":25.6,"h":34.2,"pads":[{"name":"RST","x":74.23,"y":52.7,"d":1.7,"drill":0.9,"shape":"r","net":null,"part":"esp"},{"name":"A0","x":74.23,"y":50.16,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"D0","x":74.23,"y":47.62,"d":1.7,"drill":0.9,"shape":"c","net":"IR_OUT","part":"esp"},{"name":"D5","x":74.23,"y":45.08,"d":1.7,"drill":0.9,"shape":"c","net":"SERVO","part":"esp"},{"name":"D6","x":74.23,"y":42.54,"d":1.7,"drill":0.9,"shape":"c","net":"SDA","part":"esp"},{"name":"D7","x":74.23,"y":40,"d":1.7,"drill":0.9,"shape":"c","net":"SCL","part":"esp"},{"name":"D8","x":74.23,"y":37.46,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"3V3","x":74.23,"y":34.92,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"TX","x":51.37,"y":52.7,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"RX","x":51.37,"y":50.16,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"D1","x":51.37,"y":47.62,"d":1.7,"drill":0.9,"shape":"c","net":"PUMP_GATE","part":"esp"},{"name":"D2","x":51.37,"y":45.08,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"D3","x":51.37,"y":42.54,"d":1.7,"drill":0.9,"shape":"c","net":"START","part":"esp"},{"name":"D4","x":51.37,"y":40,"d":1.7,"drill":0.9,"shape":"c","net":null,"part":"esp"},{"name":"G","x":51.37,"y":37.46,"d":1.7,"drill":0.9,"shape":"c","net":"GND","part":"esp"},{"name":"5V","x":51.37,"y":34.92,"d":1.7,"drill":0.9,"shape":"c","net":"5V","part":"esp"}],"keepout":{"x":50,"y":54.2,"w":25.6,"h":12.5}},{"id":"buck","ref":"U2","x":10.5,"y":2.5,"rot":0,"w":43,"h":21,"pads":[{"name":"IN+","x":13,"y":5,"d":2.2,"drill":1,"shape":"r","net":"12V","part":"buck"},{"name":"IN-","x":13,"y":21,"d":2.2,"drill":1,"shape":"c","net":"GND","part":"buck"},{"name":"OUT+","x":51,"y":5,"d":2.2,"drill":1,"shape":"c","net":"5V","part":"buck"},{"name":"OUT-","x":51,"y":21,"d":2.2,"drill":1,"shape":"c","net":"GND","part":"buck"}],"keepout":null},{"id":"dcin","ref":"J1","x":2.5,"y":31,"rot":90,"w":7.5,"h":10.2,"pads":[{"name":"+12V","x":6.25,"y":33.54,"d":2.6,"drill":1.3,"shape":"r","net":"12V","part":"dcin"},{"name":"GND","x":6.25,"y":38.62,"d":2.6,"drill":1.3,"shape":"c","net":"GND","part":"dcin"}],"keepout":null},{"id":"mosfet","ref":"Q1","x":11.5,"y":45.5,"rot":180,"w":34,"h":10,"pads":[{"name":"SIG","x":42.5,"y":52,"d":1.7,"drill":0.9,"shape":"r","net":"PUMP_GATE","part":"mosfet"},{"name":"VCC","x":39.96,"y":52,"d":1.7,"drill":0.9,"shape":"c","net":"5V","part":"mosfet"},{"name":"GND","x":37.42,"y":52,"d":1.7,"drill":0.9,"shape":"c","net":"GND","part":"mosfet"},{"name":"V+","x":20.5,"y":51.5,"d":2.6,"drill":1.3,"shape":"c","net":"12V","part":"mosfet"},{"name":"V-","x":15.42,"y":51.5,"d":2.6,"drill":1.3,"shape":"c","net":"PUMP-","part":"mosfet"}],"keepout":null},{"id":"pump","ref":"J2","x":13,"y":60,"rot":180,"w":10.2,"h":7.5,"pads":[{"name":"PUMP+","x":20.66,"y":63.75,"d":2.6,"drill":1.3,"shape":"r","net":"12V","part":"pump"},{"name":"PUMP-","x":15.58,"y":63.75,"d":2.6,"drill":1.3,"shape":"c","net":"PUMP-","part":"pump"}],"keepout":null},{"id":"oled","ref":"OLED1","x":83,"y":10,"rot":90,"w":4,"h":12,"pads":[{"name":"GND","x":85,"y":11.5,"d":1.7,"drill":0.9,"shape":"r","net":"GND","part":"oled"},{"name":"VCC","x":85,"y":14.04,"d":1.7,"drill":0.9,"shape":"c","net":"5V","part":"oled"},{"name":"SCL","x":85,"y":16.58,"d":1.7,"drill":0.9,"shape":"c","net":"SCL","part":"oled"},{"name":"SDA","x":85,"y":19.12,"d":1.7,"drill":0.9,"shape":"c","net":"SDA","part":"oled"}],"keepout":null},{"id":"servo","ref":"SV1","x":83,"y":25.5,"rot":90,"w":4,"h":8,"pads":[{"name":"GND","x":85,"y":27,"d":1.7,"drill":0.9,"shape":"r","net":"GND","part":"servo"},{"name":"5V","x":85,"y":29.54,"d":1.7,"drill":0.9,"shape":"c","net":"5V","part":"servo"},{"name":"SIG","x":85,"y":32.08,"d":1.7,"drill":0.9,"shape":"c","net":"SERVO","part":"servo"}],"keepout":null},{"id":"ir","ref":"IR1","x":83,"y":37.5,"rot":270,"w":4,"h":8,"pads":[{"name":"OUT","x":85,"y":44,"d":1.7,"drill":0.9,"shape":"r","net":"IR_OUT","part":"ir"},{"name":"GND","x":85,"y":41.46,"d":1.7,"drill":0.9,"shape":"c","net":"GND","part":"ir"},{"name":"VCC","x":85,"y":38.92,"d":1.7,"drill":0.9,"shape":"c","net":"5V","part":"ir"}],"keepout":null},{"id":"button","ref":"SW1","x":57,"y":10.5,"rot":0,"w":6,"h":4,"pads":[{"name":"BTN","x":58.5,"y":12.5,"d":1.7,"drill":0.9,"shape":"r","net":"START","part":"button"},{"name":"GND","x":61.04,"y":12.5,"d":1.7,"drill":0.9,"shape":"c","net":"GND","part":"button"}],"keepout":null}],"tracks":[{"net":"5V","w":1.5,"pts":[[51,5],[48,8],[48,31.5],[51.5,35]]},{"net":"5V","w":1.5,"pts":[[51.37,34.92],[51.5,35]]},{"net":"5V","w":1.5,"pts":[[50.5,34],[40,44.5],[40,52]]},{"net":"5V","w":1.5,"pts":[[39.96,52],[40,52]]},{"net":"5V","w":1.5,"pts":[[51,5],[89.5,5],[91,6.5],[91,13],[90,14],[85,14]]},{"net":"5V","w":1.5,"pts":[[85,14.04],[85,14]]},{"net":"5V","w":1.5,"pts":[[90,14],[91,15],[91,28.5],[90,29.5],[85,29.5]]},{"net":"5V","w":1.5,"pts":[[85,29.54],[85,29.5]]},{"net":"5V","w":1.5,"pts":[[90,29.5],[90,39],[85,39]]},{"net":"5V","w":1.5,"pts":[[85,38.92],[85,39]]},{"net":"12V","w":2,"pts":[[6.25,33.54],[6.5,33.5]]},{"net":"12V","w":2,"pts":[[6.5,33.5],[9,33.5],[20.5,45],[20.5,51.5]]},{"net":"12V","w":2,"pts":[[20.5,51.5],[20.5,64]]},{"net":"12V","w":2,"pts":[[20.66,63.75],[20.5,64]]},{"net":"12V","w":2,"pts":[[6.5,33.5],[6.5,11.5],[13,5]]},{"net":"PUMP-","w":2,"pts":[[15.42,51.5],[15.5,51.5]]},{"net":"PUMP-","w":2,"pts":[[15.5,51.5],[15.5,64]]},{"net":"PUMP-","w":2,"pts":[[15.58,63.75],[15.5,64]]},{"net":"PUMP_GATE","w":1,"pts":[[42.5,52],[47,47.5],[51.5,47.5]]},{"net":"PUMP_GATE","w":1,"pts":[[51.37,47.62],[51.5,47.5]]},{"net":"SERVO","w":1,"pts":[[74.23,45.08],[74,45]]},{"net":"SERVO","w":1,"pts":[[74,45],[75.5,45],[82.5,38],[82.5,34.5],[85,32]]},{"net":"SERVO","w":1,"pts":[[85,32.08],[85,32]]},{"net":"IR_OUT","w":1,"pts":[[74.23,47.62],[74,47.5]]},{"net":"IR_OUT","w":1,"pts":[[74,47.5],[81.5,47.5],[85,44]]},{"net":"SDA","w":1,"pts":[[74.23,42.54],[74,42.5]]},{"net":"SDA","w":1,"pts":[[74,42.5],[73,42.5],[71.5,41],[71.5,32.5],[85,19]]},{"net":"SDA","w":1,"pts":[[85,19.12],[85,19]]},{"net":"SCL","w":1,"pts":[[74.23,40],[74,40]]},{"net":"SCL","w":1,"pts":[[74,40],[75.5,40],[80,35.5],[80,27.5],[86,21.5],[86.5,21.5],[87.5,20.5],[87.5,18],[86,16.5],[85,16.5]]},{"net":"SCL","w":1,"pts":[[85,16.58],[85,16.5]]},{"net":"START","w":1,"pts":[[51.37,42.54],[51.5,42.5]]},{"net":"START","w":1,"pts":[[51.5,42.5],[53.5,42.5],[58.5,37.5],[58.5,12.5]]}],"jumpers":[{"net":"GND","a":[45,21],"b":[51,21]},{"net":"GND","a":[84.5,26.5],"b":[74,26.5]}],"jumperPads":[{"name":"J","x":45,"y":21,"d":1.8,"drill":0.9,"shape":"c","net":"GND","part":"jumper"},{"name":"J","x":51,"y":21,"d":1.8,"drill":0.9,"shape":"c","net":"GND","part":"jumper"},{"name":"J","x":84.5,"y":26.5,"d":1.8,"drill":0.9,"shape":"c","net":"GND","part":"jumper"},{"name":"J","x":74,"y":26.5,"d":1.8,"drill":0.9,"shape":"c","net":"GND","part":"jumper"}],"gnd":{"pads":9,"trapped":5},"failed":[],"holes":[{"x":74.23,"y":52.7,"d":0.9,"type":"pad","ref":"U1.RST"},{"x":74.23,"y":50.16,"d":0.9,"type":"pad","ref":"U1.A0"},{"x":74.23,"y":47.62,"d":0.9,"type":"pad","ref":"U1.D0"},{"x":74.23,"y":45.08,"d":0.9,"type":"pad","ref":"U1.D5"},{"x":74.23,"y":42.54,"d":0.9,"type":"pad","ref":"U1.D6"},{"x":74.23,"y":40,"d":0.9,"type":"pad","ref":"U1.D7"},{"x":74.23,"y":37.46,"d":0.9,"type":"pad","ref":"U1.D8"},{"x":74.23,"y":34.92,"d":0.9,"type":"pad","ref":"U1.3V3"},{"x":51.37,"y":52.7,"d":0.9,"type":"pad","ref":"U1.TX"},{"x":51.37,"y":50.16,"d":0.9,"type":"pad","ref":"U1.RX"},{"x":51.37,"y":47.62,"d":0.9,"type":"pad","ref":"U1.D1"},{"x":51.37,"y":45.08,"d":0.9,"type":"pad","ref":"U1.D2"},{"x":51.37,"y":42.54,"d":0.9,"type":"pad","ref":"U1.D3"},{"x":51.37,"y":40,"d":0.9,"type":"pad","ref":"U1.D4"},{"x":51.37,"y":37.46,"d":0.9,"type":"pad","ref":"U1.G"},{"x":51.37,"y":34.92,"d":0.9,"type":"pad","ref":"U1.5V"},{"x":13,"y":5,"d":1,"type":"pad","ref":"U2.IN+"},{"x":13,"y":21,"d":1,"type":"pad","ref":"U2.IN-"},{"x":51,"y":5,"d":1,"type":"pad","ref":"U2.OUT+"},{"x":51,"y":21,"d":1,"type":"pad","ref":"U2.OUT-"},{"x":6.25,"y":33.54,"d":1.3,"type":"pad","ref":"J1.+12V"},{"x":6.25,"y":38.62,"d":1.3,"type":"pad","ref":"J1.GND"},{"x":42.5,"y":52,"d":0.9,"type":"pad","ref":"Q1.SIG"},{"x":39.96,"y":52,"d":0.9,"type":"pad","ref":"Q1.VCC"},{"x":37.42,"y":52,"d":0.9,"type":"pad","ref":"Q1.GND"},{"x":20.5,"y":51.5,"d":1.3,"type":"pad","ref":"Q1.V+"},{"x":15.42,"y":51.5,"d":1.3,"type":"pad","ref":"Q1.V-"},{"x":20.66,"y":63.75,"d":1.3,"type":"pad","ref":"J2.PUMP+"},{"x":15.58,"y":63.75,"d":1.3,"type":"pad","ref":"J2.PUMP-"},{"x":85,"y":11.5,"d":0.9,"type":"pad","ref":"OLED1.GND"},{"x":85,"y":14.04,"d":0.9,"type":"pad","ref":"OLED1.VCC"},{"x":85,"y":16.58,"d":0.9,"type":"pad","ref":"OLED1.SCL"},{"x":85,"y":19.12,"d":0.9,"type":"pad","ref":"OLED1.SDA"},{"x":85,"y":27,"d":0.9,"type":"pad","ref":"SV1.GND"},{"x":85,"y":29.54,"d":0.9,"type":"pad","ref":"SV1.5V"},{"x":85,"y":32.08,"d":0.9,"type":"pad","ref":"SV1.SIG"},{"x":85,"y":44,"d":0.9,"type":"pad","ref":"IR1.OUT"},{"x":85,"y":41.46,"d":0.9,"type":"pad","ref":"IR1.GND"},{"x":85,"y":38.92,"d":0.9,"type":"pad","ref":"IR1.VCC"},{"x":58.5,"y":12.5,"d":0.9,"type":"pad","ref":"SW1.BTN"},{"x":61.04,"y":12.5,"d":0.9,"type":"pad","ref":"SW1.GND"},{"x":45,"y":21,"d":0.9,"type":"jumper","ref":"JMP"},{"x":51,"y":21,"d":0.9,"type":"jumper","ref":"JMP"},{"x":84.5,"y":26.5,"d":0.9,"type":"jumper","ref":"JMP"},{"x":74,"y":26.5,"d":0.9,"type":"jumper","ref":"JMP"},{"x":4,"y":4,"d":3.2,"type":"mount"},{"x":96,"y":4,"d":3.2,"type":"mount"},{"x":4,"y":66,"d":3.2,"type":"mount"},{"x":96,"y":66,"d":3.2,"type":"mount"}],"drc":{"minGap":0.84,"violations":0,"sample":[],"inside":true,"espGap":28.34},"stats":{"tries":4,"ms":526,"lengthMm":367.08,"score":466.64,"template":true}};
+window.__DEFAULT_ISO={"paths":[[[11.75,3.529],[11.6,3.636],[11.513,3.8],[11.5,4.5],[11.486,4.55],[5.4,10.636],[5.35,10.707],[5.163,11.1],[5.15,11.3],[5.1,11.5],[5.1,31.85],[4.9,31.853],[4.75,31.904],[4.65,31.986],[4.604,32.05],[4.553,32.2],[4.553,34.85],[4.604,35],[4.686,35.1],[4.8,35.171],[4.95,35.2],[7.55,35.197],[7.65,35.171],[7.75,35.112],[7.812,35.05],[7.9,34.9],[8.4,34.9],[8.45,34.914],[19.086,45.55],[19.1,45.6],[19.1,50.55],[18.929,50.85],[18.863,51.05],[18.85,51.3],[18.8,51.5],[18.85,51.7],[18.863,51.95],[18.929,52.15],[19.1,52.45],[19.1,62.15],[19.029,62.3],[19,62.45],[19.003,65.1],[19.054,65.25],[19.136,65.35],[19.25,65.421],[19.35,65.447],[22,65.447],[22.1,65.421],[22.214,65.35],[22.296,65.25],[22.347,65.1],[22.35,62.45],[22.321,62.3],[22.214,62.15],[22.05,62.063],[21.9,62.05],[21.9,52.45],[22.021,52.25],[22.137,51.95],[22.15,51.15],[22.137,51.05],[22.021,50.75],[21.9,50.55],[21.9,45],[21.85,44.8],[21.847,44.65],[21.821,44.55],[21.6,44.136],[9.864,32.4],[9.45,32.179],[9.35,32.153],[9.2,32.15],[9.05,32.103],[7.9,32.1],[7.9,12.1],[7.914,12.05],[13.5,6.464],[13.55,6.45],[14.05,6.45],[14.2,6.421],[14.3,6.362],[14.362,6.3],[14.421,6.2],[14.447,6.1],[14.45,3.9],[14.421,3.75],[14.314,3.6],[14.2,3.529],[14.05,3.5],[11.9,3.5],[11.75,3.529]],[[50.85,3.529],[50.8,3.55],[50.6,3.563],[50.4,3.629],[50.2,3.738],[49.9,3.986],[49.704,4.25],[49.629,4.4],[49.563,4.6],[49.55,4.8],[49.528,4.85],[47.1,7.286],[46.929,7.6],[46.9,7.8],[46.853,7.95],[46.853,31.55],[46.9,31.7],[46.929,31.9],[47.088,32.2],[48.886,34],[39.1,43.786],[39.05,43.857],[38.913,44.15],[38.9,44.3],[38.85,44.5],[38.85,51.45],[38.753,51.7],[38.75,52.25],[38.779,52.4],[38.904,52.65],[39.236,53],[39.55,53.171],[39.65,53.197],[40.25,53.197],[40.5,53.121],[40.75,52.962],[40.912,52.8],[41.046,52.6],[41.121,52.45],[41.187,52.2],[41.197,51.85],[41.15,51.7],[41.15,45],[41.164,44.95],[50.4,35.714],[50.55,35.862],[50.75,35.996],[50.9,36.071],[51.15,36.147],[51.6,36.147],[51.9,36.071],[52.05,35.996],[52.25,35.862],[52.362,35.75],[52.496,35.55],[52.587,35.35],[52.6,35.2],[52.65,35],[52.6,34.8],[52.587,34.65],[52.521,34.45],[52.45,34.307],[52.312,34.1],[52.2,33.988],[51.914,33.8],[49.164,31.05],[49.15,31],[49.15,8.5],[49.164,8.45],[51.15,6.464],[51.4,6.437],[51.6,6.371],[51.75,6.296],[51.95,6.15],[89,6.15],[89.05,6.164],[89.836,6.95],[89.85,7],[89.85,12.5],[89.836,12.55],[89.55,12.836],[89.5,12.85],[85.3,12.85],[85.15,12.803],[84.8,12.813],[84.55,12.879],[84.4,12.954],[84.186,13.1],[84.038,13.25],[83.904,13.45],[83.813,13.7],[83.8,13.8],[83.803,14.35],[83.829,14.45],[83.954,14.7],[84.3,15.062],[84.65,15.237],[85.3,15.247],[85.55,15.15],[89.5,15.15],[89.55,15.164],[89.836,15.45],[89.85,15.5],[89.85,28],[89.836,28.05],[89.55,28.336],[89.5,28.35],[85.3,28.35],[85.15,28.303],[84.8,28.313],[84.55,28.379],[84.4,28.454],[84.186,28.6],[84.038,28.75],[83.904,28.95],[83.813,29.2],[83.8,29.3],[83.803,29.85],[83.829,29.95],[83.954,30.2],[84.3,30.562],[84.65,30.737],[85.3,30.747],[85.55,30.65],[88.85,30.65],[88.85,37.85],[85.65,37.85],[85.5,37.779],[85.25,37.703],[84.7,37.713],[84.5,37.779],[84.3,37.888],[83.954,38.25],[83.829,38.5],[83.803,38.6],[83.8,39.2],[83.829,39.35],[83.954,39.6],[84.236,39.9],[84.55,40.071],[84.8,40.147],[90.05,40.147],[90.2,40.1],[90.4,40.071],[90.7,39.896],[90.85,39.764],[90.996,39.55],[91.071,39.4],[91.15,39],[91.15,30],[91.164,29.95],[91.896,29.2],[92.071,28.9],[92.15,28.5],[92.15,15],[92.1,14.8],[92.087,14.65],[91.996,14.45],[91.862,14.25],[91.614,14],[91.862,13.75],[91.996,13.55],[92.087,13.35],[92.1,13.2],[92.147,13.05],[92.15,6.5],[92.071,6.1],[91.996,5.95],[91.862,5.75],[90.264,4.15],[90.05,4.004],[89.9,3.929],[89.5,3.85],[51.95,3.85],[51.743,3.7],[51.6,3.629],[51.4,3.563],[51.2,3.55],[51,3.5],[50.85,3.529]],[[57.5,11.279],[57.4,11.338],[57.338,11.4],[57.279,11.5],[57.253,11.6],[57.25,13.3],[57.279,13.45],[57.35,13.564],[57.45,13.646],[57.6,13.7],[57.6,37.1],[57.586,37.15],[53.15,41.586],[53.1,41.6],[52.2,41.6],[52.15,41.586],[52.05,41.504],[51.75,41.363],[51.5,41.303],[51.2,41.303],[50.95,41.379],[50.7,41.504],[50.35,41.836],[50.229,42.05],[50.153,42.3],[50.15,42.75],[50.179,42.9],[50.354,43.25],[50.586,43.5],[50.807,43.65],[51.05,43.737],[51.15,43.75],[51.7,43.737],[51.95,43.646],[52.15,43.512],[52.25,43.414],[52.3,43.4],[53.55,43.397],[53.85,43.321],[54.1,43.162],[59.15,38.114],[59.321,37.85],[59.387,37.6],[59.4,37.5],[59.4,13.7],[59.55,13.612],[59.612,13.55],[59.671,13.45],[59.697,13.35],[59.697,11.6],[59.671,11.5],[59.6,11.386],[59.5,11.304],[59.35,11.253],[57.65,11.25],[57.5,11.279]],[[84.7,15.379],[84.55,15.429],[84.25,15.588],[83.954,15.9],[83.829,16.15],[83.803,16.25],[83.8,16.85],[83.829,17],[83.988,17.3],[84.286,17.6],[84.5,17.721],[84.7,17.787],[84.8,17.8],[85.3,17.787],[85.5,17.721],[85.65,17.646],[85.75,17.564],[85.8,17.564],[86.586,18.35],[86.6,18.4],[86.6,20.1],[86.586,20.15],[86.15,20.586],[85.95,20.603],[85.7,20.663],[85.436,20.8],[79.3,26.936],[79.254,27],[79.163,27.2],[79.1,27.5],[79.1,35.1],[79.086,35.15],[75.15,39.086],[75.1,39.1],[75.05,39.086],[74.9,38.954],[74.6,38.813],[73.9,38.803],[73.8,38.829],[73.55,38.954],[73.25,39.236],[73.079,39.55],[73.013,39.75],[73,39.85],[73.013,40.25],[73.079,40.45],[73.25,40.764],[73.5,41.012],[73.8,41.171],[73.95,41.2],[74.6,41.187],[74.9,41.046],[75.05,40.914],[75.6,40.887],[75.85,40.821],[76.1,40.662],[80.662,36.1],[80.821,35.85],[80.9,35.5],[80.9,27.9],[80.914,27.85],[86.35,22.414],[86.55,22.397],[86.85,22.321],[87.1,22.162],[88.15,21.114],[88.321,20.85],[88.4,20.5],[88.4,18],[88.337,17.7],[88.296,17.6],[88.114,17.35],[86.614,15.85],[86.4,15.704],[86.05,15.603],[85.75,15.588],[85.45,15.429],[85.2,15.353],[84.85,15.35],[84.7,15.379]],[[84.65,17.929],[84.5,17.979],[84.3,18.088],[84,18.386],[83.829,18.7],[83.786,18.95],[70.8,31.936],[70.679,32.15],[70.6,32.5],[70.603,41.05],[70.679,41.35],[70.8,41.564],[72.386,43.15],[72.65,43.321],[72.95,43.397],[73.35,43.414],[73.45,43.512],[73.65,43.646],[73.95,43.747],[74.5,43.747],[74.75,43.671],[75.014,43.5],[75.212,43.3],[75.346,43.1],[75.447,42.8],[75.45,42.35],[75.437,42.25],[75.371,42.05],[75.296,41.9],[75.164,41.75],[74.9,41.504],[74.65,41.379],[74.45,41.313],[74.15,41.3],[73.8,41.379],[73.55,41.504],[73.45,41.586],[73.4,41.6],[73.35,41.586],[72.414,40.65],[72.4,40.6],[72.4,32.9],[72.414,32.85],[84.9,20.364],[85.2,20.347],[85.45,20.271],[85.75,20.112],[86.012,19.85],[86.171,19.55],[86.2,19.4],[86.197,18.8],[86.171,18.7],[86.012,18.4],[85.7,18.088],[85.5,17.979],[85.3,17.913],[85.2,17.9],[84.8,17.9],[84.65,17.929]],[[84.7,30.879],[84.55,30.929],[84.3,31.054],[84,31.336],[83.829,31.65],[83.786,31.95],[81.8,33.936],[81.679,34.15],[81.6,34.5],[81.6,37.6],[81.586,37.65],[75.15,44.086],[75,44.1],[74.7,43.929],[74.5,43.863],[74,43.853],[73.75,43.929],[73.6,44.004],[73.2,44.386],[73.079,44.6],[73.013,44.8],[73.003,45.3],[73.079,45.55],[73.154,45.7],[73.288,45.9],[73.4,46.012],[73.607,46.15],[73.75,46.221],[73.95,46.287],[74.5,46.297],[74.6,46.271],[74.95,46.096],[75.15,45.914],[75.55,45.897],[75.8,45.837],[75.9,45.796],[76.1,45.662],[83.162,38.6],[83.321,38.35],[83.397,38.05],[83.4,34.9],[83.414,34.85],[84.95,33.314],[85.3,33.287],[85.5,33.221],[85.714,33.1],[86.012,32.8],[86.187,32.45],[86.197,31.75],[86.171,31.65],[86,31.336],[85.75,31.088],[85.45,30.929],[85.2,30.853],[84.85,30.85],[84.7,30.879]],[[73.9,33.729],[73.607,33.85],[73.4,33.988],[73.288,34.1],[73.154,34.3],[73.079,34.45],[73.003,34.7],[73.013,35.2],[73.079,35.4],[73.188,35.6],[73.6,35.996],[73.75,36.071],[74,36.147],[74.5,36.137],[74.7,36.071],[74.843,36],[75.05,35.862],[75.162,35.75],[75.296,35.55],[75.371,35.4],[75.447,35.15],[75.437,34.6],[75.212,34.15],[74.95,33.904],[74.6,33.729],[74.5,33.703],[74.05,33.7],[73.9,33.729]],[[73.85,36.279],[73.657,36.35],[73.45,36.488],[73.288,36.65],[73.154,36.85],[73.079,37],[73.003,37.25],[73.013,37.7],[73.079,37.9],[73.204,38.15],[73.3,38.264],[73.55,38.496],[73.8,38.621],[74.05,38.687],[74.15,38.7],[74.45,38.687],[74.65,38.621],[74.95,38.462],[75.296,38.1],[75.371,37.95],[75.447,37.7],[75.437,37.15],[75.35,36.907],[75.212,36.7],[75,36.488],[74.8,36.354],[74.5,36.253],[74,36.25],[73.85,36.279]],[[84,42.779],[83.85,42.886],[83.763,43.05],[83.75,43.95],[83.736,44],[81.15,46.586],[81.1,46.6],[74.95,46.6],[74.6,46.429],[74.5,46.403],[73.95,46.413],[73.75,46.479],[73.607,46.55],[73.4,46.688],[73.288,46.8],[73.1,47.107],[73.013,47.35],[73,47.45],[73.003,47.85],[73.1,48.143],[73.2,48.314],[73.55,48.662],[73.75,48.771],[73.95,48.837],[74.05,48.85],[74.45,48.847],[74.7,48.771],[74.85,48.696],[75.05,48.562],[75.2,48.4],[81.5,48.4],[81.8,48.337],[81.893,48.3],[82.114,48.15],[85.05,45.214],[85.1,45.2],[85.9,45.187],[86.064,45.1],[86.171,44.95],[86.2,44.8],[86.2,43.15],[86.171,43],[86.1,42.886],[85.95,42.779],[85.8,42.75],[84.15,42.75],[84,42.779]],[[73.85,48.979],[73.657,49.05],[73.45,49.188],[73.288,49.35],[73.154,49.55],[73.079,49.7],[73.003,49.95],[73.013,50.4],[73.079,50.6],[73.204,50.85],[73.3,50.964],[73.55,51.196],[73.8,51.321],[74,51.387],[74.1,51.4],[74.45,51.387],[74.65,51.321],[74.95,51.162],[75.296,50.8],[75.371,50.65],[75.447,50.4],[75.437,49.85],[75.35,49.607],[75.212,49.4],[75,49.188],[74.8,49.054],[74.5,48.953],[74,48.95],[73.85,48.979]],[[73.25,51.529],[73.15,51.588],[73.088,51.65],[73.029,51.75],[73.003,51.85],[73,53.5],[73.029,53.65],[73.1,53.764],[73.25,53.871],[73.4,53.9],[75.05,53.9],[75.2,53.871],[75.314,53.8],[75.421,53.65],[75.45,53.5],[75.45,51.9],[75.421,51.75],[75.35,51.636],[75.2,51.529],[75.05,51.5],[73.4,51.5],[73.25,51.529]],[[50.95,51.529],[50.636,51.7],[50.338,52],[50.229,52.2],[50.163,52.4],[50.15,52.5],[50.153,52.95],[50.229,53.2],[50.338,53.4],[50.636,53.7],[50.95,53.871],[51.1,53.9],[51.65,53.9],[51.8,53.871],[52.114,53.7],[52.362,53.45],[52.521,53.15],[52.587,52.95],[52.6,52.85],[52.597,52.5],[52.521,52.25],[52.35,51.936],[52.1,51.688],[51.8,51.529],[51.65,51.5],[51.1,51.5],[50.95,51.529]],[[51,48.979],[50.807,49.05],[50.6,49.188],[50.354,49.45],[50.179,49.8],[50.153,49.9],[50.163,50.45],[50.229,50.65],[50.338,50.85],[50.7,51.196],[50.95,51.321],[51.15,51.387],[51.25,51.4],[51.6,51.387],[51.8,51.321],[52.05,51.196],[52.114,51.15],[52.396,50.85],[52.521,50.6],[52.587,50.4],[52.6,50.3],[52.587,49.9],[52.521,49.7],[52.362,49.4],[52.15,49.188],[51.95,49.054],[51.65,48.953],[51.15,48.95],[51,48.979]],[[51,46.429],[50.65,46.6],[47,46.6],[46.7,46.663],[46.5,46.754],[46.436,46.8],[42.5,50.736],[42.45,50.75],[41.6,50.753],[41.45,50.804],[41.338,50.9],[41.279,51],[41.25,51.15],[41.25,52.8],[41.263,52.9],[41.304,53],[41.35,53.064],[41.45,53.146],[41.55,53.187],[41.65,53.2],[43.3,53.2],[43.45,53.171],[43.55,53.112],[43.646,53],[43.697,52.85],[43.7,52.1],[43.714,52.05],[47.35,48.414],[47.4,48.4],[50.4,48.4],[50.55,48.562],[50.75,48.696],[50.9,48.771],[51.1,48.837],[51.2,48.85],[51.65,48.837],[51.85,48.771],[52,48.696],[52.4,48.314],[52.521,48.1],[52.587,47.9],[52.6,47.8],[52.597,47.4],[52.521,47.15],[52.446,47],[52.264,46.75],[52,46.554],[51.85,46.479],[51.65,46.413],[51.55,46.4],[51.15,46.4],[51,46.429]],[[51.05,43.879],[50.757,44],[50.55,44.138],[50.438,44.25],[50.304,44.45],[50.229,44.6],[50.153,44.85],[50.163,45.4],[50.388,45.85],[50.65,46.096],[51,46.271],[51.1,46.297],[51.65,46.287],[51.85,46.221],[51.993,46.15],[52.2,46.012],[52.312,45.9],[52.446,45.7],[52.521,45.55],[52.597,45.3],[52.587,44.8],[52.521,44.6],[52.412,44.4],[52,44.004],[51.85,43.929],[51.6,43.853],[51.2,43.85],[51.05,43.879]],[[50.95,38.829],[50.636,39],[50.338,39.3],[50.229,39.5],[50.163,39.7],[50.15,39.8],[50.153,40.25],[50.229,40.5],[50.338,40.7],[50.636,41],[50.95,41.171],[51.1,41.2],[51.65,41.2],[51.8,41.171],[52.05,41.046],[52.15,40.964],[52.362,40.75],[52.521,40.45],[52.587,40.25],[52.6,40.15],[52.597,39.8],[52.521,39.55],[52.396,39.3],[52.3,39.186],[52.1,38.988],[51.8,38.829],[51.65,38.8],[51.1,38.8],[50.95,38.829]],[[14.95,49.879],[14.8,49.929],[14.55,50.054],[14.35,50.188],[14.1,50.436],[13.954,50.65],[13.879,50.8],[13.753,51.2],[13.763,51.85],[13.879,52.2],[13.954,52.35],[14.088,52.55],[14.1,52.6],[14.1,62.95],[13.979,63.2],[13.903,63.5],[13.903,64],[13.979,64.3],[14.154,64.65],[14.3,64.864],[14.55,65.096],[14.7,65.196],[14.907,65.3],[15.15,65.387],[15.95,65.397],[16.2,65.321],[16.45,65.196],[16.65,65.062],[16.9,64.814],[17.046,64.6],[17.121,64.45],[17.247,64.05],[17.237,63.4],[17.121,63.05],[17.046,62.9],[16.912,62.7],[16.9,62.65],[16.9,52.3],[17.021,52.05],[17.097,51.75],[17.097,51.25],[17.021,50.95],[16.846,50.6],[16.712,50.4],[16.6,50.286],[16.5,50.188],[16.3,50.054],[16.05,49.929],[15.8,49.853],[15.1,49.85],[14.95,49.879]]],"pass":1};
+window.__DEFAULT_DESIGN.parts.forEach(function(p){p.def=CATALOG[p.id];});
+</script>
+<script>
+/* ============ part 7 — the app ============ */
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
+  const TABS = [['setup', 'Setup'], ['parts', 'Parts'], ['circuit', 'Circuit'], ['pcb', 'Board'], ['cnc', 'CNC 3018'], ['export', 'Export']];
+  const state = {
+    cfg: { W: 100, H: 70, thick: 1.6, copperSide: 'bottom', minClr: 0.6, sigW: 1.0, powW: 2.0, seed: 2, jumpers: true, on: Object.assign({}, DEFAULT_ON) },
+    cam: defaultCam(), design: window.__DEFAULT_DESIGN, iso: window.__DEFAULT_ISO, tab: 'setup', view: 'layout', beginner: true, reqId: 0, busy: false, error: null
+  };
+  const SYM = {
+    esp: '<rect x="8" y="12" width="24" height="22" rx="2"/><path d="M12 12V6h4v4h4V6h4v4h4V6h4"/><path d="M8 18H4M8 24H4M8 30H4M32 18h4M32 24h4M32 30h4"/>',
+    dcin: '<circle cx="20" cy="20" r="11"/><path d="M20 14v12M14 20h12" /><path d="M5 8l4 4M35 8l-4 4"/>',
+    buck: '<rect x="6" y="9" width="28" height="22" rx="3"/><path d="M13 16h6M13 24h6M25 14v10m-3-3 3 3 3-3"/>',
+    pump: '<circle cx="20" cy="20" r="12"/><path d="M20 20l7-6M20 20l-8 5M20 20l1 9"/><circle cx="20" cy="20" r="2"/>',
+    mosfet: '<path d="M6 20h8M14 12v16M19 12v5M19 18.5v3M19 23v5M19 14h11V6M19 26h11v8M19 20h6"/><path d="M25 17.5v5"/>',
+    servo: '<rect x="5" y="12" width="26" height="18" rx="2"/><circle cx="31" cy="21" r="4"/><path d="M31 21l6-6"/>',
+    ir: '<path d="M10 28l8-16 8 16z"/><path d="M10 28h16M28 14c3 2 3 8 0 10M32 11c5 4 5 12 0 16"/>',
+    oled: '<rect x="5" y="9" width="30" height="22" rx="2"/><path d="M10 15h14M10 20h20M10 25h9"/>',
+    button: '<circle cx="8" cy="26" r="2.5"/><circle cx="32" cy="26" r="2.5"/><path d="M8 26l22-9M20 14v-5M15 9h10"/>',
+    term: '<rect x="4" y="10" width="32" height="20" rx="2"/><circle cx="13" cy="20" r="5"/><circle cx="27" cy="20" r="5"/><path d="M10.5 20h5M24.5 20h5"/>',
+    led: '<path d="M12 10l14 10-14 10z"/><path d="M28 10v20M6 20h6M28 20h6M30 6l5-4M34 10l5-3"/>',
+    buzzer: '<circle cx="17" cy="20" r="10"/><circle cx="17" cy="20" r="2"/><path d="M31 13c3 4 3 10 0 14M35 10c5 6 5 14 0 20"/>'
+  };
+  const sym = (id) => `<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SYM[id] || ''}</svg>`;
+
+  // ---------- worker ----------
+  let worker = null;
+  function startWorker() {
+    try {
+      const src = document.getElementById('engine').textContent + `
+self.onmessage = function (e) { const m = e.data; try {
+  let design = m.design;
+  if (m.type === 'full') design = buildDesign(m.cfg, m.budget);
+  if (design.error) { self.postMessage({ id: m.id, design: design }); return; }
+  const iso = computeIsolation(design, m.tool, m.passes, m.overlap);
+  self.postMessage({ id: m.id, design: design, iso: iso });
+} catch (err) { self.postMessage({ id: m.id, error: String(err && err.message || err) }); } };`;
+      worker = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+      worker.onmessage = (e) => onResult(e.data);
+      worker.onerror = () => { worker = null; };
+    } catch (err) { worker = null; }
+  }
+  function engineCfg() {
+    const c = state.cfg;
+    return { W: c.W, H: c.H, thick: c.thick, seed: c.seed, toolDia: state.cam.tool, minClr: c.minClr, sigW: c.sigW, powW: c.powW, on: c.on, jumpers: c.jumpers };
+  }
+  let timer = null;
+  function schedule(kind) { clearTimeout(timer); timer = setTimeout(() => request(kind), 350); setBusy(true); }
+  function request(kind) {
+    const id = ++state.reqId;
+    setBusy(true);
+    const msg = kind === 'full'
+      ? { id, type: 'full', cfg: engineCfg(), budget: 4500, tool: state.cam.tool, passes: state.cam.passes, overlap: state.cam.overlap }
+      : { id, type: 'iso', design: state.design, tool: state.cam.tool, passes: state.cam.passes, overlap: state.cam.overlap };
+    if (worker) worker.postMessage(msg);
+    else setTimeout(() => {
+      try {
+        let design = msg.design; if (kind === 'full') design = buildDesign(msg.cfg, 2500);
+        if (design.error) return onResult({ id, design });
+        onResult({ id, design, iso: computeIsolation(design, msg.tool, msg.passes, msg.overlap) });
+      } catch (err) { onResult({ id, error: String(err) }); }
+    }, 30);
+  }
+  function onResult(m) {
+    if (m.id !== state.reqId) return;
+    setBusy(false);
+    if (m.error) { toast('Could not plan the board: ' + m.error); return; }
+    if (m.design.error) { state.error = m.design.error; renderAll(); return; }
+    state.error = null; state.design = m.design; state.design.cfg.thick = state.cfg.thick; state.iso = m.iso; renderAll();
+  }
+  function setBusy(b) { state.busy = b; renderStatus(); $('#stage').classList.toggle('dim', b); $$('#previews, #wiring').forEach((e) => e.classList.toggle('dim', b)); }
+
+  // ---------- helpers ----------
+  const f1 = (v) => (Math.round(v * 10) / 10).toString();
+  const f2 = (v) => (Math.round(v * 100) / 100).toString();
+  let toastT;
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 3600); }
+  const activeIds = () => CARD_ORDER.filter((id) => state.cfg.on[id]);
+
+  // ---------- renderers ----------
+  function renderTabs() {
+    $('#tabs').innerHTML = TABS.map(([id, label], i) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab === id}"><em>${i + 1}</em>${label}</button>`).join('');
+    TABS.forEach(([id]) => { $('#tab-' + id).hidden = state.tab !== id; });
+  }
+  function renderStatus() {
+    const d = state.design, c = state.cfg, chips = [];
+    chips.push(`<span class="chip">${c.W} × ${c.H} × ${c.thick} mm</span>`);
+    chips.push(`<span class="chip">CNC 3018 · ${f2(state.cam.tool)} mm cutter</span>`);
+    if (state.busy) chips.push('<span class="chip busy"><i></i>Planning the board…</span>');
+    else if (state.error) chips.push('<span class="chip bad"><i></i>Board too small</span>');
+    else if (d) {
+      const bad = d.failed.length || d.drc.violations;
+      chips.push(`<span class="chip ${bad ? 'bad' : 'ok'}"><i></i>${bad ? 'Needs attention' : 'No crossing tracks'}</span>`);
+      chips.push(`<span class="chip ${d.jumpers.length ? 'warn' : 'ok'}"><i></i>${d.jumpers.length} wire link${d.jumpers.length === 1 ? '' : 's'}</span>`);
+    }
+    $('#statusbar').innerHTML = chips.join('');
+  }
+  function renderSetup() {
+    const c = state.cfg;
+    $('#f-W').value = c.W; $('#f-H').value = c.H; $('#f-T').value = c.thick.toFixed(1); $('#f-side').value = c.copperSide; $('#f-clr').value = c.minClr;
+    const eff = Math.max(c.minClr, state.cam.tool + 0.05);
+    $('#clrHint').textContent = eff > c.minClr + 1e-6 ? `A ${f2(state.cam.tool)} mm cutter needs ${f2(eff)} mm, so ${f2(eff)} mm is used.` : 'Gap between copper of different wires.';
+    $('#setupNote').innerHTML = `<b>What you get:</b> a ${c.W} × ${c.H} mm board, ${f1(c.thick)} mm thick, copper on the <b>${c.copperSide}</b>, four 3.2 mm mounting holes in the corners and large tracks that a ${f2(state.cam.tool)} mm cutter can follow.`;
+    $('#v-copper').textContent = c.copperSide === 'bottom' ? 'Show Copper Bottom' : 'Show Copper Top';
+  }
+  function renderCards() {
+    $('#cards').innerHTML = CARD_ORDER.map((id) => {
+      const d = CATALOG[id], on = state.cfg.on[id], req = d.required;
+      const pins = d.pads.map((p) => `<span>${esc(p.n)}</span>`).join('');
+      return `<article class="card ${on ? 'on' : ''}"><div class="head"><div class="sym">${sym(id)}</div><div><h3>${esc(d.name)}</h3><div class="volt">${esc(d.voltage)}</div></div></div><p class="d">${esc(d.desc)}</p><div class="pins" aria-label="Pins">${pins}</div><div class="foot"><label class="tog"><input type="checkbox" data-part="${id}" ${on ? 'checked' : ''} ${req ? 'disabled' : ''}> ${req ? 'Always on' : (on ? 'On the board' : 'Add to board')}</label><span class="tag">${esc(d.ref)}</span></div></article>`;
+    }).join('');
+  }
+  function treeHtml() {
+    const o = state.cfg.on, li = (t, kids) => `<li>${t}${kids ? `<ul>${kids}</ul>` : ''}</li>`;
+    const logic = [];
+    if (o.esp) {
+      const sub = [];
+      ['servo', 'ir', 'oled', 'button', 'led', 'buzzer'].forEach((id) => { if (o[id]) sub.push(li(`${CATALOG[id].name}`)); });
+      logic.push(li('ESP8266 (U1)', sub.join('')));
+    }
+    ['term'].forEach((id) => { if (o[id]) logic.push(li(CATALOG[id].name)); });
+    const pump = o.pump ? li('Pump (J2), switched by the MOSFET (Q1)' + (o.esp ? '<ul>' + li('ESP pin → MOSFET gate') + '</ul>' : '')) : '';
+    const buck = li('12 V → 5 V converter (U2)', logic.join(''));
+    return `<ul class="tree"><li class="pw">12 V POWER (J1)<ul>${pump}${buck}</ul></li></ul>`;
+  }
+  function checksList() {
+    const d = state.design, c = state.cfg; if (!d) return [];
+    const eff = d.cfg.clr, L = [];
+    L.push([d.espGapOk !== false && d.drc.espGap >= 6 ? 'ok' : 'warn', `ESP is ${d.drc.espGap > 90 ? 'far' : f1(d.drc.espGap) + ' mm'} from the 12 V and pump copper.`]);
+    L.push(['ok', `12 V and pump tracks are ${f1(c.powW)} mm wide. 5 V and ground links ${f1((c.sigW + c.powW) / 2)} mm. Signals ${f1(c.sigW)} mm.`]);
+    L.push([d.drc.violations ? 'bad' : 'ok', `Smallest gap between copper is ${f2(d.drc.minGap)} mm (rule: at least ${f2(eff)} mm).`]);
+    L.push([d.failed.length ? 'bad' : (d.jumpers.length ? 'warn' : 'ok'), d.failed.length ? `${d.failed.length} connection${d.failed.length > 1 ? 's' : ''} could not be routed. Try another layout.` : (d.jumpers.length ? `No tracks cross. ${d.jumpers.length} short wire link${d.jumpers.length > 1 ? 's' : ''} jump over copper (red dashed).` : 'No tracks cross.')]);
+    L.push(['ok', `Four 3.2 mm mounting holes at the corners, ${MOUNT_INSET} mm from each edge.`]);
+    L.push([d.drc.inside ? 'ok' : 'bad', 'All parts and copper are inside the board edge.']);
+    L.push(['ok', 'Signal tracks stay apart from power tracks. Everything is through-hole, no tiny SMD parts.']);
+    L.push(['ok', `Default cutter ${f2(state.cam.tool)} mm. Copper left between the milled lines is the ground fill.`]);
+    return L;
+  }
+  function notesList() {
+    const o = state.cfg.on, N = [];
+    N.push('Turn the trimmer on the 12 V → 5 V module until a multimeter shows 5.0 V on OUT+ / OUT-. Do this before the ESP is plugged in.');
+    if (o.pump) N.push('A pump is a motor. Solder a 1N4007 diode across the pump terminal (stripe towards PUMP+) unless your MOSFET module already has one.');
+    if (o.mosfet) N.push('Use a logic-level MOSFET module (IRLZ44N or D4184 type). A plain IRF520 module does not switch fully from 3.3 V.');
+    if (o.servo) N.push('Solder a 470 µF capacitor across 5V and GND next to the servo header. This stops resets when the servo moves.');
+    N.push('The copper left between the milled lines is the ground fill. Leave it on. Do not scrape it off.');
+    if (state.design && state.design.jumpers.length) N.push(`Solder ${state.design.jumpers.length} short bare wire${state.design.jumpers.length > 1 ? 's' : ''} between each pair of red holes (red dashed lines on the board view).`);
+    N.push('The ESP carrier plugs into two 8-pin female headers, 22.86 mm apart. Check your module before you drill. Pad names are on the component map.');
+    N.push('Check pin order on the IR sensor, OLED and servo plugs against the pad names. Cheap modules vary.');
+    return N;
+  }
+  function renderCircuit() {
+    const d = state.design;
+    $('#expert').hidden = state.beginner;
+    $('#f-sig').value = state.cfg.sigW; $('#f-pow').value = state.cfg.powW; $('#f-jmp').value = state.cfg.jumpers ? '1' : '0';
+    $('#beginnerHint').textContent = state.beginner ? 'Everything is set up for you' : 'Expert settings are open';
+    $('#circuitTop').innerHTML = treeHtml();
+    if (!d) return;
+    const rows = pinTable(d);
+    const gnd = `<tr><td>Ground</td><td class="mono">G</td><td class="mono">-</td><td>Every GND pin joins the copper fill</td></tr>`;
+    $('#pinTable').innerHTML = `<table class="tbl"><thead><tr><th>Signal</th><th>ESP pin</th><th>GPIO</th><th>Goes to</th></tr></thead><tbody>${rows.map((r) => `<tr><td>${esc(r.label)}</td><td class="mono">${r.pin}</td><td class="mono">${r.gpio}</td><td>${esc(r.to)}</td></tr>`).join('')}${gnd}</tbody></table>`;
+    $('#wiring').innerHTML = svgWiring(d);
+    $('#buildNotes').innerHTML = notesList().map((n) => `<li>${esc(n)}</li>`).join('');
+  }
+  function viewLayout(d, o) {
+    const { W, H } = d.cfg;
+    let s = `<rect x="0" y="0" width="${W}" height="${H}" class="pv-board"/>`;
+    if (o.grid) { let g = ''; for (let x = 10; x < W; x += 10) g += `<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`; for (let y = 10; y < H; y += 10) g += `<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`; s += `<g class="pv-grid">${g}</g>`; }
+    d.parts.forEach((p) => {
+      if (p.keepout) { const k = p.keepout; s += `<rect x="${k.x}" y="${k.y}" width="${k.w}" height="${k.h}" fill="none" stroke="#c0398a" stroke-width="0.3" stroke-dasharray="1.4 1"/><text x="${k.x + k.w / 2}" y="${k.y + k.h / 2}" text-anchor="middle" class="lay-pin" style="font-size:2px;fill:#c0398a">antenna: no copper</text>`; }
+    });
+    d.tracks.forEach((t) => { s += `<path d="${pathD(t.pts)}" fill="none" stroke="${NET_COLORS[t.net] || '#333'}" stroke-width="${fmt(t.w)}" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>`; });
+    d.parts.forEach((p) => {
+      s += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="0.8" class="lay-body"/>`;
+      p.pads.forEach((pd) => {
+        const col = pd.net ? (NET_COLORS[pd.net] || '#333') : '#8d9792';
+        s += (pd.shape === 'r' ? `<rect x="${fmt(pd.x - pd.d / 2)}" y="${fmt(pd.y - pd.d / 2)}" width="${pd.d}" height="${pd.d}" fill="${col}"/>` : `<circle cx="${fmt(pd.x)}" cy="${fmt(pd.y)}" r="${fmt(pd.d / 2)}" fill="${col}"/>`) + `<circle cx="${fmt(pd.x)}" cy="${fmt(pd.y)}" r="${fmt(pd.drill / 2)}" fill="var(--pv-board)"/>`;
+      });
+      if (p.w * p.h < 160) {
+        const right = p.x + p.w / 2 > W / 2;
+        s += `<text x="${fmt(right ? p.x - 1 : p.x + p.w + 1)}" y="${fmt(p.y + p.h / 2 + 0.9)}" text-anchor="${right ? 'end' : 'start'}" class="lay-ref">${esc(p.ref)}</text>`;
+      } else s += `<text x="${fmt(p.x + p.w / 2)}" y="${fmt(p.y + p.h / 2 + 0.9)}" text-anchor="middle" class="lay-ref">${esc(p.ref)}</text>`;
+    });
+    if (o.jumpers) { d.jumpers.forEach((j) => { s += `<line x1="${fmt(j.a[0])}" y1="${fmt(j.a[1])}" x2="${fmt(j.b[0])}" y2="${fmt(j.b[1])}" class="pv-jump"/>`; }); }
+    d.jumperPads.forEach((j) => { s += `<circle cx="${fmt(j.x)}" cy="${fmt(j.y)}" r="${fmt(j.d / 2)}" fill="#e0382c"/><circle cx="${fmt(j.x)}" cy="${fmt(j.y)}" r="${fmt(j.drill / 2)}" fill="var(--pv-board)"/>`; });
+    d.holes.filter((h) => h.type === 'mount').forEach((h) => { s += `<circle cx="${h.x}" cy="${h.y}" r="${h.d / 2}" fill="var(--bg)" stroke="var(--ink)" stroke-width="0.3"/>`; });
+    s += `<rect x="0" y="0" width="${W}" height="${H}" class="pv-edge"/>`;
+    return previewFrame(d, s, false);
+  }
+  function renderPcb() {
+    const d = state.design; if (!d) return;
+    const o = { grid: $('#o-grid').checked, labels: $('#o-labels').checked, jumpers: $('#o-jump').checked };
+    $('#v-layout').setAttribute('aria-pressed', state.view === 'layout');
+    $('#v-copper').setAttribute('aria-pressed', state.view === 'copper');
+    $('#stage').innerHTML = state.error ? `<p class="callout">${esc(state.error)}</p>` : (state.view === 'copper' ? viewCopper(d, state.iso, state.cam, o) : viewLayout(d, o));
+    if (state.view === 'copper') {
+      $('#legend').innerHTML = '<span><i style="background:#000"></i>Black = copper</span><span><i style="background:#fff"></i>White = milled away (isolation lines, holes, antenna area)</span><span>Viewed from the copper side, so it is flipped left to right.</span>';
+    } else {
+      const nets = Object.keys(d.nets).filter((n) => n !== 'GND');
+      $('#legend').innerHTML = nets.map((n) => `<span><i style="background:${NET_COLORS[n]}"></i>${esc(NET_LABELS[n])}</span>`).join('') + '<span><i style="background:#2b2f36"></i>Ground = copper fill</span>';
+    }
+    $('#checks').innerHTML = checksList().map(([k, t]) => `<li class="${k}"><b>${k === 'ok' ? '✓' : '!'}</b><span>${esc(t)}</span></li>`).join('');
+  }
+  function renderCnc() {
+    const d = state.design, cam = state.cam; if (!d || !state.iso) return;
+    const c = state.cfg;
+    $('#c-tool').value = cam.tool; $('#c-depth').value = cam.depth; $('#c-depthv').textContent = cam.depth.toFixed(2);
+    $('#c-passes').value = cam.passes; $('#c-rpm').value = cam.rpm; $('#c-feed').value = cam.feed; $('#c-plunge').value = cam.plunge; $('#c-safe').value = cam.safeZ; $('#c-out').value = cam.outlineDia;
+    const dr = previewDrill(d, cam);
+    $('#previews').innerHTML = `<div><h3><span>A</span>Isolation milling</h3><div class="stage">${previewIsolation(d, state.iso, cam)}</div><p class="muted">${state.iso.paths.length} cutting paths, ${cam.passes} pass${cam.passes > 1 ? 'es' : ''}. The orange line is where the cutter centre travels.</p></div>
+<div><h3><span>B</span>Drill holes</h3><div class="stage">${dr.svg}</div><div class="legend">${dr.groups.map((g) => `<span><i style="background:${g.color}"></i>${f2(g.d)} mm × ${g.n}</span>`).join('')}${dr.milled ? `<span><i style="background:none;border:1.5px dashed var(--ink)"></i>3.2 mm × ${dr.milled} (milled with the outline cutter)</span>` : ''}</div></div>
+<div><h3><span>C</span>Board outline</h3><div class="stage">${previewOutline(d, cam)}</div><p class="muted">The ${f2(cam.outlineDia)} mm end mill cuts just outside the board in ${Math.ceil((c.thick + 0.3) / cam.outlinePass)} steps.</p></div>`;
+    const g = buildGcode(d, cam, state.iso);
+    state.gcode = g;
+    $('#camStats').innerHTML = `<div><b>${g.minutes} min</b><span>Estimated cutting time</span></div><div><b>${g.cutLen} mm</b><span>Isolation path length</span></div><div><b>${g.lines}</b><span>G-code lines</span></div><div><b>${drillGroupsCount(d, cam)}</b><span>Holes to drill</span></div>`;
+    const lines = g.text.split('\n');
+    $('#gcodePre').textContent = lines.slice(0, 60).join('\n') + (lines.length > 60 ? `\n; ... ${lines.length - 60} more lines in the export` : '');
+    $('#camNotes').innerHTML = [
+      'Flip the board left to right, copper side up. Zero X/Y at the front-left corner, Z0 on the copper surface.',
+      'The program pauses (M0) at every tool change. Fit the tool, touch off Z, then press resume.',
+      'Tape the board flat on a spoil board. Mill with the cutter close to the same height all over, a small tilt will leave copper uncut.',
+      cam.passes > 1 ? 'More than one pass widens the groove. Ground pads sit only 0.85 mm from other copper, so extra passes can shave them.' : 'One pass is enough: the grooves split the wires and the leftover copper is ground.'
+    ].map((n) => `<li>${esc(n)}</li>`).join('');
+  }
+  function drillGroupsCount(d, cam) { return drillGroups(d, cam).reduce((a, g) => a + g.holes.length, 0); }
+  function renderExport() {
+    $('#packList').innerHTML = ['01_Copper_Bottom.svg', '02_Board_Outline.svg', '03_Drill_Holes.svg', '04_CNC3018_Gcode.nc', '05_Component_Map.png', '06_Wiring_Diagram.png'].map((n) => `<li>${n}</li>`).join('');
+    $('#exportNote').innerHTML = 'SVG files save directly. This viewer only allows a few file types, so DXF, Gerber, drill and G-code are saved inside a small ZIP (the G-code ZIP also holds a .txt copy that Candle and UGS can open). Open the page as a file on your computer to save the raw .nc, .dxf and .gbr files.';
+  }
+  function renderAll() { renderStatus(); renderSetup(); renderCards(); renderCircuit(); renderPcb(); renderCnc(); renderExport(); }
+
+  // ---------- saving ----------
+  const OK_EXT = ['svg', 'zip', 'txt', 'png', 'json', 'md', 'csv', 'html', 'pdf'];
+  async function saveOut(name, data) {
+    let dl = null;
+    try { if (window.claude && window.claude.use) dl = await window.claude.use('downloads'); } catch (e) { dl = null; }
+    const ext = name.split('.').pop().toLowerCase();
+    if (dl) {
+      let fname = name, payload = data;
+      if (!OK_EXT.includes(ext)) { payload = makeZip([{ name, data }]); fname = name.replace(/\.[^.]+$/, '') + '.zip'; }
+      try { await dl.save({ filename: fname, data: payload }); toast('Saved ' + fname); }
+      catch (e) { toast(e && e.code === 'declined' ? 'Save cancelled' : 'Could not save: ' + ((e && (e.message || e.code)) || 'unknown error')); }
+      return;
+    }
+    const blob = new Blob([data], { type: ext === 'svg' ? 'image/svg+xml' : ext === 'png' ? 'image/png' : ext === 'zip' ? 'application/zip' : 'text/plain' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500); toast('Download started: ' + name);
+  }
+  const dsn = () => ({ d: state.design, iso: state.iso, cam: state.cam });
+  async function doExport(kind) {
+    const { d, iso, cam } = dsn(); if (!d || !iso) return;
+    const direct = !(window.claude && window.claude.use);
+    if (kind === 'svg') return saveOut('01_Copper_Bottom.svg', exportCopperSvg(d, iso, cam));
+    if (kind === 'dxf') return saveOut('CNC3018_Toolpaths.dxf', exportDxf(d, iso, cam));
+    if (kind === 'drl') return saveOut('Drill_Holes.drl', exportExcellon(d));
+    if (kind === 'gbr') return saveOut('CNC_PCB_Gerber.zip', makeZip([{ name: 'CopperBottom.gbl', data: exportGerberCopper(d, iso, cam) }, { name: 'BoardOutline.gko', data: exportGerberOutline(d) }, { name: 'Drill.drl', data: exportExcellon(d) }]));
+    if (kind === 'nc') {
+      const g = buildGcode(d, cam, iso).text;
+      if (direct) return saveOut('04_CNC3018_Gcode.nc', g);
+      return saveOut('CNC3018_Gcode.zip', makeZip([{ name: '04_CNC3018_Gcode.nc', data: g }, { name: '04_CNC3018_Gcode.txt', data: g }]));
+    }
+  }
+  async function doPackage() {
+    const { d, iso, cam } = dsn(); if (!d || !iso) return;
+    const b = $('#btnPackage'); b.disabled = true; b.textContent = 'Building package…';
+    try {
+      const [map, wire] = await Promise.all([svgToPng(svgComponentMap(d), 2), svgToPng(svgWiring(d), 2)]);
+      const zip = makeZip([
+        { name: '01_Copper_Bottom.svg', data: exportCopperSvg(d, iso, cam) }, { name: '02_Board_Outline.svg', data: exportOutlineSvg(d, cam) },
+        { name: '03_Drill_Holes.svg', data: exportDrillSvg(d, cam) }, { name: '04_CNC3018_Gcode.nc', data: buildGcode(d, cam, iso).text },
+        { name: '05_Component_Map.png', data: map }, { name: '06_Wiring_Diagram.png', data: wire }
+      ]);
+      await saveOut('CNC3018_Package.zip', zip);
+    } catch (e) { toast('Could not build the package: ' + (e && e.message || e)); }
+    b.disabled = false; b.textContent = 'Download CNC 3018 Package';
+  }
+
+  // ---------- events ----------
+  function num(id, lo, hi, fallback) { const v = parseFloat($(id).value); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : fallback; }
+  function bind() {
+    $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (!b) return; state.tab = b.dataset.tab; renderTabs(); window.scrollTo({ top: 0 }); });
+    $('#beginner').addEventListener('change', (e) => {
+      state.beginner = e.target.checked;
+      if (state.beginner) { Object.assign(state.cfg, { sigW: 1.0, powW: 2.0, jumpers: true }); schedule('full'); }
+      renderCircuit();
+    });
+    const redesign = () => { renderSetup(); renderStatus(); schedule('full'); };
+    $('#f-W').addEventListener('change', () => { state.cfg.W = Math.round(num('#f-W', 90, 200, 100)); redesign(); });
+    $('#f-H').addEventListener('change', () => { state.cfg.H = Math.round(num('#f-H', 62, 160, 70)); redesign(); });
+    $('#f-T').addEventListener('change', () => { state.cfg.thick = parseFloat($('#f-T').value); if (state.design) state.design.cfg.thick = state.cfg.thick; renderSetup(); renderCnc(); renderStatus(); });
+    $('#f-side').addEventListener('change', () => { state.cfg.copperSide = $('#f-side').value; state.cam.copperSide = state.cfg.copperSide; renderSetup(); renderPcb(); renderCnc(); });
+    $('#f-clr').addEventListener('change', () => { state.cfg.minClr = num('#f-clr', 0.3, 2, 0.6); redesign(); });
+    $('#f-sig').addEventListener('change', () => { state.cfg.sigW = num('#f-sig', 0.4, 2, 1); redesign(); });
+    $('#f-pow').addEventListener('change', () => { state.cfg.powW = num('#f-pow', 1, 4, 2); redesign(); });
+    $('#f-jmp').addEventListener('change', () => { state.cfg.jumpers = $('#f-jmp').value === '1'; redesign(); });
+    $('#cards').addEventListener('change', (e) => { const id = e.target.dataset.part; if (!id) return; state.cfg.on[id] = e.target.checked; renderCards(); schedule('full'); });
+    $('#v-layout').addEventListener('click', () => { state.view = 'layout'; renderPcb(); });
+    $('#v-copper').addEventListener('click', () => { state.view = 'copper'; renderPcb(); });
+    ['#o-grid', '#o-labels', '#o-jump'].forEach((s) => $(s).addEventListener('change', renderPcb));
+    $('#btnRelayout').addEventListener('click', () => { state.cfg.seed = (state.cfg.seed % 40) + 1; schedule('full'); toast('Planning another layout…'); });
+    const cam = state.cam;
+    $('#c-tool').addEventListener('change', () => { cam.tool = num('#c-tool', 0.1, 3, 0.8); renderSetup(); schedule('full'); });
+    $('#c-depth').addEventListener('input', () => { cam.depth = parseFloat($('#c-depth').value); $('#c-depthv').textContent = cam.depth.toFixed(2); });
+    $('#c-depth').addEventListener('change', renderCnc);
+    $('#c-passes').addEventListener('change', () => { cam.passes = Math.round(num('#c-passes', 1, 4, 1)); schedule('iso'); });
+    [['#c-rpm', 'rpm', 1000, 12000, 10000], ['#c-feed', 'feed', 20, 1000, 200], ['#c-plunge', 'plunge', 10, 300, 60], ['#c-safe', 'safeZ', 0.5, 10, 2], ['#c-out', 'outlineDia', 0.5, 3.2, 1]].forEach(([id, key, lo, hi, def]) => {
+      $(id).addEventListener('change', () => { cam[key] = num(id, lo, hi, def); if (key === 'rpm') cam.drillRpm = cam.rpm; renderCnc(); });
+    });
+    $('#x-svg').addEventListener('click', () => doExport('svg'));
+    $('#x-dxf').addEventListener('click', () => doExport('dxf'));
+    $('#x-gbr').addEventListener('click', () => doExport('gbr'));
+    $('#x-drl').addEventListener('click', () => doExport('drl'));
+    $('#x-nc').addEventListener('click', () => doExport('nc'));
+    $('#btnPackage').addEventListener('click', doPackage);
+  }
+
+  startWorker();
+  bind();
+  renderTabs();
+  renderAll();
+})();
+
+</script>
+
+</body></html>

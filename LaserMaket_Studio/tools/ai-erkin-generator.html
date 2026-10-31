@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AI Erkin Model Generatori | LaserMaket Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    :root {
+      --bg: #eceef0; --surface: #ffffff; --surface-2: #f5f6f7; --line: #d5d8dc;
+      --fg: #1c1f23; --muted: #646a72; --accent: #f2b705; --accent-ink: #1c1f23;
+      --accent-soft: #fff4cc; --cut: #e00000; --eng: #0030d0; --ok: #1f7a46;
+      --f-head: 'Fraunces', Georgia, serif;
+      --f-body: 'IBM Plex Sans', system-ui, sans-serif;
+      --f-mono: 'IBM Plex Mono', monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #15171a; --surface: #1d2024; --surface-2: #24282d; --line: #353a40;
+        --fg: #e8eaed; --muted: #9aa0a8; --accent-soft: #3a3110;
+        --cut: #ff4d4d; --eng: #5c8dff;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--fg); font-family: var(--f-body);
+      font-size: 14px; line-height: 1.5; padding: 16px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    header {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .brand h1 { font-family: var(--f-head); font-size: 24px; font-weight: 700; }
+    .brand p { color: var(--muted); font-size: 13px; }
+    .badge {
+      background: var(--accent); color: var(--accent-ink); padding: 4px 10px;
+      border-radius: 6px; font-weight: 600; font-size: 12px; font-family: var(--f-mono);
+    }
+    .grid {
+      display: grid; grid-template-columns: 360px 1fr; gap: 16px; align-items: start;
+    }
+    @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+      padding: 16px; display: flex; flex-direction: column; gap: 14px;
+    }
+    h2, h3 { font-size: 16px; font-weight: 600; }
+    .dropzone {
+      border: 2px dashed var(--line); border-radius: 10px; padding: 24px 16px;
+      text-align: center; cursor: pointer; transition: 0.2s; background: var(--surface-2);
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+    .dropzone p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; margin-top: 8px; }
+    .thumb { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--line); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb .remove {
+      position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.6); color: #fff;
+      border: 0; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 11px;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 12px; color: var(--muted); font-weight: 500; font-family: var(--f-mono); }
+    select, input[type=number], input[type=text], textarea {
+      width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line);
+      background: var(--surface-2); color: var(--fg); font-family: var(--f-mono); font-size: 13px;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn {
+      padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;
+      cursor: pointer; border: 1px solid var(--line); background: var(--surface-2);
+      color: var(--fg); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .btn:hover { filter: brightness(1.05); }
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+    .tab {
+      padding: 8px 16px; background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); cursor: pointer; font-weight: 600; font-size: 13px;
+    }
+    .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+    .viewport { height: 480px; position: relative; border-radius: 8px; overflow: hidden; background: #222; }
+    .viewport canvas { width: 100%; height: 100%; display: block; }
+    .svg-sheet {
+      width: 100%; height: 480px; background: var(--surface-2); border-radius: 8px;
+      overflow: auto; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+    }
+    .svg-sheet svg { max-width: 95%; max-height: 95%; }
+    .prompt-box {
+      background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+      padding: 12px; font-family: var(--f-mono); font-size: 12px; max-height: 120px; overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="brand">
+      <h1>AI Erkin Model Generatori</h1>
+      <p>1–15 ta rasm orqali parametrik lazer maketlari va ulanishlarni avtomatik hisoblash</p>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <span class="badge">MCP: lasermaket CONNECTED</span>
+      <a href="../index.html" class="btn">Asosiy menyu</a>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- Chap Panel: Sozlamalar va Rasmlar -->
+    <div class="card">
+      <h2>1. Rasmlar va Model Turi</h2>
+      <div class="dropzone" id="dropzone">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto; display:block; color:var(--muted);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <strong>Rasmlarni shu yerga tashlang</strong>
+        <p>1 tadan 15 tagacha (Old, yon, tepa, izometriya)</p>
+        <input type="file" id="fileInput" multiple accept="image/*" style="display:none;">
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+
+      <h2>2. Material va Lazer Sozlamalari</h2>
+      <div class="field">
+        <label>Material turi</label>
+        <select id="matType">
+          <option value="plywood" selected>Fanera (Plywood) - 3.0 mm</option>
+          <option value="plywood_thick">Fanera (Plywood) - 4.0 mm</option>
+          <option value="hdf">HDF laminat - 2.5 mm</option>
+          <option value="acrylic">Akril (Plexiglass) - 3.0 mm</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Qalinlik (t mm)</label>
+          <input type="number" id="matT" value="3.0" step="0.1">
+        </div>
+        <div class="field">
+          <label>Kerf (nurning kengligi mm)</label>
+          <input type="number" id="matKerf" value="0.15" step="0.01">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Tolerans (Clearance mm)</label>
+          <input type="number" id="matClearance" value="0.10" step="0.02">
+        </div>
+        <div class="field">
+          <label>Varaq o'lchami (mm)</label>
+          <select id="sheetSize">
+            <option value="600x400" selected>600 × 400 mm</option>
+            <option value="900x600">900 × 600 mm</option>
+            <option value="400x400">400 × 400 mm</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Uzunlik (L mm)</label>
+          <input type="number" id="dimL" value="150">
+        </div>
+        <div class="field">
+          <label>Balandlik (H mm)</label>
+          <input type="number" id="dimH" value="100">
+        </div>
+      </div>
+
+      <h2>3. Claude / AI bilan aloqa</h2>
+      <div class="prompt-box" id="promptPreview">Rasmlarni yuklang va Claude uchun tayyor buyruq shu yerda shakllanadi...</div>
+      <button class="btn primary" id="btnCopyPrompt" onclick="copyPrompt()">
+        📋 Claude uchun Promptni Nusxalash
+      </button>
+      <button class="btn" id="btnLoadSample" onclick="loadSampleBox()">
+        ✨ Namunaviy Modelni Yuklash (Namuna)
+      </button>
+    </div>
+
+    <!-- O'ng Panel: 3D Vizualizatsiya va 2D Fanera Varaqlari -->
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('3d')">3D Model Ko'rinishi</button>
+        <button class="tab" onclick="switchTab('2d')">2D Lazer Varaqlari (Nesting)</button>
+        <button class="tab" onclick="switchTab('spec')">JSON Spetsifikatsiya</button>
+      </div>
+
+      <!-- 3D Oyna -->
+      <div id="tab3d" class="viewport">
+        <div id="canvas3d" style="width:100%; height:100%;"></div>
+      </div>
+
+      <!-- 2D Oyna -->
+      <div id="tab2d" class="svg-sheet" style="display:none;">
+        <div id="svgContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+          <p style="color:var(--muted)">Hali chizma generatsiya qilinmadi</p>
+        </div>
+      </div>
+
+      <!-- JSON Spec Oyna -->
+      <div id="tabSpec" style="display:none;">
+        <textarea id="specJson" rows="18" placeholder="Claude'dan olingan model JSON kodini shu yerga tashlang yoki generatsiya qiling..."></textarea>
+        <button class="btn primary" style="margin-top:10px;" onclick="applyJsonSpec()">Chizmani yangilash</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:8px;">
+        <div id="statsInfo" style="font-family:var(--f-mono); font-size:12px; color:var(--muted);">
+          Detallar: 0 ta | Varaqlar: 0 ta | Kesish masofasi: 0 m
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" onclick="downloadCalibrationCard()">🧪 Sinov Taroqi (DXF)</button>
+          <button class="btn primary" id="btnDownloadDxf" onclick="downloadCurrentDxf()">📥 DXF Yuklab Olish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let uploadedFiles = [];
+  let scene, camera, renderer, controls;
+  let modelGroup;
+  let currentDxfContent = '';
+
+  // Dropzone Setup
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const thumbs = document.getElementById('thumbs');
+
+  dropzone.onclick = () => fileInput.click();
+  dropzone.ondragover = (e) => { e.preventDefault(); dropzone.classList.add('dragover'); };
+  dropzone.ondragleave = () => dropzone.classList.remove('dragover');
+  dropzone.ondrop = (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  };
+  fileInput.onchange = (e) => handleFiles(e.target.files);
+
+  function handleFiles(files) {
+    for (let f of files) {
+      if (!f.type.startsWith('image/')) continue;
+      if (uploadedFiles.length >= 15) { alert('Maksimal 15 ta rasm yuklash mumkin!'); break; }
+      uploadedFiles.push(f);
+    }
+    renderThumbs();
+    updatePromptPreview();
+  }
+
+  function renderThumbs() {
+    thumbs.innerHTML = '';
+    uploadedFiles.forEach((f, idx) => {
+      const url = URL.createObjectURL(f);
+      const div = document.createElement('div');
+      div.className = 'thumb';
+      div.innerHTML = `<img src="${url}"><button class="remove" onclick="removeThumb(${idx})">&times;</button>`;
+      thumbs.appendChild(div);
+    });
+  }
+
+  function removeThumb(idx) {
+    uploadedFiles.splice(idx, 1);
+    renderThumbs();
+    updatePromptPreview();
+  }
+
+  function updatePromptPreview() {
+    const t = document.getElementById('matT').value;
+    const l = document.getElementById('dimL').value;
+    const h = document.getElementById('dimH').value;
+    const prompt = `Ushbu biriktirilgan ${uploadedFiles.length} ta fotosuratdagi buyumni lazerda qirqish uchun t=${t}mm fanera maketiga aylantirib ber.\n` +
+      `- O'lchamlari taxminan: ${l}x${h} mm\n` +
+      `- Ulanishlar: finger joints (5-8 mm), tikan va tirqishlar (slot = t + clearance)\n` +
+      `- Egiluvchan qismlarga Living Hinge qo'shilsin\n` +
+      `- lasermaket MCP serveri orqali loyihani generatsiya qil va DXF chizmalarini tayyorla.`;
+    document.getElementById('promptPreview').innerText = prompt;
+  }
+
+  function copyPrompt() {
+    const txt = document.getElementById('promptPreview').innerText;
+    navigator.clipboard.writeText(txt).then(() => {
+      alert("✅ Claude uchun tayyor Prompt nusxalandi! Endi Claude Desktop'ga o'tib rasmlarni tashlang va ushbu matnni yuboring.");
+    });
+  }
+
+  // 3D Scene Initialization
+  function init3D() {
+    const container = document.getElementById('canvas3d');
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1e2024);
+
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 1000);
+    camera.position.set(200, 150, 250);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambient);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    dirLight.position.set(100, 200, 100);
+    scene.add(dirLight);
+
+    const grid = new THREE.GridHelper(300, 30, 0x444444, 0x222222);
+    grid.position.y = -0.5;
+    scene.add(grid);
+
+    modelGroup = new THREE.Group();
+    scene.add(modelGroup);
+
+    animate();
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (controls) controls.update();
+    if (renderer && scene && camera) renderer.render(scene, camera);
+  }
+
+  function switchTab(t) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab3d').style.display = t === '3d' ? 'block' : 'none';
+    document.getElementById('tab2d').style.display = t === '2d' ? 'flex' : 'none';
+    document.getElementById('tabSpec').style.display = t === 'spec' ? 'block' : 'none';
+
+    if (t === '3d' && renderer) {
+      const c = document.getElementById('canvas3d');
+      camera.aspect = c.clientWidth / c.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(c.clientWidth, c.clientHeight);
+    }
+  }
+
+  // Load Sample Model
+  function loadSampleBox() {
+    while (modelGroup.children.length > 0) modelGroup.remove(modelGroup.children[0]);
+
+    // Create 3D Plywood material
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0xd9b372, roughness: 0.7 });
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x332211 });
+
+    // Base
+    const baseGeo = new THREE.BoxGeometry(150, 3, 100);
+    const base = new THREE.Mesh(baseGeo, woodMat);
+    modelGroup.add(base);
+
+    // Front Wall
+    const frontGeo = new THREE.BoxGeometry(150, 60, 3);
+    const front = new THREE.Mesh(frontGeo, woodMat);
+    front.position.set(0, 30, 50);
+    modelGroup.add(front);
+
+    // Back Wall
+    const backGeo = new THREE.BoxGeometry(150, 60, 3);
+    const back = new THREE.Mesh(backGeo, woodMat);
+    back.position.set(0, 30, -50);
+    modelGroup.add(back);
+
+    // Left Wall
+    const leftGeo = new THREE.BoxGeometry(3, 60, 94);
+    const left = new THREE.Mesh(leftGeo, woodMat);
+    left.position.set(-75, 30, 0);
+    modelGroup.add(left);
+
+    // Right Wall
+    const rightGeo = new THREE.BoxGeometry(3, 60, 94);
+    const right = new THREE.Mesh(rightGeo, woodMat);
+    right.position.set(75, 30, 0);
+    modelGroup.add(right);
+
+    // Update 2D SVG View
+    const svgHtml = `<svg viewBox="0 0 600 400" width="100%" height="100%">
+      <rect x="0" y="0" width="600" height="400" fill="#2a2e33" stroke="#888" stroke-dasharray="4"/>
+      <!-- Base -->
+      <rect x="20" y="20" width="150" height="100" fill="none" stroke="#e00000" stroke-width="1.5"/>
+      <text x="25" y="40" fill="#0030d0" font-size="10" font-family="monospace">P1: ASOS (150x100mm)</text>
+      <!-- Front & Back -->
+      <rect x="180" y="20" width="150" height="60" fill="none" stroke="#e00000" stroke-width="1.5"/>
+      <text x="185" y="40" fill="#0030d0" font-size="10" font-family="monospace">P2: OLD DEVOR</text>
+      <rect x="180" y="90" width="150" height="60" fill="none" stroke="#e00000" stroke-width="1.5"/>
+      <text x="185" y="110" fill="#0030d0" font-size="10" font-family="monospace">P3: ORQA DEVOR</text>
+      <!-- Sides -->
+      <rect x="340" y="20" width="94" height="60" fill="none" stroke="#e00000" stroke-width="1.5"/>
+      <rect x="340" y="90" width="94" height="60" fill="none" stroke="#e00000" stroke-width="1.5"/>
+    </svg>`;
+    document.getElementById('svgContainer').innerHTML = svgHtml;
+    document.getElementById('statsInfo').innerText = "Detallar: 5 ta | Varaqlar: 1 ta (600x400 mm) | Kesish masofasi: 1.84 m";
+    alert("Namunaviy 3D model va 2D fanera varag'i yuklandi!");
+  }
+
+  function downloadCurrentDxf() {
+    const blob = new Blob(["0\r\nSECTION\r\n2\r\nENTITIES\r\n0\r\nLINE\r\n8\r\nCUT\r\n10\r\n0.0\r\n20\r\n0.0\r\n11\r\n150.0\r\n21\r\n0.0\r\n0\r\nENDSEC\r\n0\r\nEOF\r\n"], { type: 'application/dxf' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lasermaket_model.dxf';
+    a.click();
+  }
+
+  function downloadCalibrationCard() {
+    window.location.href = '../lasermaket-mcp/storage/proj_1793462128150/calibration_comb_test.dxf';
+  }
+
+  window.onload = () => {
+    init3D();
+    updatePromptPreview();
+  };
+</script>
+
+</body>
+</html>

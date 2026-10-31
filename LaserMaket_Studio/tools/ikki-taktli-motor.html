@@ -1,0 +1,429 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ikki Taktli Motor Maketi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: workbench — parameters left, running mechanism centre, cycle/BOM right, cut sheet below. Red = cut, blue = engrave, as in the laser file. */
+:root{
+  --bg:#ECEEEA; --panel:#F8F9F6; --ink:#1C221F; --muted:#5E6862; --line:#CBD1CB;
+  --accent:#D9361E; --engrave:#2149C9; --accent-ink:#fff; --warn:#9A5B00; --warn-bg:#FFF2DA;
+  --w1:#C9A67C; --w2:#E2C69F; --w3:#D4B086; --w4:#B98F62; --wline:#5B3E22; --spark:#FFB020;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Figtree",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141816; --panel:#1C211F; --ink:#E6EAE6; --muted:#97A29B; --line:#323A36;
+  --accent:#FF5A3C; --engrave:#7F9DFF; --accent-ink:#1a0d09; --warn:#FFC266; --warn-bg:#3A2C12;
+  --w1:#9C7A52; --w2:#C7A77C; --w3:#B48F64; --w4:#8A6640; --wline:#2A1A0C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141816; --panel:#1C211F; --ink:#E6EAE6; --muted:#97A29B; --line:#323A36;
+  --accent:#FF5A3C; --engrave:#7F9DFF; --accent-ink:#1a0d09; --warn:#FFC266; --warn-bg:#3A2C12;
+  --w1:#9C7A52; --w2:#C7A77C; --w3:#B48F64; --w4:#8A6640; --wline:#2A1A0C; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;padding-block:18px 40px}
+.wrap{max-width:1360px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font:700 clamp(26px,4vw,38px)/1.05 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);margin:4px 0 0;max-width:64ch}
+button{font:600 14px var(--body);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--ink)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.app{display:grid;gap:16px;grid-template-columns:290px minmax(0,1.25fr) minmax(0,.9fr);grid-template-areas:"ctrl prev info" "ctrl sheet sheet";align-items:start}
+@media (max-width:1050px){.app{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"prev info" "ctrl ctrl" "sheet sheet"}}
+@media (max-width:640px){.app{grid-template-columns:minmax(0,1fr);grid-template-areas:"prev" "info" "ctrl" "sheet"}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
+.ctrl{grid-area:ctrl;display:flex;flex-direction:column;gap:14px}
+.prev{grid-area:prev}.info{grid-area:info;display:flex;flex-direction:column;gap:16px}.sheet{grid-area:sheet}
+h2{font:700 13px var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+fieldset{border:0;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+fieldset+fieldset{border-top:1px solid var(--line);padding-top:14px}
+fieldset .lg{grid-column:1/-1;font:700 13px var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0;margin-bottom:6px}
+label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);min-width:0}
+label.check{flex-direction:row;align-items:center;gap:8px;color:var(--ink);grid-column:1/-1}
+.field{display:flex;align-items:center;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.field input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:500 14px var(--mono);padding:6px 8px}
+.field i{font:normal 12px var(--mono);color:var(--muted);padding-right:8px}
+.headrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.headrow h2{margin:0}
+.tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tools button{padding:5px 10px;font-size:13px}
+#prevSvg{width:100%;height:auto;max-height:72vh;display:block}
+.p-back{fill:var(--w4);stroke:var(--wline);stroke-width:.5}
+.p-frame{fill:var(--w2);stroke:var(--wline);stroke-width:.5;fill-rule:evenodd}
+.p-base1{fill:var(--w4);stroke:var(--wline);stroke-width:.5}
+.p-base2{fill:var(--w1);stroke:var(--wline);stroke-width:.5}
+.p-crank{fill:var(--w3);stroke:var(--wline);stroke-width:.6;fill-rule:evenodd}
+.p-piston{fill:var(--w2);stroke:var(--wline);stroke-width:.6;fill-rule:evenodd}
+.p-rod{fill:var(--w1);stroke:var(--wline);stroke-width:.6;fill-rule:evenodd}
+.p-cap{fill:var(--w2);stroke:var(--wline);stroke-width:.6}
+.p-eng{fill:none;stroke:var(--wline);stroke-width:.45;stroke-opacity:.75;stroke-linecap:round}
+.p-hole{fill:var(--wline)}
+#spark{fill:var(--spark);opacity:0;transition:opacity .08s}
+.ctrlrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.ctrlrow input[type=range]{flex:1;min-width:140px;accent-color:var(--accent)}
+.phase b{display:block;font:700 22px/1.2 var(--display);text-wrap:balance}
+.phase span{color:var(--muted);font-size:14px}
+.dial{font:500 13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{position:relative;height:10px;border-radius:5px;background:var(--line);margin:10px 0 4px;overflow:hidden}
+.bar i{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--accent) 35%,transparent)}
+.bar em{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--ink);border-radius:2px}
+.barlab{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px 14px}
+.stat b{display:block;font:500 17px var(--mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px;font-size:14px}
+ol li::marker{font:600 13px var(--mono);color:var(--muted)}
+.warns{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.warn{background:var(--warn-bg);color:var(--warn);border-radius:6px;padding:7px 10px;font-size:13px}
+.sheetwrap{overflow-x:auto;border:1px dashed var(--line);border-radius:8px;background:var(--bg)}
+.sheetwrap svg{display:block;width:100%;height:auto;min-width:420px}
+.sheetwrap .cut{stroke:var(--accent)} .sheetwrap .eng{stroke:var(--engrave)} .sheetwrap .edge{stroke:var(--muted)}
+.dl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.note{font-size:13px;color:var(--muted);margin:8px 0 0}
+#toast{font-size:13px;color:var(--muted)}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:6px;background:var(--accent)}
+.legend span.e::before{background:var(--engrave)}
+@media (prefers-reduced-motion:reduce){#spark{transition:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Ikki taktli motor <span>maketi</span></h1>
+      <p class="sub">Krivoship-shatun mexanizmi faner qatlamlaridan yig'iladi: orqa plita, oynali ramka, porshen, shatun, tirsakli val va asos. O'lchamlarni o'zgartiring, mexanizm qanday ishlashini ko'ring va kesish faylini yuklab oling.</p>
+    </div>
+  </header>
+
+  <div class="app">
+    <section class="box prev">
+      <div class="headrow">
+        <h2>Mexanizm</h2>
+        <div class="tools">
+          <button id="play" type="button" aria-pressed="true">Pauza</button>
+        </div>
+      </div>
+      <svg id="prevSvg" aria-label="Motor maketining old ko'rinishi"></svg>
+      <div class="ctrlrow">
+        <span class="dial" id="angLab">θ = 0°</span>
+        <input id="ang" type="range" min="0" max="359" step="1" value="0" aria-label="Tirsakli val burchagi">
+        <label style="flex-direction:row;align-items:center;gap:6px">Tezlik<input id="spd" type="range" min="0.2" max="3" step="0.1" value="1" style="width:90px;accent-color:var(--accent)"></label>
+      </div>
+    </section>
+
+    <aside class="info">
+      <section class="box">
+        <h2>Hozirgi takt</h2>
+        <div class="phase"><b id="phName">—</b><span id="phDesc"></span></div>
+        <div class="bar" id="bar"></div>
+        <div class="barlab"><span>0° YCHN</span><span>180° PChN</span><span>360°</span></div>
+      </section>
+      <section class="box">
+        <h2>O'lchamlar</h2>
+        <div class="stats" id="stats"></div>
+        <div class="warns" id="warns"></div>
+      </section>
+      <section class="box">
+        <h2>Yig'ish tartibi</h2>
+        <ol id="steps"></ol>
+      </section>
+    </aside>
+
+    <aside class="box ctrl" id="ctrl"></aside>
+
+    <section class="box sheet">
+      <div class="headrow">
+        <h2>Kesish varag'i</h2>
+        <div class="tools"><div class="legend"><span>kesish</span><span class="e">gravyura</span></div><span id="sheetTabs" class="tools"></span></div>
+      </div>
+      <div class="sheetwrap" id="sheetPrev"></div>
+      <div class="dl">
+        <button class="primary" id="dlOne" type="button">SVG yuklab olish</button>
+        <button id="dlAll" type="button">Barcha varaqlar (bitta fayl)</button>
+        <button id="copy" type="button">SVG kodini nusxalash</button>
+        <span id="toast" role="status"></span>
+      </div>
+      <p class="note">O'lchov millimetrda. Kesish — qizil (#FF0000), gravyura/skor — ko'k (#0000FF), chiziq qalinligi 0.1 mm. Aylanadigan teshiklarga tirqish qo'shilgan, shtift yelimlanadigan teshiklar kerf bo'yicha toraytirilgan.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+const DEF={D:40,S:36,L:72,hp:32,chamber:6,w:10,T:3,dp:6,clr:0.3,c:0.3,kerf:0.1,fins:7,finL:12,finT:4,eng:true,sheetW:400,sheetH:300,gap:4};
+let st=Object.assign({},DEF),G=null,theta=0,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches,speed=1,curSheet=0;
+
+const GROUPS=[
+ ["Mexanizm",[["D","Porshen eni","mm",16,120,1],["S","Porshen yo'li","mm",10,100,1],["L","Shatun uzunligi","mm",20,250,1],["hp","Porshen balandligi","mm",10,120,1],["chamber","Yonish kamerasi","mm",2,40,1]]],
+ ["Korpus",[["w","Devor qalinligi","mm",5,30,0.5],["fins","Qovurg'alar soni","",0,16,1],["finL","Qovurg'a uzunligi","mm",3,40,1],["finT","Qovurg'a qalinligi","mm",2,12,0.5]]],
+ ["Material va tirqish",[["T","Faner qalinligi","mm",2,8,0.5],["dp","Shtift diametri","mm",3,12,0.5],["clr","Aylanish tirqishi","mm",0,1,0.05],["c","Porshen tirqishi","mm",0,1.5,0.05],["kerf","Kerf","mm",0,0.5,0.01],["eng","Gravyura chiziqlari","chk"]]],
+ ["Varaq",[["sheetW","Varaq eni","mm",100,2000,10],["sheetH","Varaq bo'yi","mm",100,2000,10],["gap","Detallar oralig'i","mm",1,20,0.5]]]
+];
+function buildControls(){
+  const c=document.getElementById('ctrl');
+  GROUPS.forEach(([g,fs])=>{
+    const f=document.createElement('fieldset');f.innerHTML=`<div class="lg">${g}</div>`;
+    fs.forEach(([k,l,u,mn,mx,step])=>{
+      const lab=document.createElement('label');
+      if(u==='chk'){lab.className='check';lab.innerHTML=`<input type="checkbox" id="c_${k}"> ${l}`}
+      else lab.innerHTML=`${l}<div class="field"><input id="c_${k}" type="number" min="${mn}" max="${mx}" step="${step}"><i>${u}</i></div>`;
+      f.appendChild(lab);
+      const inp=lab.querySelector('input');
+      if(u==='chk')inp.checked=st[k];else inp.value=st[k];
+      inp.addEventListener('input',()=>{
+        let v=u==='chk'?inp.checked:parseFloat(inp.value);
+        if(typeof v==='number'){if(isNaN(v))return;v=Math.min(mx,Math.max(mn,v));if(k==='fins')v=Math.round(v)}
+        st[k]=v;update();
+      });
+    });
+    c.appendChild(f);
+  });
+}
+
+/* ---------- geometry helpers (math coords, y up) ---------- */
+const circ=(cx,cy,r,n=40)=>Array.from({length:n},(_,i)=>{const a=2*Math.PI*i/n;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+const arc=(cx,cy,r,a0,a1,n=24)=>Array.from({length:n+1},(_,i)=>{const a=a0+(a1-a0)*i/n;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]});
+function hull(P){P=P.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[],up=[];
+  for(const p of P){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
+  for(let i=P.length-1;i>=0;i--){const p=P[i];while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}
+  return lo.slice(0,-1).concat(up.slice(0,-1))}
+function rrect(cx,cy,w,h,r){const p=[];[[cx+w/2-r,cy+h/2-r,0],[cx-w/2+r,cy+h/2-r,Math.PI/2],[cx-w/2+r,cy-h/2+r,Math.PI],[cx+w/2-r,cy-h/2+r,1.5*Math.PI]].forEach(([x,y,a])=>p.push(...arc(x,y,r,a,a+Math.PI/2,8)));return p}
+const rect=(x0,y0,x1,y1)=>[[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+function arrowHead(tip,dir,s=2.6){const a=Math.atan2(dir[1],dir[0]);return[[[tip[0]-s*Math.cos(a-0.5),tip[1]-s*Math.sin(a-0.5)],tip,[tip[0]-s*Math.cos(a+0.5),tip[1]-s*Math.sin(a+0.5)]]]}
+const C=(pts)=>({pts,closed:true}),O=(pts)=>({pts,closed:false});
+function polyLen(p,cl){let L=0;for(let i=1;i<p.length;i++)L+=Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]);if(cl)L+=Math.hypot(p[0][0]-p.at(-1)[0],p[0][1]-p.at(-1)[1]);return L}
+
+/* ---------- build the model ---------- */
+function kin(th,r,L){const s=Math.sin(th),c=Math.cos(th);return{pin:[r*s,r*c],yp:r*c+Math.sqrt(Math.max(0,L*L-r*r*s*s))}}
+function build(){
+  const p=st,warns=[],T=p.T,dp=p.dp,D=p.D,r=p.S/2;
+  const b1=dp/2+4.5,b2=dp/2+5.5,a=dp/2+6,bp=dp/2+5,Rw=r+Math.max(6,dp*1.3),capR=dp/2+4.5;
+  let L=p.L;const Lmin=r+b1+b2+2;if(L<Lmin){warns.push(`Shatun juda qisqa — kamida ${Math.ceil(Lmin)} mm bo'lishi kerak, shu qiymat ishlatildi.`);L=Lmin}
+  const pf=Math.min(p.hp*0.45,p.hp-b1-1)>b1?Math.min(p.hp*0.45,p.hp-b1-1):p.hp/2;
+  const holeLoose=dp+p.clr,holeSnug=Math.max(1,dp-p.kerf);
+
+  // crank web (local: main axle at 0, crank pin at (0,r))
+  const crank=hull([...circ(0,0,a,36),...circ(0,r,bp,36),...arc(0,0,Rw,-Math.PI/2-1,-Math.PI/2+1,28)]);
+  const maxCrank=Math.max(...crank.map(q=>Math.hypot(q[0],q[1])));
+  const Dc=D/2+p.c;
+  let Rcase=Math.max(maxCrank,r+b2)+2.5;
+  if(Rcase<Dc+3)Rcase=Dc+3;
+  const yJoin=Math.sqrt(Rcase*Rcase-Dc*Dc);
+  const chTop=r+L+(p.hp-pf)+p.chamber;
+  const cw=Dc+p.w;let Ro=Rcase+p.w;if(Ro<cw+4)Ro=cw+4;
+  const top=chTop+p.w,fw=Math.max(cw,Ro*0.82),yb=-Ro-8;
+  const sc=D/40;
+
+  // plate outline — right half bottom→top, then mirror
+  const R=[[fw,yb]];
+  let colY0;
+  if(fw<Ro-0.5){const yc=-Math.sqrt(Ro*Ro-fw*fw),a0=Math.atan2(yc,fw),a1=Math.acos(Math.min(1,cw/Ro));R.push([fw,yc],...arc(0,0,Ro,a0,a1,40).slice(1));colY0=Ro*Math.sin(a1)}
+  else{R.push([fw,0]);colY0=0}
+  if(fw>cw+0.1)R.push([cw,colY0]);
+  const n=p.fins;let finRange=[0,0];
+  if(n>0){
+    const fy0=Math.max(colY0+3,yJoin+2),fy1=top-3-p.finT,pitch=n>1?(fy1-fy0)/(n-1):0;
+    let nn=n;if(n>1&&pitch<p.finT+2){nn=Math.max(1,Math.floor((fy1-fy0)/(p.finT+2))+1);warns.push(`${n} ta qovurg'a sig'maydi — ${nn} tasi chizildi.`)}
+    const pt=nn>1?(fy1-fy0)/(nn-1):0;
+    for(let k=0;k<nn;k++){const y=fy0+k*pt;R.push([cw,y],[cw+p.finL,y],[cw+p.finL,y+p.finT],[cw,y+p.finT])}
+    finRange=[fy0,fy1+p.finT];
+  }
+  R.push([cw,top]);
+  const plug=[[7*sc,5*sc],[4.5*sc,10*sc],[2.2*sc,6*sc]];let py=top;
+  plug.forEach(([hw,h])=>{R.push([hw,py],[hw,py+h]);py+=h});
+  const plugTop=py;
+  const Lft=R.slice().reverse().map(q=>[-q[0],q[1]]);
+  const tx=fw*0.5,tw=Math.min(18,fw*0.45);
+  const bottom=[[-tx-tw/2,yb],[-tx-tw/2,yb-T],[-tx+tw/2,yb-T],[-tx+tw/2,yb],[tx-tw/2,yb],[tx-tw/2,yb-T],[tx+tw/2,yb-T],[tx+tw/2,yb]];
+  const outline=[...R,...Lft,...bottom];
+
+  // window in the frame
+  const phi=Math.atan2(yJoin,Dc);
+  const win=[[Dc,yJoin],[Dc,chTop],[-Dc,chTop],[-Dc,yJoin],...arc(0,0,Rcase,Math.PI-phi,2*Math.PI+phi,64).slice(1,-1)];
+
+  // port heights from kinematics
+  const pTop=deg=>kin(deg*Math.PI/180,r,L).yp+(p.hp-pf);
+  const yEx=pTop(100),yTr=pTop(125);
+
+  // engravings
+  const engBack=[],engFrame=[];
+  const ss=Math.min(3,p.chamber/2+1.5),sy=chTop-p.chamber/2;
+  for(let k=0;k<4;k++){const an=k*Math.PI/4;engBack.push(O([[ss*Math.cos(an),sy+ss*Math.sin(an)],[-ss*Math.cos(an),sy-ss*Math.sin(an)]]))}
+  const wm=p.w/2;
+  // exhaust port (right wall)
+  engFrame.push(O([[Dc+0.8,yEx],[cw-0.8,yEx]]),O([[Dc+0.8,yEx-7*sc],[cw-0.8,yEx-7*sc]]));
+  const ea=[[Dc+1.5,yEx-3.5*sc],[cw-1,yEx-3.5*sc]];engFrame.push(O(ea),...arrowHead(ea[1],[1,0]).map(O));
+  // transfer channel (left wall)
+  const ta=(200)*Math.PI/180,tA=[(Rcase+wm)*Math.cos(ta),(Rcase+wm)*Math.sin(ta)];
+  const rT=Rcase+wm,aUp=Math.PI-Math.acos(Math.min(1,(Dc+wm)/rT));
+  const tr=[...arc(0,0,rT,ta,aUp,16),[-(Dc+wm),yTr-2.5],[-Dc-0.8,yTr-2.5]];
+  engFrame.push(O(tr),...arrowHead(tr.at(-1),[1,0]).map(O));
+  // intake (right of crankcase)
+  const ia=15*Math.PI/180,iA=[(Ro-1)*Math.cos(ia),(Ro-1)*Math.sin(ia)],iB=[(Rcase+0.8)*Math.cos(ia),(Rcase+0.8)*Math.sin(ia)];
+  engFrame.push(O([iA,iB]),...arrowHead(iB,[iB[0]-iA[0],iB[1]-iA[1]]).map(O));
+  // rotation arrow (bottom of crankcase, clockwise)
+  const rr=Rcase+wm,ra=arc(0,0,rr,-50*Math.PI/180,-130*Math.PI/180,20);
+  const re=ra.at(-1),rdir=[ra.at(-1)[0]-ra.at(-2)[0],ra.at(-1)[1]-ra.at(-2)[1]];
+  engFrame.push(O(ra),...arrowHead(re,rdir).map(O));
+
+  // moving parts
+  const pw=D;
+  const piston={cut:[C(rect(-pw/2,-pf,pw/2,p.hp-pf)),C(circ(0,0,holeSnug/2))],eng:[O([[-pw/2+1,p.hp-pf-3],[pw/2-1,p.hp-pf-3]]),O([[-pw/2+1,p.hp-pf-6],[pw/2-1,p.hp-pf-6]])],name:'Porshen'};
+  const rodOut=hull([...circ(0,0,b1,36),...circ(0,-L,b2,36)]);
+  const rodIn=hull([...circ(0,0,b1-2.3,36),...circ(0,-L,b2-2.3,36)]);
+  const rod={cut:[C(rodOut),C(circ(0,0,holeLoose/2)),C(circ(0,-L,holeLoose/2))],eng:[C(rodIn)],name:'Shatun'};
+  const crankP={cut:[C(crank),C(circ(0,0,holeLoose/2)),C(circ(0,r,holeSnug/2))],eng:[O(arc(0,0,Rw-3,-Math.PI/2-0.8,-Math.PI/2+0.8,20)),O(arc(0,0,Rw-5,-Math.PI/2-0.65,-Math.PI/2+0.65,20))],name:'Tirsakli val'};
+  const capEng=[];for(let k=0;k<4;k++){const an=k*Math.PI/2;capEng.push(O([[(holeSnug/2+1)*Math.cos(an),(holeSnug/2+1)*Math.sin(an)],[(capR-1.2)*Math.cos(an),(capR-1.2)*Math.sin(an)]]))}
+  const cap={cut:[C(circ(0,0,capR,48)),C(circ(0,0,holeSnug/2))],eng:capEng,name:'Qopqoq'};
+  const back={cut:[C(outline),C(circ(0,0,holeSnug/2))],eng:engBack,name:'Orqa plita'};
+  const frame={cut:[C(outline),C(win)],eng:engFrame,name:'Ramka'};
+  const Wb=2*Math.max(Ro,cw+p.finL)+36,Db=Math.max(56,Ro*1.2);
+  const baseBot={cut:[C(rrect(0,0,Wb,Db,6))],eng:[],name:'Asos (pastki)'};
+  const sw=tw-p.kerf,sh=2*T-p.kerf;
+  const baseTop={cut:[C(rrect(0,0,Wb-14,Db-14,5)),C(rect(-tx-sw/2,-sh/2,-tx+sw/2,sh/2)),C(rect(tx-sw/2,-sh/2,tx+sw/2,sh/2))],eng:[],name:'Asos (ustki)'};
+
+  // checks
+  let hit=false,minGap=1e9;
+  for(let d=0;d<360;d+=2){const th=d*Math.PI/180,{yp}=kin(th,r,L),bot=yp-pf,c=Math.cos(th),s=Math.sin(th);
+    for(const q of crank){const x=q[0]*c+q[1]*s,y=-q[0]*s+q[1]*c;if(Math.abs(x)<pw/2+1){minGap=Math.min(minGap,bot-y);if(y>bot-1)hit=true}}}
+  if(hit)warns.push("Tirsakli val porshenga tegadi — shatunni uzaytiring yoki porshen yo'lini kamaytiring.");
+  const botBDC=L-r-pf;
+  if(botBDC<yJoin-p.hp*0.3)warns.push("Pastki holatda porshen silindrdan juda chiqib ketadi — shatunni uzaytiring.");
+  if(r<capR+b2+0.5)warns.push("Shatunning katta uchi o'q qopqog'iga tegadi — porshen yo'lini kattalashtiring yoki shtiftni ingichkaroq qiling.");
+  if(pf<=b1)warns.push("Porshen past — porshen pin teshigi chetga juda yaqin.");
+
+  const parts=[back,frame,crankP,piston,rod,cap,cap,cap,baseTop,baseBot];
+  // normalize parts to local SVG coords (y down, origin top-left)
+  const norm=parts.map(pt=>{const all=pt.cut.flatMap(l=>l.pts),xs=all.map(q=>q[0]),ys=all.map(q=>q[1]),mx=Math.min(...xs),MY=Math.max(...ys);
+    const f=l=>({closed:l.closed,pts:l.pts.map(q=>[q[0]-mx,MY-q[1]])});
+    return{name:pt.name,w:Math.max(...xs)-mx,h:MY-Math.min(...ys),cut:pt.cut.map(f),eng:pt.eng.map(f)}});
+  // pack
+  const W=p.sheetW,HS=p.sheetH,gp=p.gap,order=norm.map((_,i)=>i).sort((i,j)=>norm[j].h-norm[i].h);
+  const sheets=[];let cur=null,x=0,y=0,rowH=0;const ns=()=>{cur={items:[]};sheets.push(cur);x=gp;y=gp;rowH=0};
+  for(const i of order){let q=norm[i];
+    if(q.w+2*gp>W||q.h+2*gp>HS){warns.push(`"${q.name}" (${q.w.toFixed(0)}×${q.h.toFixed(0)} mm) varaqqa sig'maydi — varaqni kattalashtiring.`);continue}
+    if(!cur)ns();if(x+q.w+gp>W){x=gp;y+=rowH+gp;rowH=0}if(y+q.h+gp>HS)ns();
+    cur.items.push({q,x,y});x+=q.w+gp;rowH=Math.max(rowH,q.h)}
+  let cut=0;norm.forEach(q=>q.cut.forEach(l=>cut+=polyLen(l.pts,true)));
+  return{r,L,pf,b1,b2,capR,Rcase,Ro,yb,chTop,top:plugTop,outline,win,crank,engBack,engFrame,piston,rod,crankP,cap,back,frame,Wb,Db,sheets,warns:[...new Set(warns)],cut,holeLoose,holeSnug,W:2*Math.max(Ro,cw+p.finL),H:plugTop-yb+2*T,yEx,yTr,pTop};
+}
+
+/* ---------- preview ---------- */
+const NS='http://www.w3.org/2000/svg';
+const dOf=ls=>ls.map(l=>'M'+l.pts.map(q=>q[0].toFixed(2)+' '+q[1].toFixed(2)).join(' L')+(l.closed?'Z':'')).join('');
+let refs={};
+function buildPreview(){
+  const g=G,svg=document.getElementById('prevSvg'),T=st.T;
+  const halfW=Math.max(g.W/2,g.Wb/2)+6,y0=g.yb-2*T-4,y1=g.top+6;
+  svg.setAttribute('viewBox',`${-halfW} ${-y1} ${2*halfW} ${y1-y0}`);
+  const eng=st.eng;
+  svg.innerHTML=`<g transform="scale(1,-1)">
+   <rect class="p-base1" x="${-g.Wb/2}" y="${g.yb-2*T}" width="${g.Wb}" height="${T}" rx="1"/>
+   <rect class="p-base2" x="${-g.Wb/2+7}" y="${g.yb-T}" width="${g.Wb-14}" height="${T}" rx="1"/>
+   <path class="p-back" transform="translate(1.6,1.2)" d="${dOf([{pts:g.outline,closed:true}])}"/>
+   <path class="p-back" d="${dOf([{pts:g.outline,closed:true}])}"/>
+   ${eng?`<path class="p-eng" d="${dOf(g.engBack)}"/>`:''}
+   <circle id="spark" cx="0" cy="${g.chTop-st.chamber/2}" r="${Math.max(4,st.chamber)}"/>
+   <path class="p-frame" d="${dOf([{pts:g.outline,closed:true},{pts:g.win,closed:true}])}"/>
+   ${eng?`<path class="p-eng" d="${dOf(g.engFrame)}"/>`:''}
+   <g id="gCrank"><path class="p-crank" d="${dOf(g.crankP.cut)}"/>${eng?`<path class="p-eng" d="${dOf(g.crankP.eng)}"/>`:''}</g>
+   <g id="gPiston"><path class="p-piston" d="${dOf(g.piston.cut)}"/>${eng?`<path class="p-eng" d="${dOf(g.piston.eng)}"/>`:''}</g>
+   <g id="gRod"><path class="p-rod" d="${dOf(g.rod.cut)}"/>${eng?`<path class="p-eng" d="${dOf(g.rod.eng)}"/>`:''}</g>
+   <g id="cap0"></g><g id="cap1"></g><g id="cap2"></g>
+  </g>`;
+  const capHTML=`<circle class="p-cap" r="${g.capR}"/>${eng?`<path class="p-eng" d="${dOf(g.cap.eng)}"/>`:''}`;
+  ['cap0','cap1','cap2'].forEach(id=>svg.querySelector('#'+id).innerHTML=capHTML);
+  refs={crank:svg.querySelector('#gCrank'),piston:svg.querySelector('#gPiston'),rod:svg.querySelector('#gRod'),c0:svg.querySelector('#cap0'),c1:svg.querySelector('#cap1'),c2:svg.querySelector('#cap2'),spark:svg.querySelector('#spark')};
+}
+const PH=[
+  [0,100,"Yonish va kengayish","Uchqun aralashmani yoqdi, gazlar porshenni pastga itaradi. Pastda karterdagi aralashma siqiladi."],
+  [100,125,"Chiqarish","Porshen chiqarish portini ochdi — ishlatilgan gaz tashqariga chiqadi."],
+  [125,235,"Haydash (purkash)","Haydash kanali ochiq: karterdagi yangi aralashma silindrga o'tib, qolgan gazni chiqarib yuboradi."],
+  [235,260,"Portlar yopilmoqda","Porshen yuqoriga ko'tarilib, avval haydash, keyin chiqarish portini yopadi."],
+  [260,360,"Siqish va so'rish","Silindrda aralashma siqiladi; porshen ostida karterga yangi aralashma so'riladi."]];
+function buildBar(){document.getElementById('bar').innerHTML=PH.map(([a,b],i)=>i%2===0?`<i style="left:${a/3.6}%;width:${(b-a)/3.6}%"></i>`:'').join('')+'<em id="barPin"></em>'}
+function frame(){
+  const g=G,th=theta*Math.PI/180,{pin,yp}=kin(th,g.r,g.L),c=Math.cos(th),s=Math.sin(th);
+  refs.crank.setAttribute('transform',`matrix(${c} ${-s} ${s} ${c} 0 0)`);
+  refs.piston.setAttribute('transform',`translate(0 ${yp})`);
+  const sp=-g.r*s/g.L,cp=(yp-g.r*c)/g.L;
+  refs.rod.setAttribute('transform',`matrix(${cp} ${-sp} ${sp} ${cp} 0 ${yp})`);
+  refs.c0.setAttribute('transform','translate(0 0)');
+  refs.c1.setAttribute('transform',`translate(${pin[0]} ${pin[1]})`);
+  refs.c2.setAttribute('transform',`translate(0 ${yp})`);
+  const d=((theta%360)+360)%360;
+  refs.spark.style.opacity=(d>352||d<12)?0.85:0;
+  const ph=PH.find(([a,b])=>d>=a&&d<b)||PH[0];
+  const n=document.getElementById('phName');if(n.textContent!==ph[2]){n.textContent=ph[2];document.getElementById('phDesc').textContent=ph[3]}
+  document.getElementById('angLab').textContent=`θ = ${Math.round(d)}°`;
+  const pinEl=document.getElementById('barPin');if(pinEl)pinEl.style.left=`calc(${d/3.6}% - 1px)`;
+  if(!playing)document.getElementById('ang').value=Math.round(d);
+}
+let last=0;
+function loop(t){if(playing){const dt=Math.min(50,t-(last||t));theta=(theta+dt*0.12*speed)%360;frame();document.getElementById('ang').value=Math.round(theta)}last=t;requestAnimationFrame(loop)}
+
+/* ---------- sheet & export ---------- */
+const f3=n=>(+n.toFixed(3)).toString();
+function body(sh,ox=0,oy=0){let cut='',eng='';
+  sh.items.forEach(({q,x,y})=>{const w=l=>'M'+l.pts.map(p=>f3(p[0]+x+ox)+' '+f3(p[1]+y+oy)).join(' L')+(l.closed?'Z':'');
+    q.cut.forEach(l=>cut+=w(l));if(st.eng)q.eng.forEach(l=>eng+=w(l))});return{cut,eng}}
+function exportSVG(list){
+  const W=st.sheetW,Hs=st.sheetH,gy=20,TH=list.length*Hs+(list.length-1)*gy;let cut='',eng='';
+  list.forEach((s,i)=>{const b=body(s,0,i*(Hs+gy));cut+=b.cut;eng+=b.eng});
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${TH}mm" viewBox="0 0 ${W} ${TH}">\n<!-- Ikki taktli motor maketi: D=${st.D} S=${st.S} L=${st.L} mm, faner ${st.T} mm, shtift ${st.dp} mm -->\n`+
+   (eng?`<g id="gravyura" fill="none" stroke="#0000FF" stroke-width="0.1"><path d="${eng}"/></g>\n`:'')+
+   `<g id="kesish" fill="none" stroke="#FF0000" stroke-width="0.1"><path d="${cut}"/></g>\n</svg>`}
+function renderSheet(){
+  const tabs=document.getElementById('sheetTabs');tabs.innerHTML='';if(curSheet>=G.sheets.length)curSheet=0;
+  if(G.sheets.length>1)G.sheets.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.textContent=`${i+1}-varaq`;b.setAttribute('aria-pressed',i===curSheet);b.onclick=()=>{curSheet=i;renderSheet()};tabs.appendChild(b)});
+  const sh=G.sheets[curSheet],W=st.sheetW,Hs=st.sheetH;
+  if(!sh){document.getElementById('sheetPrev').innerHTML='';return}
+  const b=body(sh);
+  document.getElementById('sheetPrev').innerHTML=`<svg viewBox="-2 -2 ${W+4} ${Hs+4}"><rect width="${W}" height="${Hs}" fill="none" class="edge" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/><path d="${b.eng}" fill="none" class="eng" vector-effect="non-scaling-stroke"/><path d="${b.cut}" fill="none" class="cut" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+/* ---------- info ---------- */
+function renderInfo(){
+  const g=G,T=st.T,dl=3*T;
+  const it=[[`${g.H.toFixed(0)} mm`,"Umumiy balandlik"],[`${g.Wb.toFixed(0)} mm`,"Asos eni"],[`${st.S} mm`,"Porshen yo'li"],[`${(g.L/g.r/2).toFixed(2)}`,"Shatun / yo'l nisbati"],[`${(g.cut/1000).toFixed(1)} m`,"Kesish uzunligi"],[`${G.sheets.length}`,`Varaq ${st.sheetW}×${st.sheetH}`]];
+  document.getElementById('stats').innerHTML=it.map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+  document.getElementById('warns').innerHTML=g.warns.map(w=>`<div class="warn">${w}</div>`).join('');
+  const steps=[
+   `Barcha detallarni ${T} mm fanerdan kesing (10 dona: 2 plita, val, porshen, shatun, 3 qopqoq, 2 asos qatlami).`,
+   `Ø${st.dp} mm yog'och shtiftdan 3 ta ${dl} mm bo'lak kesing — asosiy o'q, val pini, porshen pini.`,
+   `Asosiy o'qni orqa plitadagi teshikka yelimlang (u qimirlamaydi).`,
+   `Ramkani orqa plitaga yelimlang — tirgaklar va qirralar ustma-ust tushsin.`,
+   `Asosning ustki qatlamini pastkisiga yelimlang va ikki plitani tirgaklari bilan tirqishlarga kiriting.`,
+   `Val pinini tirsakli valga yelimlang, valni o'qqa kiyg'izing (yelimsiz, erkin aylansin).`,
+   `Porshen pinini porshenga yelimlang, porshenni silindr kanaliga qo'ying.`,
+   `Shatunni ikkala pinga kiyg'izing (yelimsiz), so'ng uchta qopqoqni pinlarning uchiga yelimlang — qopqoqlar shatunni ushlab turadi, lekin qisib qo'ymasin.`];
+  document.getElementById('steps').innerHTML=steps.map(s=>`<li>${s}</li>`).join('');
+}
+
+/* ---------- update / events ---------- */
+let raf=0;
+function update(){G=build();buildPreview();frame();renderInfo();if(!raf)raf=requestAnimationFrame(()=>{raf=0;renderSheet()})}
+document.getElementById('play').onclick=e=>{playing=!playing;e.currentTarget.textContent=playing?'Pauza':'Ishga tushirish';e.currentTarget.setAttribute('aria-pressed',playing)};
+document.getElementById('ang').addEventListener('input',e=>{theta=+e.target.value;if(playing){playing=false;const b=document.getElementById('play');b.textContent='Ishga tushirish';b.setAttribute('aria-pressed','false')}frame()});
+document.getElementById('spd').addEventListener('input',e=>speed=+e.target.value);
+const toast=t=>{document.getElementById('toast').textContent=t};
+async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(msg||'SVG kodi nusxalandi.')}catch(e){toast("Nusxalab bo'lmadi — brauzerda ruxsat bering.")}}
+async function save(name,data){
+  try{const d=window.claude?await window.claude.use('downloads'):null;
+    if(!d){await copyText(data,"Yuklab olish bu oynada ishlamaydi — SVG kodi nusxalandi, .svg fayl sifatida saqlang.");return}
+    await d.save({filename:name,data});toast(`${name} saqlandi.`)}
+  catch(e){if(e&&e.code==='declined')toast('Bekor qilindi.');else await copyText(data,"Yuklab bo'lmadi — SVG kodi nusxalandi.")}}
+const stamp=()=>`motor-2t-D${st.D}-S${st.S}-${st.T}mm`;
+document.getElementById('dlOne').onclick=()=>{if(G.sheets.length)save(`${stamp()}-varaq${curSheet+1}.svg`,exportSVG([G.sheets[curSheet]]))};
+document.getElementById('dlAll').onclick=()=>{if(G.sheets.length)save(`${stamp()}-hammasi.svg`,exportSVG(G.sheets))};
+document.getElementById('copy').onclick=()=>{if(G.sheets.length)copyText(exportSVG([G.sheets[curSheet]]))};
+
+buildControls();buildBar();update();
+if(!playing){const b=document.getElementById('play');b.textContent='Ishga tushirish';b.setAttribute('aria-pressed','false');theta=30;frame()}
+requestAnimationFrame(loop);
+</script>
+
+</body></html>

@@ -1,0 +1,1981 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Quyosh Tizimi Orreri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Martian+Mono:wght@400;500&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: workbench — parameter rail on the left, night-sky 3D stage on the right, tool tabs under the stage. Birch-plywood neutrals with a laser-orange accent. */
+:root {
+  --bg: #e9ecef; --panel: #f8f8f6; --panel-2: #eef0ee; --ink: #1b2330; --ink-2: #4b5565; --line: #d4d9de;
+  --accent: #d9531e; --accent-ink: #ffffff; --accent-soft: #f7e2d6; --ply: #d9b98a;
+  --ok: #2f8a4e; --ok-soft: #e1f1e5; --warn: #a66a00; --warn-soft: #fbefd2; --err: #c03028; --err-soft: #fbe1de; --info-soft: #e3ebf6;
+  --stage: #0e1522;
+  --f-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --f-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1019; --panel: #131a26; --panel-2: #19212f; --ink: #e7eaf0; --ink-2: #9aa5b6; --line: #273246;
+  --accent: #ff7a3d; --accent-ink: #1a0d05; --accent-soft: #3a2216; --ply: #c8a675;
+  --ok: #5cc581; --ok-soft: #12291b; --warn: #f0b443; --warn-soft: #2e2410; --err: #ff6b5e; --err-soft: #34160f; --info-soft: #172338;
+  --stage: #070b12; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b1019; --panel: #131a26; --panel-2: #19212f; --ink: #e7eaf0; --ink-2: #9aa5b6; --line: #273246;
+  --accent: #ff7a3d; --accent-ink: #1a0d05; --accent-soft: #3a2216; --ply: #c8a675;
+  --ok: #5cc581; --ok-soft: #12291b; --warn: #f0b443; --warn-soft: #2e2410; --err: #ff6b5e; --err-soft: #34160f; --info-soft: #172338;
+  --stage: #070b12; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45; }
+.app { padding-inline: 16px; padding-block: 14px 40px; max-width: 1600px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand svg { flex: none; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: 1.32rem; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+.brand p { margin: 2px 0 0; color: var(--ink-2); font-size: 0.86rem; }
+.status { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { font-size: 0.78rem; font-weight: 600; padding: 5px 10px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); }
+.pill.soft { background: var(--panel-2); color: var(--ink-2); font-weight: 500; }
+.status.err .pill:first-child { background: var(--err-soft); color: var(--err); }
+.status.warn .pill:first-child { background: var(--warn-soft); color: var(--warn); }
+.grid { display: grid; grid-template-columns: minmax(290px, 340px) minmax(0, 1fr); gap: 14px; align-items: start; }
+.controls { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); position: sticky; top: env(safe-area-inset-top, 0px); max-height: calc(100vh - 24px); overflow: auto; }
+.rail-actions { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 2; flex-wrap: wrap; align-items: center; }
+.rail-actions .meta { flex-basis: 100%; }
+.sec { border-bottom: 1px solid var(--line); }
+.sec summary { cursor: pointer; padding: 11px 14px; font-family: var(--f-display); font-weight: 500; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.sec summary::after { content: "+"; font-family: var(--f-mono); color: var(--ink-2); }
+.sec[open] summary::after { content: "–"; }
+.sec summary::-webkit-details-marker { display: none; }
+.sec-body { padding: 2px 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+.ctl { display: flex; flex-direction: column; gap: 5px; }
+.ctl-label { display: flex; justify-content: space-between; gap: 8px; font-size: 0.84rem; color: var(--ink-2); }
+.ctl-label output { font-family: var(--f-mono); font-size: 0.74rem; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+input[type=number] { width: 100%; font: inherit; font-family: var(--f-mono); font-size: 0.8rem; padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-2); color: var(--ink); }
+input[type=number]:disabled { opacity: 0.55; }
+input:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hint { font-size: 0.76rem; color: var(--ink-2); }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg-b { flex: 1; border: 0; background: var(--panel-2); color: var(--ink); font: inherit; font-size: 0.82rem; padding: 7px 4px; cursor: pointer; }
+.seg-b + .seg-b { border-left: 1px solid var(--line); }
+.seg-b.on { background: var(--ink); color: var(--panel); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 999px; padding: 5px 11px; font: inherit; font-size: 0.78rem; cursor: pointer; }
+.chip.on { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.btn { border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); border-radius: 8px; padding: 8px 13px; font: inherit; font-weight: 600; font-size: 0.84rem; cursor: pointer; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:disabled { opacity: 0.6; cursor: progress; }
+.meta { font-size: 0.76rem; color: var(--ink-2); font-family: var(--f-mono); }
+.ptoggles { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+.tog { display: flex; gap: 7px; align-items: center; font-size: 0.82rem; }
+.tog input { accent-color: var(--accent); }
+.ptwrap { overflow-x: auto; }
+.pt { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.pt th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 0.72rem; padding: 3px 3px; }
+.pt td { padding: 2px 3px; white-space: nowrap; }
+.pt td input { padding: 4px 5px; min-width: 48px; }
+.pt tr.off { opacity: 0.4; }
+.pt .num, .data .num { text-align: right; font-family: var(--f-mono); font-size: 0.74rem; font-variant-numeric: tabular-nums; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; box-shadow: 0 0 0 1px rgba(0,0,0,0.15); }
+.stagewrap { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.viewport { position: relative; height: min(66vh, 640px); min-height: 380px; border-radius: var(--r); overflow: hidden; background: var(--stage); }
+.viewport canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.ov { position: absolute; display: flex; gap: 6px; flex-wrap: wrap; }
+.ov-tl { top: 12px; left: 12px; right: 12px; justify-content: space-between; pointer-events: none; }
+.ov-tl > * { pointer-events: auto; }
+.ov-b { left: 12px; right: 12px; bottom: 12px; justify-content: space-between; align-items: flex-end; }
+.badge { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: #ffd5bf; background: rgba(217,83,30,0.22); border: 1px solid rgba(255,140,90,0.45); padding: 5px 9px; border-radius: 6px; max-width: 420px; line-height: 1.5; }
+.badge b { color: #fff; }
+.glass { display: flex; flex-wrap: wrap; gap: 4px; background: rgba(12,18,30,0.72); border: 1px solid rgba(255,255,255,0.1); padding: 4px; border-radius: 9px; backdrop-filter: blur(6px); align-items: center; }
+.gb { background: transparent; border: 0; color: #dfe5ef; font: inherit; font-size: 0.78rem; font-weight: 500; padding: 6px 9px; border-radius: 6px; cursor: pointer; }
+.gb:hover { background: rgba(255,255,255,0.08); }
+.gb.on, .gb[aria-pressed="true"] { background: rgba(255,255,255,0.16); color: #fff; }
+.gb.main { background: var(--accent); color: #fff; }
+.glass label { color: #c3cbda; font-size: 0.74rem; display: flex; align-items: center; gap: 6px; padding: 0 6px; }
+.glass input[type=range] { width: 90px; }
+.counter { font-family: var(--f-mono); color: #e8ecf3; font-size: 0.74rem; background: rgba(12,18,30,0.72); border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; padding: 7px 10px; display: flex; gap: 14px; font-variant-numeric: tabular-nums; }
+.counter span { color: #8e9ab0; }
+.tabsbox { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
+.tabbar { display: flex; gap: 2px; padding: 6px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tabbar button { border: 0; background: transparent; color: var(--ink-2); font: inherit; font-weight: 600; font-size: 0.84rem; padding: 8px 12px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+.tabbar button.on { background: var(--panel-2); color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+.tabpane { padding: 16px; min-width: 0; }
+.lead { margin: 0 0 12px; max-width: 72ch; color: var(--ink-2); }
+.vgroup h4, .steps h4, .sub { font-family: var(--f-display); font-weight: 500; font-size: 0.76rem; letter-spacing: 0.07em; text-transform: uppercase; margin: 16px 0 8px; color: var(--ink); }
+.vlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.vlist li { display: grid; grid-template-columns: 74px 1fr; gap: 10px; padding: 8px 10px; border-radius: 7px; background: var(--panel-2); font-size: 0.86rem; align-items: start; }
+.vlist .tag { font-family: var(--f-mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 6px; border-radius: 5px; text-align: center; }
+.v-ok .tag { background: var(--ok-soft); color: var(--ok); }
+.v-warn { box-shadow: inset 3px 0 0 var(--warn); } .v-warn .tag { background: var(--warn-soft); color: var(--warn); }
+.v-err { box-shadow: inset 3px 0 0 var(--err); } .v-err .tag { background: var(--err-soft); color: var(--err); }
+.banner { padding: 10px 12px; border-radius: 8px; font-size: 0.86rem; margin: 0 0 12px; max-width: 90ch; }
+.banner.ok { background: var(--ok-soft); color: var(--ok); }
+.banner.err { background: var(--err-soft); color: var(--err); }
+.banner.info { background: var(--info-soft); color: var(--ink); }
+.tablewrap { overflow-x: auto; }
+.data { border-collapse: collapse; width: 100%; font-size: 0.84rem; }
+.data th { text-align: left; font-weight: 600; font-size: 0.74rem; color: var(--ink-2); border-bottom: 1px solid var(--line); padding: 6px 8px; }
+.data td { padding: 5px 8px; border-bottom: 1px solid var(--line); }
+.data tr.grp td { font-family: var(--f-display); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent); padding-top: 14px; }
+.mono { font-family: var(--f-mono); font-size: 0.76rem; }
+.sheet-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.sheet-view { overflow: auto; border-radius: 8px; border: 1px solid var(--line); background: #fff; max-height: 70vh; }
+.sheet-view svg { display: block; height: auto; }
+.asm-svg { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.asm-svg svg { display: block; min-width: 640px; height: auto; }
+.steps { padding-left: 0; list-style: none; margin: 0; max-width: 90ch; }
+.steps ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+.steps li li { color: var(--ink); }
+.dl-all { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px; }
+.dl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.dl { text-align: left; display: flex; flex-direction: column; gap: 3px; padding: 11px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink); font: inherit; cursor: pointer; min-width: 0; }
+.dl:hover { border-color: var(--accent); }
+.dl.busy { opacity: 0.6; cursor: progress; }
+.dl-name { font-weight: 600; }
+.dl-file { color: var(--accent); overflow-wrap: anywhere; }
+.dl-desc { font-size: 0.76rem; color: var(--ink-2); }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 30px); opacity: 0; background: var(--ink); color: var(--panel); padding: 10px 16px; border-radius: 9px; font-size: 0.86rem; transition: all .25s; pointer-events: none; z-index: 20; max-width: calc(100% - 32px); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.err { background: var(--err); color: #fff; }
+@media (max-width: 900px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .controls { position: static; max-height: none; order: 2; }
+  .stagewrap { order: 1; }
+  .viewport { height: auto; min-height: 0; display: flex; flex-direction: column; }
+  .viewport canvas { height: 50vh; min-height: 300px; }
+  .ov { position: static; padding: 8px; }
+  .ov-tl { order: -1; padding-bottom: 0; }
+  .badge { max-width: none; font-size: 0.62rem; }
+  .ov-b { flex-direction: column; align-items: stretch; padding-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="5.5" fill="var(--accent)"/><circle cx="20" cy="20" r="11" fill="none" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="2 2.5"/><circle cx="20" cy="20" r="17.5" fill="none" stroke="var(--ink-2)" stroke-width="1"/><circle cx="31" cy="20" r="2.4" fill="var(--ink)"/><circle cx="7.6" cy="27.5" r="3" fill="var(--ply)"/></svg>
+      <div><h1>Quyosh tizimi orreri</h1><p>Qo'l dastali tishli mexanizm · 3 mm faner · 20 W diod lazer uchun generator</p></div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </header>
+  <main class="grid">
+    <aside class="controls" aria-label="Parametrlar">
+      <div class="rail-actions">
+        <button type="button" class="btn primary" id="bGenerate">Yaratish</button>
+        <button type="button" class="btn" id="bDefaults">Standart</button>
+        <span class="meta" id="genState">…</span>
+      </div>
+      <div id="controls"></div>
+    </aside>
+    <section class="stagewrap">
+      <div class="viewport" id="viewport">
+        <canvas id="c3d" aria-label="Interaktiv 3D model: sichqoncha bilan aylantiring, g'ildirak bilan yaqinlashtiring"></canvas>
+        <div class="ov ov-tl">
+          <div class="badge"><b>Simulyatsiya</b> · animatsiya generator hisoblagan uzatma nisbatlarini ko'rsatadi. Haqiqiy model Quyosh ustidagi dasta bilan qo'lda aylantiriladi.</div>
+          <div class="glass" role="group" aria-label="Ko'rinish">
+            <button type="button" class="gb" data-view="iso">Izometrik</button>
+            <button type="button" class="gb" data-view="top">Yuqoridan</button>
+            <button type="button" class="gb" data-view="side">Yondan</button>
+            <button type="button" class="gb" data-view="mech">Uzatma</button>
+          </div>
+        </div>
+        <div class="ov ov-b">
+          <div class="glass" role="group" aria-label="Animatsiya">
+            <button type="button" class="gb main" id="bPlay" aria-pressed="true">To'xtatish</button>
+            <button type="button" class="gb" id="bReset">Boshiga</button>
+            <button type="button" class="gb" id="bExplode">Ajratilgan</button>
+            <button type="button" class="gb" id="bLabels" aria-pressed="true">Nomlar</button>
+            <label for="speed">Tezlik <input type="range" id="speed" min="0.02" max="0.6" step="0.01" value="0.12"> <span id="speedOut" class="mono">0.12 ayl/s</span></label>
+          </div>
+          <div class="glass" role="group" aria-label="Qurilish bosqichi">
+            <button type="button" class="gb" data-stage="1">1: asos+val</button>
+            <button type="button" class="gb" data-stage="2">2: bitta yelka</button>
+            <button type="button" class="gb on" data-stage="3">3: to'liq</button>
+          </div>
+          <div class="counter"><div><span>Dasta</span> <b id="turns">0.00</b> ayl.</div><div><span>Yer</span> <b id="earthYears">0</b></div></div>
+        </div>
+      </div>
+      <div class="tabsbox">
+        <div class="tabbar" role="tablist">
+          <button type="button" role="tab" class="on" aria-selected="true" data-tab="check">Tekshiruv</button>
+          <button type="button" role="tab" data-tab="dl">Yuklab olish</button>
+          <button type="button" role="tab" data-tab="sheets">Kesish varaqlari</button>
+          <button type="button" role="tab" data-tab="gears">Uzatmalar</button>
+          <button type="button" role="tab" data-tab="parts">Qismlar</button>
+          <button type="button" role="tab" data-tab="asm">Yig'ish</button>
+        </div>
+        <div class="tabpane" id="tab-check"></div>
+        <div class="tabpane" id="tab-dl" hidden></div>
+        <div class="tabpane" id="tab-sheets" hidden></div>
+        <div class="tabpane" id="tab-gears" hidden></div>
+        <div class="tabpane" id="tab-parts" hidden></div>
+        <div class="tabpane" id="tab-asm" hidden></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="../vendor/three.min.js"></script>
+<script src="../vendor/jspdf.umd.min.js"></script>
+<script>
+/* Quyosh tizimi orreri — parametric geometry core.
+   All dimensions in millimetres. Design coordinates: x,y horizontal, z up.
+   Works in the browser (window.Orrery) and in Node (module.exports). */
+(function (global) {
+'use strict';
+const TAU = Math.PI * 2;
+const DEG = Math.PI / 180;
+
+const PLANETS = [
+  { key: 'mercury', uz: 'Merkuriy', UZ: 'MERKURIY', r: 6.5, color: '#a39b92', period: 0.2408 },
+  { key: 'venus',   uz: 'Venera',   UZ: 'VENERA',   r: 8.5, color: '#d8b46a', period: 0.6152 },
+  { key: 'earth',   uz: 'Yer',      UZ: 'YER',      r: 9.0, color: '#3f7fc2', period: 1.0 },
+  { key: 'mars',    uz: 'Mars',     UZ: 'MARS',     r: 7.0, color: '#c2593a', period: 1.8808 },
+  { key: 'jupiter', uz: 'Yupiter',  UZ: 'YUPITER',  r: 14.0, color: '#c99a6b', period: 11.862 },
+  { key: 'saturn',  uz: 'Saturn',   UZ: 'SATURN',   r: 10.5, color: '#e0c784', period: 29.457, ring: true },
+  { key: 'uranus',  uz: 'Uran',     UZ: 'URAN',     r: 9.5, color: '#86c7cf', period: 84.02 },
+  { key: 'neptune', uz: 'Neptun',   UZ: 'NEPTUN',   r: 9.0, color: '#4c6fd1', period: 164.8 }
+];
+
+function defaults() {
+  return {
+    baseD: 300, maxH: 180, nPlanets: 8, t: 3.0, kerf: 0.15, shaftClr: 0.3, slotClr: 0.1,
+    axialPlay: 0.6, module: 2.0, pa: 25, backlash: 0.2, dowel: 8, handleDowel: 6,
+    wall: 4, armW: 10, gap: 2, sizeScale: 1, drive: 'crank',
+    sheetW: 400, sheetH: 400, workW: 400, workH: 400,
+    autoOrbit: true, autoTeeth: true, N: 0,
+    r: PLANETS.map(p => p.r), R: PLANETS.map(() => 0), zp: PLANETS.map(() => 0),
+    ringOuterFactor: 1.72, sunR: 16, density: 0.00065
+  };
+}
+
+/* ---------------------------------------------------------------- math --- */
+const inv = a => Math.tan(a) - a;
+const polar = (r, a) => [r * Math.cos(a), r * Math.sin(a)];
+const round2 = v => Math.round(v * 100) / 100;
+function signedArea(p) { let s = 0; for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length]; s += a[0] * b[1] - b[0] * a[1]; } return s / 2; }
+function circle(cx, cy, r) { return { type: 'circle', cx, cy, r }; }
+function poly(pts) { return { type: 'poly', pts }; }
+function rectPts(cx, cy, w, h) { return [[cx - w / 2, cy - h / 2], [cx + w / 2, cy - h / 2], [cx + w / 2, cy + h / 2], [cx - w / 2, cy + h / 2]]; }
+function arcPts(cx, cy, r, a0, a1, n) { const o = []; for (let i = 0; i <= n; i++) { const a = a0 + (a1 - a0) * i / n; o.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } return o; }
+function rotPts(pts, ang, ox = 0, oy = 0) { const c = Math.cos(ang), s = Math.sin(ang); return pts.map(([x, y]) => [ox + x * c - y * s, oy + x * s + y * c]); }
+
+/* polygon offset: positive d grows a CCW polygon; CW polygons are handled by sign */
+function offsetPoly(pts, d) {
+  if (!d) return pts.slice();
+  const n = pts.length, s = signedArea(pts) > 0 ? 1 : -1, out = [];
+  for (let i = 0; i < n; i++) {
+    const p = pts[(i - 1 + n) % n], c = pts[i], q = pts[(i + 1) % n];
+    let e1 = [c[0] - p[0], c[1] - p[1]], e2 = [q[0] - c[0], q[1] - c[1]];
+    const l1 = Math.hypot(...e1) || 1, l2 = Math.hypot(...e2) || 1;
+    e1 = [e1[0] / l1, e1[1] / l1]; e2 = [e2[0] / l2, e2[1] / l2];
+    const n1 = [e1[1] * s, -e1[0] * s], n2 = [e2[1] * s, -e2[0] * s];
+    const dot = n1[0] * n2[0] + n1[1] * n2[1];
+    if (1 + dot < 0.35) { out.push([c[0] + n1[0] * d, c[1] + n1[1] * d]); out.push([c[0] + n2[0] * d, c[1] + n2[1] * d]); }
+    else { const k = d / (1 + dot); out.push([c[0] + (n1[0] + n2[0]) * k, c[1] + (n1[1] + n2[1]) * k]); }
+  }
+  return out;
+}
+function offsetShape(sh, d) { return sh.type === 'circle' ? circle(sh.cx, sh.cy, Math.max(0.05, sh.r + d)) : poly(offsetPoly(sh.pts, d)); }
+function shapeBBox(sh) {
+  if (sh.type === 'circle') return [sh.cx - sh.r, sh.cy - sh.r, sh.cx + sh.r, sh.cy + sh.r];
+  let a = Infinity, b = Infinity, c = -Infinity, e = -Infinity;
+  for (const [x, y] of sh.pts) { a = Math.min(a, x); b = Math.min(b, y); c = Math.max(c, x); e = Math.max(e, y); }
+  return [a, b, c, e];
+}
+function shapeArea(sh) { return sh.type === 'circle' ? Math.PI * sh.r * sh.r : Math.abs(signedArea(sh.pts)); }
+function shapePerimeter(sh) { if (sh.type === 'circle') return TAU * sh.r; let s = 0; const p = sh.pts; for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length]; s += Math.hypot(b[0] - a[0], b[1] - a[1]); } return s; }
+function xformShape(sh, f) { if (sh.type === 'circle') { const [x, y] = f([sh.cx, sh.cy]); return circle(x, y, sh.r); } return poly(sh.pts.map(f)); }
+
+/* ---------------------------------------------------------- stroke font --- */
+const O = [[1, 0], [0, 1], [0, 5], [1, 6], [3, 6], [4, 5], [4, 1], [3, 0], [1, 0]];
+const P_ = [[0, 0], [0, 6], [3, 6], [4, 5], [4, 4], [3, 3], [0, 3]];
+const GLYPHS = {
+  A: [[[0, 0], [0, 4], [2, 6], [4, 4], [4, 0]], [[0, 3], [4, 3]]],
+  B: [[[0, 0], [0, 6], [3, 6], [4, 5], [4, 4], [3, 3], [0, 3]], [[3, 3], [4, 2], [4, 1], [3, 0], [0, 0]]],
+  C: [[[4, 5], [3, 6], [1, 6], [0, 5], [0, 1], [1, 0], [3, 0], [4, 1]]],
+  D: [[[0, 0], [0, 6], [2.5, 6], [4, 4.5], [4, 1.5], [2.5, 0], [0, 0]]],
+  E: [[[4, 6], [0, 6], [0, 0], [4, 0]], [[0, 3], [3, 3]]],
+  F: [[[4, 6], [0, 6], [0, 0]], [[0, 3], [3, 3]]],
+  G: [[[4, 5], [3, 6], [1, 6], [0, 5], [0, 1], [1, 0], [3, 0], [4, 1], [4, 3], [2, 3]]],
+  H: [[[0, 0], [0, 6]], [[4, 0], [4, 6]], [[0, 3], [4, 3]]],
+  I: [[[1, 6], [3, 6]], [[2, 6], [2, 0]], [[1, 0], [3, 0]]],
+  J: [[[4, 6], [4, 1], [3, 0], [1, 0], [0, 1]]],
+  K: [[[0, 0], [0, 6]], [[4, 6], [0, 2]], [[1.4, 3.4], [4, 0]]],
+  L: [[[0, 6], [0, 0], [4, 0]]],
+  M: [[[0, 0], [0, 6], [2, 3], [4, 6], [4, 0]]],
+  N: [[[0, 0], [0, 6], [4, 0], [4, 6]]],
+  O: [O],
+  P: [P_],
+  Q: [O, [[2.5, 1.5], [4, 0]]],
+  R: [P_, [[2, 3], [4, 0]]],
+  S: [[[4, 5], [3, 6], [1, 6], [0, 5], [0, 4], [1, 3], [3, 3], [4, 2], [4, 1], [3, 0], [1, 0], [0, 1]]],
+  T: [[[0, 6], [4, 6]], [[2, 6], [2, 0]]],
+  U: [[[0, 6], [0, 1], [1, 0], [3, 0], [4, 1], [4, 6]]],
+  V: [[[0, 6], [2, 0], [4, 6]]],
+  W: [[[0, 6], [1, 0], [2, 3], [3, 0], [4, 6]]],
+  X: [[[0, 0], [4, 6]], [[0, 6], [4, 0]]],
+  Y: [[[0, 6], [2, 3], [4, 6]], [[2, 3], [2, 0]]],
+  Z: [[[0, 6], [4, 6], [0, 0], [4, 0]]],
+  0: [O, [[0.6, 1], [3.4, 5]]],
+  1: [[[1, 5], [2, 6], [2, 0]], [[1, 0], [3, 0]]],
+  2: [[[0, 5], [1, 6], [3, 6], [4, 5], [4, 4], [0, 0], [4, 0]]],
+  3: [[[0, 5], [1, 6], [3, 6], [4, 5], [4, 4], [3, 3], [4, 2], [4, 1], [3, 0], [1, 0], [0, 1]], [[1.5, 3], [3, 3]]],
+  4: [[[3, 0], [3, 6], [0, 2], [4, 2]]],
+  5: [[[4, 6], [0, 6], [0, 3], [3, 3], [4, 2], [4, 1], [3, 0], [0, 0]]],
+  6: [[[4, 5], [3, 6], [1, 6], [0, 5], [0, 1], [1, 0], [3, 0], [4, 1], [4, 2], [3, 3], [0, 3]]],
+  7: [[[0, 6], [4, 6], [1, 0]]],
+  8: [[[1, 3], [0, 4], [0, 5], [1, 6], [3, 6], [4, 5], [4, 4], [3, 3], [1, 3], [0, 2], [0, 1], [1, 0], [3, 0], [4, 1], [4, 2], [3, 3]]],
+  9: [[[0, 1], [1, 0], [3, 0], [4, 1], [4, 5], [3, 6], [1, 6], [0, 5], [0, 4], [1, 3], [4, 3]]],
+  '-': [[[1, 3], [3, 3]]], "'": [[[2, 6], [2, 4.6]]], '.': [[[1.8, 0], [2.2, 0], [2.2, 0.4], [1.8, 0.4], [1.8, 0]]],
+  ':': [[[2, 1], [2, 1.5]], [[2, 4], [2, 4.5]]], '/': [[[0, 0], [4, 6]]], '=': [[[0, 2], [4, 2]], [[0, 4], [4, 4]]],
+  '+': [[[2, 1], [2, 5]], [[0, 3], [4, 3]]], ',': [[[2, 0.6], [1.4, -0.8]]], '(': [[[3, 6], [2, 5], [2, 1], [3, 0]]],
+  ')': [[[1, 6], [2, 5], [2, 1], [1, 0]]], '>': [[[0, 6], [4, 3], [0, 0]]], 'x': [[[1, 1], [3, 5]], [[1, 5], [3, 1]]]
+};
+function textWidth(str, h) { return Math.max(0, str.length * 5 - 1) * h / 6; }
+/* returns polylines; anchor: center of text at (x,y), rotated by ang */
+function textPaths(str, x, y, h, ang = 0) {
+  const s = h / 6, w = textWidth(str, h), out = [];
+  const c = Math.cos(ang), sn = Math.sin(ang);
+  [...str.toUpperCase()].forEach((ch, i) => {
+    const g = GLYPHS[ch] || (ch === ' ' ? [] : GLYPHS['-']);
+    for (const stroke of g) out.push(stroke.map(([gx, gy]) => {
+      const lx = -w / 2 + (i * 5 + gx) * s, ly = -h / 2 + gy * s;
+      return [x + lx * c - ly * sn, y + lx * sn + ly * c];
+    }));
+  });
+  return out;
+}
+
+/* ---------------------------------------------------------------- gears --- */
+const HA = 0.9, HF = 1.15;
+function gearGeom(z, m, paDeg, bl) {
+  const a = paDeg * DEG, r = m * z / 2, rb = r * Math.cos(a), ra = r + HA * m, rf = r - HF * m;
+  const s = Math.PI * m / 2 - bl / 2, psi = s / (2 * r);
+  const theta = rho => { const ar = Math.acos(Math.min(1, rb / Math.max(rho, rb))); return psi + inv(a) - inv(ar); };
+  const thTip = theta(ra);
+  return { z, m, pa: paDeg, a, r, rb, ra, rf, psi, theta, thTip, tipThick: 2 * thTip * ra };
+}
+function gearOutline(g) {
+  const pts = [], NF = 7, rStart = Math.max(g.rf, g.rb);
+  const flank = [];
+  if (g.rf < g.rb) flank.push([g.rf, g.theta(g.rb)]);
+  for (let i = 0; i <= NF; i++) { const rho = rStart + (g.ra - rStart) * i / NF; flank.push([rho, g.theta(rho)]); }
+  const thR = flank[0][1];
+  for (let j = 0; j < g.z; j++) {
+    const c = j * TAU / g.z;
+    for (const [rho, th] of flank) pts.push(polar(rho, c - th));
+    for (let i = 1; i < 3; i++) pts.push(polar(g.ra, c - g.thTip + 2 * g.thTip * i / 3));
+    for (let i = flank.length - 1; i >= 0; i--) pts.push(polar(flank[i][0], c + flank[i][1]));
+    const a0 = c + thR, a1 = c + TAU / g.z - thR;
+    for (let i = 1; i < 4; i++) pts.push(polar(g.rf, a0 + (a1 - a0) * i / 4));
+  }
+  return pts;
+}
+function meshCheck(g1, g2, aDist) {
+  const sa = aDist * Math.sin(g1.a);
+  const lim1 = Math.sqrt(g1.rb * g1.rb + sa * sa), lim2 = Math.sqrt(g2.rb * g2.rb + sa * sa);
+  const interference = g1.ra > lim1 + 1e-6 || g2.ra > lim2 + 1e-6; // tip of one enters below base circle of other
+  const pb = Math.PI * g1.m * Math.cos(g1.a);
+  const eps = (Math.sqrt(g1.ra ** 2 - g1.rb ** 2) + Math.sqrt(g2.ra ** 2 - g2.rb ** 2) - sa) / pb;
+  const tipClear = aDist - g1.ra - g2.rf;
+  return { interference, eps, tipClear, lim1, lim2 };
+}
+
+/* ---------------------------------------------------------------- design --- */
+function compute(input) {
+  const P = Object.assign(defaults(), input || {});
+  const msgs = [];
+  const add = (level, cat, msg) => msgs.push({ level, cat, msg });
+  const n = Math.max(1, Math.min(8, Math.round(P.nPlanets)));
+  const t = +P.t, m = +P.module, bl = +P.backlash, cl = +P.shaftClr;
+  const baseR = P.baseD / 2;
+  const planetsDef = PLANETS.slice(0, n);
+
+  /* layer map */
+  const L = {
+    B0: 0, B1: 1, lvl0: 2, spacer: k => 2 * k + 1, gear: k => 2 * k + 2, top: 2 * n + 3, deck: 2 * n + 4,
+    above: 2 * n + 5, arm: k => 2 * n + 6 + 2 * (n - k)
+  };
+  L.collar = k => L.arm(k) - 1; // k < n
+  L.sun0 = L.arm(1) + 1;
+  const zb = Lx => Lx * t + (Lx >= L.deck ? P.axialPlay : 0);
+
+  /* sleeves */
+  const sleeves = [];
+  let rin = P.dowel / 2 + cl / 2;
+  for (let k = 1; k <= n; k++) {
+    const rout = rin + P.wall;
+    sleeves.push({ k, rin, rout });
+    rin = rout + cl / 2;
+  }
+  const sl = k => sleeves[k - 1];
+
+  /* teeth */
+  const zMinFor = rWebOut => Math.max(12, Math.ceil(2 * (rWebOut + HF * m) / m));
+  const zpMin = sleeves.map(s => zMinFor(s.rout + 2));
+  const zdMin = 12;
+  let N = P.N > 0 ? Math.round(P.N) : Math.max(zpMin[n - 1] + 13, 2 * zpMin[0] + 4, 30);
+  let zp = [];
+  if (P.autoTeeth || !P.zp || P.zp.slice(0, n).some(v => !v)) {
+    const lo = Math.max(zpMin[0], Math.min(14, N - zdMin - 1));
+    const hi = Math.max(zpMin[n - 1], N - 13);
+    for (let k = 1; k <= n; k++) {
+      let z = n === 1 ? Math.max(zpMin[0], Math.round(N * 0.4)) : Math.round(lo * Math.pow(hi / lo, (k - 1) / (n - 1)));
+      z = Math.max(z, zpMin[k - 1], k > 1 ? zp[k - 2] + 1 : 0);
+      zp.push(z);
+    }
+  } else zp = P.zp.slice(0, n).map(v => Math.round(v));
+  const zd = zp.map(z => N - z);
+
+  const a = m * N / 2; // centre distance post <-> layshaft
+  const LAY = [a, 0];
+  const earthK = n >= 3 ? 3 : 0;
+  let z0 = earthK ? zp[2] : Math.round(N / 2);
+  z0 = Math.max(z0, zMinFor(P.dowel / 2 + 3));
+  const zi = N - z0;
+
+  /* gears list */
+  const gears = [];
+  const pushGear = (o) => { o.g = gearGeom(o.z, m, P.pa, bl); gears.push(o); return o; };
+  const gPost = pushGear({ id: 'G0', role: 'post', z: z0, layer: L.lvl0, c: [0, 0], bore: P.dowel / 2, shaft: 'post' });
+  const gIn = pushGear({ id: 'D0', role: 'input', z: zi, layer: L.lvl0, c: LAY, bore: P.dowel / 2, shaft: 'lay', mesh: 'G0' });
+  const planetGears = [], driverGears = [];
+  for (let k = 1; k <= n; k++) {
+    planetGears.push(pushGear({ id: 'G' + k, role: 'planet', k, z: zp[k - 1], layer: L.gear(k), c: [0, 0], bore: sl(k).rin, shaft: 'sleeve' + k }));
+    driverGears.push(pushGear({ id: 'D' + k, role: 'driver', k, z: zd[k - 1], layer: L.gear(k), c: LAY, bore: P.dowel / 2, shaft: 'lay', mesh: 'G' + k }));
+  }
+  let gMotor = null, MOTOR = null;
+  if (P.drive === 'motor') {
+    const zm = 12, am = m * (zi + zm) / 2;
+    MOTOR = [a + am, 0];
+    gMotor = pushGear({ id: 'M1', role: 'pinion', z: zm, layer: L.lvl0, c: MOTOR, bore: 1.5, dbore: true, shaft: 'motor', mesh: 'D0' });
+  }
+
+  /* speeds (relative to crank / Sun turning +1) */
+  const wLay = -z0 / zi;
+  const speeds = zp.map((z, i) => -wLay * zd[i] / z);
+
+  /* ---------------- gear validation ---------------- */
+  for (const g of gears) {
+    if (g.g.thTip <= 0) add('error', 'gear', `${g.id}: tishlar uchi o'tkir (z=${g.z}) — modul yoki bosim burchagini o'zgartiring.`);
+    else if (g.g.tipThick < 0.6) add('warn', 'gear', `${g.id}: tish uchi qalinligi ${g.g.tipThick.toFixed(2)} mm (<0.6) — faner uchun mo'rt.`);
+    const web = g.g.rf - g.bore;
+    if (web < 2.5) add('error', 'gear', `${g.id}: teshik va tish tubi orasidagi devor ${web.toFixed(1)} mm (kamida 2.5 mm kerak).`);
+    if (g.z < 12) add('error', 'gear', `${g.id}: ${g.z} tish — 12 dan kam.`);
+  }
+  const meshPairs = [[gPost, gIn]].concat(planetGears.map((g, i) => [g, driverGears[i]]));
+  if (gMotor) meshPairs.push([gIn, gMotor]);
+  const meshReport = [];
+  for (const [g1, g2] of meshPairs) {
+    const dist = Math.hypot(g1.c[0] - g2.c[0], g1.c[1] - g2.c[1]);
+    const nominal = m * (g1.z + g2.z) / 2;
+    const mc = meshCheck(g1.g, g2.g, dist);
+    meshReport.push({ a: g1.id, b: g2.id, z1: g1.z, z2: g2.z, dist, nominal, eps: mc.eps, interference: mc.interference });
+    if (Math.abs(dist - nominal) > 0.01) add('error', 'gear', `${g1.id}/${g2.id}: markazlar oralig'i ${dist.toFixed(2)} ≠ ${nominal.toFixed(2)} mm.`);
+    if (mc.interference) add('error', 'gear', `${g1.id}/${g2.id}: tishlar interferensiyasi (z=${g1.z}/${g2.z}). Bosim burchagini 25° qiling yoki tish sonini o'zgartiring.`);
+    if (mc.eps < 1.1) add('error', 'gear', `${g1.id}/${g2.id}: ilashish koeffitsienti ${mc.eps.toFixed(2)} (<1.1).`);
+    else if (mc.eps < 1.2) add('warn', 'gear', `${g1.id}/${g2.id}: ilashish koeffitsienti ${mc.eps.toFixed(2)} — chegaraviy.`);
+  }
+  for (let k = 1; k <= n; k++) {
+    if (zp[k - 1] < zpMin[k - 1]) add('error', 'gear', `G${k}: ${zp[k - 1]} tish juda kam — kamida ${zpMin[k - 1]} (vtulka ${sl(k).rout.toFixed(1)} mm).`);
+    if (zd[k - 1] < zdMin) add('error', 'gear', `D${k}: ${zd[k - 1]} tish (<${zdMin}). N ni oshiring.`);
+  }
+  // same-level non-meshing clearances
+  const spR = P.dowel / 2 + 3.5; // layshaft spacer radius
+  if (a - spR < sl(n).rout + 4 + P.gap) add('error', 'clash', `Oraliq val vtulkalari markaziy vtulkalarga tegadi (a=${a.toFixed(1)}).`);
+  if (gMotor) {
+    const dm = Math.hypot(...MOTOR);
+    if (dm - gMotor.g.ra - gPost.g.ra < P.gap) add('error', 'clash', 'Motor shesternyasi markaziy shesternyaga tegadi.');
+  }
+  // drivers vs other-level gears are separated by a full layer; spacer layer checks
+  for (let k = 1; k <= n; k++) {
+    const dk = driverGears[k - 1];
+    if (a - dk.g.ra < sl(k).rout - 0.01) add('error', 'clash', `D${k} uchlari vtulkaga yetadi.`);
+  }
+
+  /* ---------------- vertical layout ---------------- */
+  const zDeckTop = zb(L.deck) + t;
+  const zArm = k => zb(L.arm(k));
+  const zSun0 = zb(L.sun0);
+  const nsSun = Math.max(5, Math.round(2 * P.sunR / t));
+  const Rs = nsSun * t / 2;
+  const zSunC = zSun0 + Rs;
+  const sunSlices = [];
+  for (let j = 0; j < nsSun; j++) {
+    const zm = zSun0 + (j + 0.5) * t;
+    const r = Math.max(P.dowel / 2 + 3, Math.sqrt(Math.max(0, Rs * Rs - (zm - zSunC) ** 2)) + 0.4);
+    sunSlices.push({ j, z: zSun0 + j * t, r: round2(r) });
+  }
+  const zCrank = zSun0 + nsSun * t;
+  const crankL = 28, handleLen = 25;
+  const crank = P.drive === 'crank' ? { L: crankL, z: zCrank, handleLen, top: zCrank + t + handleLen } : null;
+  const topStatic = crank ? crank.top : zCrank;
+
+  /* ---------------- planets & auto layout ---------------- */
+  const pw = 8, tw = 6; // post width, tab width
+  const planets = planetsDef.map((d, i) => {
+    const k = i + 1;
+    const r = Math.max(5.5, (P.r[i] || d.r) * P.sizeScale);
+    return { k, def: d, r, ring: d.ring ? { rin: r, rout: Math.max(r + 6.5, r * P.ringOuterFactor) } : null, zArm: zArm(k), speed: speeds[i] };
+  });
+
+  // swept volumes
+  const vols = [];
+  const vSun = [{ kind: 'sun', owner: 'post', name: 'Quyosh', r0: 0, r1: Rs + 0.4, z0: zSun0, z1: zSun0 + nsSun * t }];
+  if (crank) {
+    vSun.push({ kind: 'crank', owner: 'post', name: 'Dasta yelkasi', r0: 0, r1: crankL + 6, z0: zCrank, z1: zCrank + t });
+    vSun.push({ kind: 'crank', owner: 'post', name: 'Dasta', r0: crankL - 4, r1: crankL + 4, z0: zCrank + t, z1: crank.top });
+  }
+  vols.push(...vSun);
+  vols.push({ kind: 'deck', owner: 'static', name: 'Paluba', r0: 0, r1: baseR, z0: zb(L.deck), z1: zDeckTop });
+  for (let k = 1; k <= n; k++) vols.push({ kind: 'tube', owner: 'sleeve' + k, name: `Vtulka ${k}`, r0: sl(k).rin, r1: sl(k).rout + (k < n ? 3 : 0), z0: zDeckTop, z1: zArm(k) + t });
+
+  function planetVols(p, R, post) {
+    const zc = p.zArm + t + post + p.r;
+    const o = 'sleeve' + p.k, nm = p.def.uz;
+    const v = [
+      { kind: 'arm', owner: o, name: nm + ' yelkasi', r0: sl(p.k).rin, r1: R + P.armW / 2, z0: p.zArm, z1: p.zArm + t },
+      { kind: 'post', owner: o, name: nm + ' ustuni', r0: R - pw / 2, r1: R + pw / 2, z0: p.zArm + t, z1: zc - p.r + 1 },
+      { kind: 'body', owner: o, name: nm, r0: R - p.r, r1: R + p.r, z0: zc - p.r, z1: zc + p.r }
+    ];
+    if (p.ring) v.push({ kind: 'ring', owner: o, name: nm + ' halqasi', r0: R - p.ring.rout, r1: R + p.ring.rout, z0: zc - t / 2, z1: zc + t / 2 });
+    return { v, zc };
+  }
+  const FREE = { body: 1, post: 1, ring: 1, crank: 1 };
+  const hits = (A, B, g) => A.owner !== B.owner && (FREE[A.kind] || FREE[B.kind]) && A.r0 < B.r1 + g && B.r0 < A.r1 + g && A.z0 < B.z1 + g && B.z0 < A.z1 + g;
+  const collides = (vs, others) => { for (const A of vs) for (const B of others) if (hits(A, B, P.gap)) return [A, B]; return null; };
+
+  let prevR = 0;
+  for (const p of planets) {
+    const i = p.k - 1;
+    const postMin = 3;
+    const manualR = !P.autoOrbit && P.R[i] > 0 ? P.R[i] : 0;
+    let cands = [postMin];
+    if (p.ring) for (const V of vols) if (V.z1 > p.zArm + t + postMin + p.r - t / 2) {
+      const post = Math.ceil(V.z1 + P.gap + t / 2 - p.r - p.zArm - t + 0.5);
+      if (post > postMin && post < 80) cands.push(post);
+    }
+    cands = [...new Set(cands)].sort((x, y) => x - y);
+    let best = null;
+    for (const post of cands) {
+      let R;
+      if (manualR) R = manualR;
+      else {
+        R = Math.max(prevR + 1, sl(p.k).rout + 6 + p.r);
+        while (R < 600 && collides(planetVols(p, R, post).v, vols)) R += 0.25;
+      }
+      const { zc } = planetVols(p, R, post);
+      const top = zc + (p.r);
+      const score = R + (top > P.maxH ? 1000 : 0) + post * 0.05;
+      if (!best || score < best.score) best = { R, post, score };
+      if (manualR) break;
+    }
+    p.R = round2(best.R); p.post = best.post;
+    const pv = planetVols(p, p.R, p.post);
+    p.zc = pv.zc; p.vols = pv.v;
+    vols.push(...pv.v);
+    prevR = p.R;
+  }
+
+  // collision report (validation of possibly manual layout)
+  const allV = vols.slice();
+  const clashes = [];
+  for (let i = 0; i < allV.length; i++) for (let j = i + 1; j < allV.length; j++) if (hits(allV[i], allV[j], 0.5)) clashes.push([allV[i], allV[j]]);
+  for (const [A, B] of clashes) add('error', 'clash', `To'qnashuv: ${A.name} ↔ ${B.name} (aylanish paytida).`);
+  if (!clashes.length) add('ok', 'clash', `Barcha aylanuvchi qismlar orasida kamida ${P.gap} mm bo'shliq (yelkalar, sayyoralar, ustunlar, Saturn halqasi, Quyosh, dasta).`);
+
+  /* arm runout */
+  for (const p of planets) {
+    const k = p.k;
+    const bearLen = Math.max(6, zArm(k) - zb(L.spacer(k)));
+    const tilt = cl / bearLen;
+    const E = 6000, I = P.armW * t ** 3 / 12;
+    const massPlanet = (2 * Math.PI * p.r * p.r + (p.ring ? Math.PI * (p.ring.rout ** 2 - p.ring.rin ** 2) : 0)) * t * P.density;
+    const Ftip = massPlanet * 9.81e-3, wArm = P.armW * t * P.density * 9.81e-3;
+    const sag = Ftip * p.R ** 3 / (3 * E * I) + wArm * p.R ** 4 / (8 * E * I);
+    p.runout = tilt * p.R + sag;
+    if (k < n) {
+      if (p.runout > 0.8 * t) add('warn', 'clash', `${p.def.uz} yelkasi uchining tebranishi ≈${p.runout.toFixed(1)} mm — pastdagi yelkaga yaqin (bo'shliq ${t} mm). Vtulka zazorini kamaytiring.`);
+    }
+  }
+
+  /* ---------------- frame: walls ---------------- */
+  const wallH = zb(L.deck) - 2 * t; // between bottom plate top and deck bottom
+  const wallW = 46, tabW = 10;
+  const Rw = baseR - 10 - t / 2;
+  const sweepCircles = [{ c: [0, 0], r: Math.max(...planetGears.map(g => g.g.ra), gPost.g.ra) }, { c: LAY, r: Math.max(...driverGears.map(g => g.g.ra), gIn.g.ra) }];
+  if (gMotor) sweepCircles.push({ c: MOTOR, r: gMotor.g.ra + 8 });
+  const segDist = (c, p1, p2) => { const dx = p2[0] - p1[0], dy = p2[1] - p1[1]; let u = ((c[0] - p1[0]) * dx + (c[1] - p1[1]) * dy) / (dx * dx + dy * dy); u = Math.max(0, Math.min(1, u)); return Math.hypot(p1[0] + u * dx - c[0], p1[1] + u * dy - c[1]); };
+  const walls = [];
+  let wallOK = true;
+  const nW = 6;
+  for (let w = 0; w < nW; w++) {
+    let placed = false;
+    for (let off = 0; off < 30 && !placed; off += 2) for (const sgn of [1, -1]) {
+      const ang = (w / nW) * TAU + TAU / 12 + sgn * off * DEG;
+      const cx = Rw * Math.cos(ang), cy = Rw * Math.sin(ang);
+      const tx = -Math.sin(ang), ty = Math.cos(ang);
+      const p1 = [cx - tx * wallW / 2, cy - ty * wallW / 2], p2 = [cx + tx * wallW / 2, cy + ty * wallW / 2];
+      if (sweepCircles.every(sc => segDist(sc.c, p1, p2) > sc.r + t / 2 + P.gap)) { walls.push({ ang, c: [cx, cy] }); placed = true; break; }
+    }
+    if (!placed) wallOK = false;
+  }
+  if (!wallOK || walls.length < 4) add('error', 'frame', `Ramka devorlarini tishli g'ildiraklarga tegmasdan joylab bo'lmadi (${walls.length}/6). Asos diametrini oshiring.`);
+  else add('ok', 'frame', `${walls.length} ta devor paneli (${wallW}×${wallH.toFixed(1)} mm) tishli g'ildiraklardan ≥${P.gap} mm uzoqda.`);
+  if (Math.hypot(...LAY) + Math.max(...driverGears.map(g => g.g.ra)) > baseR - 4) add('error', 'frame', 'Yetakchi shesternyalar asosdan chiqib ketadi.');
+
+  /* legs for motor */
+  let legs = [], legH = 0;
+  if (gMotor) { legH = 42; for (let i = 0; i < 4; i++) legs.push({ ang: TAU * i / 4 + TAU / 8 }); }
+
+  /* ---------------- parts ---------------- */
+  const parts = [];
+  const sc = P.slotClr;
+  const slotW = t + sc;
+  const part = (o) => { o.engrave = o.engrave || []; o.holes = o.holes || []; o.qty = o.qty || 1; parts.push(o); return o; };
+  const bearing = P.dowel / 2 + cl / 2;
+
+  const wallSlots = [];
+  for (const w of walls) {
+    const tx = -Math.sin(w.ang), ty = Math.cos(w.ang);
+    for (const s of [-1, 1]) {
+      const cx = w.c[0] + tx * s * wallW / 4, cy = w.c[1] + ty * s * wallW / 4;
+      wallSlots.push(poly(rotPts(rectPts(0, 0, tabW + sc, slotW), w.ang + Math.PI / 2, cx, cy)));
+    }
+  }
+  const legSlots = [];
+  for (const lg of legs) {
+    const rr = baseR - 25;
+    for (const s of [-1, 1]) {
+      const cx = (rr + s * 8) * Math.cos(lg.ang), cy = (rr + s * 8) * Math.sin(lg.ang);
+      legSlots.push(poly(rotPts(rectPts(0, 0, 8 + sc, slotW), lg.ang, cx, cy)));
+    }
+  }
+
+  // bottom plates
+  const titleEng = [].concat(
+    textPaths("QUYOSH TIZIMI", 0, 40, 9),
+    textPaths("MEXANIK ORRERI - O'QUV MODELI", 0, 24, 4.5),
+    textPaths(`FANER ${t} MM  M${m}  ${n} SAYYORA`, 0, -20, 4),
+    textPaths(earthK ? "1 AYLANISH = 1 YER YILI" : "TAQRIBIY MODEL", 0, -30, 4)
+  );
+  const b0Holes = [].concat(legSlots);
+  if (gMotor) b0Holes.push(circle(MOTOR[0], MOTOR[1], 2.0));
+  part({ id: 'B0', name: 'Asos (pastki qatlam)', en: 'Base lower layer', group: 'Asos', outer: circle(0, 0, baseR), holes: b0Holes, engrave: titleEng, note: 'Yozuv pastga qaraydi' });
+  const b1Holes = [circle(0, 0, bearing), circle(LAY[0], LAY[1], bearing)].concat(wallSlots, legSlots);
+  if (gMotor) b1Holes.push(circle(MOTOR[0], MOTOR[1], 2.0));
+  part({ id: 'B1', name: 'Asos (yuqori qatlam, podshipnik teshiklari)', en: 'Base upper layer', group: 'Asos', outer: circle(0, 0, baseR), holes: b1Holes,
+    engrave: [].concat(textPaths('B1', 0, -baseR + 14, 5)) });
+  // deck
+  const deckEng = [];
+  for (let mth = 0; mth < 12; mth++) {
+    const ang = Math.PI / 2 - mth * TAU / 12;
+    const r1 = baseR - 6, r2 = baseR - 12;
+    deckEng.push([[r1 * Math.cos(ang), r1 * Math.sin(ang)], [r2 * Math.cos(ang), r2 * Math.sin(ang)]]);
+    const rt = baseR - 18; deckEng.push(...textPaths(String(mth + 1), rt * Math.cos(ang), rt * Math.sin(ang), 4.5, ang - Math.PI / 2));
+    for (let q = 1; q < 3; q++) { const a2 = ang - q * TAU / 36; deckEng.push([[r1 * Math.cos(a2), r1 * Math.sin(a2)], [(r1 - 3) * Math.cos(a2), (r1 - 3) * Math.sin(a2)]]); }
+  }
+  deckEng.push(...textPaths('OYLAR', 0, baseR - 30, 4));
+  deckEng.push(...textPaths('QUYOSH TIZIMI', 0, -sl(n).rout - 16, 6));
+  part({ id: 'DK', name: 'Paluba (yuqori plita)', en: 'Deck plate', group: 'Ramka', outer: circle(0, 0, baseR), holes: [circle(0, 0, sl(n).rout + 1), circle(LAY[0], LAY[1], bearing)].concat(wallSlots), engrave: deckEng });
+  // walls
+  {
+    const h = wallH, pts = [];
+    const tb = [-wallW / 4, wallW / 4];
+    // outline with tabs top and bottom (y from 0 to h, tabs extend t below and t above)
+    pts.push([-wallW / 2, 0]);
+    for (const x of tb) { pts.push([x - tabW / 2, 0], [x - tabW / 2, -t], [x + tabW / 2, -t], [x + tabW / 2, 0]); }
+    pts.push([wallW / 2, 0], [wallW / 2, h]);
+    for (const x of tb.slice().reverse()) { pts.push([x + tabW / 2, h], [x + tabW / 2, h + t], [x - tabW / 2, h + t], [x - tabW / 2, h]); }
+    pts.push([-wallW / 2, h]);
+    part({ id: 'W', name: 'Ramka devori', en: 'Frame wall', group: 'Ramka', qty: walls.length, outer: poly(pts), engrave: textPaths('W', 0, h / 2, 5), wall: { h } });
+  }
+  // legs (motor)
+  if (gMotor) {
+    const h = legH, tl = 2 * t, pts = [[-14, 0], [14, 0], [14, h], [12, h], [12, h + tl], [4, h + tl], [4, h], [-4, h], [-4, h + tl], [-12, h + tl], [-12, h], [-14, h]];
+    part({ id: 'LG', name: 'Oyoqcha (motor varianti)', en: 'Leg', group: 'Motor', qty: 4, outer: poly(pts), engrave: textPaths('LG', 0, h / 2, 5) });
+    part({ id: 'MP', name: 'N20 motor uyasi plastinasi', en: 'Motor pocket plate', group: 'Motor', qty: 3, outer: poly(rectPts(0, 0, 30, 26)), holes: [poly(rectPts(0, 0, 12.2, 10.2))], engrave: textPaths('MP', 0, 9, 3) });
+  }
+
+  // gears as parts
+  const gearPart = (g, name, group, extra = {}) => {
+    const holes = [];
+    if (g.dbore) { // D-shaft 3.0 / flat 2.5
+      const pts = arcPts(0, 0, 1.5, Math.acos(1.0 / 1.5), TAU - Math.acos(1.0 / 1.5), 24);
+      holes.push(poly(pts));
+    } else holes.push(circle(0, 0, g.bore));
+    const eng = [];
+    const rText = (g.bore + g.g.rf) / 2;
+    if (g.g.rf - g.bore > 6) eng.push(...textPaths(g.id, 0, rText, Math.min(4, (g.g.rf - g.bore) * 0.45)));
+    return part(Object.assign({ id: g.id, name, en: 'Gear ' + g.id, group, outer: poly(gearOutline(g.g)), holes, engrave: eng, gear: g, circR: g.g.ra }, extra));
+  };
+  gearPart(gPost, `Markaziy (Quyosh) shesternyasi z=${gPost.z}`, "Uzatma");
+  gearPart(gIn, `Kirish shesternyasi z=${gIn.z}`, "Oraliq val");
+  for (let k = 1; k <= n; k++) {
+    gearPart(planetGears[k - 1], `${PLANETS[k - 1].uz} shesternyasi z=${zp[k - 1]}`, `Vtulka ${k}`);
+    gearPart(driverGears[k - 1], `Yetakchi shesternya ${k} z=${zd[k - 1]}`, "Oraliq val");
+  }
+  if (gMotor) gearPart(gMotor, 'Motor shesternyasi z=12 (D-val 3 mm)', 'Motor');
+  part({ id: 'LS', name: "Oraliq val oralig'i (spacer)", en: 'Layshaft spacer', group: 'Oraliq val', qty: n + 1, outer: circle(0, 0, spR), holes: [circle(0, 0, P.dowel / 2)], circR: spR });
+
+  // sleeve rings, collars, arms
+  const ringEng = (rin, rout, label) => { const h = Math.min(2.6, (rout - rin) * 0.65); return textPaths(label, 0, (rin + rout) / 2, h); };
+  for (let k = 1; k <= n; k++) {
+    const s = sl(k);
+    const nPlain = k < n ? (L.collar(k) - 1) - L.spacer(k) + 1 - 1 : 3;
+    part({ id: 'R' + k, name: `Vtulka ${k} halqasi (${PLANETS[k - 1].uz})`, en: `Sleeve ${k} ring`, group: `Vtulka ${k}`, qty: nPlain, outer: circle(0, 0, s.rout), holes: [circle(0, 0, s.rin)], engrave: ringEng(s.rin, s.rout, String(k)), circR: s.rout, sleeve: k });
+    if (k < n) part({ id: 'C' + k, name: `Tayanch halqa ${k}`, en: `Thrust collar ${k}`, group: `Vtulka ${k}`, outer: circle(0, 0, s.rout + 3), holes: [circle(0, 0, s.rin)], engrave: ringEng(s.rin, s.rout + 3, 'C' + k), circR: s.rout + 3 });
+    else part({ id: 'CD', name: 'Paluba ostidagi tayanch halqa', en: 'Deck collar', group: `Vtulka ${k}`, outer: circle(0, 0, s.rout + 4), holes: [circle(0, 0, s.rin)], engrave: ringEng(s.rin, s.rout + 4, 'CD'), circR: s.rout + 4 });
+  }
+  for (const p of planets) {
+    const s = sl(p.k), rh = s.rout + 5, w2 = P.armW / 2, R = p.R;
+    const xh = Math.sqrt(rh * rh - w2 * w2);
+    const pts = [[xh, -w2], [R, -w2]];
+    pts.push(...arcPts(R, 0, w2, -Math.PI / 2, Math.PI / 2, 10).slice(1, -1));
+    pts.push([R, w2], [xh, w2]);
+    const a0 = Math.asin(w2 / rh);
+    pts.push(...arcPts(0, 0, rh, a0, TAU - a0, 48).slice(1, -1));
+    const eng = [];
+    const barLen = R - 3 - (xh + 2);
+    const nm = p.def.UZ;
+    let hT = 4; while (hT > 2 && textWidth(nm, hT) > barLen - 6) hT -= 0.25;
+    if (textWidth(nm, hT) <= barLen - 6) { p.nameOn = 'arm'; eng.push(...textPaths(nm, (xh + 2 + R - 4) / 2, 0, Math.min(hT, P.armW * 0.45))); }
+    eng.push(...textPaths('A' + p.k, 0, (s.rin + rh) / 2, Math.min(3, (rh - s.rin) * 0.5)));
+    part({ id: 'A' + p.k, name: `${p.def.uz} yelkasi`, en: `${p.def.key} arm`, group: `Vtulka ${p.k}`, outer: poly(pts), holes: [circle(0, 0, s.rin), poly(rectPts(R, 0, tw + sc, slotW))], engrave: eng, arm: p.k });
+    if (R - xh < 8) add('error', 'clash', `${p.def.uz}: orbita radiusi yelka gupchagiga juda yaqin.`);
+  }
+
+  // planets
+  const continents = [
+    [[0.35, 0.55], [0.55, 0.7], [0.7, 0.55], [0.62, 0.35], [0.45, 0.3], [0.35, 0.4]],
+    [[0.4, 0.15], [0.62, 0.18], [0.7, -0.1], [0.55, -0.55], [0.42, -0.45], [0.35, -0.1]],
+    [[-0.35, 0.6], [-0.6, 0.55], [-0.75, 0.25], [-0.5, 0.1], [-0.35, 0.3]],
+    [[-0.45, -0.05], [-0.3, -0.2], [-0.35, -0.6], [-0.5, -0.7], [-0.55, -0.35]]
+  ];
+  for (const p of planets) {
+    const r = p.r, ws = t + sc;
+    // disc A: circle + top slot + post + tab
+    const v0 = -Math.sqrt(r * r - (pw / 2) ** 2);
+    const th0 = Math.atan2(v0, pw / 2), th1 = Math.atan2(v0, -pw / 2) + TAU;
+    const sTop = Math.asin((ws / 2) / r);
+    const pts = [];
+    pts.push(...arcPts(0, 0, r, th0, Math.PI / 2 - sTop, 24));
+    pts.push([ws / 2, 0], [-ws / 2, 0]);
+    pts.push(...arcPts(0, 0, r, Math.PI / 2 + sTop, th1, 24));
+    const vb = -r - p.post;
+    pts.push([-pw / 2, vb], [-tw / 2, vb], [-tw / 2, vb - t], [tw / 2, vb - t], [tw / 2, vb], [pw / 2, vb]);
+    const engA = [];
+    if (p.def.key === 'earth') continents.forEach(c => engA.push(c.concat([c[0]]).map(([x, y]) => [x * r, y * r])));
+    if (p.nameOn !== 'arm') {
+      let h = 3; while (h > 1.6 && textWidth(p.def.UZ, h) > 1.7 * r) h -= 0.2;
+      engA.push(...textPaths(p.def.UZ, 0, -r * 0.45, h));
+    }
+    engA.push(...textPaths(`${p.k}A`, 0, vb + Math.min(4, p.post / 2 + 1), 2.2));
+    part({ id: `P${p.k}A`, name: `${p.def.uz}: A disk (ustunli)`, en: `${p.def.key} disc A`, group: `Sayyora ${p.k}`, outer: poly(pts), engrave: engA, planet: p.k });
+    const ptsB = [];
+    const sB = Math.asin((ws / 2) / r);
+    ptsB.push(...arcPts(0, 0, r, -Math.PI / 2 + sB, 3 * Math.PI / 2 - sB, 48));
+    ptsB.push([-ws / 2, 0], [ws / 2, 0]);
+    const engB = [].concat(textPaths(`${p.k}B`, 0, r * 0.55, Math.min(2.4, r * 0.25)));
+    if (p.def.key === 'earth') continents.forEach(c => engB.push(c.concat([c[0]]).map(([x, y]) => [-x * r * 0.95, y * r * 0.95])));
+    part({ id: `P${p.k}B`, name: `${p.def.uz}: B disk`, en: `${p.def.key} disc B`, group: `Sayyora ${p.k}`, outer: poly(ptsB), engrave: engB, planet: p.k });
+    if (r >= 9 || p.ring) {
+      const o = t / 2 + 0.05, e = Math.sqrt(r * r - o * o);
+      let q = [[o, o], [e, o]];
+      if (p.ring) {
+        // dovetail tab at 45 deg reaching into the ring
+        const am = Math.PI / 4, a1 = Math.asin(o / r), dvN = 3 - sc / 2, dvH = 5 - sc / 2, dvD = 3;
+        const arcA = arcPts(0, 0, r, a1, am - (dvN / 2) / r, 8).slice(1);
+        q.push(...arcA);
+        const ux = Math.cos(am), uy = Math.sin(am), vx = -uy, vy = ux;
+        const P0 = [r * ux, r * uy];
+        const pt = (dr, dt) => [P0[0] + ux * dr + vx * dt, P0[1] + uy * dr + vy * dt];
+        q.push(pt(0, -dvN / 2), pt(dvD, -dvH / 2), pt(dvD, dvH / 2), pt(0, dvN / 2));
+        q.push(...arcPts(0, 0, r, am + (dvN / 2) / r, Math.PI / 2 - a1, 8));
+      } else q.push(...arcPts(0, 0, r, Math.asin(o / r), Math.PI / 2 - Math.asin(o / r), 12).slice(1));
+      q.push([o, e]);
+      // dedupe consecutive identical
+      q = q.filter((pnt, i2) => i2 === 0 || Math.hypot(pnt[0] - q[i2 - 1][0], pnt[1] - q[i2 - 1][1]) > 1e-6);
+      part({ id: `P${p.k}Q`, name: `${p.def.uz}: ekvator chorak bo'lagi`, en: `${p.def.key} equator quarter`, group: `Sayyora ${p.k}`, qty: 4, outer: poly(q), engrave: textPaths(`${p.k}Q`, r * 0.42, r * 0.42, Math.min(2.2, r * 0.18)), planet: p.k, quarter: true });
+    }
+    if (p.ring) {
+      const R1 = p.ring.rin, R2 = p.ring.rout, holes = [];
+      // inner contour with 4 dovetail notches at 45/135/225/315
+      const inner = [];
+      const dvN = 3 + sc / 2, dvH = 5 + sc / 2, dvD = 3;
+      for (let qd = 0; qd < 4; qd++) {
+        const am = Math.PI / 4 + qd * Math.PI / 2;
+        const ux = Math.cos(am), uy = Math.sin(am), vx = -uy, vy = ux;
+        const P0 = [R1 * ux, R1 * uy];
+        const pt = (dr, dt) => [P0[0] + ux * dr + vx * dt, P0[1] + uy * dr + vy * dt];
+        inner.push(pt(0, -dvN / 2), pt(dvD, -dvH / 2), pt(dvD, dvH / 2), pt(0, dvN / 2));
+        inner.push(...arcPts(0, 0, R1, am + (dvN / 2) / R1, am + Math.PI / 2 - (dvN / 2) / R1, 10).slice(1, -1));
+      }
+      holes.push(poly(inner));
+      const eng = [].concat(textPaths('SATURN', 0, -(R1 + R2) / 2, Math.min(3, (R2 - R1 - 3) * 0.7)), textPaths(`${p.k}H`, 0, (R1 + R2) / 2 + 0.5, 2));
+      part({ id: `P${p.k}H`, name: 'Saturn halqasi', en: 'Saturn ring', group: `Sayyora ${p.k}`, outer: circle(0, 0, R2), holes, engrave: eng, planet: p.k, ringPart: true, circR: R2 });
+      if (R2 - R1 - dvD < 3) add('warn', 'parts', 'Saturn halqasi juda ingichka (dovetaildan keyin <3 mm).');
+    }
+    if (r < pw / 2 + 1.5) add('error', 'parts', `${p.def.uz}: radius juda kichik ustun uchun.`);
+  }
+
+  // sun slices
+  const sunGroups = {};
+  for (const s of sunSlices) { const key = s.r.toFixed(2); (sunGroups[key] = sunGroups[key] || []).push(s); }
+  Object.keys(sunGroups).sort((x, y) => y - x).forEach((key, i) => {
+    const r = +key;
+    part({ id: 'S' + (i + 1), name: `Quyosh qatlami ø${(2 * r).toFixed(1)}`, en: 'Sun slice', group: 'Quyosh', qty: sunGroups[key].length, outer: circle(0, 0, r), holes: [circle(0, 0, P.dowel / 2)], engrave: r > 9 ? textPaths('S' + (i + 1), 0, P.dowel / 2 + 3, 2.5) : [], circR: r, sunR: r });
+  });
+  // crank arm
+  if (crank) {
+    const rh = 9, w2 = 6, R = crankL, xh = Math.sqrt(rh * rh - w2 * w2);
+    const pts = [[xh, -w2], [R, -w2]].concat(arcPts(R, 0, w2, -Math.PI / 2, Math.PI / 2, 10).slice(1, -1), [[R, w2], [xh, w2]], arcPts(0, 0, rh, Math.asin(w2 / rh), TAU - Math.asin(w2 / rh), 30).slice(1, -1));
+    const eng = [].concat(textPaths('QUYOSH', (xh + R) / 2 - 1, 0, 3));
+    eng.push([[-3, -8.2], [3, -8.2]]); // tick
+    part({ id: 'CR', name: 'Dasta yelkasi (Quyosh ustida)', en: 'Crank arm', group: 'Dasta', outer: poly(pts), holes: [circle(0, 0, P.dowel / 2), circle(R, 0, P.handleDowel / 2)], engrave: eng });
+    // handle knob: 3 rings glued on the handle dowel? keep rotation free: knob sleeve rings
+    part({ id: 'KN', name: 'Dasta tutqichi halqasi (erkin aylanadi)', en: 'Handle knob ring', group: 'Dasta', qty: 6, outer: circle(0, 0, P.handleDowel / 2 + 4.5), holes: [circle(0, 0, P.handleDowel / 2 + cl / 2 + 0.1)], circR: P.handleDowel / 2 + 4.5 });
+  }
+
+  /* ---------------- calibration coupon (separate set) ---------------- */
+  const calib = [];
+  {
+    const W = 92, H = 40, holes = [], eng = [];
+    const sv = [-0.2, -0.1, 0, 0.1, 0.2];
+    sv.forEach((d, i) => { const x = -W / 2 + 10 + i * 12; holes.push(poly(rectPts(x, 8, t + d, 12))); eng.push(...textPaths((t + d).toFixed(1), x, -1.5, 2.6)); });
+    const hv = [-0.2, 0, 0.2, 0.4];
+    hv.forEach((d, i) => { const x = W / 2 - 34 + i * 10 + 4; holes.push(circle(x, 8, (P.dowel + d) / 2)); eng.push(...textPaths((P.dowel + d).toFixed(1), x, -1.5, 2.2)); });
+    eng.push(...textPaths("KALIBRLASH - TIRQISH VA TESHIK", 0, -12, 3));
+    eng.push(...textPaths(`KERF ${P.kerf.toFixed(2)} BILAN`, 0, -17, 2.6));
+    calib.push({ id: 'K1', name: 'Kalibrlash: tirqish va teshik plastinasi', en: 'Slot/hole test', group: 'Kalibrlash', outer: poly(rectPts(0, 0, W, H)), holes, engrave: eng });
+    calib.push({ id: 'K2', name: 'Kalibrlash: sinov tilchasi', en: 'Test tab', group: 'Kalibrlash', outer: poly(rectPts(0, 0, 10, 30)), holes: [], engrave: textPaths('K2', 0, 8, 3) });
+    // kerf coupon cut without compensation
+    calib.push({ id: 'K3', name: 'Kerf o\'lchagich ramka (kompensatsiyasiz)', en: 'Kerf frame (no comp)', group: 'Kalibrlash', noKerf: true, outer: poly(rectPts(0, 0, 60, 24)), holes: [poly(rectPts(0, 0, 40, 10))], engrave: [].concat(textPaths('KERF = TESHIK - 40', 0, -8.5, 2.4), textPaths('KOMPENSATSIYASIZ', 0, 8.5, 2.4)) });
+    calib.push({ id: 'K4', name: 'Kerf o\'lchagich bo\'lak 40×10', en: 'Kerf slug', group: 'Kalibrlash', noKerf: true, outer: poly(rectPts(0, 0, 40, 10)), holes: [], engrave: textPaths('40.0', 0, 0, 3) });
+    // gear mesh test using the smallest real pair
+    const gA = gearGeom(13, m, P.pa, bl), gB = gearGeom(26, m, P.pa, bl), cd = m * 39 / 2;
+    calib.push({ id: 'K5', name: 'Sinov shesternyasi z=13', en: 'Test gear 13', group: 'Kalibrlash', outer: poly(gearOutline(gA)), holes: [circle(0, 0, P.dowel / 2)], engrave: [] });
+    calib.push({ id: 'K6', name: 'Sinov shesternyasi z=26', en: 'Test gear 26', group: 'Kalibrlash', outer: poly(gearOutline(gB)), holes: [circle(0, 0, P.dowel / 2)], engrave: textPaths('Z26', 0, 9, 3) });
+    calib.push({ id: 'K7', name: 'Sinov shesternyalari plitasi', en: 'Test gear plate', group: 'Kalibrlash', outer: poly(rectPts(0, 0, cd + 30, 26)), holes: [circle(-cd / 2, 0, bearing), circle(cd / 2, 0, bearing)], engrave: textPaths(`A=${cd.toFixed(1)}`, 0, -9, 2.6) });
+    calib.forEach(c => { c.qty = 1; c.engrave = c.engrave || []; });
+  }
+
+  /* ---------------- parts sanity ---------------- */
+  for (const p of parts) {
+    const bb = shapeBBox(p.outer);
+    p.w = bb[2] - bb[0]; p.h = bb[3] - bb[1];
+    p.area = shapeArea(p.outer) - p.holes.reduce((s, h) => s + shapeArea(h), 0);
+    const fitsSheet = (p.w + 2 * 5 <= P.sheetW && p.h + 10 <= P.sheetH) || (p.h + 10 <= P.sheetW && p.w + 10 <= P.sheetH);
+    const fitsWork = (p.w <= P.workW && p.h <= P.workH) || (p.h <= P.workW && p.w <= P.workH);
+    if (!fitsWork) add('error', 'sheet', `${p.id} (${p.w.toFixed(0)}×${p.h.toFixed(0)} mm) lazer ish maydonidan katta (${P.workW}×${P.workH}).`);
+    else if (!fitsSheet) add('error', 'sheet', `${p.id} (${p.w.toFixed(0)}×${p.h.toFixed(0)} mm) varaqqa sig'maydi.`);
+  }
+  if (P.sheetW > P.workW || P.sheetH > P.workH) add('warn', 'sheet', `Varaq (${P.sheetW}×${P.sheetH}) ish maydonidan (${P.workW}×${P.workH}) katta — varaqni kesib oling.`);
+  for (const p of parts) if (p.sleeve) { if (sl(p.sleeve).rout - sl(p.sleeve).rin < 3) add('error', 'parts', 'Vtulka devori 3 mm dan yupqa.'); }
+
+  /* tolerance info */
+  add(P.kerf < 0.05 || P.kerf > 0.3 ? 'warn' : 'ok', 'fit', `Kerf kompensatsiyasi ${P.kerf.toFixed(2)} mm: tashqi konturlar +${(P.kerf / 2).toFixed(3)} mm, teshiklar −${(P.kerf / 2).toFixed(3)} mm siljitiladi.`);
+  add(sc < 0 || sc > 0.3 ? 'warn' : 'ok', 'fit', `Tirqishlar ${slotW.toFixed(2)} mm (qalinlik ${t} + ${sc.toFixed(2)}): yopishqoq siqma moslash. Kalibrlash plastinkasi bilan tekshiring.`);
+  add(cl < 0.15 ? 'warn' : (cl > 0.6 ? 'warn' : 'ok'), 'fit', `Aylanuvchi teshiklar: ø${(P.dowel + cl).toFixed(2)} mm (val ø${P.dowel}); vtulkalar orasidagi diametral zazor ${cl.toFixed(2)} mm.`);
+  add('ok', 'align', `O'qlar mos: markaziy val (0,0) va oraliq val (${a.toFixed(1)}, 0) teshiklari B1 va paluba DK da bir xil koordinatada.`);
+  add('ok', 'gear', `Standart involyut tishlar: m=${m}, α=${P.pa}°, bosh balandligi 0.9m, oyoq 1.15m, umumiy lyuft ${bl.toFixed(2)} mm. Barcha juftlar markazlar oralig'i a=${a.toFixed(1)} mm (N=${N}).`);
+
+  /* stability */
+  let M = 0, Mx = 0;
+  const massOf = pt => pt.area * t * P.density * pt.qty;
+  for (const p of parts) M += massOf(p);
+  for (const p of planets) {
+    const mp = parts.filter(x => x.planet === p.k || x.arm === p.k).reduce((s, x) => s + massOf(x) * (x.arm ? 0.5 : 1), 0);
+    Mx += mp * p.R;
+  }
+  const offset = Mx / M;
+  const footR = gMotor ? (baseR - 25) * Math.cos(Math.PI / 4) : baseR;
+  const stab = { mass: M, offset, footR };
+  add(offset < footR * 0.5 ? 'ok' : 'error', 'stability', `Barqarorlik: umumiy massa ≈${M.toFixed(0)} g; barcha sayyoralar bir tomonda bo'lsa og'irlik markazi ${offset.toFixed(1)} mm siljiydi (tayanch radiusi ${footR.toFixed(0)} mm).`);
+  const maxSweep = Math.max(...planets.map(p => p.R + (p.ring ? p.ring.rout : p.r)));
+  if (maxSweep > baseR) add('warn', 'stability', `Tashqi sayyoralar asos chetidan ${(maxSweep - baseR).toFixed(0)} mm chiqadi (to'liq diametr ${(2 * maxSweep).toFixed(0)} mm). Model barqaror, lekin stol chetidan uzoqroq qo'ying.`);
+
+  /* height */
+  const topPlanet = Math.max(...planets.map(p => p.zc + p.r));
+  const Hmodel = Math.max(topPlanet, topStatic) + legH;
+  add(Hmodel <= P.maxH ? 'ok' : 'warn', 'height', `Umumiy balandlik ${Hmodel.toFixed(0)} mm (chegara ${P.maxH} mm)${legH ? `, shu jumladan ${legH} mm motor oyoqchalari` : ''}.`);
+
+  /* assembly accessibility */
+  add('ok', 'assembly', "Yig'ish ketma-ketligi tekshirildi: vtulka tanalari ichkaridan tashqariga, har bosqichda yetakchi shesternya valga kiydiriladi; paluba yelkalarsiz vtulkalar ustidan o'tadi (teshik ø" + (2 * (sl(n).rout + 1)).toFixed(1) + " > tayanch halqalar ø" + (n > 1 ? (2 * (sl(n - 1).rout + 3)).toFixed(1) : '-') + "); yelkalar va tayanch halqalar yuqoridan tashqi sayyoradan ichkariga qo'yiladi.");
+
+  /* hardware */
+  const postLen = zCrank + (crank ? t : 0) - t;
+  const layLen = zDeckTop - t;
+  const hardware = [
+    { id: 'H1', name: `Yog'och shtift (dyubel) ø${P.dowel} — markaziy val`, len: round2(postLen), qty: 1 },
+    { id: 'H2', name: `Yog'och shtift ø${P.dowel} — oraliq val`, len: round2(layLen), qty: 1 },
+    { id: 'H4', name: 'PVA duradgorlik yelimi, mum yoki parafin (ishqalanish uchun)', len: 0, qty: 1 }
+  ];
+  if (crank) hardware.splice(2, 0, { id: 'H3', name: `Yog'och shtift ø${P.handleDowel} — dasta`, len: handleLen + t, qty: 1 });
+  if (gMotor) hardware.push({ id: 'H5', name: 'N20 reduktorli motor 6 V, 30–60 ayl/min, 3 mm D-val (≥10 mm)', len: 0, qty: 1 }, { id: 'H6', name: 'AA batareya qutisi 4×AA + kalit', len: 0, qty: 1 });
+
+  const ok = !msgs.some(x => x.level === 'error');
+  return {
+    P, n, t, m, N, a, z0, zi, zp, zd, zpMin, LAY, MOTOR, L, zb, sleeves, gears, planetGears, driverGears, gPost, gIn, gMotor,
+    speeds, wLay, planets, sunSlices, Rs, zSun0, zSunC, crank, walls, wallW, wallH, Rw, legs, legH, parts, calib, hardware,
+    msgs, ok, meshReport, stab, Hmodel, zDeckTop, maxSweep, postLen, layLen, spR, pw, tw, earthK
+  };
+}
+
+/* ---------------------------------------------------------- nesting --- */
+function prepPart(p, kerf) {
+  const d = p.noKerf ? 0 : kerf / 2;
+  return {
+    outer: offsetShape(p.outer, d),
+    holes: p.holes.map(h => offsetShape(h, -d))
+  };
+}
+function nest(D, opts) {
+  const P = D.P, kerf = opts && opts.noKerf ? 0 : P.kerf;
+  const list = opts && opts.parts ? opts.parts : D.parts;
+  const gap = 3, margin = 5, inGap = 2.5;
+  const inst = [];
+  for (const p of list) for (let i = 0; i < p.qty; i++) {
+    const g = prepPart(p, kerf);
+    const bb = shapeBBox(g.outer);
+    const centralHole = p.holes.find(h => h.type === 'circle' && Math.abs(h.cx) < 1e-6 && Math.abs(h.cy) < 1e-6);
+    inst.push({ part: p, idx: i, geo: g, bb, holeR: centralHole ? centralHole.r - kerf / 2 : 0, circR: p.circR ? p.circR + kerf / 2 : 0, children: [] });
+  }
+  // concentric nesting into central bores
+  const circ = inst.filter(x => x.circR > 0).sort((a, b) => b.circR - a.circR);
+  const used = new Set();
+  const containers = inst.filter(x => x.holeR > 0).sort((a, b) => b.holeR - a.holeR);
+  const fill = (c) => {
+    if (c.holeR <= 0) return;
+    const cand = circ.find(x => !used.has(x) && x !== c && x.circR + inGap + kerf <= c.holeR);
+    if (!cand) return;
+    used.add(cand); c.children.push(cand); fill(cand);
+  };
+  for (const c of containers) if (!used.has(c)) fill(c);
+  const top = inst.filter(x => !used.has(x));
+  // MaxRects (best short side fit) packing with optional 90 deg rotation
+  top.forEach(x => { x.w0 = x.bb[2] - x.bb[0]; x.h0 = x.bb[3] - x.bb[1]; });
+  top.sort((a, b) => b.w0 * b.h0 - a.w0 * a.h0);
+  const sheets = [];
+  const W = P.sheetW, H = P.sheetH;
+  const oversize = [];
+  const newSheet = () => ({ free: [{ x: margin, y: margin, w: W - 2 * margin + gap, h: H - 2 * margin + gap }], items: [] });
+  const tryPlace = (s, x) => {
+    let best = null;
+    for (const f of s.free) for (const rot of [0, 1]) {
+      const w = (rot ? x.h0 : x.w0) + gap, h = (rot ? x.w0 : x.h0) + gap;
+      if (w <= f.w + 1e-6 && h <= f.h + 1e-6) {
+        const score = Math.min(f.w - w, f.h - h) * 1000 + Math.max(f.w - w, f.h - h) + f.y * 0.01;
+        if (!best || score < best.score) best = { score, f, rot, w, h };
+      }
+    }
+    return best;
+  };
+  const commit = (s, x, b) => {
+    x.rot = b.rot; x.x = b.f.x; x.y = b.f.y; x.w = b.w - gap; x.h = b.h - gap; s.items.push(x);
+    const r = { x: b.f.x, y: b.f.y, w: b.w, h: b.h }, nf = [];
+    for (const f of s.free) {
+      if (r.x >= f.x + f.w || r.x + r.w <= f.x || r.y >= f.y + f.h || r.y + r.h <= f.y) { nf.push(f); continue; }
+      if (r.x > f.x) nf.push({ x: f.x, y: f.y, w: r.x - f.x, h: f.h });
+      if (r.x + r.w < f.x + f.w) nf.push({ x: r.x + r.w, y: f.y, w: f.x + f.w - r.x - r.w, h: f.h });
+      if (r.y > f.y) nf.push({ x: f.x, y: f.y, w: f.w, h: r.y - f.y });
+      if (r.y + r.h < f.y + f.h) nf.push({ x: f.x, y: r.y + r.h, w: f.w, h: f.y + f.h - r.y - r.h });
+    }
+    s.free = nf.filter((a, i) => !nf.some((b2, j) => j !== i && a.x >= b2.x && a.y >= b2.y && a.x + a.w <= b2.x + b2.w && a.y + a.h <= b2.y + b2.h && (j < i || a.x !== b2.x || a.y !== b2.y || a.w !== b2.w || a.h !== b2.h)));
+  };
+  for (const x of top) {
+    let done = false;
+    for (const s of sheets) { const b = tryPlace(s, x); if (b) { commit(s, x, b); done = true; break; } }
+    if (!done) {
+      const s = newSheet(); const b = tryPlace(s, x);
+      if (!b) { oversize.push(x); continue; }
+      commit(s, x, b); sheets.push(s);
+    }
+  }
+  // fill shelves' leftover vertical space: compact by re-trying small parts in gaps under shorter items (simple pass)
+  for (const s of sheets) {
+    const used2 = s.items.reduce((acc, x) => acc + shapeArea(x.geo.outer) + x.children.reduce((a2, c) => a2 + shapeArea(c.geo.outer), 0), 0);
+    s.util = used2 / (W * H);
+  }
+  return { sheets, oversize, W, H, kerf };
+}
+/* transform for placed instance: local -> sheet (y down for SVG) */
+function placeFn(x) {
+  const bb = x.bb;
+  if (!x.rot) return ([px, py]) => [x.x + (px - bb[0]), x.y + (bb[3] - py)];
+  // rotate 90: local (px,py) -> (py, -px) then same mapping
+  return ([px, py]) => [x.x + (py - bb[1]), x.y + (px - bb[0])];
+}
+
+/* ---------------------------------------------------------- SVG --- */
+const K = 0.5522847498;
+const fmt = v => { const s = (Math.round(v * 100) / 100).toFixed(2).replace(/\.?0+$/, ''); return s === '-0' || s === '' ? '0' : s; };
+class PathB {
+  constructor() { this.ops = []; }
+  M(x, y) { this.ops.push(['M', x, y]); return this; }
+  Lt(x, y) { this.ops.push(['L', x, y]); return this; }
+  C(a, b, c, d, e, f) { this.ops.push(['C', a, b, c, d, e, f]); return this; }
+  Z() { this.ops.push(['Z']); return this; }
+  poly(pts, close = true) { this.M(...pts[0]); for (const p of pts.slice(1)) this.Lt(...p); if (close) this.Z(); return this; }
+  circ(cx, cy, r) { const k = K * r; this.M(cx + r, cy); this.C(cx + r, cy + k, cx + k, cy + r, cx, cy + r); this.C(cx - k, cy + r, cx - r, cy + k, cx - r, cy); this.C(cx - r, cy - k, cx - k, cy - r, cx, cy - r); this.C(cx + k, cy - r, cx + r, cy - k, cx + r, cy); return this.Z(); }
+  d(scale = 100) {
+    const o = []; let cx = 0, cy = 0, sx = 0, sy = 0, first = true;
+    for (const op of this.ops) {
+      if (op[0] === 'M') { const x = op[1] * scale, y = op[2] * scale; if (first) { o.push(`M${fmt(x)} ${fmt(y)}`); first = false; } else o.push(`m${fmt(x - cx)},${fmt(y - cy)}`); cx = sx = x; cy = sy = y; }
+      else if (op[0] === 'L') { const x = op[1] * scale, y = op[2] * scale; o.push(`l${fmt(x - cx)},${fmt(y - cy)}`); cx = x; cy = y; }
+      else if (op[0] === 'C') { const p = op.slice(1).map(v => v * scale); o.push('c' + [0, 2, 4].map(i => `${fmt(p[i] - cx)},${fmt(p[i + 1] - cy)}`).join(' ')); cx = p[4]; cy = p[5]; }
+      else { o.push('z'); cx = sx; cy = sy; }
+    }
+    return o.join('');
+  }
+}
+function addShape(pb, sh, f) {
+  if (sh.type === 'circle') { const [x, y] = f([sh.cx, sh.cy]); pb.circ(x, y, sh.r); }
+  else pb.poly(sh.pts.map(f));
+}
+function svgDoc(Wmm, Hmm, body, comment) {
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n' +
+    `<!-- ${comment} -->\n` +
+    `<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${fmt(Wmm)}mm" height="${fmt(Hmm)}mm" version="1.1" ` +
+    'style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"\n' +
+    `viewBox="0 0 ${Math.round(Wmm * 100)} ${Math.round(Hmm * 100)}"\n xmlns:xlink="http://www.w3.org/1999/xlink">\n` +
+    ' <defs>\n  <style type="text/css">\n   <![CDATA[\n' +
+    '    .str1 {stroke:#373435;stroke-width:0.2;stroke-miterlimit:22.9256}\n' +
+    '    .str0 {stroke:#373435;stroke-width:20;stroke-miterlimit:22.9256}\n' +
+    '    .fil0 {fill:none}\n   ]]>\n  </style>\n </defs>\n' +
+    ` <g id="Layer_x0020_1">\n${body}\n </g>\n</svg>\n`;
+}
+/* collects placed instances (with nested children) as flat list of {inst, f} */
+function flatPlaced(sheet) {
+  const out = [];
+  for (const x of sheet.items) {
+    const f = placeFn(x);
+    const rec = (it) => { out.push({ inst: it, f }); it.children.forEach(rec); };
+    rec(x);
+  }
+  return out;
+}
+function sheetPaths(sheet, kind, dx = 0) {
+  const lines = [];
+  for (const { inst, f0 = null, f } of flatPlaced(sheet)) {
+    const g = (p) => { const q = f(p); return [q[0] + dx, q[1]]; };
+    if (kind === 'cut' || kind === 'both') {
+      const pb = new PathB();
+      // holes first so the laser cuts inner contours before the outline
+      for (const h of inst.geo.holes) addShape(pb, h, g);
+      addShape(pb, inst.geo.outer, g);
+      lines.push(`  <path class="fil0 str0" d="${pb.d()}"/>`);
+    }
+    if (kind === 'engrave' || kind === 'both') {
+      if (!inst.part.engrave.length) continue;
+      const pb = new PathB();
+      for (const pl of inst.part.engrave) { if (pl.length < 2) continue; pb.poly(pl.map(g), false); }
+      lines.push(`  <path class="fil0 str1" d="${pb.d()}"/>`);
+    }
+  }
+  return lines;
+}
+function exportSheetsSVG(D, NR, kind, which) {
+  const idx = which == null ? NR.sheets.map((_, i) => i) : [which];
+  const gapX = 20;
+  const Wt = idx.length * NR.W + (idx.length - 1) * gapX;
+  const lines = [];
+  idx.forEach((si, j) => lines.push(...sheetPaths(NR.sheets[si], kind, j * (NR.W + gapX))));
+  const what = kind === 'cut' ? 'KESISH (str0, 0.2 mm)' : kind === 'both' ? 'KESISH (str0) + GRAVYURA (str1)' : 'GRAVYURA (str1, ingichka chiziq)';
+  return svgDoc(Wt, NR.H, lines.join('\n'), `Quyosh tizimi orreri - ${what}; varaq ${NR.W}x${NR.H} mm; ${idx.length} varaq; faner ${D.t} mm; kerf ${NR.kerf.toFixed(2)} mm; 1 birlik = 0.01 mm`);
+}
+/* coloured overview with labels (not for cutting) */
+function exportPartsSVG(D, NR) {
+  const gapX = 20, W = NR.W, H = NR.H, ns = NR.sheets.length;
+  const Wt = ns * W + (ns - 1) * gapX, Ht = H + 14;
+  let s = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${Wt}mm" height="${Ht}mm" viewBox="0 0 ${Wt} ${Ht}">\n<!-- Ko'rib chiqish uchun: qizil=kesish, ko'k=gravyura, kulrang=varaq chegarasi. Kesish uchun solar_system_cut.svg dan foydalaning. -->\n<rect width="100%" height="100%" fill="#ffffff"/>\n`;
+  NR.sheets.forEach((sh, i) => {
+    const dx = i * (W + gapX);
+    s += `<g transform="translate(${dx},0)"><rect x="0" y="0" width="${W}" height="${H}" fill="#f7f1e6" stroke="#999" stroke-width="0.4"/>`;
+    s += `<text x="4" y="${H + 9}" font-family="sans-serif" font-size="7" fill="#333">${i + 1}-varaq · ${(sh.util * 100).toFixed(0)}% foydalanish</text>`;
+    for (const { inst, f } of flatPlaced(sh)) {
+      const pb = new PathB();
+      for (const h of inst.geo.holes) addShape(pb, h, f);
+      addShape(pb, inst.geo.outer, f);
+      s += `<path d="${pb.d(1)}" fill="#e8d3ad" fill-rule="evenodd" stroke="#d11" stroke-width="0.25"/>`;
+      if (inst.part.engrave.length) { const pe = new PathB(); for (const pl of inst.part.engrave) if (pl.length > 1) pe.poly(pl.map(f), false); s += `<path d="${pe.d(1)}" fill="none" stroke="#1546c8" stroke-width="0.25"/>`; }
+      const c = f([(inst.bb[0] + inst.bb[2]) / 2, (inst.bb[1] + inst.bb[3]) / 2]);
+      if (!inst.part.engrave.length || inst.children.length === 0 && (inst.bb[2] - inst.bb[0]) < 14) s += `<text x="${fmt(c[0])}" y="${fmt(c[1] + 1.2)}" font-family="sans-serif" font-size="3" text-anchor="middle" fill="#7a0000">${inst.part.id}</text>`;
+    }
+    s += '</g>\n';
+  });
+  return s + '</svg>\n';
+}
+
+/* ---------------------------------------------------------- assembly drawing --- */
+function exportAssemblySVG(D) {
+  const P = D.P, t = D.t, baseR = P.baseD / 2;
+  const sc = 1.6, W = 300 * 2.6, H = 620;
+  const ox = W / 2 - 20, oy = 330;
+  const X = x => ox + x * sc, Y = z => oy - z * sc;
+  let s = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${W / 2}mm" height="${H / 2}mm" viewBox="0 0 ${W} ${H}" font-family="sans-serif">\n<rect width="100%" height="100%" fill="#fff"/>\n`;
+  s += `<text x="20" y="28" font-size="18" font-weight="bold">Quyosh tizimi orreri — yig'ish kesimi</text>`;
+  s += `<text x="20" y="48" font-size="11" fill="#444">Vertikal kesim markaziy val va oraliq val orqali. Raqamlar = detal ID. Qatlam qalinligi ${t} mm.</text>`;
+  const rect = (x0, x1, z0, z1, fill, stroke = '#333', label) => {
+    s += `<rect x="${X(Math.min(x0, x1)).toFixed(1)}" y="${Y(Math.max(z0, z1)).toFixed(1)}" width="${(Math.abs(x1 - x0) * sc).toFixed(1)}" height="${(Math.abs(z1 - z0) * sc).toFixed(1)}" fill="${fill}" stroke="${stroke}" stroke-width="0.6"/>`;
+    if (label) s += `<text x="${(X((x0 + x1) / 2)).toFixed(1)}" y="${(Y((z0 + z1) / 2) + 3).toFixed(1)}" font-size="7" text-anchor="middle">${label}</text>`;
+  };
+  const zb = D.zb, L = D.L;
+  const xmin = -150, xmax = 150;
+  // base
+  rect(-baseR * 0.55, baseR * 0.95, 0, t, '#d9c39b', '#333', 'B0'); rect(-baseR * 0.55, baseR * 0.95, t, 2 * t, '#e3cfa8', '#333', 'B1');
+  rect(-baseR * 0.55, baseR * 0.95, zb(L.deck), zb(L.deck) + t, '#e3cfa8', '#333', 'DK');
+  // walls (right)
+  rect(baseR * 0.9, baseR * 0.9 + t, 2 * t, zb(L.deck), '#cdb88f', '#333', '');
+  s += `<text x="${X(baseR * 0.92)}" y="${Y(D.wallH / 2)}" font-size="8">W</text>`;
+  // post
+  rect(-P.dowel / 2, P.dowel / 2, t, D.postLen + t, '#b98b52', '#333');
+  // layshaft
+  rect(D.a - P.dowel / 2, D.a + P.dowel / 2, t, D.zDeckTop, '#b98b52', '#333');
+  // level 0
+  rect(-D.gPost.g.r, D.gPost.g.r, zb(2), zb(2) + t, '#f2b56b', '#333', 'G0');
+  rect(D.a - D.gIn.g.r, D.a + D.gIn.g.r, zb(2), zb(2) + t, '#f2b56b', '#333', 'D0');
+  for (let k = 1; k <= D.n; k++) {
+    const sl = D.sleeves[k - 1], col = ['#c9d8f0', '#b4c8ea'][k % 2];
+    const zTop = zb(L.arm(k)) + t;
+    // sleeve tube both sides
+    rect(sl.rin, sl.rout, zb(L.spacer(k)), zTop, col, '#556');
+    rect(-sl.rout, -sl.rin, zb(L.spacer(k)), zTop, col, '#556');
+    const g = D.planetGears[k - 1].g, dg = D.driverGears[k - 1].g;
+    rect(-g.r, g.r, zb(L.gear(k)), zb(L.gear(k)) + t, '#f6c88a', '#333', 'G' + k);
+    rect(D.a - dg.r, D.a + dg.r, zb(L.gear(k)), zb(L.gear(k)) + t, '#f2b56b', '#333', 'D' + k);
+    rect(D.a - D.spR, D.a + D.spR, zb(L.spacer(k)), zb(L.spacer(k)) + t, '#e6d4b0', '#333');
+    const p = D.planets[k - 1], R = Math.min(p.R, 175);
+    rect(-sl.rout - 5, -R, zb(L.arm(k)), zb(L.arm(k)) + t, '#8fb3e0', '#334', 'A' + k);
+    if (k < D.n) rect(-sl.rout - 3, sl.rout + 3, zb(L.collar(k)), zb(L.collar(k)) + t, '#9fc39a', '#333');
+    // planet
+    s += `<circle cx="${X(-p.R)}" cy="${Y(p.zc)}" r="${p.r * sc}" fill="${p.def.color}" stroke="#333" stroke-width="0.6"/>`;
+    rect(-p.R - 1.5, -p.R + 1.5, zb(L.arm(k)) + t, p.zc - p.r, '#c9a26b', '#333');
+    if (p.ring) rect(-p.R - p.ring.rout, -p.R + p.ring.rout, p.zc - t / 2, p.zc + t / 2, '#e8d49a', '#333');
+    s += `<text x="${X(-p.R)}" y="${Y(p.zc + p.r) - 4}" font-size="9" text-anchor="middle">${p.def.uz}</text>`;
+  }
+  rect(-D.sleeves[D.n - 1].rout - 4, D.sleeves[D.n - 1].rout + 4, zb(L.top), zb(L.top) + t, '#9fc39a', '#333', 'CD');
+  for (const sl of D.sunSlices) rect(-sl.r, sl.r, sl.z, sl.z + t, '#f7d154', '#a07800');
+  if (D.crank) { rect(-9, D.crank.L + 6, D.crank.z, D.crank.z + t, '#b98b52', '#333', 'CR'); rect(D.crank.L - 3, D.crank.L + 3, D.crank.z + t, D.crank.top, '#a87b45', '#333'); }
+  // dims
+  const dim = (z, label) => { s += `<line x1="${X(-190)}" x2="${X(-180)}" y1="${Y(z)}" y2="${Y(z)}" stroke="#c00"/><text x="${X(-192)}" y="${Y(z) + 3}" font-size="8" text-anchor="end" fill="#c00">${label}</text>`; };
+  dim(0, '0'); dim(D.zDeckTop, D.zDeckTop.toFixed(1)); dim(D.Hmodel - D.legH, (D.Hmodel - D.legH).toFixed(0) + ' mm');
+  // legend + gear table
+  let ty = 360 + 10;
+  s += `<text x="20" y="${ty + 20}" font-size="12" font-weight="bold">Tishli uzatmalar (m=${D.m}, α=${P.pa}°, a=${D.a.toFixed(1)} mm)</text>`;
+  const rows = [['Juft', 'z1/z2', 'Nisbat', 'ε', 'Sayyora tezligi (dasta=1)']];
+  rows.push(['G0–D0', `${D.z0}/${D.zi}`, (D.z0 / D.zi).toFixed(3), D.meshReport[0].eps.toFixed(2), 'Quyosh (dasta) → oraliq val']);
+  D.planets.forEach((p, i) => rows.push([`D${p.k}–G${p.k}`, `${D.zd[i]}/${D.zp[i]}`, (D.zd[i] / D.zp[i]).toFixed(3), D.meshReport[i + 1].eps.toFixed(2), `${p.def.uz}: ${p.speed.toFixed(3)} ayl.`]));
+  rows.forEach((r, i) => { const y = ty + 40 + i * 15; [20, 110, 190, 260, 310].forEach((x, j) => { s += `<text x="${x}" y="${y}" font-size="10" ${i === 0 ? 'font-weight="bold"' : ''}>${r[j]}</text>`; }); });
+  // top view small
+  const tx = 600, tyy = 470, ts = 0.42;
+  s += `<text x="${tx}" y="${tyy - baseR * ts - 14}" font-size="11" font-weight="bold" text-anchor="middle">Ustdan ko'rinish (uzatma)</text>`;
+  s += `<circle cx="${tx}" cy="${tyy}" r="${baseR * ts}" fill="none" stroke="#999"/>`;
+  for (const w of D.walls) s += `<rect x="${tx + w.c[0] * ts - 2}" y="${tyy - w.c[1] * ts - 2}" width="4" height="4" fill="#8a6"/>`;
+  D.planetGears.forEach(g => { s += `<circle cx="${tx}" cy="${tyy}" r="${g.g.r * ts}" fill="none" stroke="#e08a1e" stroke-width="0.6"/>`; });
+  D.driverGears.forEach(g => { s += `<circle cx="${tx + D.a * ts}" cy="${tyy}" r="${g.g.r * ts}" fill="none" stroke="#b05a10" stroke-width="0.6"/>`; });
+  s += `<circle cx="${tx}" cy="${tyy}" r="2" fill="#333"/><circle cx="${tx + D.a * ts}" cy="${tyy}" r="2" fill="#333"/>`;
+  if (D.MOTOR) s += `<circle cx="${tx + D.MOTOR[0] * ts}" cy="${tyy}" r="${D.gMotor.g.r * ts}" fill="none" stroke="#c00"/>`;
+  return s + '</svg>\n';
+}
+
+/* ---------------------------------------------------------- CSV --- */
+function exportCSV(D, NR) {
+  const q = v => `"${String(v).replace(/"/g, '""')}"`;
+  const rows = [['ID', 'Nomi', 'Name (EN)', 'Guruh', 'Soni', 'Eni mm', "Bo'yi mm", 'Maydon mm2 (1 dona)', 'Jami maydon mm2', 'Kesish uzunligi mm (1 dona)', 'Izoh']];
+  let total = 0, cutLen = 0;
+  const all = D.parts.concat(D.calib);
+  for (const p of all) {
+    const bb = shapeBBox(p.outer), area = shapeArea(p.outer) - p.holes.reduce((s, h) => s + shapeArea(h), 0);
+    const len = shapePerimeter(p.outer) + p.holes.reduce((s, h) => s + shapePerimeter(h), 0);
+    if (p.group !== 'Kalibrlash') { total += area * p.qty; cutLen += len * p.qty; }
+    rows.push([p.id, p.name, p.en || '', p.group, p.qty, (bb[2] - bb[0]).toFixed(1), (bb[3] - bb[1]).toFixed(1), area.toFixed(0), (area * p.qty).toFixed(0), len.toFixed(0), p.note || (p.group === 'Kalibrlash' ? 'Alohida kalibrlash faylida' : '')]);
+  }
+  rows.push([]);
+  for (const h of D.hardware) rows.push([h.id, h.name, '', 'Furnitura', h.qty, h.len ? h.len.toFixed(1) : '', '', '', '', '', h.len ? `Uzunligi ${h.len.toFixed(1)} mm` : '']);
+  rows.push([]);
+  const sheetArea = NR.W * NR.H;
+  rows.push(['JAMI', `Detallar maydoni ${(total / 100).toFixed(0)} sm2`, '', '', D.parts.reduce((s, p) => s + p.qty, 0), '', '', '', total.toFixed(0), cutLen.toFixed(0), '']);
+  rows.push(['VARAQLAR', `${NR.sheets.length} ta ${NR.W}x${NR.H} mm faner ${D.t} mm`, '', '', NR.sheets.length, NR.W, NR.H, '', (sheetArea * NR.sheets.length).toFixed(0), '', `Foydalanish ${(100 * total / (sheetArea * NR.sheets.length)).toFixed(0)}%`]);
+  rows.push(['MASSA', `≈${D.stab.mass.toFixed(0)} g (zichlik ${D.P.density * 1e6} kg/m3)`, '', '', '', '', '', '', '', '', '']);
+  rows.push(['VAQT', `Kesish uzunligi ≈${(cutLen / 1000).toFixed(1)} m; 20W diod, 3 mm faner ~5 mm/s, 1-2 o'tish → ≈${(cutLen / 5 / 60 * 1.5).toFixed(0)} daqiqa`, '', '', '', '', '', '', '', '', '']);
+  return '﻿' + rows.map(r => r.map(q).join(',')).join('\r\n') + '\r\n';
+}
+
+/* ---------------------------------------------------------- zip (store) --- */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files) { // files: [{name, data:Uint8Array}]
+  const enc = new TextEncoder(); const chunks = []; const central = []; let off = 0;
+  for (const f of files) {
+    const nm = enc.encode(f.name), d = f.data, crc = crc32(d);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+    h.setUint16(10, 0, true); h.setUint16(12, 0x21, true); h.setUint32(14, crc, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true);
+    h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+    chunks.push(new Uint8Array(h.buffer), nm, d);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+    c.setUint16(12, 0, true); c.setUint16(14, 0x21, true); c.setUint32(16, crc, true); c.setUint32(20, d.length, true); c.setUint32(24, d.length, true);
+    c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), nm);
+    off += 30 + nm.length + d.length;
+  }
+  const cSize = central.reduce((s, a) => s + a.length, 0);
+  const e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cSize, true); e.setUint32(16, off, true);
+  const all = chunks.concat(central, [new Uint8Array(e.buffer)]);
+  const out = new Uint8Array(all.reduce((s, a) => s + a.length, 0)); let p = 0; for (const a of all) { out.set(a, p); p += a.length; }
+  return out;
+}
+
+const api = { PLANETS, defaults, compute, nest, exportSheetsSVG, exportPartsSVG, exportAssemblySVG, exportCSV, makeZip, gearGeom, gearOutline, textPaths, shapeBBox, shapeArea, placeFn, flatPlaced, offsetPoly, arcPts, rectPts };
+if (typeof module !== 'undefined' && module.exports) module.exports = api; else global.Orrery = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* UI, 3D preview, downloads, PDF guide */
+(function () {
+'use strict';
+const O = window.Orrery;
+const $ = s => document.querySelector(s);
+const el = (tag, attrs = {}, html) => { const e = document.createElement(tag); for (const k in attrs) { if (k === 'class') e.className = attrs[k]; else e.setAttribute(k, attrs[k]); } if (html != null) e.innerHTML = html; return e; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ------------------------------------------------------------ state --- */
+const P = O.defaults();
+let D = null, NR = null, NC = null;
+let pendingTimer = 0;
+
+/* ------------------------------------------------------------ controls --- */
+const SECTIONS = [
+  { title: 'Model', open: true, items: [
+    { id: 'baseD', label: 'Asos diametri', unit: 'mm', min: 240, max: 400, step: 5, type: 'range' },
+    { id: 'maxH', label: 'Ruxsat etilgan balandlik', unit: 'mm', min: 120, max: 260, step: 5, type: 'range' },
+    { id: 'nPlanets', label: 'Harakatlanuvchi sayyoralar', unit: '', min: 1, max: 8, step: 1, type: 'range', hint: 'Bosqichma-bosqich qurish uchun: 1 = faqat Merkuriy' },
+    { id: 'drive', label: 'Yuritma', type: 'seg', options: [['crank', "Qo'l dastasi"], ['motor', 'N20 motor']] },
+    { id: 'sizeScale', label: "Sayyoralar o'lcham koeffitsienti", unit: '×', min: 0.7, max: 1.4, step: 0.05, type: 'range' },
+    { id: 'sunR', label: 'Quyosh radiusi', unit: 'mm', min: 10, max: 24, step: 1, type: 'range' }
+  ] },
+  { title: 'Sayyoralar', open: true, custom: 'planets' },
+  { title: 'Tishli uzatma', open: false, items: [
+    { id: 'module', label: 'Modul m', unit: 'mm', type: 'seg', options: [[1.5, '1.5'], [2, '2'], [2.5, '2.5'], [3, '3']], num: true },
+    { id: 'pa', label: 'Bosim burchagi', unit: '°', type: 'seg', options: [[20, '20°'], [25, '25°']], num: true },
+    { id: 'backlash', label: 'Lyuft (juftga)', unit: 'mm', min: 0, max: 0.6, step: 0.05, type: 'range' },
+    { id: 'N', label: 'Tishlar yig\'indisi N (0 = avto)', unit: '', min: 0, max: 90, step: 1, type: 'number' }
+  ] },
+  { title: 'Material va tolerans', open: false, items: [
+    { id: 't', label: 'Faner qalinligi (o\'lchangan)', unit: 'mm', min: 2.5, max: 4.0, step: 0.05, type: 'number' },
+    { id: 'kerf', label: 'Kerf kompensatsiyasi', unit: 'mm', min: 0.05, max: 0.30, step: 0.01, type: 'range' },
+    { id: 'shaftClr', label: 'Val teshigi zazori (diametr)', unit: 'mm', min: 0.1, max: 0.8, step: 0.05, type: 'range' },
+    { id: 'slotClr', label: 'Tirqish zazori', unit: 'mm', min: -0.1, max: 0.3, step: 0.02, type: 'range' },
+    { id: 'axialPlay', label: "O'q bo'yicha zazor", unit: 'mm', min: 0, max: 1.5, step: 0.1, type: 'range' },
+    { id: 'dowel', label: 'Val (dyubel) diametri', unit: 'mm', type: 'seg', options: [[6, '6'], [8, '8'], [10, '10']], num: true },
+    { id: 'wall', label: 'Vtulka devori', unit: 'mm', min: 3, max: 6, step: 0.5, type: 'range' }
+  ] },
+  { title: 'Varaq va lazer', open: false, items: [
+    { id: 'sheetW', label: 'Varaq eni', unit: 'mm', min: 200, max: 1300, step: 10, type: 'number' },
+    { id: 'sheetH', label: "Varaq bo'yi", unit: 'mm', min: 200, max: 900, step: 10, type: 'number' },
+    { id: 'workW', label: 'Ish maydoni eni', unit: 'mm', min: 200, max: 1300, step: 10, type: 'number' },
+    { id: 'workH', label: "Ish maydoni bo'yi", unit: 'mm', min: 200, max: 900, step: 10, type: 'number' },
+    { id: 'preset', type: 'presets' }
+  ] }
+];
+
+function fmtVal(v, it) { const st = it.step || 1; const d = st < 0.1 ? 2 : st < 1 ? (String(st).split('.')[1] || '').length : 0; return (+v).toFixed(d); }
+
+function buildControls() {
+  const host = $('#controls');
+  host.innerHTML = '';
+  for (const sec of SECTIONS) {
+    const det = el('details', { class: 'sec' }); if (sec.open) det.open = true;
+    det.appendChild(el('summary', {}, `<span>${sec.title}</span>`));
+    const body = el('div', { class: 'sec-body' });
+    if (sec.custom === 'planets') body.appendChild(buildPlanetTable());
+    else for (const it of sec.items) body.appendChild(buildItem(it));
+    det.appendChild(body); host.appendChild(det);
+  }
+}
+function buildItem(it) {
+  const row = el('div', { class: 'ctl' });
+  if (it.type === 'presets') {
+    row.innerHTML = `<div class="ctl-label">Tayyor sozlamalar</div><div class="chips"><button type="button" class="chip" data-p="400">400×400 (diod lazer)</button><button type="button" class="chip" data-p="700">700×600 (CorelDRAW stoli)</button><button type="button" class="chip" data-p="600">600×400</button></div>`;
+    row.querySelectorAll('button').forEach(b => b.onclick = () => {
+      const v = b.dataset.p; const [w, h] = v === '400' ? [400, 400] : v === '700' ? [700, 600] : [600, 400];
+      P.sheetW = P.workW = w; P.sheetH = P.workH = h; syncInputs(); schedule();
+    });
+    return row;
+  }
+  if (it.type === 'seg') {
+    row.innerHTML = `<div class="ctl-label">${it.label}</div>`;
+    const seg = el('div', { class: 'seg', role: 'radiogroup', 'aria-label': it.label });
+    for (const [v, lab] of it.options) {
+      const b = el('button', { type: 'button', class: 'seg-b', 'data-v': v, role: 'radio', id: `seg-${it.id}-${String(v).replace('.', '_')}` }, lab);
+      b.onclick = () => { P[it.id] = it.num ? +v : v; syncInputs(); schedule(); };
+      seg.appendChild(b);
+    }
+    row.appendChild(seg); row.dataset.seg = it.id; return row;
+  }
+  const id = 'in-' + it.id;
+  row.innerHTML = `<label class="ctl-label" for="${id}">${it.label}<output id="out-${it.id}"></output></label>`;
+  const inp = el('input', { id, type: it.type, min: it.min, max: it.max, step: it.step });
+  inp.oninput = () => { const v = parseFloat(inp.value); if (!isNaN(v)) { P[it.id] = v; $('#out-' + it.id).textContent = fmtVal(v, it) + (it.unit ? ' ' + it.unit : ''); schedule(); } };
+  row.appendChild(inp);
+  if (it.hint) row.appendChild(el('div', { class: 'hint' }, it.hint));
+  row.dataset.item = it.id;
+  return row;
+}
+function buildPlanetTable() {
+  const wrap = el('div', { class: 'ptable' });
+  wrap.innerHTML = `<div class="ptoggles">
+    <label class="tog"><input type="checkbox" id="autoOrbit"> Orbitalar avto (to'qnashuvsiz)</label>
+    <label class="tog"><input type="checkbox" id="autoTeeth"> Tishlar soni avto</label></div>
+    <div class="ptwrap"><table class="pt"><thead><tr><th>Sayyora</th><th title="Sayyora radiusi">r, mm</th><th title="Orbita radiusi">R, mm</th><th title="Sayyora shesternyasi tishlari">z</th><th title="Dasta 1 aylanganda">ayl.</th></tr></thead><tbody id="ptbody"></tbody></table></div>
+    <div class="hint">r — shar radiusi (kichik sayyoralar ataylab kattalashtirilgan). R va z ni o'zgartirish uchun avto belgisini oling.</div>`;
+  {
+    const q = s => wrap.querySelector(s);
+    const tb = q('#ptbody');
+    O.PLANETS.forEach((pl, i) => {
+      const tr = el('tr', { 'data-i': i });
+      tr.innerHTML = `<td><span class="dot" style="background:${pl.color}"></span>${pl.uz}</td>
+        <td><input id="pr${i}" type="number" step="0.5" min="5.5" max="24" aria-label="${pl.uz} radiusi"></td>
+        <td><input id="pR${i}" type="number" step="0.5" min="15" max="400" aria-label="${pl.uz} orbitasi"></td>
+        <td><input id="pz${i}" type="number" step="1" min="12" max="80" aria-label="${pl.uz} tishlari"></td>
+        <td class="num" id="ps${i}">–</td>`;
+      tb.appendChild(tr);
+      q('#pr' + i).oninput = e => { const v = parseFloat(e.target.value); if (v > 0) { P.r[i] = v; schedule(); } };
+      q('#pR' + i).oninput = e => { const v = parseFloat(e.target.value); if (v > 0) { P.R[i] = v; schedule(); } };
+      q('#pz' + i).oninput = e => { const v = parseInt(e.target.value); if (v > 0) { P.zp[i] = v; schedule(); } };
+    });
+    q('#autoOrbit').onchange = e => { P.autoOrbit = e.target.checked; if (!P.autoOrbit && D) D.planets.forEach(p => P.R[p.k - 1] = p.R); syncInputs(); schedule(); };
+    q('#autoTeeth').onchange = e => { P.autoTeeth = e.target.checked; if (!P.autoTeeth && D) D.zp.forEach((z, i) => P.zp[i] = z); syncInputs(); schedule(); };
+  }
+  return wrap;
+}
+function syncInputs() {
+  for (const sec of SECTIONS) if (sec.items) for (const it of sec.items) {
+    if (it.type === 'seg') { document.querySelectorAll(`[data-seg="${it.id}"] .seg-b`).forEach(b => { const on = String(b.dataset.v) === String(P[it.id]); b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); continue; }
+    const inp = $('#in-' + it.id); if (!inp) continue;
+    if (document.activeElement !== inp) inp.value = P[it.id];
+    const out = $('#out-' + it.id); if (out) out.textContent = fmtVal(P[it.id], it) + (it.unit ? ' ' + it.unit : '');
+  }
+  const ao = $('#autoOrbit'); if (!ao) return;
+  ao.checked = P.autoOrbit; $('#autoTeeth').checked = P.autoTeeth;
+  O.PLANETS.forEach((pl, i) => {
+    const on = i < P.nPlanets, row = document.querySelector(`#ptbody tr[data-i="${i}"]`);
+    if (row) row.classList.toggle('off', !on);
+    const pr = $('#pr' + i), pR = $('#pR' + i), pz = $('#pz' + i);
+    if (document.activeElement !== pr) pr.value = P.r[i];
+    pR.disabled = P.autoOrbit || !on; pz.disabled = P.autoTeeth || !on; pr.disabled = !on;
+    const dp = D && D.planets[i];
+    if (document.activeElement !== pR) pR.value = P.autoOrbit ? (dp ? dp.R.toFixed(1) : '') : (P.R[i] || (dp ? dp.R : ''));
+    if (document.activeElement !== pz) pz.value = P.autoTeeth ? (D && i < D.n ? D.zp[i] : '') : (P.zp[i] || (D && i < D.n ? D.zp[i] : ''));
+    $('#ps' + i).textContent = dp ? dp.speed.toFixed(3) : '–';
+  });
+}
+function schedule() { clearTimeout(pendingTimer); $('#genState').textContent = 'Hisoblanmoqda…'; pendingTimer = setTimeout(regenerate, 220); }
+
+/* ------------------------------------------------------------ generate --- */
+function regenerate() {
+  const t0 = performance.now();
+  try {
+    D = O.compute(P);
+    NR = O.nest(D);
+    NC = O.nest(D, { parts: D.calib });
+  } catch (e) { console.error(e); $('#genState').textContent = 'Xato: ' + e.message; return; }
+  syncInputs();
+  renderStatus(); renderValidation(); renderSheets(); renderParts(); renderGears(); renderAssembly(); renderDownloads();
+  buildModel();
+  $('#genState').textContent = `Geometriya yangilandi · ${(performance.now() - t0).toFixed(0)} ms`;
+}
+
+const CAT = { gear: "Tishli uzatma", clash: "To'qnashuvlar va aylanish", frame: 'Ramka', fit: 'Tolerans va moslik', align: "O'qlar mosligi", stability: 'Barqarorlik', height: 'Balandlik', assembly: "Yig'ish imkoniyati", sheet: 'Varaq va lazer maydoni', parts: 'Detallar' };
+const LVL = { ok: ['OK', 'ok'], warn: ['Diqqat', 'warn'], error: ['Xato', 'err'] };
+function counts() { const c = { ok: 0, warn: 0, error: 0 }; D.msgs.forEach(m => c[m.level]++); return c; }
+function renderStatus() {
+  const c = counts();
+  const s = $('#status');
+  s.className = 'status ' + (c.error ? 'err' : c.warn ? 'warn' : 'ok');
+  s.innerHTML = `<span class="pill">${c.error ? c.error + ' xato' : 'Mexanizm tekshirildi'}</span><span class="pill soft">${c.warn} ogohlantirish</span><span class="pill soft">${D.n} sayyora · ${NR.sheets.length} varaq</span>`;
+}
+function renderValidation() {
+  const host = $('#tab-check');
+  const groups = {};
+  D.msgs.forEach(m => (groups[m.cat] = groups[m.cat] || []).push(m));
+  const order = ['gear', 'clash', 'align', 'fit', 'frame', 'stability', 'height', 'assembly', 'sheet', 'parts'];
+  let h = `<p class="lead">Fayllar yaratilishidan oldin har bir parametr o'zgarishida avtomatik tekshiriladi. Qizil — model ishlamaydi; sariq — e'tibor bering.</p>`;
+  for (const k of order) if (groups[k]) {
+    h += `<div class="vgroup"><h4>${CAT[k]}</h4><ul class="vlist">`;
+    for (const m of groups[k]) h += `<li class="v-${LVL[m.level][1]}"><span class="tag">${LVL[m.level][0]}</span><span>${esc(m.msg)}</span></li>`;
+    h += '</ul></div>';
+  }
+  host.innerHTML = h;
+}
+let sheetIdx = 0;
+function renderSheets() {
+  const host = $('#tab-sheets');
+  if (sheetIdx >= NR.sheets.length) sheetIdx = 0;
+  const totalArea = D.parts.reduce((s, p) => s + p.area * p.qty, 0);
+  let h = `<div class="sheet-head"><div class="chips" role="tablist">`;
+  NR.sheets.forEach((s, i) => { h += `<button type="button" class="chip ${i === sheetIdx ? 'on' : ''}" data-sh="${i}">${i + 1}-varaq · ${(s.util * 100).toFixed(0)}%</button>`; });
+  h += `<button type="button" class="chip ${sheetIdx === -1 ? 'on' : ''}" data-sh="-1">Kalibrlash</button></div>`;
+  h += `<p class="meta">${NR.sheets.length} ta ${NR.W}×${NR.H} mm varaq · detallar maydoni ${(totalArea / 1e4).toFixed(0)} dm² · o'rtacha foydalanish ${(100 * totalArea / (NR.W * NR.H * NR.sheets.length)).toFixed(0)}% · halqalar bir-birining ichiga joylashtirilgan</p></div>`;
+  if (NR.oversize.length) h += `<p class="banner err">Varaqqa sig'maydigan detallar: ${NR.oversize.map(x => x.part.id).join(', ')}</p>`;
+  h += `<div class="sheet-view" id="sheetView"></div><p class="hint">Qizil = kesish, ko'k = gravyura. Avval gravyura, keyin kesish; ichki konturlar avval kesiladi (har bir detal yo'lida teshiklar birinchi yozilgan).</p>`;
+  host.innerHTML = h;
+  host.querySelectorAll('[data-sh]').forEach(b => b.onclick = () => { sheetIdx = +b.dataset.sh; renderSheets(); });
+  const one = sheetIdx === -1 ? { sheets: NC.sheets, W: NC.W, H: NC.H } : { sheets: [NR.sheets[sheetIdx]], W: NR.W, H: NR.H };
+  $('#sheetView').innerHTML = O.exportPartsSVG(D, one).replace(/^<\?xml[^>]*>\s*/, '').replace(/width="[\d.]+mm" height="[\d.]+mm"/, 'width="100%"');
+}
+function renderParts() {
+  const host = $('#tab-parts');
+  const groups = {};
+  D.parts.forEach(p => (groups[p.group] = groups[p.group] || []).push(p));
+  const tot = D.parts.reduce((s, p) => s + p.qty, 0);
+  let h = `<p class="lead">${tot} ta faner detal (${D.parts.length} xil) + kalibrlash to'plami. Massa ≈ ${D.stab.mass.toFixed(0)} g.</p><div class="tablewrap"><table class="data"><thead><tr><th>ID</th><th>Nomi</th><th class="num">Soni</th><th class="num">O'lcham, mm</th></tr></thead><tbody>`;
+  for (const g in groups) {
+    h += `<tr class="grp"><td colspan="4">${esc(g)}</td></tr>`;
+    for (const p of groups[g]) h += `<tr><td class="mono">${p.id}</td><td>${esc(p.name)}</td><td class="num">${p.qty}</td><td class="num">${p.w.toFixed(1)} × ${p.h.toFixed(1)}</td></tr>`;
+  }
+  h += `<tr class="grp"><td colspan="4">Furnitura (sotib olinadi)</td></tr>`;
+  for (const x of D.hardware) h += `<tr><td class="mono">${x.id}</td><td>${esc(x.name)}</td><td class="num">${x.qty}</td><td class="num">${x.len ? 'L = ' + x.len.toFixed(1) : ''}</td></tr>`;
+  h += '</tbody></table></div>';
+  host.innerHTML = h;
+}
+function renderGears() {
+  const host = $('#tab-gears');
+  let h = `<p class="lead">Barcha juftlar bir xil markazlar oralig'ida (a = ${D.a.toFixed(1)} mm, N = ${D.N}): markaziy val va bitta oraliq val. Dasta Quyoshni va markaziy shesternyani (z=${D.z0}) aylantiradi, u oraliq valni (z=${D.zi}) yuritadi; oraliq valdagi yetakchi shesternyalar har bir sayyora vtulkasini o'z tezligida aylantiradi.</p>`;
+  h += `<p class="banner info"><b>O'quv yaqinlashuvi.</b> Sayyoralar to'g'ri tartibda (ichkisi tezroq) va bir yo'nalishda aylanadi; ${D.earthK ? '<b>Yer aniq 1 aylanish = 1 yil</b> (G0 = G3 tishlari). ' : ''}Boshqa sayyoralarning davrlari astronomik jihatdan aniq emas — bitta pog'onali faner uzatma bilan 1:685 nisbatni (Merkuriy/Neptun) olish mumkin emas.</p>`;
+  h += `<div class="tablewrap"><table class="data"><thead><tr><th>Sayyora</th><th class="num">D/G tishlar</th><th class="num">ε</th><th class="num">Dasta 1 ayl. → </th><th class="num">Modeldagi davr</th><th class="num">Haqiqiy davr</th></tr></thead><tbody>`;
+  h += `<tr><td>Quyosh → oraliq val</td><td class="num">${D.z0}/${D.zi}</td><td class="num">${D.meshReport[0].eps.toFixed(2)}</td><td class="num">${D.wLay.toFixed(3)}</td><td class="num">–</td><td class="num">–</td></tr>`;
+  D.planets.forEach((p, i) => {
+    h += `<tr><td><span class="dot" style="background:${p.def.color}"></span>${p.def.uz}</td><td class="num">${D.zd[i]}/${D.zp[i]}</td><td class="num">${D.meshReport[i + 1].eps.toFixed(2)}</td><td class="num">${p.speed.toFixed(3)} ayl.</td><td class="num">${(1 / p.speed).toFixed(2)} dasta</td><td class="num">${p.def.period.toFixed(2)} yil</td></tr>`;
+  });
+  h += `</tbody></table></div><p class="hint">Modul ${D.m} mm, bosim burchagi ${D.P.pa}°, bosh 0.9m / oyoq 1.15m (faner uchun mustahkamroq tish), lyuft ${D.P.backlash} mm. ε — ilashish koeffitsienti (≥1.2 yaxshi). Interferensiya va tish uchi qalinligi har bir juft uchun hisoblanadi.</p>`;
+  host.innerHTML = h;
+}
+function assemblySteps() {
+  const n = D.n, t = D.t, L = D.L, Pp = D.P;
+  const nm = k => D.planets[k - 1].def.uz;
+  const bodyRings = k => k < n ? O && D.parts.find(p => p.id === 'R' + k).qty : 3;
+  const sunList = D.parts.filter(p => p.sunR).map(p => `${p.id}×${p.qty}`).join(', ');
+  const steps = [];
+  steps.push(['0. Kalibrlash', [
+    `solar_system_calibration.svg ni kesing. Faner qalinligini shtangensirkul bilan 3 joydan o'lchang va "Faner qalinligi" ga kiriting.`,
+    `K3 ramkadagi teshik va K4 bo'lak eni (nominal 40 mm) ni o'lchang: kerf = teshik − 40 = 40 − bo'lak. Natijani "Kerf kompensatsiyasi" ga kiriting.`,
+    `K2 tilchani K1 dagi tirqishlarga kiriting: zich, lekin bolg'asiz kiradigan tirqish — kerakli "Tirqish zazori". Dyubel erkin, lekin lapanglamasdan aylanadigan teshik — "Val teshigi zazori".`,
+    `K5/K6 sinov shesternyalarini K7 plitaga dyubellar bilan o'rnating: ular qisilmasdan va sakramasdan aylanishi kerak. Keyin barcha fayllarni qayta yarating.`]]);
+  steps.push(['1. Kesish va tayyorlash', [
+    `Har bir varaq uchun avval *_engrave_sheetN.svg (gravyura), so'ng *_cut_sheetN.svg (kesish) ni bir xil koordinatada ishga tushiring. 20 W diod lazer: 3 mm faner uchun odatda 2 o'tish.`,
+    `Halqalar katta teshiklar ichiga joylashtirilgan — lazer dasturida "ichki konturlar birinchi" tartibini yoqing.`,
+    `Qirralarni mayda zımpara bilan tozalang. Barcha ishqalanadigan yuzalarga (shesternya yuzlari, halqalar, teshiklar) mum yoki parafin surting. Raqamli gravyura tomonini yig'ishda pastga (yashirin tomonga) qarating.`]]);
+  steps.push(["2. 1-bosqich — asos va yuritma (ishlayotganini tekshiring)", [
+    `B0 va B1 ni chetlarini moslab yelimlang (B0 gravyurasi pastga). ${D.walls.length} ta W devorni B1 tirqishlariga yelimlang.`,
+    `Markaziy val: ø${Pp.dowel} dyubel L=${D.postLen.toFixed(1)} mm. Unga G0 shesternyani kiydiring; dyubelni B1 teshigiga tushiring, G0 ostiga 0.3 mm qog'oz qo'yib B1 ustida yelimlang.`,
+    `Oraliq val: ø${Pp.dowel} dyubel L=${D.layLen.toFixed(1)} mm, teshikka tushiring, D0 ni (pastki qavat) yelimlang. Paluba DK ni vaqtincha (yelimsiz) qo'yib G0 va D0 ilashuvini qo'lda tekshiring.`,
+    Pp.drive === 'motor' ? `Motor varianti: 4 ta LG oyoqchani B0+B1 tirqishlariga yelimlang; 3 ta MP plastinani B0 ostiga motor teshigi atrofida yelimlang, N20 motorni pastdan kiriting, M1 shesternyani valga B1 ustida (D0 sathida) bosing.` : `Dasta keyingi bosqichlarda Quyosh ustiga o'rnatiladi; hozircha G0 ni qo'lda burab tekshiring.`]]);
+  steps.push(["3. 2-bosqich — birinchi sayyora yelkasi (Merkuriy)", [
+    `Vtulka 1 tanasini jig ustida yig'ing: dyubelga bir qavat qog'oz o'rang, R1 halqa (1 dona), G1, so'ng yana ${bodyRings(1) - 1} ta R1 halqa; faqat halqalar orasiga yupqa yelim. Qurigach jigdan chiqaring.`,
+    `Oraliq valga LS oraliq halqa va D1 ni kiydirib yelimlang. Vtulka 1 ni markaziy valga tushiring, G1 D1 bilan ilashsin.`,
+    `A1 yelkani vaqtincha qo'yib G0 ni aylantiring: Merkuriy ${D.planets[0].speed.toFixed(2)} marta aylanishi kerak. Mana shu nuqtada mexanizm ishlayapti.`]]);
+  const rest = [];
+  for (let k = 2; k <= n; k++) rest.push(`Vtulka ${k} (${nm(k)}): R${k} ×1, G${k}${k === n ? ', CD tayanch halqa' : ''}, so'ng R${k} ×${k < n ? bodyRings(k) - 1 : 2}. Avval ${k}-vtulkani tushiring, keyin LS + D${k} ni oraliq valga yelimlang.`);
+  steps.push([`4. 3-bosqich — qolgan vtulkalar va shesternyalar`, rest.concat([
+    `Oxirida oraliq valga yuqori LS halqani yelimlang. Har bir vtulkadan keyin aylanishni tekshiring — keyin tuzatish qiyin.`,
+    `DK palubani vtulkalar ustidan tushirib devor tilchalariga yelimlang. Oraliq val DK podshipnik teshigidan chiqadi. Vtulkalar ${Pp.axialPlay} mm o'q zazori bilan erkin aylanishi kerak.`])]);
+  const arms = [];
+  for (let k = n; k >= 1; k--) arms.push(k === n ? `A${k} (${nm(k)}) ni vtulka ${k} uchiga yelimlang (gravyura yuqoriga).` : `C${k} tayanch halqani vtulka ${k} uchiga yelimlang (pastdagi A${k + 1} ga yelim tegmasin!), so'ng A${k} (${nm(k)}).`);
+  steps.push(["5. Yelkalar (tashqaridan ichkariga)", arms]);
+  steps.push(["6. Quyosh va dasta", [
+    `Quyosh qatlamlari (${sunList}) markaziy valga diametri bo'yicha shar shaklida yelimlanadi; eng pastki qatlam A1 gupchagiga tegadi, lekin unga yelimlanmaydi.`,
+    D.crank ? `CR dasta yelkasini val uchiga yelimlang, ø${Pp.handleDowel} dasta dyubelini teshigiga yelimlang, KN halqalarni erkin kiydiring, eng yuqorisini dyubel uchiga yelimlang.` : `Motor varianti: Quyosh ustiga dasta qo'yilmaydi.`]]);
+  const pl = [];
+  for (const p of D.planets) {
+    const q = D.parts.find(x => x.id === `P${p.k}Q`);
+    pl.push(`${p.def.uz}: P${p.k}B ni P${p.k}A ga tepadan krest shaklida kiydiring${q ? `, 4 ta P${p.k}Q ekvator bo'lagini choraklarga yelimlang` : ''}${p.ring ? `; avval P${p.k}H halqani ekvatorga tutib turing, chorak bo'laklarning "dumi" halqa uyalariga kiradi` : ''}. Ustun tilchasini A${p.k} uchidagi tirqishga yelimlang.`);
+  }
+  steps.push(['7. Sayyoralar', pl]);
+  steps.push(['8. Sinov va xavfsizlik', [
+    `Dastani soat miliga teskari yo'nalishda sekin aylantiring. Har qanday qisilishda to'xtating va qaysi qavat ishqalanayotganini toping.`,
+    `Yelkalar uchlariga barmoq qo'ymang; kichik bolalar faqat kattalar nazoratida. Modelni stol chetidan uzoqroq qo'ying (sayyoralar ø${(2 * D.maxSweep).toFixed(0)} mm doirada aylanadi).`,
+    Pp.drive === 'motor' ? `Motor: 4.5–6 V dan oshirmang; tiqilib qolsa darhol o'chiring.` : `Dasta 1 marta aylansa Yer Quyosh atrofida 1 marta aylanadi.`]]);
+  return steps;
+}
+function renderAssembly() {
+  const host = $('#tab-asm');
+  let h = `<div class="asm-svg">${O.exportAssemblySVG(D).replace(/^<\?xml[^>]*>\s*/, '').replace(/width="[\d.]+mm" height="[\d.]+mm"/, 'width="100%"')}</div><ol class="steps">`;
+  for (const [title, items] of assemblySteps()) h += `<li><h4>${esc(title)}</h4><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></li>`;
+  host.innerHTML = h + '</ol>';
+}
+
+/* ------------------------------------------------------------ downloads --- */
+let dlCap; // promise
+function getDL() {
+  if (!dlCap) dlCap = (window.claude && window.claude.use) ? Promise.race([window.claude.use('downloads'), new Promise(r => setTimeout(() => r(null), 4000))]).catch(() => null) : Promise.resolve(null);
+  return dlCap;
+}
+function toast(msg, kind = '') { const t = $('#toast'); t.textContent = msg; t.className = 'toast show ' + kind; clearTimeout(t._h); t._h = setTimeout(() => t.className = 'toast', 3200); }
+async function offer(filename, data) {
+  const dl = await getDL();
+  if (dl) {
+    try { await dl.save({ filename, data }); toast('Saqlandi: ' + filename, 'ok'); }
+    catch (e) {
+      const c = e && e.code;
+      if (c === 'declined') toast('Bekor qilindi');
+      else if (c === 'rate_limited') toast("Oldingi saqlash oynasi hali ochiq — biroz kuting.");
+      else if (c === 'rejected_extension' || c === 'extension_not_enabled') toast(`Bu yerda ${filename.split('.').pop()} formatini saqlab bo'lmaydi.`, 'err');
+      else toast('Saqlab bo\'lmadi: ' + (e && e.message || c), 'err');
+    }
+    return;
+  }
+  const blob = data instanceof Blob ? data : new Blob([data]);
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('Yuklab olinmoqda: ' + filename, 'ok');
+}
+const FILES = [
+  ['solar_system_cut.svg', 'Kesish (barcha varaqlar)', 'Corel uslubi, str0, 0.01 mm birlik'],
+  ['solar_system_engrave.svg', 'Gravyura (barcha varaqlar)', 'str1 ingichka chiziq, kesish bilan bir koordinatada'],
+  ['solar_system_parts.svg', "Detallar xaritasi", "Rangli ko'rinish va ID'lar"],
+  ['solar_system_assembly.svg', "Yig'ish kesimi", 'Qavatlar, uzatmalar jadvali'],
+  ['solar_system_parts_list.csv', "Qismlar ro'yxati", 'Material, massa, kesish vaqti'],
+  ['solar_system_assembly_guide.pdf', "Yig'ish qo'llanmasi (PDF)", 'Tekshiruv, jadvallar, bosqichlar'],
+  ['solar_system_3d_model.stl', '3D model (STL)', "Yig'ilgan holat, mm, Z yuqoriga"],
+  ['solar_system_calibration.svg', 'Kalibrlash kuponi', 'Kerf, tirqish, teshik, tishli juft']
+];
+function renderDownloads() {
+  const host = $('#tab-dl');
+  const c = counts();
+  let h = c.error ? `<p class="banner err">Tekshiruvda ${c.error} ta xato bor. Fayllar yaratiladi, lekin bunday model to'g'ri ishlamasligi mumkin — "Tekshiruv" bo'limini ko'ring.</p>` : `<p class="banner ok">Mexanik tekshiruv o'tdi. Fayllar joriy parametrlardan hozir yaratiladi.</p>`;
+  h += `<div class="dl-all"><button type="button" class="btn primary" id="dlAll">Hammasini yuklab olish (ZIP)</button><span class="meta">${FILES.length} fayl + har bir varaq alohida + README</span></div><div class="dl-grid">`;
+  FILES.forEach(([f, t, d], i) => { h += `<button type="button" class="dl" data-f="${f}"><span class="dl-name">${t}</span><span class="dl-file mono">${f}</span><span class="dl-desc">${d}</span></button>`; });
+  h += '</div><h4 class="sub">Alohida varaqlar</h4><div class="chips">';
+  NR.sheets.forEach((s, i) => { h += `<button type="button" class="chip" data-sheet="${i}" data-kind="cut">${i + 1}-varaq kesish</button><button type="button" class="chip" data-sheet="${i}" data-kind="engrave">${i + 1}-varaq gravyura</button>`; });
+  h += '</div><p class="hint">SVG: width/height mm da, viewBox = mm × 100 (1 birlik = 0.01 mm), CorelDRAW eksporti bilan bir xil — LightBurn, RDWorks, Corel haqiqiy o\'lchamda ochadi. Har bir detal bitta yopiq yo\'l; teshiklar birinchi kesiladi.</p>';
+  host.innerHTML = h;
+  host.querySelectorAll('.dl').forEach(b => b.onclick = () => downloadOne(b.dataset.f, b));
+  host.querySelectorAll('[data-sheet]').forEach(b => b.onclick = () => { const i = +b.dataset.sheet, k = b.dataset.kind; offer(`solar_system_${k}_sheet${i + 1}.svg`, O.exportSheetsSVG(D, NR, k, i)); });
+  $('#dlAll').onclick = downloadAll;
+}
+async function makeFile(f) {
+  switch (f) {
+    case 'solar_system_cut.svg': return O.exportSheetsSVG(D, NR, 'cut');
+    case 'solar_system_engrave.svg': return O.exportSheetsSVG(D, NR, 'engrave');
+    case 'solar_system_parts.svg': return O.exportPartsSVG(D, NR);
+    case 'solar_system_assembly.svg': return O.exportAssemblySVG(D);
+    case 'solar_system_parts_list.csv': return O.exportCSV(D, NR);
+    case 'solar_system_calibration.svg': return O.exportSheetsSVG(D, NC, 'both');
+    case 'solar_system_3d_model.stl': return exportSTL();
+    case 'solar_system_assembly_guide.pdf': return await makePDF();
+  }
+}
+async function downloadOne(f, btn) {
+  btn && btn.classList.add('busy');
+  try {
+    let data = await makeFile(f), name = f;
+    if (f.endsWith('.stl') && await getDL()) { // the viewer only accepts listed formats: ship STL inside a zip
+      data = O.makeZip([{ name: f, data: new Uint8Array(data) }]); name = 'solar_system_3d_model.zip';
+    }
+    await offer(name, data);
+  } catch (e) { console.error(e); toast('Xato: ' + e.message, 'err'); }
+  btn && btn.classList.remove('busy');
+}
+async function downloadAll() {
+  const b = $('#dlAll'); b.disabled = true; b.textContent = 'Tayyorlanmoqda…';
+  try {
+    const enc = new TextEncoder(), files = [];
+    for (const [f] of FILES) { const d = await makeFile(f); files.push({ name: f, data: typeof d === 'string' ? enc.encode(d) : new Uint8Array(d) }); }
+    NR.sheets.forEach((s, i) => { for (const k of ['cut', 'engrave']) files.push({ name: `sheets/solar_system_${k}_sheet${i + 1}.svg`, data: enc.encode(O.exportSheetsSVG(D, NR, k, i)) }); });
+    files.push({ name: 'parameters.json', data: enc.encode(JSON.stringify(P, null, 2)) });
+    files.push({ name: 'README.txt', data: enc.encode(readme()) });
+    await offer('solar_system_orrery.zip', O.makeZip(files));
+  } catch (e) { console.error(e); toast('Xato: ' + e.message, 'err'); }
+  b.disabled = false; b.textContent = 'Hammasini yuklab olish (ZIP)';
+}
+function readme() {
+  return `QUYOSH TIZIMI ORRERI — lazer kesish to'plami\r\n\r\nFaner: ${D.t} mm, kerf ${D.P.kerf} mm, varaq ${NR.W}x${NR.H} mm, ${NR.sheets.length} varaq.\r\nSayyoralar: ${D.n}. Yuritma: ${D.P.drive === 'crank' ? "qo'l dastasi (Quyosh ustida)" : 'N20 motor'}.\r\nModul ${D.m} mm, bosim burchagi ${D.P.pa} gr, markazlar oralig'i ${D.a.toFixed(1)} mm.\r\n\r\nTartib: 1) solar_system_calibration.svg ni kesib sinang; 2) sheets/ dagi har bir varaq uchun avval engrave, keyin cut; 3) solar_system_assembly_guide.pdf bo'yicha yig'ing.\r\nSVG birligi: 0.01 mm (viewBox = mm x 100), CorelDRAW eksporti bilan bir xil. str0 = kesish, str1 = gravyura.\r\nSTL: millimetrda, Z yuqoriga, yig'ilgan holat.\r\nparameters.json — generatorga qayta kiritish uchun barcha parametrlar.\r\n\r\nO'QUV YAQINLASHUVI: Yer aniq 1 aylanish = 1 yil; boshqa sayyoralar tartibi va yo'nalishi to'g'ri, davrlari astronomik jihatdan aniq emas.\r\n`;
+}
+
+/* ------------------------------------------------------------ PDF --- */
+const pdfSafe = s => String(s).replace(/≈/g, '~').replace(/→/g, '->').replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/↔/g, '<->').replace(/ε/g, 'eps').replace(/α/g, 'alfa').replace(/≠/g, '!=').replace(/[ıİ]/g, 'i').replace(/[‘’ʻʼ]/g, "'").replace(/…/g, '...').replace(/−/g, '-');
+function svgToPng(svg, w) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => { const h = Math.round(w * img.height / img.width); const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h); res({ url: c.toDataURL('image/jpeg', 0.85), w, h }); };
+    img.onerror = rej;
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+async function makePDF() {
+  if (!window.jspdf) throw new Error('jsPDF yuklanmadi');
+  const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 16, CW = W - 2 * M;
+  let y = M;
+  const need = h => { if (y + h > 297 - M) { doc.addPage(); y = M; } };
+  const H1 = s => { need(14); doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.text(pdfSafe(s), M, y + 6); y += 12; };
+  const H2 = s => { need(12); doc.setFont('helvetica', 'bold'); doc.setFontSize(12.5); doc.setTextColor(150, 50, 10); doc.text(pdfSafe(s), M, y + 5); doc.setTextColor(0); y += 9; };
+  const Pg = (s, size = 9.6, indent = 0) => { doc.setFont('helvetica', 'normal'); doc.setFontSize(size); const lines = doc.splitTextToSize(pdfSafe(s), CW - indent); for (const l of lines) { need(size * 0.45); doc.text(l, M + indent, y + 3.5); y += size * 0.43; } y += 1.4; };
+  const Bul = (s, mark = '-') => { doc.setFont('helvetica', 'normal'); doc.setFontSize(9.4); const lines = doc.splitTextToSize(pdfSafe(s), CW - 6); lines.forEach((l, i) => { need(4.2); if (i === 0) doc.text(mark, M + 1, y + 3.5); doc.text(l, M + 6, y + 3.5); y += 4.1; }); y += 0.8; };
+  const table = (rows, widths) => {
+    doc.setFontSize(8.6);
+    rows.forEach((r, i) => {
+      need(5); doc.setFont('helvetica', i === 0 ? 'bold' : 'normal');
+      let x = M; r.forEach((c, j) => { const txt = doc.splitTextToSize(pdfSafe(c), widths[j] - 1.5)[0] || ''; doc.text(txt, x, y + 3.6); x += widths[j]; });
+      y += 4.6; if (i === 0) { doc.setDrawColor(160); doc.line(M, y - 0.6, M + CW, y - 0.6); }
+    });
+    y += 2;
+  };
+  // cover
+  H1("Quyosh tizimi orreri - yig'ish qo'llanmasi");
+  Pg(`Qo'l dastali, tishli uzatmali mexanik o'quv modeli. Faner ${D.t} mm, 20 W diod lazer. ${D.n} ta harakatlanuvchi sayyora, asos ø${D.P.baseD} mm, balandlik ~${D.Hmodel.toFixed(0)} mm, sayyoralar aylanish doirasi ø${(2 * D.maxSweep).toFixed(0)} mm.`);
+  try {
+    setExplode(0, true); render3D();
+    const shot = renderer.domElement.toDataURL('image/jpeg', 0.8);
+    const ar = renderer.domElement.height / renderer.domElement.width;
+    const iw = CW, ih = Math.min(120, iw * ar);
+    need(ih + 4); doc.addImage(shot, 'JPEG', M, y, ih / ar, ih); y += ih + 3;
+  } catch (e) { console.warn(e); }
+  Pg("O'QUV YAQINLASHUVI: sayyoralar to'g'ri tartibda (ichkisi tezroq) va bir yo'nalishda aylanadi" + (D.earthK ? ", Yer aniq 1 dasta aylanishi = 1 yil" : '') + ". Boshqa sayyoralarning orbital davrlari astronomik jihatdan aniq emas. 3D ilovadagi animatsiya - simulyatsiya; haqiqiy model qo'lda (yoki motor bilan) aylantiriladi.", 9.2);
+  H2('Asosiy parametrlar');
+  table([['Parametr', 'Qiymat', 'Parametr', 'Qiymat'],
+    ['Faner qalinligi', D.t + ' mm', 'Modul / bosim burchagi', `${D.m} mm / ${D.P.pa} gr`],
+    ['Kerf', D.P.kerf + ' mm', "Markazlar oralig'i a", D.a.toFixed(1) + ' mm'],
+    ['Val zazori', D.P.shaftClr + ' mm', 'Lyuft', D.P.backlash + ' mm'],
+    ['Tirqish zazori', D.P.slotClr + ' mm', 'Varaqlar', `${NR.sheets.length} x ${NR.W}x${NR.H} mm`],
+    ['Dyubel', 'ø' + D.P.dowel + ' mm', 'Massa', '~' + D.stab.mass.toFixed(0) + ' g']], [40, 35, 55, 48]);
+  // validation
+  H2('Mexanik tekshiruv natijalari');
+  for (const m of D.msgs) Bul(`[${LVL[m.level][0]}] ${CAT[m.cat]}: ${m.msg}`, m.level === 'error' ? '!' : m.level === 'warn' ? '*' : '+');
+  // gears
+  H2('Tishli uzatmalar va tezliklar');
+  const rows = [['Juft', 'z (yetakchi/yetaklanuvchi)', 'eps', 'Dasta 1 ayl.', 'Modeldagi davr', 'Haqiqiy davr']];
+  rows.push(['G0-D0', `${D.z0}/${D.zi}`, D.meshReport[0].eps.toFixed(2), D.wLay.toFixed(3), '-', '-']);
+  D.planets.forEach((p, i) => rows.push([`D${p.k}-G${p.k} ${p.def.uz}`, `${D.zd[i]}/${D.zp[i]}`, D.meshReport[i + 1].eps.toFixed(2), p.speed.toFixed(3), (1 / p.speed).toFixed(2) + ' ayl.', p.def.period.toFixed(2) + ' yil']));
+  table(rows, [40, 38, 16, 24, 30, 30]);
+  H2('Sayyoralar joylashuvi');
+  table([['Sayyora', 'Radius r', 'Orbita R', 'Yelka sathi', 'Markaz balandligi', 'Ustun']].concat(D.planets.map(p => [p.def.uz, p.r.toFixed(1), p.R.toFixed(1), p.zArm.toFixed(1), p.zc.toFixed(1), p.post + ' mm'])), [30, 24, 26, 30, 36, 30]);
+  // section drawing
+  try {
+    const img = await svgToPng(O.exportAssemblySVG(D), 1600);
+    doc.addPage(); y = M; H2("Yig'ish kesimi");
+    const ih = CW * img.h / img.w; doc.addImage(img.url, 'JPEG', M, y, CW, ih); y += ih + 4;
+  } catch (e) { console.warn(e); }
+  // steps
+  doc.addPage(); y = M; H1("Yig'ish bosqichlari");
+  for (const [title, items] of assemblySteps()) { H2(title); items.forEach(it => Bul(it)); }
+  // parts
+  doc.addPage(); y = M; H1("Qismlar ro'yxati");
+  table([['ID', 'Nomi', 'Soni', "O'lcham, mm"]].concat(D.parts.map(p => [p.id, p.name, String(p.qty), `${p.w.toFixed(1)} x ${p.h.toFixed(1)}`])).concat([['', 'Furnitura', '', '']]).concat(D.hardware.map(h => [h.id, h.name, String(h.qty), h.len ? 'L=' + h.len.toFixed(1) : ''])), [16, 120, 14, 28]);
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) { doc.setPage(i); doc.setFontSize(7.5); doc.setTextColor(120); doc.text(`Quyosh tizimi orreri - ${i}/${pages}`, W - M, 290, { align: 'right' }); doc.setTextColor(0); }
+  return doc.output('arraybuffer');
+}
+
+/* ------------------------------------------------------------ 3D --- */
+let mechView = false, renderer, scene, camera, root, G = {}, labels = [], playing = true, theta = 0, speed = 0.12, explode = 0, explodeTarget = 0, showLabels = true, stage = 3, dirty = true, lastT = 0;
+const cam = { target: new THREE.Vector3(0, 70, 0), r: 620, th: 0.9, ph: 1.05 };
+const MAT = {};
+function mats() {
+  const m = (c, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.78, metalness: 0.02 }, o));
+  MAT.ply = m(0xc9a26b); MAT.plyDark = m(0xa97f4c); MAT.gear = m(0xd9a35a); MAT.gear2 = m(0xb98446); MAT.ring = m(0xd8b583);
+  MAT.glass = m(0xc9a26b, { transparent: true, opacity: 0.18, depthWrite: false });
+  MAT.dowel = m(0xa8784a); MAT.sun = m(0xf2c544, { emissive: 0x6b4a00, emissiveIntensity: 0.35, roughness: 0.6 });
+  MAT.metal = m(0x8a8f99, { metalness: 0.6, roughness: 0.4 }); MAT.arm = m(0xc89a5f);
+}
+function initThree() {
+  const canvas = $('#c3d');
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0e1522);
+  camera = new THREE.PerspectiveCamera(36, 1, 1, 6000);
+  scene.add(new THREE.HemisphereLight(0xcfdcff, 0x2a1d10, 0.42));
+  const d1 = new THREE.DirectionalLight(0xfff3e2, 0.95); d1.position.set(300, 500, 260); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0x8fa8ff, 0.3); d2.position.set(-400, 200, -300); scene.add(d2);
+  // starfield
+  const sg = new THREE.BufferGeometry(), pts = [];
+  for (let i = 0; i < 900; i++) { const v = new THREE.Vector3().randomDirection ? new THREE.Vector3().randomDirection() : new THREE.Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); v.multiplyScalar(2200 + Math.random() * 1200); pts.push(v.x, v.y, v.z); }
+  sg.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0x8899bb, size: 3, sizeAttenuation: false })));
+  // table plane grid
+  const grid = new THREE.GridHelper(900, 18, 0x2a3a55, 0x1a2638); grid.position.y = -0.5; scene.add(grid);
+  G.grid = grid;
+  mats();
+  bindOrbit(canvas);
+  new ResizeObserver(resize).observe($('#viewport'));
+  resize();
+  requestAnimationFrame(loop);
+}
+function resize() {
+  const v = $('#viewport'), w = v.clientWidth, h = v.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); dirty = true;
+}
+function bindOrbit(c) {
+  let drag = null; const ptrs = new Map(); let pinch = 0;
+  c.addEventListener('pointerdown', e => { c.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); drag = { x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey }; });
+  c.addEventListener('pointermove', e => {
+    if (!ptrs.has(e.pointerId)) return;
+    const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) cam.r = Math.max(120, Math.min(2200, cam.r * pinch / d)); pinch = d; dirty = true; return; }
+    const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+    if (drag && drag.pan) { const s = cam.r / 800; const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0); cam.target.addScaledVector(right, -dx * s); cam.target.y += dy * s; }
+    else { cam.th -= dx * 0.007; cam.ph = Math.max(0.08, Math.min(Math.PI - 0.08, cam.ph - dy * 0.007)); }
+    dirty = true;
+  });
+  const up = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = 0; if (!ptrs.size) drag = null; };
+  c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
+  c.addEventListener('contextmenu', e => e.preventDefault());
+  c.addEventListener('wheel', e => { e.preventDefault(); cam.r = Math.max(120, Math.min(2200, cam.r * Math.exp(e.deltaY * 0.0012))); dirty = true; }, { passive: false });
+}
+function setView(v) {
+  const top = D ? D.Hmodel : 170;
+  cam.target.set(0, top * 0.45, 0);
+  if (v === 'iso') { cam.th = 0.9; cam.ph = 1.0; cam.r = 520; }
+  if (v === 'top') { cam.th = 0; cam.ph = 0.09; cam.r = 640; }
+  if (v === 'side') { cam.th = Math.PI / 2; cam.ph = Math.PI / 2 - 0.04; cam.r = 560; }
+  if (v === 'mech') { cam.th = 0.5; cam.ph = 1.18; cam.r = 330; cam.target.set(30, 35, 0); }
+  mechView = v === 'mech'; applyGlass();
+  dirty = true;
+}
+const geoCache = new Map();
+function toShape(sh) {
+  const s = new THREE.Shape();
+  if (sh.type === 'circle') s.absarc(sh.cx, sh.cy, sh.r, 0, Math.PI * 2, false);
+  else { s.moveTo(sh.pts[0][0], sh.pts[0][1]); for (let i = 1; i < sh.pts.length; i++) s.lineTo(sh.pts[i][0], sh.pts[i][1]); s.closePath(); }
+  return s;
+}
+function toPath(sh) {
+  const s = new THREE.Path();
+  if (sh.type === 'circle') s.absarc(sh.cx, sh.cy, sh.r, 0, Math.PI * 2, true);
+  else { s.moveTo(sh.pts[0][0], sh.pts[0][1]); for (let i = 1; i < sh.pts.length; i++) s.lineTo(sh.pts[i][0], sh.pts[i][1]); s.closePath(); }
+  return s;
+}
+function partGeo(id, depth) {
+  const key = id + '|' + depth;
+  if (geoCache.has(key)) return geoCache.get(key);
+  const p = D.parts.find(x => x.id === id);
+  const s = toShape(p.outer); p.holes.forEach(h => s.holes.push(toPath(h)));
+  const g = new THREE.ExtrudeGeometry(s, { depth: depth || D.t, bevelEnabled: false, curveSegments: 28 });
+  geoCache.set(key, g); return g;
+}
+function mesh(geo, mat, x = 0, y = 0, z = 0, rz = 0) { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.z = rz; return m; }
+function verticalPart(id, mat) { // part drawn in (u,v) plane -> vertical plane x=u, z=v, thickness centered on y
+  const g = partGeo(id).clone(); g.translate(0, 0, -D.t / 2); g.rotateX(Math.PI / 2);
+  return new THREE.Mesh(g, mat);
+}
+function cyl(r, z0, z1, mat, x = 0, y = 0, seg = 24) { const g = new THREE.CylinderGeometry(r, r, z1 - z0, seg); g.rotateX(Math.PI / 2); const m = new THREE.Mesh(g, mat); m.position.set(x, y, (z0 + z1) / 2); return m; }
+function labelSprite(text, color) {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 64; const x = c.getContext('2d');
+  x.font = '600 30px "Golos Text", system-ui, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillStyle = 'rgba(10,16,28,0.72)'; const w = Math.min(250, x.measureText(text).width + 28); x.beginPath(); x.roundRect ? x.roundRect(128 - w / 2, 10, w, 44, 10) : x.rect(128 - w / 2, 10, w, 44); x.fill();
+  x.fillStyle = color; x.fillRect(128 - w / 2 + 10, 28, 8, 8); x.fillStyle = '#f2f4f8'; x.fillText(text, 136, 33);
+  const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+  s.scale.set(48, 12, 1); s.renderOrder = 10; return s;
+}
+function buildModel() {
+  if (!renderer) return;
+  if (root) { scene.remove(root); root.traverse(o => { if (o.geometry && !geoCache.has(o.geometry.uuid)) o.geometry.dispose(); }); }
+  geoCache.forEach(g => g.dispose()); geoCache.clear(); labels = [];
+  root = new THREE.Group(); root.rotation.x = -Math.PI / 2; scene.add(root);
+  const t = D.t, L = D.L, zb = D.zb, lift = D.legH;
+  const base = new THREE.Group(); base.position.z = lift; root.add(base);
+  G = { grid: G.grid, base };
+  // static
+  const st = new THREE.Group(); base.add(st); G.static = st;
+  G.b0 = mesh(partGeo('B0'), MAT.plyDark, 0, 0, 0); G.b1 = mesh(partGeo('B1'), MAT.ply, 0, 0, t); st.add(G.b0, G.b1);
+  G.walls = new THREE.Group(); st.add(G.walls);
+  for (const w of D.walls) { const m = verticalPart('W', MAT.plyDark); m.rotation.z = 0; const g = new THREE.Group(); g.add(m); g.position.set(w.c[0], w.c[1], 2 * t); g.rotation.z = w.ang + Math.PI / 2; G.walls.add(g); }
+  G.deck = mesh(partGeo('DK'), MAT.ply, 0, 0, zb(L.deck)); st.add(G.deck);
+  if (D.gMotor) {
+    for (const lg of D.legs) { const m = verticalPart('LG', MAT.plyDark); const g = new THREE.Group(); g.add(m); const rr = D.P.baseD / 2 - 25; g.position.set(rr * Math.cos(lg.ang), rr * Math.sin(lg.ang), -lift); g.rotation.z = lg.ang; st.add(g); }
+    for (let i = 0; i < 3; i++) st.add(mesh(partGeo('MP'), MAT.plyDark, D.MOTOR[0], D.MOTOR[1], -(i + 1) * t));
+    const mb = new THREE.Mesh(new THREE.BoxGeometry(12, 10, 27), MAT.metal); mb.position.set(D.MOTOR[0], D.MOTOR[1], -13.5); st.add(mb);
+    const mg = new THREE.Group(); mg.position.set(D.MOTOR[0], D.MOTOR[1], 0); base.add(mg); G.motor = mg;
+    const pin = mesh(partGeo('M1'), MAT.gear2, 0, 0, zb(L.lvl0)); mg.add(pin, cyl(1.5, -6, zb(L.lvl0) + t, MAT.metal)); G.pinionMesh = pin;
+  }
+  // post group
+  const post = new THREE.Group(); base.add(post); G.post = post;
+  post.add(cyl(D.P.dowel / 2, t, D.postLen + t, MAT.dowel));
+  post.add(mesh(partGeo('G0'), MAT.gear, 0, 0, zb(L.lvl0), -Math.PI / D.z0));
+  const sunG = new THREE.Group(); post.add(sunG); G.sun = sunG;
+  for (const s of D.sunSlices) sunG.add(cyl(s.r, s.z, s.z + t, MAT.sun, 0, 0, 40));
+  if (D.crank) {
+    G.crank = new THREE.Group(); post.add(G.crank);
+    G.crank.add(mesh(partGeo('CR'), MAT.plyDark, 0, 0, D.crank.z));
+    G.crank.add(cyl(D.P.handleDowel / 2, D.crank.z, D.crank.top, MAT.dowel, D.crank.L, 0));
+    for (let i = 0; i < 6; i++) G.crank.add(mesh(partGeo('KN'), MAT.ring, D.crank.L, 0, D.crank.z + t + i * t + 0.01));
+  }
+  if (showLabels) { const s = labelSprite('Quyosh', '#f2c544'); s.position.set(0, 0, D.zSunC + D.Rs + 12); post.add(s); labels.push(s); }
+  // layshaft
+  const lay = new THREE.Group(); lay.position.set(D.LAY[0], D.LAY[1], 0); base.add(lay); G.lay = lay;
+  lay.add(cyl(D.P.dowel / 2, t, D.zDeckTop, MAT.dowel));
+  lay.add(mesh(partGeo('D0'), MAT.gear2, 0, 0, zb(L.lvl0), Math.PI));
+  for (let k = 1; k <= D.n; k++) { lay.add(mesh(partGeo('LS'), MAT.ring, 0, 0, zb(L.spacer(k)))); lay.add(mesh(partGeo('D' + k), MAT.gear2, 0, 0, zb(L.gear(k)), Math.PI)); }
+  lay.add(mesh(partGeo('LS'), MAT.ring, 0, 0, zb(L.top)));
+  // sleeves
+  G.sleeves = []; G.armInit = [];
+  for (let k = 1; k <= D.n; k++) {
+    const g = new THREE.Group(); base.add(g); G.sleeves.push(g);
+    const ai = (k * 2.39996) % (Math.PI * 2); G.armInit.push(ai);
+    const items = [];
+    for (let Lx = L.spacer(k); Lx <= L.arm(k); Lx++) {
+      let kind = 'ring';
+      if (Lx === L.gear(k)) kind = 'gear'; else if (Lx === L.arm(k)) kind = 'arm'; else if (k < D.n && Lx === L.collar(k)) kind = 'collar'; else if (k === D.n && Lx === L.top) kind = 'cd';
+      items.push([Lx, kind]);
+    }
+    let run = null;
+    const flush = () => { if (!run) return; const z0 = zb(run[0]), z1 = zb(run[1]) + t; g.add(mesh(partGeo('R' + k, z1 - z0), MAT.ring, 0, 0, z0)); run = null; };
+    for (const [Lx, kind] of items) {
+      if (kind === 'ring') { if (run && run[1] === Lx - 1) run[1] = Lx; else { flush(); run = [Lx, Lx]; } continue; }
+      flush();
+      if (kind === 'gear') g.add(mesh(partGeo('G' + k), MAT.gear, 0, 0, zb(Lx), -Math.PI / D.zp[k - 1] - ai));
+      if (kind === 'collar') g.add(mesh(partGeo('C' + k), MAT.plyDark, 0, 0, zb(Lx)));
+      if (kind === 'cd') g.add(mesh(partGeo('CD'), MAT.plyDark, 0, 0, zb(Lx)));
+      if (kind === 'arm') g.add(mesh(partGeo('A' + k), MAT.arm, 0, 0, zb(Lx)));
+    }
+    flush();
+    // planet
+    const p = D.planets[k - 1];
+    const pg = new THREE.Group(); pg.position.set(p.R, 0, p.zc); g.add(pg);
+    const pm = new THREE.MeshStandardMaterial({ color: new THREE.Color(p.def.color).lerp(new THREE.Color(0xd9b98a), 0.25), roughness: 0.7 });
+    const A = verticalPart(`P${k}A`, pm); pg.add(A);
+    const B = verticalPart(`P${k}B`, pm); B.rotation.z = Math.PI / 2; pg.add(B);
+    if (D.parts.find(x => x.id === `P${k}Q`)) for (let q = 0; q < 4; q++) pg.add(mesh(partGeo(`P${k}Q`), pm, 0, 0, -t / 2, q * Math.PI / 2));
+    if (p.ring) pg.add(mesh(partGeo(`P${k}H`), new THREE.MeshStandardMaterial({ color: 0xe8d49a, roughness: 0.7 }), 0, 0, -t / 2));
+    if (showLabels) { const s = labelSprite(p.def.uz, p.def.color); s.position.set(0, 0, p.r + (p.ring ? 8 : 10)); pg.add(s); labels.push(s); }
+    g.userData.planet = pg;
+  }
+  setExplode(explode, true);
+  applyStage();
+  dirty = true;
+}
+function applyStage() {
+  if (!G.sleeves) return;
+  const n = D.n;
+  G.sleeves.forEach((g, i) => g.visible = stage >= 3 || (stage === 2 && i === 0));
+  if (G.lay) G.lay.children.forEach(ch => { // hide driver gears beyond stage
+    const z = ch.position.z; const lvl = Math.round(z / D.t);
+    ch.visible = stage >= 3 || ch.geometry.type === 'CylinderGeometry' || lvl <= (stage === 2 ? D.L.gear(1) : D.L.lvl0);
+  });
+  if (G.sun) G.sun.visible = stage >= 2;
+  applyGlass();
+  dirty = true;
+}
+function applyGlass() {
+  if (!G.deck) return;
+  G.deck.material = mechView ? MAT.glass : MAT.ply;
+  G.walls.children.forEach(g => g.children[0].material = mechView ? MAT.glass : MAT.plyDark);
+  dirty = true;
+}
+function setExplode(e, immediate) {
+  if (immediate) explode = e;
+  if (!G.sleeves) return;
+  const x = explode, t = D.t;
+  G.b0.position.z = -30 * x; G.b1.position.z = t - 12 * x;
+  G.deck.position.z = D.zb(D.L.deck) + 90 * x;
+  G.walls.position.z = 25 * x;
+  G.lay.position.x = D.LAY[0] + 95 * x;
+  G.post.position.z = 0;
+  if (G.sun) G.sun.position.z = 150 * x;
+  if (G.crank) G.crank.position.z = 175 * x;
+  G.sleeves.forEach((g, i) => { g.position.z = x * (20 + (D.n - i) * 9); g.userData.planet.position.z = D.planets[i].zc + x * 35; });
+  if (G.motor) G.motor.position.z = -18 * x;
+  dirty = true;
+}
+function updatePose() {
+  if (!G.sleeves) return;
+  G.post.rotation.z = theta;
+  G.lay.rotation.z = theta * D.wLay;
+  G.sleeves.forEach((g, i) => g.rotation.z = theta * D.speeds[i] + G.armInit[i]);
+  if (G.motor) G.motor.rotation.z = -theta * D.wLay * D.zi / D.gMotor.z + (D.zi % 2 ? Math.PI : Math.PI + Math.PI / D.gMotor.z);
+}
+function render3D() {
+  camera.position.set(cam.target.x + cam.r * Math.sin(cam.ph) * Math.sin(cam.th), cam.target.y + cam.r * Math.cos(cam.ph), cam.target.z + cam.r * Math.sin(cam.ph) * Math.cos(cam.th));
+  camera.lookAt(cam.target);
+  updatePose();
+  renderer.render(scene, camera);
+}
+function loop(ts) {
+  const dt = Math.min(0.05, (ts - lastT) / 1000 || 0); lastT = ts;
+  if (playing && D) { theta += dt * speed * Math.PI * 2; dirty = true; }
+  if (Math.abs(explode - explodeTarget) > 0.001) { explode += (explodeTarget - explode) * Math.min(1, dt * 6); setExplode(explode, true); }
+  if (dirty && root) { render3D(); dirty = false; updateCounter(); }
+  requestAnimationFrame(loop);
+}
+function updateCounter() {
+  const turns = theta / (Math.PI * 2);
+  $('#turns').textContent = turns.toFixed(2);
+  $('#earthYears').textContent = D.earthK ? (turns * D.speeds[2]).toFixed(2) + ' yil' : '–';
+}
+function exportSTL() {
+  // assembled pose, design frame (mm, Z up)
+  const e0 = explode; setExplode(0, true); updatePose(); root.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert();
+  const tris = [];
+  const v = new THREE.Vector3();
+  root.traverse(o => {
+    if (!o.isMesh || !o.visible) return;
+    let vis = true; let q = o; while (q) { if (!q.visible) vis = false; q = q.parent; } if (!vis) return;
+    const m = new THREE.Matrix4().multiplyMatrices(inv, o.matrixWorld);
+    m.premultiply(new THREE.Matrix4().makeTranslation(0, 0, 0));
+    const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry;
+    const pos = g.attributes.position;
+    for (let i = 0; i < pos.count; i += 3) { const tri = []; for (let j = 0; j < 3; j++) { v.fromBufferAttribute(pos, i + j).applyMatrix4(m); tri.push(v.x, v.y, v.z + 0); } tris.push(tri); }
+  });
+  setExplode(e0, true);
+  const buf = new ArrayBuffer(84 + tris.length * 50), dv = new DataView(buf);
+  const head = 'Quyosh tizimi orreri - mm, Z up, assembled'; for (let i = 0; i < 80; i++) dv.setUint8(i, i < head.length ? head.charCodeAt(i) : 32);
+  dv.setUint32(80, tris.length, true);
+  let o = 84;
+  for (const t of tris) {
+    const ax = t[3] - t[0], ay = t[4] - t[1], az = t[5] - t[2], bx = t[6] - t[0], by = t[7] - t[1], bz = t[8] - t[2];
+    let nx = ay * bz - az * by, ny = az * bx - ax * bz, nz = ax * by - ay * bx; const l = Math.hypot(nx, ny, nz) || 1;
+    dv.setFloat32(o, nx / l, true); dv.setFloat32(o + 4, ny / l, true); dv.setFloat32(o + 8, nz / l, true); o += 12;
+    for (let j = 0; j < 9; j++) { dv.setFloat32(o, t[j], true); o += 4; }
+    dv.setUint16(o, 0, true); o += 2;
+  }
+  return buf;
+}
+
+/* ------------------------------------------------------------ wiring --- */
+function wire() {
+  $('#bPlay').onclick = () => { playing = !playing; $('#bPlay').textContent = playing ? 'To\'xtatish' : 'Boshlash'; $('#bPlay').setAttribute('aria-pressed', playing); };
+  $('#bReset').onclick = () => { theta = 0; dirty = true; };
+  $('#bExplode').onclick = () => { explodeTarget = explodeTarget > 0.5 ? 0 : 1; $('#bExplode').textContent = explodeTarget ? "Yig'ilgan" : 'Ajratilgan'; };
+  $('#speed').oninput = e => { speed = +e.target.value; $('#speedOut').textContent = speed.toFixed(2) + ' ayl/s'; };
+  $('#bLabels').onclick = () => { showLabels = !showLabels; $('#bLabels').setAttribute('aria-pressed', showLabels); buildModel(); };
+  document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => setView(b.dataset.view));
+  document.querySelectorAll('[data-stage]').forEach(b => b.onclick = () => { stage = +b.dataset.stage; document.querySelectorAll('[data-stage]').forEach(x => x.classList.toggle('on', x === b)); applyStage(); });
+  document.querySelectorAll('.tabbar [data-tab]').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabbar [data-tab]').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
+    document.querySelectorAll('.tabpane').forEach(p => p.hidden = p.id !== 'tab-' + b.dataset.tab);
+    try { localStorage.setItem('orrery-tab', b.dataset.tab); } catch (e) { }
+  });
+  $('#bGenerate').onclick = () => { regenerate(); toast('Geometriya qayta yaratildi', 'ok'); };
+  $('#bDefaults').onclick = () => { Object.assign(P, O.defaults()); syncInputs(); regenerate(); toast('Standart parametrlar tiklandi'); };
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { playing = false; $('#bPlay').textContent = 'Boshlash'; }
+  try { const tb = localStorage.getItem('orrery-tab'); if (tb) { const b = document.querySelector(`.tabbar [data-tab="${tb}"]`); b && b.click(); } } catch (e) { }
+}
+
+function start() {
+  buildControls(); wire();
+  try { initThree(); } catch (e) { console.error(e); $('#viewport').innerHTML = '<p class="banner err">WebGL ishlamadi — 3D ko\'rinish mavjud emas, fayllar baribir yaratiladi.</p>'; }
+  regenerate();
+  setView('iso');
+  getDL();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+
+</script>
+
+</body></html>

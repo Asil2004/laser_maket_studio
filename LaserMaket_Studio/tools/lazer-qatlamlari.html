@@ -1,0 +1,1201 @@
+<!doctype html><html><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lazer Qatlamlari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Maket: chapda boshqaruv paneli, o'ngda yig'ilgan ko'rinish, tahlil va qatlamlar qatori. Telefonda bitta ustun. */
+:root{
+  --bg:#eaeef0; --panel:#f6f8f9; --stage:#d5dcdf; --ink:#10232a; --muted:#55686f;
+  --line:#c8d2d6; --accent:#0d5c6b; --accent-ink:#ffffff; --cut:#d92d27; --ok:#1d7a4d; --warn:#a85d00;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e181c; --panel:#152227; --stage:#0a1215; --ink:#e3eef0; --muted:#8ba2a9;
+    --line:#2a3d43; --accent:#58c4d6; --accent-ink:#06222a; --cut:#ff5b50; --ok:#5fd394; --warn:#f0a53a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e181c; --panel:#152227; --stage:#0a1215; --ink:#e3eef0; --muted:#8ba2a9;
+  --line:#2a3d43; --accent:#58c4d6; --accent-ink:#06222a; --cut:#ff5b50; --ok:#5fd394; --warn:#f0a53a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.5;
+  padding-inline:20px;padding-block:28px 40px}
+.wrap{max-width:1180px;margin-inline:auto;display:flex;flex-direction:column;gap:24px}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lead{margin:8px 0 0;color:var(--muted);max-width:62ch}
+.app{display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.app{grid-template-columns:minmax(0,1fr)}}
+.rail{display:flex;flex-direction:column;gap:16px;min-width:0}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.box h2{font-family:var(--font-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0}
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;
+  border:1.5px dashed var(--line);border-radius:6px;padding:14px;cursor:pointer;color:var(--muted);transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.drop strong{color:var(--ink);font-weight:600}
+.drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.srcwrap{display:flex;flex-direction:column;gap:8px}
+#srcView{width:100%;height:auto;border-radius:4px;background:var(--stage);display:block}
+.cap{font-size:12px;color:var(--muted)}
+.row{display:flex;flex-direction:column;gap:6px}
+.row label,.row .lab{display:flex;justify-content:space-between;gap:8px;font-weight:500}
+.val{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+input[type=number]{width:100%;font:inherit;font-family:var(--font-mono);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px}
+input:disabled{opacity:.4}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg label{position:relative;text-align:center;padding:8px 6px;cursor:pointer;font-weight:500;background:var(--bg);white-space:nowrap}
+.seg input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.seg label:has(input:checked){background:var(--accent);color:var(--accent-ink)}
+.seg label:has(input:focus-visible){outline:2px solid var(--ink);outline-offset:-3px}
+.btn{font:inherit;font-weight:600;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:9px 14px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:5px 10px;font-size:12px;font-weight:500}
+.btn[disabled]{opacity:.5;cursor:default}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+details.box summary{cursor:pointer;font-family:var(--font-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+details.box[open] summary{margin-bottom:14px}
+details.box .inner{display:flex;flex-direction:column;gap:14px}
+.stage{display:flex;flex-direction:column;gap:16px;min-width:0}
+.tools{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.tools .seg{min-width:260px;flex:0 1 340px}
+.tools label.chk{display:flex;gap:6px;align-items:center;font-weight:500;cursor:pointer}
+.wall{background:var(--stage);border:1px solid var(--line);border-radius:8px;padding:clamp(16px,4vw,36px);display:flex;justify-content:center;position:relative;transition:opacity .15s}
+.wall.busy{opacity:.55}
+#preview{width:100%;max-width:620px;height:auto;display:block}
+.status{position:absolute;left:12px;top:10px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+.stats b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.an{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px 28px}
+.an>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.an h3{margin:0;font-family:var(--font-mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.big{font-family:var(--font-display);font-size:34px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-family:var(--font-mono);font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
+.pill{display:inline-block;align-self:flex-start;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid currentColor}
+.pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)}
+.pal{display:flex;height:22px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+.pal i{display:block;min-width:2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;border:1px solid var(--line)}
+.kbars{display:flex;align-items:flex-end;gap:6px;height:96px}
+.kbar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:var(--muted);min-width:0}
+.kbar i{display:block;width:100%;height:calc(var(--h)*56px);background:var(--line);border-radius:3px 3px 0 0;transition:background .15s}
+.kbar:hover i{background:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.kbar.cur i{background:var(--accent)}
+.kbar.rec i{box-shadow:0 0 0 2px var(--panel),0 0 0 3px var(--ok)}
+.kbar span{font-family:var(--font-mono);font-size:10px;font-variant-numeric:tabular-nums}
+.kbar b{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--ink)}
+.kbar:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.warns{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;grid-column:1/-1}
+.warns li{display:flex;gap:9px;align-items:flex-start;font-size:13px}
+.warns li::before{content:"";flex:0 0 8px;height:8px;margin-top:6px;border-radius:50%;background:var(--ok)}
+.warns li.w::before{background:var(--warn)}
+.dl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.dl .hint{flex:1 1 240px;font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card canvas{width:100%;height:auto;display:block;border-radius:4px;background:var(--stage)}
+.card h3{margin:0;font-size:13px;font-weight:600}
+.card .meta{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.card .acts{display:flex;gap:6px;flex-wrap:wrap}
+.note{font-size:12px;color:var(--muted);margin:0}
+.badge{font-family:var(--font-mono);font-size:11px;color:var(--accent);margin:0}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);
+  padding:9px 14px;border-radius:6px;font-size:13px;max-width:calc(100vw - 32px);opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Lazer Qatlamlari</h1>
+    <p class="lead">Rasmni yuklang. Sayt doirani o'zi topadi, ranglarni tahlil qilib qatlamlarga ajratadi va har qatlam uchun lazerda kesiladigan SVG va DXF fayl beradi. Rasm qurilmangizdan chiqmaydi.</p>
+  </header>
+
+  <main class="app">
+    <aside class="rail">
+      <section class="box">
+        <h2>Rasm</h2>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="image/*">
+          <strong>Rasmni tanlang yoki tashlang</strong>
+          <span class="cap">PNG, JPG, WEBP. Ctrl+V bilan qo'yish ham ishlaydi.</span>
+        </label>
+        <div class="srcwrap">
+          <canvas id="srcView" width="300" height="300" aria-label="Asl rasm va kesiladigan joy"></canvas>
+          <p class="badge" id="srcBadge" aria-live="polite">Namuna rasm</p>
+          <div class="btns">
+            <button class="btn sm" id="detectBtn" type="button">Doirani qayta topish</button>
+            <button class="btn sm" id="sampleBtn" type="button">Namuna rasm</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="box">
+        <h2>Shakl va kadr</h2>
+        <div class="seg" role="radiogroup" aria-label="Shakl">
+          <label><input type="radio" name="shape" value="auto" checked>Avto kontur</label>
+          <label><input type="radio" name="shape" value="circle">Doira</label>
+          <label><input type="radio" name="shape" value="rect">To'rtburchak</label>
+        </div>
+        <div class="row"><label for="zoom">Kadr kattaligi <span class="val" id="zoomV"></span></label><input type="range" id="zoom" min="30" max="100" value="100"></div>
+        <div class="row"><label for="ox">Chapga / o'ngga <span class="val" id="oxV"></span></label><input type="range" id="ox" min="-100" max="100" value="0"></div>
+        <div class="row"><label for="oy">Yuqoriga / pastga <span class="val" id="oyV"></span></label><input type="range" id="oy" min="-100" max="100" value="0"></div>
+      </section>
+
+      <section class="box">
+        <h2>Qatlamlar</h2>
+        <div class="row"><label for="n">Qatlamlar soni <span class="val" id="nV"></span></label><input type="range" id="n" min="3" max="8" value="5"></div>
+        <div class="row"><label for="size">Eng katta o'lcham, mm</label><input type="number" id="size" min="30" max="2000" step="10" value="300"></div>
+        <div class="row"><label for="feat">Eng ingichka detal <span class="val" id="featV"></span></label><input type="range" id="feat" min="1" max="6" step="0.5" value="2"></div>
+        <div class="row"><label for="band">Ingichka rang chizig'i <span class="val" id="bandV"></span></label><input type="range" id="band" min="0" max="4" step="0.2" value="1.8"></div>
+        <p class="note">Detal ingichka bo'lsa qatlam sinadi. Fanera uchun 2 dan 3 mm gacha tavsiya qilinadi.</p>
+      </section>
+
+      <details class="box">
+        <summary>Qo'shimcha</summary>
+        <div class="inner">
+          <div class="row"><label for="smooth">Chegara silliqligi <span class="val" id="smoothV"></span></label><input type="range" id="smooth" min="0" max="3" value="1"></div>
+          <div class="row"><label for="soften">Shovqinni tozalash <span class="val" id="softenV"></span></label><input type="range" id="soften" min="0" max="3" value="1"></div>
+          <div class="row"><label for="thick">Material qalinligi, mm</label><input type="number" id="thick" min="0.5" max="20" step="0.5" value="3"></div>
+          <div class="row"><span class="lab">SVG chiziq uslubi</span>
+            <div class="seg" role="radiogroup" aria-label="SVG chiziq uslubi"><label><input type="radio" name="sstyle" value="corel" checked>Corel, 0.2 mm</label><label><input type="radio" name="sstyle" value="red">Qizil, 0.1 mm</label></div></div>
+        </div>
+      </details>
+    </aside>
+
+    <section class="stage">
+      <div class="tools">
+        <div class="seg" role="radiogroup" aria-label="Ko'rinish">
+          <label><input type="radio" name="mat" value="orig" checked>Asl ranglar</label>
+          <label><input type="radio" name="mat" value="ply">Fanera</label>
+          <label><input type="radio" name="mat" value="line">Chiziqlar</label>
+        </div>
+        <label class="chk" for="shadow"><input type="checkbox" id="shadow" checked>Soya</label>
+      </div>
+      <div class="wall" id="wall">
+        <span class="status" id="status" aria-live="polite">Hisoblanmoqda</span>
+        <canvas id="preview" width="620" height="620" aria-label="Qatlamlar yig'ilgan ko'rinishi"></canvas>
+      </div>
+      <div class="stats" id="stats"></div>
+
+      <section class="box">
+        <h2>Tahlil</h2>
+        <div class="an">
+          <div>
+            <h3>Rang aniqligi</h3>
+            <div class="big" id="fidBig"></div>
+            <span class="pill" id="fidPill"></span>
+            <p class="note" id="fidNote"></p>
+          </div>
+          <div>
+            <h3>Qatlam ranglari va ulushi</h3>
+            <div class="pal" id="pal"></div>
+            <div class="legend" id="legend"></div>
+          </div>
+          <div>
+            <h3>Rang xatosi qatlam soniga qarab</h3>
+            <div class="kbars" id="kbars"></div>
+            <p class="note" id="kNote"></p>
+          </div>
+          <ul class="warns" id="warns"></ul>
+        </div>
+      </section>
+
+      <div class="dl" id="dl">
+        <button class="btn primary" id="zipBtn" type="button">Hammasini yuklab olish (ZIP)</button>
+        <button class="btn" id="sheetBtn" type="button">Bitta list SVG</button>
+        <span class="hint">ZIP ichida: har qatlam uchun SVG va DXF, bitta list SVG, ko'rinish rasmi va hisobot. Egri chiziqlar kam nuqtali Bezier, burchaklar o‘tkir, o‘lcham mm da.</span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+</div>
+<div id="toast" role="status"></div>
+
+<script src="../vendor/jszip.min.js"></script>
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+function boxBlur(a,w,h,r){
+  if(r<=0)return a;
+  const tmp=new Float32Array(a.length),out=new Float32Array(a.length),pre=new Float64Array(Math.max(w,h)+1);
+  for(let y=0;y<h;y++){const o=y*w;pre[0]=0;for(let x=0;x<w;x++)pre[x+1]=pre[x]+a[o+x];
+    for(let x=0;x<w;x++){const lo=Math.max(0,x-r),hi=Math.min(w-1,x+r);tmp[o+x]=(pre[hi+1]-pre[lo])/(hi-lo+1)}}
+  for(let x=0;x<w;x++){pre[0]=0;for(let y=0;y<h;y++)pre[y+1]=pre[y]+tmp[y*w+x];
+    for(let y=0;y<h;y++){const lo=Math.max(0,y-r),hi=Math.min(h-1,y+r);out[y*w+x]=(pre[hi+1]-pre[lo])/(hi-lo+1)}}
+  return out;
+}
+
+/* Gauss blur (ajratilgan yadro), chekka piksellar takrorlanadi */
+function gaussBlur(a,w,h,sigma){
+  if(sigma<=0.05)return a;
+  const r=Math.max(1,Math.ceil(sigma*3)),k=new Float32Array(2*r+1);let s=0;
+  for(let i=-r;i<=r;i++){k[i+r]=Math.exp(-i*i/(2*sigma*sigma));s+=k[i+r]}
+  for(let i=0;i<k.length;i++)k[i]/=s;
+  const tmp=new Float32Array(a.length),out=new Float32Array(a.length);
+  for(let y=0;y<h;y++){const o=y*w;
+    for(let x=0;x<w;x++){let acc=0;
+      for(let t=-r;t<=r;t++){let xx=x+t;xx=xx<0?0:xx>=w?w-1:xx;acc+=a[o+xx]*k[t+r]}
+      tmp[o+x]=acc}}
+  for(let y=0;y<h;y++)
+    for(let x=0;x<w;x++){let acc=0;
+      for(let t=-r;t<=r;t++){let yy=y+t;yy=yy<0?0:yy>=h?h-1:yy;acc+=tmp[yy*w+x]*k[t+r]}
+      out[y*w+x]=acc}
+  return out;
+}
+
+const LIN=new Float32Array(256);
+for(let i=0;i<256;i++){const c=i/255;LIN[i]=c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4)}
+const FT=new Float32Array(3600);
+for(let i=0;i<3600;i++){const t=i/3000;FT[i]=t>0.008856?Math.cbrt(t):7.787*t+16/116}
+function toLab(R,G,B,N){
+  const L=new Float32Array(N),A=new Float32Array(N),Bb=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    const r=LIN[(R[i]+.5)|0],g=LIN[(G[i]+.5)|0],b=LIN[(B[i]+.5)|0];
+    const X=(0.4124*r+0.3576*g+0.1805*b)*1.05211,Y=0.2126*r+0.7152*g+0.0722*b,Z=(0.0193*r+0.1192*g+0.9505*b)*0.91841;
+    const fx=FT[(X*3000+.5)|0],fy=FT[(Y*3000+.5)|0],fz=FT[(Z*3000+.5)|0];
+    L[i]=116*fy-16;A[i]=500*(fx-fy);Bb[i]=200*(fy-fz);
+  }
+  return[L,A,Bb];
+}
+
+/* Chetni saqlovchi (bilateral) silliqlash: tonlar orasidagi chegara o'tkir qoladi, tekis joylar tozalanadi */
+function bilateral(L,A,B,w,h,rad,sS,sR){
+  const D=2*rad+1,ws=new Float32Array(D*D);
+  for(let dy=-rad;dy<=rad;dy++)for(let dx=-rad;dx<=rad;dx++)ws[(dy+rad)*D+dx+rad]=Math.exp(-(dx*dx+dy*dy)/(2*sS*sS));
+  const cap=(3.5*sR)*(3.5*sR),LUT=new Float32Array(1024),inv=1023/cap;
+  for(let i=0;i<1024;i++)LUT[i]=Math.exp(-(i/inv)/(2*sR*sR));
+  const oL=new Float32Array(L.length),oA=new Float32Array(L.length),oB=new Float32Array(L.length);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const i=y*w+x,l0=L[i],a0=A[i],b0=B[i];let sw=0,sl=0,sa=0,sb=0;
+    for(let dy=-rad;dy<=rad;dy++){let yy=y+dy;yy=yy<0?0:yy>=h?h-1:yy;
+      for(let dx=-rad;dx<=rad;dx++){let xx=x+dx;xx=xx<0?0:xx>=w?w-1:xx;
+        const j=yy*w+xx,dl=L[j]-l0,da=A[j]-a0,db=B[j]-b0,d2=dl*dl+da*da+db*db;
+        if(d2>cap)continue;
+        const wt=ws[(dy+rad)*D+dx+rad]*LUT[(d2*inv)|0];
+        sw+=wt;sl+=wt*L[j];sa+=wt*A[j];sb+=wt*B[j];}}
+    oL[i]=sl/sw;oA[i]=sa/sw;oB[i]=sb/sw;
+  }
+  return[oL,oA,oB];
+}
+
+/* K-means (Lab). Qaytaradi markazlar va namunadagi o'rtacha kvadratik xato */
+function fitCenters(S,L,A,B,k,seed){
+  const m=S.length,rng=mulberry32(seed||7),C=new Float64Array(k*3),d=new Float64Array(m).fill(1e18);
+  const c0=S[(rng()*m)|0];C[0]=L[c0];C[1]=A[c0];C[2]=B[c0];
+  for(let c=1;c<k;c++){
+    let tot=0;
+    for(let j=0;j<m;j++){const p=S[j],dx=L[p]-C[(c-1)*3],dy=A[p]-C[(c-1)*3+1],dz=B[p]-C[(c-1)*3+2],dd=dx*dx+dy*dy+dz*dz;if(dd<d[j])d[j]=dd;tot+=d[j]}
+    let r=rng()*tot,pick=m-1;
+    for(let j=0;j<m;j++){r-=d[j];if(r<=0){pick=j;break}}
+    const p=S[pick];C[c*3]=L[p];C[c*3+1]=A[p];C[c*3+2]=B[p];
+  }
+  let sse=0;
+  for(let it=0;it<24;it++){
+    const sum=new Float64Array(k*3),cnt=new Int32Array(k);sse=0;
+    for(let j=0;j<m;j++){
+      const p=S[j];let best=0,bd=1e18;
+      for(let c=0;c<k;c++){const dx=L[p]-C[c*3],dy=A[p]-C[c*3+1],dz=B[p]-C[c*3+2],dd=dx*dx+dy*dy+dz*dz;if(dd<bd){bd=dd;best=c}}
+      sum[best*3]+=L[p];sum[best*3+1]+=A[p];sum[best*3+2]+=B[p];cnt[best]++;sse+=bd;
+    }
+    for(let c=0;c<k;c++)if(cnt[c]){C[c*3]=sum[c*3]/cnt[c];C[c*3+1]=sum[c*3+1]/cnt[c];C[c*3+2]=sum[c*3+2]/cnt[c]}
+  }
+  return{C,sse};
+}
+/* Qo'shni (yorqinlik bo'yicha) tonlarni birlashtirish: qatlam aniqlikni thr (ΔE birligida) dan kam oshirsa, u keraksiz */
+function wardMerge(C,cnt,sse,total,thr,minK){
+  const k=cnt.length,ids=[];for(let c=0;c<k;c++)if(cnt[c]>0)ids.push(c);
+  ids.sort((a,b)=>C[a*3]-C[b*3]);
+  const parent=Array.from({length:k},(_,i)=>i);
+  while(ids.length>minK){
+    let bi=-1,bc=1e30;
+    for(let i=0;i<ids.length-1;i++){
+      const a=ids[i],b=ids[i+1],dx=C[a*3]-C[b*3],dy=C[a*3+1]-C[b*3+1],dz=C[a*3+2]-C[b*3+2];
+      const cost=cnt[a]*cnt[b]/(cnt[a]+cnt[b])*(dx*dx+dy*dy+dz*dz);
+      if(cost<bc){bc=cost;bi=i}
+    }
+    const dr=Math.sqrt((sse+bc)/total)-Math.sqrt(sse/total);
+    if(dr>thr)break;
+    const a=ids[bi],b=ids[bi+1],na=cnt[a],nb=cnt[b];
+    for(let j=0;j<3;j++)C[a*3+j]=(C[a*3+j]*na+C[b*3+j]*nb)/(na+nb);
+    cnt[a]=na+nb;cnt[b]=0;parent[b]=a;sse+=bc;ids.splice(bi+1,1);
+  }
+  const find=x=>{while(parent[x]!==x)x=parent[x];return x};
+  return{ids,find,sse};
+}
+
+function sampleIdx(region,N,m){
+  const idx=[];for(let i=0;i<N;i++)if(region[i])idx.push(i);
+  const rng=mulberry32(11),n=Math.min(idx.length,m),S=new Int32Array(n);
+  for(let j=0;j<n;j++)S[j]=idx[(rng()*idx.length)|0];
+  return S;
+}
+/* Qatlamlar soni bo'yicha rang xatosi va tavsiya */
+function recommendK(L,A,B,region,N){
+  const S=sampleIdx(region,N,7000),rms=[];
+  for(let k=3;k<=8;k++){let best=1e18;for(let s=0;s<2;s++){const f=fitCenters(S,L,A,B,k,5+s*13);if(f.sse<best)best=f.sse}rms.push(Math.sqrt(best/S.length))}
+  // tavsiya: 8 ta tondan boshlab, aniqlikka deyarli ta'sir qilmaydigan tonlarni birlashtiramiz
+  const f8=fitCenters(S,L,A,B,8,5),C8=Float64Array.from(f8.C),cnt8=new Float64Array(8);let sse8=0;
+  for(let j=0;j<S.length;j++){const p=S[j];let best=0,bd=1e18;for(let c=0;c<8;c++){const dx=L[p]-C8[c*3],dy=A[p]-C8[c*3+1],dz=B[p]-C8[c*3+2],dd=dx*dx+dy*dy+dz*dz;if(dd<bd){bd=dd;best=c}}cnt8[best]++;sse8+=bd}
+  const wm=wardMerge(C8,cnt8,sse8,S.length,0.7,3);
+  const rec=Math.min(6,wm.ids.length);
+  return{rms,rec};
+}
+function classify(L,A,B,region,N,k,thr){
+  const S=sampleIdx(region,N,9000);let bestFit=null;
+  for(let s=0;s<3;s++){const f=fitCenters(S,L,A,B,k,3+s*17);if(!bestFit||f.sse<bestFit.sse)bestFit=f}
+  const C=Float64Array.from(bestFit.C);let total=0;for(let i=0;i<N;i++)total+=region[i];
+  const raw=new Int8Array(N).fill(-1);
+  let cnt=new Float64Array(k),sse=0;
+  for(let p=0;p<N;p++){
+    if(!region[p])continue;
+    let best=0,bd=1e18;
+    for(let c=0;c<k;c++){const dx=L[p]-C[c*3],dy=A[p]-C[c*3+1],dz=B[p]-C[c*3+2],dd=dx*dx+dy*dy+dz*dz;if(dd<bd){bd=dd;best=c}}
+    raw[p]=best;cnt[best]++;sse+=bd;
+  }
+  const wm=wardMerge(C,cnt,sse,Math.max(1,total),thr==null?0.25:thr,3);
+  const rank=new Int8Array(k).fill(-1);wm.ids.forEach((c,r)=>rank[c]=r);
+  const cls=new Int8Array(N).fill(-1);
+  for(let p=0;p<N;p++)if(region[p])cls[p]=rank[wm.find(raw[p])];
+  return{cls,used:wm.ids.length};
+}
+
+/* Evklid masofasi (Felzenszwalb) */
+function dist2(w,h,isTarget){
+  const INF=1e9,f=new Float64Array(w*h);
+  for(let i=0;i<w*h;i++)f[i]=isTarget[i]?0:INF;
+  const n=Math.max(w,h),v=new Int32Array(n),z=new Float64Array(n+1),d=new Float64Array(n);
+  function pass(off,stride,len){
+    let k=0;v[0]=0;z[0]=-1e30;z[1]=1e30;
+    const inter=(q,p)=>((f[off+q*stride]+q*q)-(f[off+p*stride]+p*p))/(2*q-2*p);
+    for(let q=1;q<len;q++){let s=inter(q,v[k]);while(s<=z[k]){k--;s=inter(q,v[k])}k++;v[k]=q;z[k]=s;z[k+1]=1e30}
+    k=0;
+    for(let q=0;q<len;q++){while(z[k+1]<q)k++;const p=v[k];d[q]=(q-p)*(q-p)+f[off+p*stride]}
+    for(let q=0;q<len;q++)f[off+q*stride]=d[q];
+  }
+  for(let x=0;x<w;x++)pass(x,w,h);
+  for(let y=0;y<h;y++)pass(y*w,1,w);
+  return f;
+}
+function dilate(m,w,h,r){const t=dist2(w,h,m),o=new Uint8Array(w*h),r2=r*r;for(let i=0;i<o.length;i++)o[i]=t[i]<=r2?1:0;return o}
+function erode(m,w,h,r){const inv=new Uint8Array(w*h);for(let i=0;i<inv.length;i++)inv[i]=m[i]?0:1;const t=dist2(w,h,inv),o=new Uint8Array(w*h),r2=r*r;for(let i=0;i<o.length;i++)o[i]=t[i]>r2?1:0;return o}
+
+function labelComponents(m,w,h,want,cb){
+  const N=w*h,lab=new Uint8Array(N),stack=new Int32Array(N);
+  for(let s=0;s<N;s++){
+    if(lab[s]||m[s]!==want)continue;
+    let sp=0;const members=[];stack[sp++]=s;lab[s]=1;
+    while(sp){
+      const p=stack[--sp];members.push(p);
+      const x=p%w,y=(p/w)|0;
+      if(x>0&&!lab[p-1]&&m[p-1]===want){lab[p-1]=1;stack[sp++]=p-1}
+      if(x<w-1&&!lab[p+1]&&m[p+1]===want){lab[p+1]=1;stack[sp++]=p+1}
+      if(y>0&&!lab[p-w]&&m[p-w]===want){lab[p-w]=1;stack[sp++]=p-w}
+      if(y<h-1&&!lab[p+w]&&m[p+w]===want){lab[p+w]=1;stack[sp++]=p+w}
+    }
+    cb(members);
+  }
+}
+function removeSmall(m,w,h,minArea,fg){
+  const o=m.slice();
+  labelComponents(m,w,h,fg?1:0,mem=>{if(mem.length<minArea)for(const p of mem)o[p]=fg?0:1});
+  return o;
+}
+function componentAreas(m,w,h){const a=[];labelComponents(m,w,h,1,mem=>a.push(mem.length));return a}
+
+/* Ingichka detallarni olib tashlash, lekin burchaklarni yumaloqlamasdan: yadro (erode) atrofida 1.5r ichidagini saqlaymiz */
+function reconOpen(m,w,h,r){
+  const core=erode(m,w,h,r),t=dist2(w,h,core),lim=(1.5*r)*(1.5*r),o=new Uint8Array(w*h);
+  for(let i=0;i<o.length;i++)o[i]=m[i]&&t[i]<=lim?1:0;
+  return o;
+}
+function cleanMask(m,w,h,rPos,rNeg,minArea){
+  let o=m;
+  if(rPos>=1)o=reconOpen(o,w,h,rPos);
+  if(rNeg>=1){
+    const inv=new Uint8Array(w*h);for(let i=0;i<inv.length;i++)inv[i]=o[i]?0:1;
+    const ri=reconOpen(inv,w,h,rNeg);for(let i=0;i<o.length;i++)o[i]=ri[i]?0:1;
+  }
+  o=removeSmall(o,w,h,minArea,true);
+  o=removeSmall(o,w,h,minArea,false);
+  return o;
+}
+
+/* ---------- Kontur ---------- */
+function dp(p,eps){
+  const n=p.length,keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];
+  while(st.length){
+    const[s,e]=st.pop();let md=0,mi=-1;const x1=p[s][0],y1=p[s][1],dx=p[e][0]-x1,dy=p[e][1]-y1,l=Math.hypot(dx,dy)||1e-9;
+    for(let i=s+1;i<e;i++){const d=Math.abs((p[i][0]-x1)*dy-(p[i][1]-y1)*dx)/l;if(d>md){md=d;mi=i}}
+    if(md>eps){keep[mi]=1;st.push([s,mi],[mi,e])}
+  }
+  return p.filter((_,i)=>keep[i]);
+}
+function simplifyClosed(p,eps){
+  if(p.length<8)return p;
+  let fi=0,fd=-1;
+  for(let i=1;i<p.length;i++){const d=(p[i][0]-p[0][0])**2+(p[i][1]-p[0][1])**2;if(d>fd){fd=d;fi=i}}
+  const a=dp(p.slice(0,fi+1),eps),b=dp(p.slice(fi).concat([p[0]]),eps);
+  return a.slice(0,-1).concat(b.slice(0,-1));
+}
+function polyArea(p){let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];s+=a[0]*b[1]-b[0]*a[1]}return Math.abs(s)/2}
+
+function trace(m,w,h,mmpp){
+  const PAD=3,W=w+2*PAD,H=h+2*PAD;
+  let f=new Float32Array(W*H);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)f[(y+PAD)*W+x+PAD]=m[y*w+x];
+  f=gaussBlur(f,W,H,0.85);
+  const E=W*H*2,a1=new Int32Array(E).fill(-1),a2=new Int32Array(E).fill(-1);
+  const link=(p,q)=>{if(a1[p]<0)a1[p]=q;else a2[p]=q;if(a1[q]<0)a1[q]=p;else a2[q]=p};
+  for(let y=0;y<H-1;y++)for(let x=0;x<W-1;x++){
+    const i=y*W+x,tl=f[i]>=.5,tr=f[i+1]>=.5,br=f[i+W+1]>=.5,bl=f[i+W]>=.5;
+    const c=(tl?1:0)|(tr?2:0)|(br?4:0)|(bl?8:0);
+    if(c===0||c===15)continue;
+    const T=i*2,Bm=(i+W)*2,Lf=i*2+1,Rt=(i+1)*2+1;
+    switch(c){
+      case 1:case 14:link(Lf,T);break;
+      case 2:case 13:link(T,Rt);break;
+      case 3:case 12:link(Lf,Rt);break;
+      case 4:case 11:link(Rt,Bm);break;
+      case 6:case 9:link(T,Bm);break;
+      case 7:case 8:link(Lf,Bm);break;
+      case 5:{const cv=(f[i]+f[i+1]+f[i+W]+f[i+W+1])/4>=.5;if(cv){link(T,Rt);link(Lf,Bm)}else{link(Lf,T);link(Bm,Rt)}break}
+      case 10:{const cv=(f[i]+f[i+1]+f[i+W]+f[i+W+1])/4>=.5;if(cv){link(Lf,T);link(Bm,Rt)}else{link(T,Rt);link(Lf,Bm)}break}
+    }
+  }
+  const vis=new Uint8Array(E),loops=[];
+  const pt=id=>{
+    const horiz=(id&1)===0,cell=id>>1,gy=(cell/W)|0,gx=cell-gy*W;
+    if(horiz){const v0=f[cell],v1=f[cell+1];return[gx+(.5-v0)/(v1-v0),gy]}
+    const v0=f[cell],v1=f[cell+W];return[gx,gy+(.5-v0)/(v1-v0)];
+  };
+  for(let s=0;s<E;s++){
+    if(a1[s]<0||vis[s])continue;
+    const pts=[];let prev=-1,cur=s;
+    while(true){
+      vis[cur]=1;pts.push(pt(cur));
+      let nx=a1[cur];if(nx===prev)nx=a2[cur];
+      if(nx<0||nx===s||vis[nx])break;
+      prev=cur;cur=nx;
+    }
+    if(pts.length>=4)loops.push(pts);
+  }
+  const out=[];
+  for(const l of loops){
+    const pts=l.map(q=>[(q[0]-PAD+.5)*mmpp,(q[1]-PAD+.5)*mmpp]);
+    if(pts.length<3||polyArea(pts)<3*mmpp*mmpp)continue;
+    pts.segs=fitLoop(pts);
+    out.push(pts);
+  }
+  // lazerda avval ichki (kichik) konturlar kesiladi
+  out.sort((a,b)=>polyArea(a)-polyArea(b));
+  return out;
+}
+function polyLen(p){let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];s+=Math.hypot(a[0]-b[0],a[1]-b[1])}return s}
+function circlePoly(cx,cy,r,n){const p=[];for(let i=0;i<n;i++){const a=i/n*Math.PI*2;p.push([cx+r*Math.cos(a),cy+r*Math.sin(a)])}return p}
+
+/* ---------- Aniq vektor: burchaklar + to'g'ri chiziqlar + kam nuqtali Bezier (Schneider) ---------- */
+const TOL_CURVE=0.12,TOL_LINE=0.09;
+let ARC_MM=0.6;
+const sub2=(a,b)=>[a[0]-b[0],a[1]-b[1]],add2=(a,b)=>[a[0]+b[0],a[1]+b[1]],mul2=(a,k)=>[a[0]*k,a[1]*k];
+const dot2=(a,b)=>a[0]*b[0]+a[1]*b[1],cross2=(a,b)=>a[0]*b[1]-a[1]*b[0],len2=a=>Math.hypot(a[0],a[1]);
+const unit2=a=>{const l=len2(a)||1e-12;return[a[0]/l,a[1]/l]};
+
+function resampleClosed(P,ds){
+  const n=P.length,cum=[0];
+  for(let i=0;i<n;i++)cum.push(cum[i]+Math.hypot(P[(i+1)%n][0]-P[i][0],P[(i+1)%n][1]-P[i][1]));
+  const total=cum[n],m=Math.max(12,Math.round(total/ds)),step=total/m,out=[];let j=0;
+  for(let k=0;k<m;k++){
+    const s=k*step;while(j<n-1&&cum[j+1]<s)j++;
+    const a=P[j],b=P[(j+1)%n],t=(s-cum[j])/((cum[j+1]-cum[j])||1);
+    out.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t]);
+  }
+  return{pts:out,step,total};
+}
+function smoothClosed(P,sig){
+  const n=P.length;if(sig<0.3||n<8)return P;
+  const r=Math.max(1,Math.ceil(sig*3)),k=[];let sum=0;
+  for(let i=-r;i<=r;i++){const v=Math.exp(-i*i/(2*sig*sig));k.push(v);sum+=v}
+  return P.map((_,i)=>{let x=0,y=0;for(let t=-r;t<=r;t++){const q=P[((i+t)%n+n)%n],w=k[t+r]/sum;x+=q[0]*w;y+=q[1]*w}return[x,y]});
+}
+function turnAngle(pts,i,k){
+  const n=pts.length,a=pts[(i-k+n)%n],b=pts[i],c=pts[(i+k)%n],v1=sub2(b,a),v2=sub2(c,b);
+  return Math.abs(Math.atan2(cross2(v1,v2),dot2(v1,v2)))*180/Math.PI;
+}
+function findCorners(pts,step){
+  const n=pts.length,k1=Math.max(2,Math.round(1.0/step)),k2=k1*2;
+  if(n<4*k2)return[];
+  const t1=new Float32Array(n),ok=new Uint8Array(n);
+  for(let i=0;i<n;i++){
+    t1[i]=turnAngle(pts,i,k1);
+    if(t1[i]>=38){const t2=turnAngle(pts,i,k2);ok[i]=t2<=t1[i]*1.35+6?1:0}
+  }
+  const c=[];
+  for(let i=0;i<n;i++){
+    if(!ok[i])continue;let best=true;
+    for(let d=-k1;d<=k1;d++){const j=(i+d+n)%n;if(d!==0&&ok[j]&&(t1[j]>t1[i]||(t1[j]===t1[i]&&d<0))){best=false;break}}
+    if(best)c.push(i);
+  }
+  return c;
+}
+function runPoints(pts,a,b){const n=pts.length,r=[];let i=a;for(;;){r.push(pts[i]);if(i===b)break;i=(i+1)%n}return r}
+function fitLineRun(R,step){
+  if(R.length<3)return null;
+  const trim=R.length>2*Math.round(0.7/step)+4?Math.round(0.7/step):0,T=R.slice(trim,R.length-trim);
+  let cx=0,cy=0;for(const p of T){cx+=p[0];cy+=p[1]}cx/=T.length;cy/=T.length;
+  let sxx=0,sxy=0,syy=0;for(const p of T){const dx=p[0]-cx,dy=p[1]-cy;sxx+=dx*dx;sxy+=dx*dy;syy+=dy*dy}
+  const th=0.5*Math.atan2(2*sxy,sxx-syy);let d=[Math.cos(th),Math.sin(th)];
+  const chord=sub2(R[R.length-1],R[0]);if(dot2(d,chord)<0)d=[-d[0],-d[1]];
+  let dev=0;for(const p of T){const e=Math.abs(cross2(sub2(p,[cx,cy]),d));if(e>dev)dev=e}
+  if(dev>TOL_LINE||len2(chord)<1.0)return null;
+  // o'qlarga (gorizontal/vertikal) 1.2 gradusgacha yaqin bo'lsa aniq o'qqa tekislaymiz
+  const ang=Math.atan2(d[1],d[0])*180/Math.PI;
+  for(const base of[0,90,180,-90,-180])if(Math.abs(ang-base)<=1.2){d=[Math.cos(base*Math.PI/180),Math.sin(base*Math.PI/180)];break}
+  return{c:[cx,cy],d};
+}
+function lineIntersect(A,B){
+  const det=cross2(A.d,B.d);if(Math.abs(det)<0.26)return null;
+  const t=cross2(sub2(B.c,A.c),B.d)/det;return add2(A.c,mul2(A.d,t));
+}
+function projectOn(L,p){const t=dot2(sub2(p,L.c),L.d);return add2(L.c,mul2(L.d,t))}
+
+/* Schneider egri chiziq moslash */
+function bezPt(c,t){const u=1-t;return[u*u*u*c[0][0]+3*u*u*t*c[1][0]+3*u*t*t*c[2][0]+t*t*t*c[3][0],u*u*u*c[0][1]+3*u*u*t*c[1][1]+3*u*t*t*c[2][1]+t*t*t*c[3][1]]}
+function bezD1(c,t){const u=1-t;return[3*u*u*(c[1][0]-c[0][0])+6*u*t*(c[2][0]-c[1][0])+3*t*t*(c[3][0]-c[2][0]),3*u*u*(c[1][1]-c[0][1])+6*u*t*(c[2][1]-c[1][1])+3*t*t*(c[3][1]-c[2][1])]}
+function bezD2(c,t){const u=1-t;return[6*u*(c[2][0]-2*c[1][0]+c[0][0])+6*t*(c[3][0]-2*c[2][0]+c[1][0]),6*u*(c[2][1]-2*c[1][1]+c[0][1])+6*t*(c[3][1]-2*c[2][1]+c[1][1])]}
+function chordU(P){const u=[0];for(let i=1;i<P.length;i++)u.push(u[i-1]+Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]));const L=u[u.length-1]||1;return u.map(v=>v/L)}
+function genBez(P,u,t1,t2){
+  const p0=P[0],p3=P[P.length-1];let C00=0,C01=0,C11=0,X0=0,X1=0;
+  for(let i=0;i<P.length;i++){
+    const t=u[i],mt=1-t,b0=mt*mt*mt,b1=3*t*mt*mt,b2=3*t*t*mt,b3=t*t*t;
+    const A1=mul2(t1,b1),A2=mul2(t2,b2);
+    C00+=dot2(A1,A1);C01+=dot2(A1,A2);C11+=dot2(A2,A2);
+    const tmp=sub2(P[i],add2(mul2(p0,b0+b1),mul2(p3,b2+b3)));X0+=dot2(A1,tmp);X1+=dot2(A2,tmp);
+  }
+  const det=C00*C11-C01*C01,seg=len2(sub2(p3,p0));let aL=0,aR=0;
+  if(Math.abs(det)>1e-12){aL=(X0*C11-X1*C01)/det;aR=(C00*X1-C01*X0)/det}
+  if(!(aL>=1e-6*seg&&aR>=1e-6*seg)){aL=aR=seg/3}
+  return[p0,add2(p0,mul2(t1,aL)),add2(p3,mul2(t2,aR)),p3];
+}
+function maxErr(P,c,u){let m=0,mi=Math.floor(P.length/2);for(let i=1;i<P.length-1;i++){const q=bezPt(c,u[i]),d=(q[0]-P[i][0])**2+(q[1]-P[i][1])**2;if(d>m){m=d;mi=i}}return[m,mi]}
+function reparam(P,c,u){
+  return u.map((t,i)=>{const q=sub2(bezPt(c,t),P[i]),d1=bezD1(c,t),d2=bezD2(c,t),num=dot2(q,d1),den=dot2(d1,d1)+dot2(q,d2);return Math.abs(den)<1e-12?t:Math.max(0,Math.min(1,t-num/den))});
+}
+function fitCubicRec(P,t1,t2,tol,out,depth){
+  const n=P.length;
+  if(n<=2){const d=len2(sub2(P[1],P[0]))/3;out.push([P[0],add2(P[0],mul2(t1,d)),add2(P[1],mul2(t2,d)),P[1]]);return}
+  let u=chordU(P),c=genBez(P,u,t1,t2),[err,split]=maxErr(P,c,u);
+  if(err<tol*tol){out.push(c);return}
+  if(err<tol*tol*16){
+    for(let it=0;it<5;it++){u=reparam(P,c,u);c=genBez(P,u,t1,t2);[err,split]=maxErr(P,c,u);if(err<tol*tol){out.push(c);return}}
+  }
+  if(depth>40||n<4){out.push(c);return}
+  split=Math.max(1,Math.min(n-2,split));
+  const tc=unit2(sub2(P[split-1],P[split+1]));
+  fitCubicRec(P.slice(0,split+1),t1,tc,tol,out,depth+1);
+  fitCubicRec(P.slice(split),[-tc[0],-tc[1]],t2,tol,out,depth+1);
+}
+
+function fitLoop(raw){
+  const rs=resampleClosed(raw,total0(raw)<10?0.12:0.25),step=rs.step,n=rs.pts.length;
+  const pts=smoothClosed(rs.pts,ARC_MM/step);
+  const corners=findCorners(pts,step),segs=[];
+  const lineSeg=(a,b)=>{const d=sub2(b,a);return[a,add2(a,mul2(d,1/3)),sub2(b,mul2(d,1/3)),b,true]};
+  const tn=Math.max(2,Math.round(0.6/step));
+  if(corners.length===0){
+    const P=pts.concat([pts[0]]),t=unit2(sub2(pts[1],pts[n-1])),out=[];
+    fitCubicRec(P,t,[-t[0],-t[1]],TOL_CURVE,out,0);
+    for(const c of out)segs.push(c);
+    return segs;
+  }
+  const m=corners.length,runs=[];
+  for(let k=0;k<m;k++)runs.push(runPoints(pts,corners[k],corners[(k+1)%m]));
+  if(m===1){const c0=corners[0];runs[0]=pts.slice(c0).concat(pts.slice(0,c0)).concat([pts[c0]])}
+  const lines=runs.map(R=>fitLineRun(R,step));
+  const cp=corners.map((ci,k)=>{
+    const A=lines[(k-1+m)%m],B=lines[k],p=pts[ci];
+    if(A&&B){const X=lineIntersect(A,B);if(X&&len2(sub2(X,p))<=1.8)return X}
+    if(A&&!B)return projectOn(A,p);
+    if(B&&!A)return projectOn(B,p);
+    return p;
+  });
+  for(let k=0;k<m;k++){
+    const S=cp[k],E=cp[(k+1)%m],R=runs[k];
+    if(lines[k]||R.length<4){segs.push(lineSeg(S,E));continue}
+    const P=R.slice();P[0]=S;P[P.length-1]=E;
+    const jn=Math.min(tn,P.length-1);
+    const t1=unit2(sub2(P[jn],P[0])),t2=unit2(sub2(P[P.length-1-jn],P[P.length-1])),out=[];
+    fitCubicRec(P,t1,t2,TOL_CURVE,out,0);
+    for(const c of out)segs.push(c);
+  }
+  return segs;
+}
+function total0(p){let s=0;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];s+=Math.hypot(a[0]-b[0],a[1]-b[1])}return s}
+
+/* Kontur segmentlari: [a,c1,c2,b,isLine] */
+function loopSegs(p){
+  if(p.segs)return p.segs;
+  const n=p.length,segs=[];
+  for(let i=0;i<n;i++){const a=p[i],b=p[(i+1)%n],d=sub2(b,a);segs.push([a,add2(a,mul2(d,1/3)),sub2(b,mul2(d,1/3)),b,true])}
+  p.segs=segs;return segs;
+}
+function flatten(a,c1,c2,b,tol,out){
+  const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1e-9;
+  const d1=Math.abs((c1[0]-a[0])*dy-(c1[1]-a[1])*dx)/l,d2=Math.abs((c2[0]-a[0])*dy-(c2[1]-a[1])*dx)/l;
+  if(Math.max(d1,d2)<=tol||l<0.02){out.push(b);return}
+  const m=(p,q)=>[(p[0]+q[0])/2,(p[1]+q[1])/2],ab=m(a,c1),bc=m(c1,c2),cd=m(c2,b),abc=m(ab,bc),bcd=m(bc,cd),mid=m(abc,bcd);
+  flatten(a,ab,abc,mid,tol,out);flatten(mid,bcd,cd,b,tol,out);
+}
+function sampleLoop(p){
+  const out=[];
+  for(const s of loopSegs(p)){out.push(s[0]);if(!s[4]){const t=[];flatten(s[0],s[1],s[2],s[3],0.01,t);for(let i=0;i<t.length-1;i++)out.push(t[i])}}
+  return out;
+}
+function nodeCount(polys){let n=0;for(const p of polys)n+=loopSegs(p).length;return n}
+
+/* ---------- Eksport: Corel uslubi (birlik 0.01 mm) yoki qizil lazer uslubi ---------- */
+const UNIT=100,f2=v=>(Math.round(v*UNIT*100)/100).toString();
+function pathD(polys){
+  return polys.map(p=>{
+    const sg=loopSegs(p);let d='M'+f2(sg[0][0][0])+' '+f2(sg[0][0][1]);
+    for(const s of sg)d+=s[4]?' L'+f2(s[3][0])+' '+f2(s[3][1]):' C'+f2(s[1][0])+' '+f2(s[1][1])+' '+f2(s[2][0])+' '+f2(s[2][1])+' '+f2(s[3][0])+' '+f2(s[3][1]);
+    return d+' Z';
+  }).join(' ');
+}
+function svgHead(wmm,hmm,style){
+  const st=style==='red'?'stroke:#FF0000;stroke-width:10;stroke-miterlimit:22.9256':'stroke:#2B2A29;stroke-width:20;stroke-miterlimit:22.9256';
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="${wmm.toFixed(2)}mm" height="${hmm.toFixed(2)}mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 ${f2(wmm)} ${f2(hmm)}">\n <defs>\n  <style type="text/css">\n   <![CDATA[\n    .str0 {${st}}\n    .fil0 {fill:none}\n   ]]>\n  </style>\n </defs>\n`;
+}
+function layerSVG(polys,wmm,hmm,style){
+  return svgHead(wmm,hmm,style)+` <g id="Layer_1">\n  <path class="fil0 str0" d="${pathD(polys)}"/>\n </g>\n</svg>\n`;
+}
+function sheetSVG(layers,wmm,hmm,gap,style){
+  const tw=layers.length*wmm+(layers.length-1)*gap;let s=svgHead(tw,hmm,style);
+  layers.forEach((l,i)=>{s+=` <g id="Layer_${i+1}" transform="translate(${f2(i*(wmm+gap))},0)">\n  <path class="fil0 str0" d="${pathD(l.polys)}"/>\n </g>\n`});
+  return s+'</svg>\n';
+}
+function layerDXF(polys,hmm){
+  let s='0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n9\n$INSUNITS\n70\n4\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
+  for(const p of polys){
+    s+='0\nPOLYLINE\n8\nCUT\n66\n1\n10\n0\n20\n0\n30\n0\n70\n1\n';
+    for(const q of sampleLoop(p))s+=`0\nVERTEX\n8\nCUT\n10\n${(Math.round(q[0]*10000)/10000)}\n20\n${(Math.round((hmm-q[1])*10000)/10000)}\n30\n0\n`;
+    s+='0\nSEQEND\n8\nCUT\n';
+  }
+  return s+'0\nENDSEC\n0\nEOF\n';
+}
+function circleLoop(cx,cy,r){
+  const p=circlePoly(cx,cy,r,360),k=0.5522847498*r,pt=(x,y)=>[cx+x,cy+y];
+  p.segs=[[pt(r,0),pt(r,k),pt(k,r),pt(0,r)],[pt(0,r),pt(-k,r),pt(-r,k),pt(-r,0)],[pt(-r,0),pt(-r,-k),pt(-k,-r),pt(0,-r)],[pt(0,-r),pt(k,-r),pt(r,-k),pt(r,0)]];
+  return p;
+}
+function rectLoop(w,h){
+  const p=[[0,0],[w,0],[w,h],[0,h]];
+  p.segs=p.map((a,i)=>{const b=p[(i+1)%4],d=sub2(b,a);return[a,add2(a,mul2(d,1/3)),sub2(b,mul2(d,1/3)),b,true]});
+  return p;
+}
+
+
+/* ---------- Buyum shaklini (siluet) topish: doira, ellips, to'rtburchak yoki erkin kontur ---------- */
+function ellipseLoop(cx,cy,a,b,th){
+  const k=0.5522847498,c=Math.cos(th),s=Math.sin(th),T=(x,y)=>[cx+a*x*c-b*y*s,cy+a*x*s+b*y*c];
+  const p=[];for(let i=0;i<360;i++){const t=i/360*Math.PI*2;p.push(T(Math.cos(t),Math.sin(t)))}
+  p.segs=[[T(1,0),T(1,k),T(k,1),T(0,1)],[T(0,1),T(-k,1),T(-1,k),T(-1,0)],[T(-1,0),T(-1,-k),T(-k,-1),T(0,-1)],[T(0,-1),T(k,-1),T(1,-k),T(1,0)]];
+  return p;
+}
+function ellipseRegion(w,h,cx,cy,a,b,th){
+  const r=new Uint8Array(w*h),c=Math.cos(th),s=Math.sin(th);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const dx=x+.5-cx,dy=y+.5-cy,u=(dx*c+dy*s)/a,v=(-dx*s+dy*c)/b;r[y*w+x]=u*u+v*v<=1?1:0}
+  return r;
+}
+function fillHolesLargest(fg,w,h){
+  const N=w*h,inv=new Uint8Array(N);for(let i=0;i<N;i++)inv[i]=fg[i]?0:1;
+  labelComponents(inv,w,h,1,mem=>{let border=false;for(const p of mem){const x=p%w,y=(p/w)|0;if(x===0||y===0||x===w-1||y===h-1){border=true;break}}if(!border)for(const p of mem)fg[p]=1});
+  let best=null;labelComponents(fg,w,h,1,mem=>{if(!best||mem.length>best.length)best=mem});
+  const o=new Uint8Array(N);if(best)for(const p of best)o[p]=1;
+  return o;
+}
+function silhouette(L,A,B,alpha,w,h,sens){
+  const N=w*h;let fg=new Uint8Array(N),usedAlpha=false;
+  if(alpha){let tr=0;for(let i=0;i<N;i++)if(alpha[i]<200)tr++;if(tr>0.02*N){usedAlpha=true;for(let i=0;i<N;i++)fg[i]=alpha[i]>=128?1:0}}
+  if(!usedAlpha){
+    const bw=Math.max(2,Math.round(0.03*Math.min(w,h))),bidx=[];
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(x<bw||x>=w-bw||y<bw||y>=h-bw)bidx.push(y*w+x);
+    const step=Math.max(1,Math.floor(bidx.length/6000)),S=[];for(let i=0;i<bidx.length;i+=step)S.push(bidx[i]);
+    const Sa=Int32Array.from(S),fit=fitCenters(Sa,L,A,B,3,5),C=fit.C,cnt=[0,0,0],sq=[0,0,0];
+    for(const p of Sa){let best=0,bd=1e18;for(let c=0;c<3;c++){const dx=L[p]-C[c*3],dy=A[p]-C[c*3+1],dz=B[p]-C[c*3+2],dd=dx*dx+dy*dy+dz*dz;if(dd<bd){bd=dd;best=c}}cnt[best]++;sq[best]+=bd}
+    const bgc=[];for(let c=0;c<3;c++)if(cnt[c]>=0.1*Sa.length)bgc.push([c,Math.max(12,2.2*Math.sqrt(sq[c]/cnt[c]))/sens]);
+    for(let p=0;p<N;p++){let isbg=false;for(const[c,T]of bgc){const dx=L[p]-C[c*3],dy=A[p]-C[c*3+1],dz=B[p]-C[c*3+2];if(dx*dx+dy*dy+dz*dz<=T*T){isbg=true;break}}fg[p]=isbg?0:1}
+  }
+  const ma=Math.max(4,0.0008*N);
+  fg=removeSmall(fg,w,h,ma,true);fg=removeSmall(fg,w,h,ma,false);
+  const r=Math.max(2,Math.round(0.006*Math.min(w,h)));
+  fg=erode(dilate(fg,w,h,r),w,h,r);fg=dilate(erode(fg,w,h,r),w,h,r);
+  fg=fillHolesLargest(fg,w,h);
+  let area=0,x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(fg[y*w+x]){area++;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  const ratio=area/N,ok=ratio>0.08&&ratio<0.96&&x1>x0&&y1>y0;
+  return{mask:fg,area,ratio,ok,bbox:[x0,y0,x1+1,y1+1],usedAlpha};
+}
+function shapeFit(mask,w,h){
+  let n=0,sx=0,sy=0,sxx=0,sxy=0,syy=0,x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(mask[y*w+x]){n++;sx+=x+.5;sy+=y+.5;sxx+=(x+.5)*(x+.5);sxy+=(x+.5)*(y+.5);syy+=(y+.5)*(y+.5);if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+  if(n<10)return{kind:'free',iou:0};
+  const cx=sx/n,cy=sy/n,vxx=sxx/n-cx*cx,vxy=sxy/n-cx*cy,vyy=syy/n-cy*cy;
+  const th=0.5*Math.atan2(2*vxy,vxx-vyy),tr=vxx+vyy,det=Math.sqrt(Math.max(0,(vxx-vyy)*(vxx-vyy)/4+vxy*vxy));
+  const l1=tr/2+det,l2=Math.max(1e-6,tr/2-det);let a=2*Math.sqrt(l1),b=2*Math.sqrt(l2);
+  const er=ellipseRegion(w,h,cx,cy,a,b,th);let inter=0,uni=0;
+  for(let i=0;i<w*h;i++){const m=mask[i],e=er[i];if(m&&e)inter++;if(m||e)uni++}
+  const iouE=inter/Math.max(1,uni),bboxA=(x1+1-x0)*(y1+1-y0),fillR=n/bboxA;
+  if(iouE>=0.975){if(Math.max(a,b)/Math.min(a,b)<1.04){const m=(a+b)/2;return{kind:'circle',cx,cy,a:m,b:m,th:0,iou:iouE}}return{kind:'ellipse',cx,cy,a,b,th,iou:iouE}}
+  if(fillR>=0.975)return{kind:'rect',iou:fillR};
+  return{kind:'free',iou:Math.max(iouE,fillR)};
+}
+/* Avto kontur: region (piksellar) va asos shakl (base) */
+function autoRegion(L,A,B,alpha,w,h,mmpp,sens){
+  const sil=silhouette(L,A,B,alpha,w,h,sens);
+  if(!sil.ok)return null;
+  let fit=shapeFit(sil.mask,w,h);const inset=Math.max(1.2,0.8/mmpp);
+  if(fit.kind==='free'){
+    // yopishib qolgan yorliq/soya kabi qo'shimchalarni katta ochish bilan ajratib, doira/ellipsga mosligini tekshiramiz
+    for(const f of[0.08,0.12,0.16]){
+      const r=Math.round(f*Math.min(w,h)),op=dilate(erode(sil.mask,w,h,r),w,h,r),ft=shapeFit(op,w,h);
+      if(ft.kind==='circle'||ft.kind==='ellipse'){
+        // asl siluet bu ellipsning ichida/yaqinida ekanini tekshirish: ellipsdan tashqaridagi piksellar kam bo'lsin
+        const er=ellipseRegion(w,h,ft.cx,ft.cy,ft.a*1.03,ft.b*1.03,ft.th);let out=0,tot=0;
+        for(let i=0;i<w*h;i++)if(sil.mask[i]){tot++;if(!er[i])out++}
+        if(out/tot<0.25){fit=ft;sil.bbox=[Math.floor(ft.cx-Math.max(ft.a,ft.b)),Math.floor(ft.cy-Math.max(ft.a,ft.b)),Math.ceil(ft.cx+Math.max(ft.a,ft.b)),Math.ceil(ft.cy+Math.max(ft.a,ft.b))].map((v,i)=>Math.max(0,Math.min(i%2?h:w,v)));break}
+      }
+    }
+  }
+  if(fit.kind==='circle'||fit.kind==='ellipse'){
+    const a=Math.max(4,fit.a-inset),b=Math.max(4,fit.b-inset);
+    return{region:ellipseRegion(w,h,fit.cx,fit.cy,a,b,fit.th),base:{kind:fit.kind,cx:fit.cx,cy:fit.cy,a,b,th:fit.th},fit,sil};
+  }
+  if(fit.kind==='rect')return{region:new Uint8Array(w*h).fill(1),base:{kind:'rect'},fit,sil};
+  let reg=erode(sil.mask,w,h,inset);reg=fillHolesLargest(reg,w,h);
+  return{region:reg,base:{kind:'free'},fit,sil};
+}
+
+/* ---------- Doirani avtomatik topish (gradient Hough) ---------- */
+function detectCircle(gray,w,h){
+  const N=w*h,bl=gaussBlur(gray,w,h,1.2),gx=new Float32Array(N),gy=new Float32Array(N),mag=new Float32Array(N);
+  for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){
+    const i=y*w+x;
+    const a=bl[i-w-1],b=bl[i-w],c=bl[i-w+1],d=bl[i-1],f=bl[i+1],g=bl[i+w-1],hh=bl[i+w],k=bl[i+w+1];
+    gx[i]=(c+2*f+k)-(a+2*d+g);gy[i]=(g+2*hh+k)-(a+2*b+c);mag[i]=Math.hypot(gx[i],gy[i]);
+  }
+  const sorted=Float32Array.from(mag).sort(),thr=sorted[Math.floor(.9*N)]||1;
+  const edges=[];for(let i=0;i<N;i++)if(mag[i]>=thr&&mag[i]>0)edges.push(i);
+  const mn=Math.min(w,h),minR=Math.floor(mn*.22),maxR=Math.ceil(mn*.52),res=[];
+  for(let r=minR;r<=maxR;r++){
+    let acc=new Float32Array(N);
+    for(const e of edges){
+      const x=e%w,y=(e/w)|0,nx=gx[e]/mag[e],ny=gy[e]/mag[e];
+      for(const sg of[1,-1]){const cx=Math.round(x+sg*r*nx),cy=Math.round(y+sg*r*ny);if(cx>=0&&cx<w&&cy>=0&&cy<h)acc[cy*w+cx]+=1}
+    }
+    acc=boxBlur(acc,w,h,1);
+    let bi=0,bv=-1;for(let i=0;i<N;i++)if(acc[i]>bv){bv=acc[i];bi=i}
+    res.push({r,cx:bi%w,cy:(bi/w)|0,score:bv*9/(2*Math.PI*r)});
+  }
+  let best=res[0];for(const q of res)if(q.score>best.score)best=q;
+  // radius bo'yicha mahalliy cho'qqilar; eng katta (tashqi) ishonchli doirani tanlaymiz
+  let pick=best;
+  for(let i=0;i<res.length;i++){
+    const q=res[i];let isPeak=true;
+    for(let t=Math.max(0,i-3);t<=Math.min(res.length-1,i+3);t++)if(res[t].score>q.score)isPeak=false;
+    const inside=q.cx-q.r>=-0.06*w&&q.cx+q.r<=1.06*w&&q.cy-q.r>=-0.06*h&&q.cy+q.r<=1.06*h;
+    if(isPeak&&inside&&q.score>=Math.max(0.25,best.score*0.3)&&q.r>pick.r)pick=q;
+  }
+  return{cx:pick.cx+.5,cy:pick.cy+.5,r:pick.r,score:pick.score};
+}
+
+/* ---------- Butun jarayon ---------- */
+function buildLayers(R,G,B,region,w,h,base,s){
+  ARC_MM=0.3+0.3*s.smooth;
+  const N=w*h,mmpp=s.size/Math.max(w,h),wmm=w*mmpp,hmm=h*mmpp;
+  let[L,A,Bb]=toLab(R,G,B,N);
+  const[L0,A0,B0]=[L,A,Bb];
+  for(let p=0;p<s.soften;p++)[L,A,Bb]=bilateral(L,A,Bb,w,h,2,1.4,12);
+  const rec=s.rec||recommendK(L,A,Bb,region,N);
+  let n=s.autoN?Math.min(6,rec.rec):s.n;
+  const requested=n;
+  const regionCount=region.reduce((a,v)=>a+v,0);
+
+  // Har bir qatlam chegarasi alohida silliqlanadi; Gauss monoton bo'lgani uchun qatlamlar o'zaro joylashgan (nested) qoladi
+  const sigma=(0.35+0.35*s.smooth)/mmpp;
+  const regF=new Float32Array(N);for(let i=0;i<N;i++)regF[i]=region[i];
+  const den=gaussBlur(regF,w,h,sigma);
+  const rFeat=Math.max(0,s.feat/2/mmpp),rNegF=rFeat*0.7,minArea=Math.max(6,(s.feat*s.feat*0.8)/(mmpp*mmpp));
+  let cls,masks,vis,loss,retry=false;
+  for(;;){
+    const cr=classify(L,A,Bb,region,N,n,s.autoN&&!retry?0.7:0.25);cls=cr.cls;n=cr.used;
+    masks=[];let prev=null;loss=0;
+    for(let i=0;i<n;i++){
+      let m=new Uint8Array(N);
+      if(i===0)m.set(region);
+      else{
+        const ind=new Float32Array(N);for(let j=0;j<N;j++)ind[j]=cls[j]>=i?1:0;
+        const num=gaussBlur(ind,w,h,sigma);
+        for(let j=0;j<N;j++)m[j]=region[j]&&num[j]/(den[j]||1)>=.5?1:0;
+        const raw=m;m=cleanMask(m,w,h,rFeat,rNegF,minArea);
+        for(let j=0;j<N;j++){if(!prev[j])m[j]=0}
+        let diff=0;for(let j=0;j<N;j++)if(raw[j]!==m[j])diff++;loss+=diff;
+      }
+      prev=m;masks.push(m);
+    }
+    // ingichka "halo" halqalarni (rang chegarasidagi o'tish tonlari) olib tashlaymiz: ko'rinadigan qism ingichka bo'lsa, yuqori qatlam uni qoplaydi
+    const bandR=Math.max(0,(s.band==null?1.8:s.band)/2/mmpp);
+    if(bandR>=1)for(let i=1;i<n-1;i++){
+      const band=new Uint8Array(N);for(let j=0;j<N;j++)band[j]=masks[i][j]&&!masks[i+1][j]?1:0;
+      const keep=reconOpen(band,w,h,bandR);
+      for(let j=0;j<N;j++)if(band[j]&&!keep[j])masks[i+1][j]=1;
+    }
+    vis=new Int8Array(N).fill(-1);
+    for(let i=0;i<n;i++)for(let j=0;j<N;j++)if(masks[i][j])vis[j]=i;
+    // tozalashdan keyin deyarli ko'rinmay qolgan qatlam bo'lsa, qatlam sonini kamaytirib qayta tahlil qilamiz
+    const cnt=new Int32Array(n);for(let j=0;j<N;j++)if(vis[j]>=0)cnt[vis[j]]++;
+    let bad=false;for(let i=1;i<n;i++)if(cnt[i]<0.025*regionCount)bad=true;
+    if(bad&&n>3){n--;retry=true;continue}
+    break;
+  }
+  const acc=Array.from({length:n},()=>({c:0,r:0,g:0,b:0,l:0,a:0,bb:0})),cacc=Array.from({length:n},()=>({c:0,r:0,g:0,b:0}));
+  for(let j=0;j<N;j++){const v=vis[j];if(v>=0){const q=acc[v];q.c++;q.r+=R[j];q.g+=G[j];q.b+=B[j];q.l+=L[j];q.a+=A[j];q.bb+=Bb[j]}const k2=cls[j];if(k2>=0){const q=cacc[k2];q.c++;q.r+=R[j];q.g+=G[j];q.b+=B[j]}}
+  const des=new Float32Array(regionCount);let di=0;
+  for(let j=0;j<N;j++){const v=vis[j];if(v<0)continue;const q=acc[v];if(!q.c)continue;
+    const dl=L[j]-q.l/q.c,da=A[j]-q.a/q.c,db=Bb[j]-q.bb/q.c;des[di++]=Math.sqrt(dl*dl+da*da+db*db)}
+  const dsorted=des.subarray(0,di).slice().sort();
+  let dsum=0;for(let i=0;i<di;i++)dsum+=dsorted[i];
+  const deMean=di?dsum/di:0,deP90=di?dsorted[Math.floor(di*.9)]:0;
+
+  const layers=[];
+  for(let i=0;i<n;i++){
+    const m=masks[i];let polys;
+    if(i===0&&(base.kind==='circle'||base.kind==='ellipse'))polys=[ellipseLoop(base.cx*mmpp,base.cy*mmpp,base.a*mmpp,base.b*mmpp,base.th||0)];
+    else if(i===0&&base.kind==='rect')polys=[rectLoop(wmm,hmm)];
+    else if(i===0)polys=trace(m,w,h,mmpp).sort((p,q)=>polyArea(q)-polyArea(p)).slice(0,1);
+    else polys=trace(m,w,h,mmpp);
+    const q=acc[i];
+    const cq=cacc[i],color=cq.c?[cq.r/cq.c,cq.g/cq.c,cq.b/cq.c]:(layers.length?layers[layers.length-1].color:[128,128,128]);
+    let minPiece=Infinity,small=0,pc=1;
+    if(i>0){const ar=componentAreas(m,w,h);pc=ar.length;for(const a0 of ar){const a=a0*mmpp*mmpp;if(a<minPiece)minPiece=a;if(a<25)small++}}
+    layers.push({polys,color,cut:polys.reduce((a,p)=>a+polyLen(p),0),share:q.c/Math.max(1,regionCount),nodes:nodeCount(polys),pieces:pc,minPiece:isFinite(minPiece)?minPiece:null,small});
+  }
+  return{layers,w,h,mmpp,wmm,hmm,base,rec,nUsed:n,requested,fid:{mean:deMean,p90:deP90},loss:loss/Math.max(1,regionCount*Math.max(1,n-1))};
+}
+
+
+/* ---------- Sahifa ---------- */
+(function(){
+const $=id=>document.getElementById(id);
+const S={src:null,srcId:0,name:'qatlamlar',sample:true,res:null,downloads:null,timer:0,rec:null,recKey:'',autoN:false};
+const TARGET=600;
+
+function drawSample(){
+  const c=document.createElement('canvas');c.width=c.height=800;const g=c.getContext('2d');
+  const sky=g.createLinearGradient(0,0,0,800);
+  sky.addColorStop(0,'#0b2a31');sky.addColorStop(.62,'#1d5b68');sky.addColorStop(.63,'#0f3d47');sky.addColorStop(1,'#08242b');
+  g.fillStyle=sky;g.fillRect(0,0,800,800);
+  g.fillStyle='#e9dcb6';g.beginPath();g.arc(400,300,235,0,7);g.fill();
+  g.fillStyle='#d6a463';
+  [[300,190,46,28],[470,170,34,60],[520,290,40,70],[360,310,60,22],[430,230,22,34]].forEach(([x,y,a,b])=>{g.beginPath();g.ellipse(x,y,a,b,.5,0,7);g.fill()});
+  g.fillStyle='#3d9db2';g.beginPath();g.moveTo(180,540);g.lineTo(320,420);g.lineTo(400,480);g.lineTo(520,400);g.lineTo(660,540);g.closePath();g.fill();
+  g.fillStyle='#2a7f93';g.fillRect(180,520,480,24);
+  g.fillStyle='#164c58';g.fillRect(0,520,800,280);
+  g.save();g.beginPath();g.rect(0,520,800,280);g.clip();
+  g.fillStyle='#e9dcb6';g.beginPath();g.arc(400,740,205,0,7);g.fill();
+  g.fillStyle='#d6a463';[[360,700,50,14],[450,760,60,12],[400,650,40,10]].forEach(([x,y,a,b])=>{g.beginPath();g.ellipse(x,y,a,b,0,0,7);g.fill()});
+  g.fillStyle='#164c58';for(let i=0;i<9;i++){g.fillRect(200+((i*97)%380),560+i*26,170+(i%3)*40,6)}
+  g.restore();
+  function pine(x,y,hh,col){g.fillStyle=col;for(let k=0;k<5;k++){const t=y-hh*k*.17,wd=hh*.34*(1-k*.14);g.beginPath();g.moveTo(x,t-hh*.36);g.lineTo(x-wd,t);g.lineTo(x+wd,t);g.closePath();g.fill()}g.fillRect(x-4,y,8,16)}
+  pine(110,520,230,'#07181d');pine(190,540,170,'#0c2a31');pine(70,560,140,'#0c2a31');
+  pine(650,510,260,'#07181d');pine(720,540,180,'#0c2a31');pine(590,545,150,'#0c2a31');
+  g.fillStyle='#07181d';g.beginPath();g.ellipse(120,545,170,22,0,0,7);g.fill();g.beginPath();g.ellipse(690,545,160,20,0,0,7);g.fill();
+  return c;
+}
+
+function cropRect(s,iw,ih){
+  if(s.shape!=='circle')return{sx:0,sy:0,sw:iw,sh:ih};
+  const side=Math.min(iw,ih)*s.zoom;
+  return{sx:(iw-side)/2*(1+s.ox),sy:(ih-side)/2*(1+s.oy),sw:side,sh:side};
+}
+function settings(){
+  return{shape:document.querySelector('input[name=shape]:checked').value,
+    zoom:+$('zoom').value/100,ox:+$('ox').value/100,oy:+$('oy').value/100,
+    n:+$('n').value,size:Math.max(30,+$('size').value||300),feat:+$('feat').value,band:+$('band').value,
+    smooth:+$('smooth').value,soften:+$('soften').value,thick:+$('thick').value||3,
+    shadow:$('shadow').checked,mat:document.querySelector('input[name=mat]:checked').value};
+}
+const sty=()=>document.querySelector('input[name=sstyle]:checked').value;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2600)}
+
+function readouts(s){
+  $('zoomV').textContent=Math.round(s.zoom*100)+'%';
+  $('oxV').textContent=Math.round(s.ox*100);$('oyV').textContent=Math.round(s.oy*100);
+  $('nV').textContent=s.n;$('featV').textContent=s.feat.toFixed(1)+' mm';$('bandV').textContent=s.band.toFixed(1)+' mm';
+  $('smoothV').textContent=s.smooth;$('softenV').textContent=s.soften;
+  const off=s.shape!=='circle';['zoom','ox','oy'].forEach(i=>$(i).disabled=off);
+}
+
+function drawSrcView(){
+  const s=settings(),src=S.src,cv=$('srcView');if(!src)return;
+  const box=300,sc=box/Math.max(src.width,src.height),w=Math.round(src.width*sc),h=Math.round(src.height*sc);
+  cv.width=w;cv.height=h;const g=cv.getContext('2d');
+  g.drawImage(src,0,0,w,h);
+  const r=cropRect(s,src.width,src.height);
+  g.save();g.fillStyle='rgba(0,0,0,.55)';g.beginPath();g.rect(0,0,w,h);
+  if(s.shape==='circle')g.arc((r.sx+r.sw/2)*sc,(r.sy+r.sh/2)*sc,r.sw/2*sc,0,Math.PI*2,true);
+  g.fill('evenodd');g.restore();
+  if(s.shape==='circle'){g.strokeStyle='#ff5b50';g.lineWidth=1.5;g.beginPath();g.arc((r.sx+r.sw/2)*sc,(r.sy+r.sh/2)*sc,r.sw/2*sc,0,Math.PI*2);g.stroke()}
+}
+
+/* Rasmdagi doirani topib, kadrni unga moslash */
+function autoFit(){
+  const src=S.src,sc=192/Math.max(src.width,src.height),gw=Math.max(32,Math.round(src.width*sc)),gh=Math.max(32,Math.round(src.height*sc));
+  const c=document.createElement('canvas');c.width=gw;c.height=gh;
+  const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(src,0,0,gw,gh);
+  const d=g.getImageData(0,0,gw,gh).data,gray=new Float32Array(gw*gh);
+  for(let i=0;i<gray.length;i++)gray[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];
+  const det=detectCircle(gray,gw,gh);
+  if(!det||det.score<0.22)return false;
+  const f=src.width/gw,iw=src.width,ih=src.height,cx=det.cx*f,cy=det.cy*f,r=det.r*f;
+  const side=Math.min(Math.min(iw,ih),2*r*0.985);
+  const zoom=Math.max(.3,Math.min(1,side/Math.min(iw,ih)));
+  const real=Math.min(iw,ih)*zoom;
+  const sx=Math.max(0,Math.min(iw-real,cx-real/2)),sy=Math.max(0,Math.min(ih-real,cy-real/2));
+  const ox=iw-real>0.5?Math.max(-1,Math.min(1,sx/((iw-real)/2)-1)):0,oy=ih-real>0.5?Math.max(-1,Math.min(1,sy/((ih-real)/2)-1)):0;
+  document.querySelector('input[name=shape][value=circle]').checked=true;
+  $('zoom').value=Math.round(zoom*100);$('ox').value=Math.round(ox*100);$('oy').value=Math.round(oy*100);
+  return true;
+}
+function detectAndRun(){
+  const s=settings();
+  if(s.shape!=='circle'){$('srcBadge').textContent='Buyum shakli avtomatik aniqlanmoqda…';schedule();return}
+  $('srcBadge').textContent='Doira qidirilmoqda…';
+  $('status').textContent='Doira qidirilmoqda';
+  setTimeout(()=>{
+    let ok=false;try{ok=autoFit()}catch(e){console.error(e)}
+    $('srcBadge').textContent=ok?'Doira avtomatik topildi. Kadr unga moslandi.':'Doira topilmadi. Avto kontur tanlandi.';
+    if(!ok)document.querySelector('input[name=shape][value=auto]').checked=true;
+    schedule();
+  },40);
+}
+
+function run(){
+  const s=settings(),src=S.src;if(!src)return;
+  try{
+    const circle=s.shape==='circle',cr=cropRect(s,src.width,src.height);
+    const P=Math.min(2,TARGET/Math.max(cr.sw,cr.sh));
+    let w=Math.max(16,Math.round(cr.sw*P)),h=Math.max(16,Math.round(cr.sh*P));
+    const wc=document.createElement('canvas');wc.width=w;wc.height=h;
+    const g=wc.getContext('2d',{willReadFrequently:true});
+    g.imageSmoothingQuality='high';
+    g.drawImage(src,cr.sx,cr.sy,cr.sw,cr.sh,0,0,w,h);
+    const px=g.getImageData(0,0,w,h).data;
+    let N=w*h,R=new Float32Array(N),G=new Float32Array(N),B=new Float32Array(N),AL=new Uint8Array(N);
+    for(let i=0;i<N;i++){const a=px[i*4+3]/255;AL[i]=px[i*4+3];R[i]=px[i*4]*a+255*(1-a);G[i]=px[i*4+1]*a+255*(1-a);B[i]=px[i*4+2]*a+255*(1-a)}
+    let region=new Uint8Array(N).fill(1),base={kind:'rect'};
+    const mm0=s.size/Math.max(w,h);
+    if(circle){
+      const cx=w/2,cy=h/2,rad=Math.min(w,h)/2;
+      for(let y=0;y<h;y++)for(let x=0;x<w;x++){const dx=x+.5-cx,dy=y+.5-cy;region[y*w+x]=dx*dx+dy*dy<=rad*rad?1:0}
+      base={kind:'circle',cx,cy,a:rad,b:rad,th:0};
+    }else if(s.shape==='auto'){
+      const lab=toLab(R,G,B,N),ar=autoRegion(lab[0],lab[1],lab[2],AL,w,h,mm0,1);
+      if(ar){
+        // buyum chegarasi bo'yicha kesib olamiz
+        const[x0,y0,x1,y1]=ar.sil.bbox,m=Math.max(1,Math.round(1.5/mm0)),cx0=Math.max(0,x0-m),cy0=Math.max(0,y0-m),cx1=Math.min(w,x1+m),cy1=Math.min(h,y1+m),nw=cx1-cx0,nh=cy1-cy0;
+        const sub=(a,T)=>{const o=new T(nw*nh);for(let y=0;y<nh;y++)for(let x=0;x<nw;x++)o[y*nw+x]=a[(y+cy0)*w+x+cx0];return o};
+        R=sub(R,Float32Array);G=sub(G,Float32Array);B=sub(B,Float32Array);region=sub(ar.region,Uint8Array);
+        base=ar.base;if(base.cx!=null){base.cx-=cx0;base.cy-=cy0}
+        w=nw;h=nh;N=w*h;S.shapeInfo=ar.fit.kind;
+      }else S.shapeInfo='rect';
+    }
+    const sig=[S.srcId,s.shape,s.zoom,s.ox,s.oy,s.soften].join('|');
+    s.rec=S.recKey===sig?S.rec:null;
+    s.autoN=S.autoN;
+    const res=buildLayers(R,G,B,region,w,h,base,s);
+    if(!s.rec){S.rec=res.rec;S.recKey=sig}
+    if(S.autoN){S.autoN=false;s.n=res.nUsed;$('n').value=res.nUsed;$('nV').textContent=res.nUsed}
+    res.s=s;S.res=res;
+    if(s.shape==='auto'&&!S.sample){const nm={circle:'Doira',ellipse:'Ellips',rect:'To‘rtburchak',free:'Erkin kontur'}[S.shapeInfo];if(nm)$('srcBadge').textContent='Shakl: '+nm+' (avtomatik)'}
+    render();
+  }catch(e){console.error(e);$('status').textContent='Xatolik: '+e.message}
+  $('wall').classList.remove('busy');
+}
+function schedule(){
+  const s=settings();readouts(s);drawSrcView();
+  $('wall').classList.add('busy');$('status').textContent='Hisoblanmoqda';
+  clearTimeout(S.timer);S.timer=setTimeout(run,120);
+}
+
+function polysPath(ctx,polys,sc){
+  ctx.beginPath();
+  for(const p of polys){
+    const sg=loopSegs(p);
+    ctx.moveTo(sg[0][0][0]*sc,sg[0][0][1]*sc);
+    for(const q of sg){if(q[4])ctx.lineTo(q[3][0]*sc,q[3][1]*sc);else ctx.bezierCurveTo(q[1][0]*sc,q[1][1]*sc,q[2][0]*sc,q[2][1]*sc,q[3][0]*sc,q[3][1]*sc)}
+    ctx.closePath();
+  }
+}
+const rgb=c=>`rgb(${c.map(v=>Math.round(Math.max(0,Math.min(255,v)))).join(',')})`;
+const hex=c=>'#'+c.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');
+
+function render(){
+  const r=S.res;if(!r)return;const s=r.s;
+  s.thick=+$('thick').value||3;s.shadow=$('shadow').checked;s.mat=document.querySelector('input[name=mat]:checked').value;
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  const cv=$('preview'),pw=cv.parentElement.clientWidth,cssW=Math.min(620,pw-2*Math.min(36,pw*.04))||520;
+  const cssH=cssW*r.hmm/r.wmm;
+  cv.width=Math.round(cssW*dpr);cv.height=Math.round(cssH*dpr);cv.style.aspectRatio=r.wmm+' / '+r.hmm;
+  const g=cv.getContext('2d'),sc=cv.width/r.wmm;
+  g.clearRect(0,0,cv.width,cv.height);
+  r.layers.forEach((l,i)=>{
+    g.save();
+    if(s.mat==='line'){
+      g.strokeStyle=css('--cut')||'#d92d27';g.lineWidth=Math.max(1,dpr);polysPath(g,l.polys,sc);g.stroke();
+    }else{
+      if(s.shadow){g.shadowColor='rgba(0,0,0,.5)';g.shadowBlur=7*dpr;g.shadowOffsetY=2.5*dpr;g.shadowOffsetX=1*dpr}
+      g.fillStyle=s.mat==='ply'?`hsl(34,52%,${60+i*1.8}%)`:rgb(l.color);
+      polysPath(g,l.polys,sc);g.fill('evenodd');
+      if(s.mat==='ply'){g.shadowColor='transparent';g.strokeStyle='rgba(74,38,12,.75)';g.lineWidth=Math.max(1,dpr*.9);g.stroke()}
+    }
+    g.restore();
+  });
+
+  const grid=$('grid');grid.innerHTML='';
+  r.layers.forEach((l,i)=>{
+    const card=document.createElement('div');card.className='card';
+    const role=i===0?'orqa, butun shakl':(i===r.layers.length-1?'old':'oraliq');
+    card.innerHTML=`<canvas width="240" height="${Math.round(240*r.hmm/r.wmm)}"></canvas>
+      <h3><span class="sw" style="background:${rgb(l.color)}"></span>Qatlam ${i+1}</h3>
+      <div class="meta">${role}<br>${i===0?'1 bo‘lak':l.pieces+' bo‘lak'} · ${(l.cut/1000).toFixed(2)} m</div>
+      <div class="acts" ${S.downloads?'':'hidden'}><button class="btn sm" data-a="svg" data-i="${i}" type="button">SVG</button><button class="btn sm" data-a="dxf" data-i="${i}" type="button">DXF</button></div>`;
+    grid.appendChild(card);
+    const t=card.querySelector('canvas'),tg=t.getContext('2d'),ts=t.width/r.wmm;
+    tg.fillStyle=rgb(l.color);polysPath(tg,l.polys,ts);tg.fill('evenodd');
+    tg.strokeStyle=css('--cut')||'#d92d27';tg.lineWidth=1;tg.stroke();
+  });
+  const tot=r.layers.reduce((a,l)=>a+l.cut,0),cnt=r.layers.reduce((a,l)=>a+l.polys.length,0);
+  $('stats').innerHTML=`<span><b>${r.layers.length}</b> qatlam</span><span><b>${Math.round(r.wmm)} × ${Math.round(r.hmm)}</b> mm</span><span>kesim <b>${(tot/1000).toFixed(1)}</b> m</span><span><b>${cnt}</b> kontur</span><span><b>${r.layers.reduce((a,l)=>a+l.nodes,0)}</b> nuqta</span><span>aniqlik <b>\u00b10.12</b> mm</span><span>balandlik <b>${(r.layers.length*s.thick).toFixed(1)}</b> mm</span>`;
+  renderAnalysis(r);
+  $('status').textContent='';
+  $('dl').hidden=!S.downloads;
+}
+
+function fidLabel(de){return de<=5?['A‘lo','ok']:de<=9?['Yaxshi','ok']:de<=14?['O‘rtacha','warn']:['Past','warn']}
+function renderAnalysis(r){
+  const s=r.s,de=r.fid.mean,[lab,cls]=fidLabel(de);
+  $('fidBig').innerHTML=`${de.toFixed(1)}<small>ΔE, 90%: ${r.fid.p90.toFixed(0)}</small>`;
+  const pill=$('fidPill');pill.textContent=lab;pill.className='pill '+cls;
+  $('fidNote').textContent=`Qatlamlar rasmdagi ranglardan o‘rtacha shuncha farq qiladi. Kichik son yaxshi: 5 dan past deyarli sezilmaydi.`;
+  $('pal').innerHTML=r.layers.map(l=>`<i style="flex:${Math.max(.2,l.share*100)};background:${rgb(l.color)}" title="${(l.share*100).toFixed(0)}%"></i>`).join('');
+  $('legend').innerHTML=r.layers.map((l,i)=>`<span><span class="sw" style="background:${rgb(l.color)}"></span>${i+1}: ${(l.share*100).toFixed(0)}%</span>`).join('');
+  const rms=r.rec.rms,mx=Math.max(...rms);
+  $('kbars').innerHTML=rms.map((v,i)=>{const k=i+3;return`<button class="kbar${k===s.n?' cur':''}${k===r.rec.rec?' rec':''}" data-k="${k}" type="button" aria-label="${k} qatlam, xato ${v.toFixed(1)}"><b>${v.toFixed(1)}</b><i style="--h:${(v/mx).toFixed(3)}"></i><span>${k}</span></button>`}).join('');
+  $('kNote').textContent=s.n===r.rec.rec?`Tavsiya: ${r.rec.rec} qatlam. Hozirgi tanlov shu.`:`Tavsiya: ${r.rec.rec} qatlam (yashil hoshiya). Ustunni bosib tanlang.`;
+  const w=[];
+  const small=r.layers.reduce((a,l)=>a+l.small,0),mp=Math.min(...r.layers.slice(1).map(l=>l.minPiece==null?Infinity:l.minPiece));
+  if(small>0)w.push([true,`${small} ta kichik bo‘lak (25 mm² dan kichik, eng kichigi ${isFinite(mp)?mp.toFixed(0):'?'} mm²). Yopishtirishda pinset kerak bo‘ladi. Kamaytirish uchun “Eng ingichka detal” ni oshiring.`]);
+  else w.push([false,`Barcha bo‘laklar 25 mm² dan katta, yopishtirishga qulay.`]);
+  const lp=r.loss*100;
+  w.push([lp>4,lp>4?`Ingichka detallarni tozalash yuzaning ${lp.toFixed(1)}% ini o‘zgartirdi. Detal tafsiloti kerak bo‘lsa “Eng ingichka detal” ni kamaytiring.`:`Ingichka detallarni tozalash yuzani faqat ${lp.toFixed(1)}% o‘zgartirdi.`]);
+  if(de>14)w.push([true,`Rang xatosi katta. Qatlam sonini ${Math.min(8,Math.max(r.rec.rec,s.n+1))} ga oshirib ko‘ring.`]);
+  if(r.nUsed<r.requested)w.push([false,`Kichik tonlar birlashtirildi: ${r.requested} qatlam so\u2018ralgan edi, ${r.nUsed} qatlam hosil bo\u2018ldi. Qolgan tonlar alohida qatlam bo\u2018lishga yetarli yuza bermadi.`]);
+  if(s.n>r.rec.rec+1)w.push([false,`${s.n} qatlam tavsiyadan ko‘p, qo‘shimcha qatlam aniqlikni deyarli oshirmaydi.`]);
+  $('warns').innerHTML=w.map(([bad,t])=>`<li${bad?' class="w"':''}>${t}</li>`).join('');
+}
+
+function reportText(r){
+  const s=r.s;let t=`Lazer Qatlamlari hisoboti\nFayl: ${S.name}\nO‘lcham: ${Math.round(r.wmm)} x ${Math.round(r.hmm)} mm\nQatlamlar: ${r.layers.length}, material qalinligi ${s.thick} mm, umumiy balandlik ${(r.layers.length*s.thick).toFixed(1)} mm\nRang aniqligi: dE o‘rtacha ${r.fid.mean.toFixed(1)}, 90% ${r.fid.p90.toFixed(0)}\nJami kesim: ${(r.layers.reduce((a,l)=>a+l.cut,0)/1000).toFixed(2)} m, nuqtalar soni ${r.layers.reduce((a,l)=>a+l.nodes,0)}\n\nQatlamlar (orqadan oldinga):\n`;
+  r.layers.forEach((l,i)=>{t+=`${i+1}. rang ${hex(l.color)}, ko‘rinadigan yuza ${(l.share*100).toFixed(0)}%, ${l.polys.length} kontur, kesim ${(l.cut/1000).toFixed(2)} m, ${l.pieces} bo‘lak${l.minPiece!=null?`, eng kichigi ${l.minPiece.toFixed(0)} mm2`:''}\n`});
+  return t+`\nYig‘ish: 1-qatlamni asos qilib, har bir keyingi qatlamni oldingisiga yopishtiring.\nFayllar: SVG birligi 0.01 mm (Corel uslubi), DXF da qatlam nomi CUT. Egri chiziqlar Bezier, moslash xatosi 0.12 mm gacha. Ichki konturlar avval kesiladi.\n`;
+}
+
+async function save(name,data){
+  if(!S.downloads){toast('Yuklab olish bu ko‘rinishda mavjud emas');return}
+  try{await S.downloads.save({filename:name,data});toast('Saqlandi: '+name)}
+  catch(e){if(e&&e.code==='declined')return;toast('Saqlab bo‘lmadi'+(e&&e.message?': '+e.message:''))}
+}
+
+$('grid').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-a]');if(!b||!S.res)return;
+  const i=+b.dataset.i,r=S.res,l=r.layers[i];
+  if(b.dataset.a==='svg')save(`${S.name}_qatlam_${i+1}.svg`,layerSVG(l.polys,r.wmm,r.hmm,sty()));
+  else save(`${S.name}_qatlam_${i+1}.dxf`,layerDXF(l.polys,r.hmm));
+});
+$('kbars').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;$('n').value=b.dataset.k;schedule()});
+$('sheetBtn').addEventListener('click',()=>{const r=S.res;if(r)save(`${S.name}_bitta_list.svg`,sheetSVG(r.layers,r.wmm,r.hmm,10,sty()))});
+$('zipBtn').addEventListener('click',async()=>{
+  const r=S.res;if(!r)return;
+  if(typeof JSZip==='undefined'){toast('ZIP kutubxonasi yuklanmadi');return}
+  const btn=$('zipBtn');btn.disabled=true;
+  try{
+    const z=new JSZip();
+    r.layers.forEach((l,i)=>{z.file(`qatlam_${i+1}.svg`,layerSVG(l.polys,r.wmm,r.hmm,sty()));z.file(`qatlam_${i+1}.dxf`,layerDXF(l.polys,r.hmm))});
+    z.file('bitta_list.svg',sheetSVG(r.layers,r.wmm,r.hmm,10,sty()));
+    z.file('hisobot.txt',reportText(r));
+    const png=await new Promise(res=>$('preview').toBlob(res,'image/png'));
+    if(png)z.file('korinish.png',png);
+    const blob=await z.generateAsync({type:'blob'});
+    await save(`${S.name}_qatlamlar.zip`,blob);
+  }catch(e){toast('ZIP yaratilmadi')}
+  btn.disabled=false;
+});
+
+function setSource(canvasOrImg,name,sample){
+  const m=2400,sc=Math.min(1,m/Math.max(canvasOrImg.width,canvasOrImg.height));
+  const c=document.createElement('canvas');c.width=Math.round(canvasOrImg.width*sc);c.height=Math.round(canvasOrImg.height*sc);
+  c.getContext('2d').drawImage(canvasOrImg,0,0,c.width,c.height);
+  S.src=c;S.name=name;S.sample=sample;S.srcId++;S.autoN=true;S.rec=null;
+  ['ox','oy'].forEach(i=>$(i).value=0);$('zoom').value=100;
+  document.querySelector('input[name=shape][value=auto]').checked=true;
+  if(sample){$('srcBadge').textContent='Namuna rasm';schedule()}
+  else{readouts(settings());drawSrcView();detectAndRun()}
+}
+function loadFile(f){
+  if(!f||!/^image\//.test(f.type)){toast('Rasm fayli tanlang');return}
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{setSource(im,(f.name||'rasm').replace(/\.[^.]+$/,'').replace(/[^\w\-]+/g,'_')||'rasm',false);URL.revokeObjectURL(url)};
+  im.onerror=()=>toast('Rasmni ochib bo‘lmadi');
+  im.src=url;
+}
+$('file').addEventListener('change',e=>loadFile(e.target.files[0]));
+const drop=$('drop');
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files[0]));
+window.addEventListener('dragover',e=>e.preventDefault());
+window.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0])});
+window.addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it)loadFile(it.getAsFile())});
+$('sampleBtn').addEventListener('click',()=>setSource(drawSample(),'namuna',true));
+$('detectBtn').addEventListener('click',()=>{if(S.sample){toast('Namuna rasmda doira yo‘q. O‘z rasmingizni yuklang.');return}S.srcId++;document.querySelector('input[name=shape][value=circle]').checked=true;detectAndRun()});
+
+['zoom','ox','oy','n','size','feat','band','smooth','soften'].forEach(i=>$(i).addEventListener('input',schedule));
+['thick','shadow'].forEach(i=>$(i).addEventListener('input',()=>S.res&&render()));
+document.querySelectorAll('input[name=mat]').forEach(i=>i.addEventListener('change',()=>S.res&&render()));
+document.querySelectorAll('input[name=shape]').forEach(i=>i.addEventListener('change',()=>{if(i.checked&&i.value==='circle'&&S.src&&!S.sample){try{autoFit()}catch(e){}}schedule()}));
+
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>S.res&&render())}catch(e){}
+new MutationObserver(()=>S.res&&render()).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+window.addEventListener('resize',()=>{clearTimeout(S.rt);S.rt=setTimeout(()=>S.res&&render(),150)});
+
+if(window.claude&&window.claude.use){
+  window.claude.use('downloads').then(d=>{S.downloads=d;$('dl').hidden=!d;document.querySelectorAll('.card .acts').forEach(a=>a.hidden=!d)}).catch(()=>{S.downloads=null;$('dl').hidden=true});
+}
+setSource(drawSample(),'namuna',true);
+})();
+</script>
+
+</body></html>

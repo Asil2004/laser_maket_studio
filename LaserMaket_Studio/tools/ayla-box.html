@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ayla Lazer Box Generator</title>
+<style>
+:root{
+  --bg:#f7f5f2; --panel:#fff; --ink:#1c1a17; --sub:#6b6560; --accent:#c85a30; --line:#e4dfd8;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --bg:#161412; --panel:#211e1a; --ink:#f2ede6; --sub:#a39c92; --line:#332e28; }}
+:root[data-theme="dark"]{ --bg:#161412; --panel:#211e1a; --ink:#f2ede6; --sub:#a39c92; --line:#332e28; }
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,Segoe UI,Roboto,sans-serif;min-height:100%;}
+header{padding:18px 16px 6px;}
+h1{font-size:1.15rem;margin:0 0 2px;}
+p.sub{color:var(--sub);font-size:.82rem;margin:0 0 10px;}
+main{padding:0 16px 32px;display:flex;flex-direction:column;gap:14px;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;}
+h3{font-size:.85rem;margin:0 0 8px;color:var(--sub);text-transform:uppercase;letter-spacing:.03em;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+label{font-size:.75rem;color:var(--sub);display:block;margin-bottom:3px;}
+input[type=number]{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:.92rem;}
+.row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+button{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:.95rem;font-weight:600;width:100%;}
+.previewWrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fffdfa;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .previewWrap{background:#faf8f4;}}
+:root[data-theme="dark"] .previewWrap{background:#faf8f4;}
+svg{display:block;min-width:100%;}
+.info{font-size:.78rem;color:var(--sub);margin-top:6px;}
+</style>
+</head>
+<body>
+<header>
+<h1>Ayla Lazer Box (qopqoqli)</h1>
+<p class="sub">Asos doira + bukiluvchan devor + tishlar orqali doiraga birikish + ustidan yopiluvchi qopqoq</p>
+</header>
+<main>
+<div class="card">
+  <h3>Asosiy o'lchamlar</h3>
+  <div class="grid">
+    <div><label>Diametr D (mm)</label><input id="D" type="number" value="100" min="20"></div>
+    <div><label>Quti balandligi H (mm)</label><input id="H" type="number" value="50" min="10"></div>
+    <div><label>Material qalinligi (mm)</label><input id="T" type="number" value="3" step="0.1" min="1"></div>
+    <div><label>Kerf (mm)</label><input id="KERF" type="number" value="0.1" step="0.01" min="0"></div>
+  </div>
+</div>
+<div class="card">
+  <h3>Birikish tishlari (aylanaga)</h3>
+  <div class="grid">
+    <div><label>Tish oralig'i (mm)</label><input id="TAB" type="number" value="12" min="4"></div>
+    <div><label>Tish chuqurligi (mm)</label><input id="TEETH" type="number" value="3" step="0.5" min="1.5"></div>
+  </div>
+</div>
+<div class="card">
+  <h3>Bukiluvchi (living hinge) chiziqlar</h3>
+  <div class="grid">
+    <div><label>Chiziqlar orasi (mm)</label><input id="GAP" type="number" value="4" min="1.5" step="0.5"></div>
+    <div><label>Ko'prik uzunligi (mm)</label><input id="BRIDGE" type="number" value="3" min="1" step="0.5"></div>
+    <div><label>Chekka bo'sh zona (mm)</label><input id="MARGIN" type="number" value="12" min="5"></div>
+  </div>
+</div>
+<div class="card">
+  <h3>Qopqoq</h3>
+  <div class="row"><input id="LID" type="checkbox" checked><label style="margin:0" for="LID">Qopqoq qo'shish (ustidan kiyadi)</label></div>
+  <div class="grid" style="margin-top:8px">
+    <div><label>Qopqoq devori balandligi (mm)</label><input id="LIDH" type="number" value="20" min="8"></div>
+    <div><label>Bo'shliq / tirqish (mm)</label><input id="CLR" type="number" value="0.5" step="0.1" min="0.1"></div>
+  </div>
+</div>
+<div class="card">
+  <div class="previewWrap"><div id="preview"></div></div>
+  <div class="info" id="dims"></div>
+</div>
+<button id="dl">SVG yuklab olish</button>
+</main>
+<script>
+function edge(x1,y1,x2,y2,nx,ny,type,n,t){
+  const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),ux=len?dx/len:0,uy=len?dy/len:0,seg=len/n;
+  const sign=type==='male'?1:(type==='female'?-1:0);
+  let d='';
+  for(let i=0;i<n;i++){
+    const p0x=x1+ux*seg*i,p0y=y1+uy*seg*i,p1x=x1+ux*seg*(i+1),p1y=y1+uy*seg*(i+1);
+    if(sign!==0 && i%2===0){
+      const o0x=p0x+nx*t*sign,o0y=p0y+ny*t*sign,o1x=p1x+nx*t*sign,o1y=p1y+ny*t*sign;
+      d+=`L${o0x.toFixed(2)},${o0y.toFixed(2)} L${o1x.toFixed(2)},${o1y.toFixed(2)} L${p1x.toFixed(2)},${p1y.toFixed(2)} `;
+    } else d+=`L${p1x.toFixed(2)},${p1y.toFixed(2)} `;
+  }
+  return d;
+}
+function oddCount(len,tab){let n=Math.round(len/tab);if(n<3)n=3;if(n%2===0)n++;return n;}
+
+function wallPanel(w,h,n,teeth,t,ox,oy){
+  let d=`M${ox},${oy} `;
+  d+=edge(ox,oy,ox+w,oy,0,-1,'flat',1,t);
+  d+=edge(ox+w,oy,ox+w,oy+h,1,0,'male',oddCount(h,10),t);
+  d+=edge(ox+w,oy+h,ox,oy+h,0,1,'female',n,teeth);
+  d+=edge(ox,oy+h,ox,oy,-1,0,'female',oddCount(h,10),t);
+  return d+'Z';
+}
+function circleTeeth(r,cx,cy,n,depth){
+  let paths=[];
+  for(let i=0;i<n;i+=2){
+    const a0=(2*Math.PI*i)/n, a1=(2*Math.PI*(i+1))/n, rr=r+depth;
+    const p1x=cx+r*Math.cos(a0),p1y=cy+r*Math.sin(a0);
+    const p2x=cx+r*Math.cos(a1),p2y=cy+r*Math.sin(a1);
+    const p3x=cx+rr*Math.cos(a1),p3y=cy+rr*Math.sin(a1);
+    const p4x=cx+rr*Math.cos(a0),p4y=cy+rr*Math.sin(a0);
+    paths.push(`M${p1x.toFixed(2)},${p1y.toFixed(2)} L${p4x.toFixed(2)},${p4y.toFixed(2)} L${p3x.toFixed(2)},${p3y.toFixed(2)} L${p2x.toFixed(2)},${p2y.toFixed(2)} Z`);
+  }
+  return paths;
+}
+function hingeLines(w,h,margin,gap,bridge,ox,oy){
+  let lines=[],i=0,x=margin;
+  while(x<w-margin){
+    const fromTop=i%2===0;
+    const y1=fromTop?bridge:0, y2=fromTop?h:h-bridge;
+    lines.push(`M${(ox+x).toFixed(2)},${(oy+y1).toFixed(2)} L${(ox+x).toFixed(2)},${(oy+y2).toFixed(2)}`);
+    x+=gap; i++;
+  }
+  return lines;
+}
+
+function build(){
+  const D=+D_.value,H=+H_.value,t=+T_.value,kerf=+KERF_.value,tab=+TAB_.value,teeth=+TEETH_.value,
+        gap=+GAP_.value,bridge=+BRIDGE_.value,margin=+MARGIN_.value,lid=LID_.checked,
+        lidH=+LIDH_.value,clr=+CLR_.value;
+  const r=D/2, tt=t-kerf;
+  const pad=Math.max(10,t*4);
+  let items=[], y=pad;
+
+  const C=2*Math.PI*r, n=oddCount(C,tab);
+  items.push({t:'circle',cx:r+pad,cy:y+r,r});
+  circleTeeth(r,r+pad,y+r,n,teeth).forEach(d=>items.push({t:'path',d}));
+  y+=2*r+pad*1.5;
+
+  const wallY=y;
+  items.push({t:'path',d:wallPanel(C,H,n,teeth,tt,pad,wallY)});
+  hingeLines(C,H,margin,gap,bridge,pad,wallY).forEach(d=>items.push({t:'path',d}));
+  y+=H+pad*1.5;
+  let maxW=Math.max(2*r,C);
+
+  if(lid){
+    const r2=r+t+clr, C2=2*Math.PI*r2, n2=oddCount(C2,tab);
+    items.push({t:'circle',cx:r2+pad,cy:y+r2,r:r2});
+    circleTeeth(r2,r2+pad,y+r2,n2,teeth).forEach(d=>items.push({t:'path',d}));
+    y+=2*r2+pad*1.5;
+    const skirtY=y;
+    items.push({t:'path',d:wallPanel(C2,lidH,n2,teeth,tt,pad,skirtY)});
+    hingeLines(C2,lidH,margin,gap,bridge,pad,skirtY).forEach(d=>items.push({t:'path',d}));
+    y+=lidH+pad*0.5;
+    maxW=Math.max(maxW,2*r2,C2);
+  }
+
+  const totalW=maxW+2*pad, totalH=y+pad*0.5;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW.toFixed(2)} ${totalH.toFixed(2)}" width="${totalW.toFixed(0)}mm" height="${totalH.toFixed(0)}mm">`+
+    items.map(it=> it.t==='circle'
+      ? `<circle cx="${it.cx.toFixed(2)}" cy="${it.cy.toFixed(2)}" r="${it.r.toFixed(2)}" fill="none" stroke="#c00" stroke-width="0.2"/>`
+      : `<path d="${it.d}" fill="none" stroke="#c00" stroke-width="0.2"/>`
+    ).join('')+`</svg>`;
+  preview.innerHTML=svg;
+  dims.textContent=`Asos D=${D}mm, devor aylanasi=${C.toFixed(1)}mm, tishlar=${n} | Varaq: ${totalW.toFixed(0)}x${totalH.toFixed(0)}mm`;
+  return svg;
+}
+const ids=['D','H','T','KERF','TAB','TEETH','GAP','BRIDGE','MARGIN','LID','LIDH','CLR'];
+ids.forEach(id=>window[id+'_']=document.getElementById(id));
+let currentSvg=build();
+ids.forEach(id=>window[id+'_'].addEventListener('change',()=>{currentSvg=build();}));
+
+dl.addEventListener('click',async()=>{
+  currentSvg=build();
+  try{
+    const downloads=await claude.use('downloads');
+    if(downloads){ await downloads.save({filename:'ayla-lazer-box.svg', data:new Blob([currentSvg],{type:'image/svg+xml'})}); return; }
+  }catch(e){}
+  try{
+    const blob=new Blob([currentSvg],{type:'image/svg+xml'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ayla-lazer-box.svg';
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ alert('Yuklab olishda xatolik'); }
+});
+</script>
+</body>
+</html>
