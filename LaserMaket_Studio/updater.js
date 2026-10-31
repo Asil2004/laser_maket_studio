@@ -39,7 +39,7 @@ class LaserMaketUpdater {
     } catch (e) {}
     return {
       currentVersion: '1.0.80',
-      updateManifestUrl: 'https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/dist_update/manifest.json',
+      updateManifestUrl: 'https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/manifest.json',
       autoCheckOnStartup: true,
       lastChecked: ''
     };
@@ -330,7 +330,7 @@ class LaserMaketUpdater {
     const manifest = {
       version: newVersion,
       updatedAt: new Date().toISOString(),
-      downloadUrl: `https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/dist_update/update.zip`,
+      downloadUrl: `https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip`,
       releaseNotes: releaseNotes || `LaserMaket Studio ${newVersion} yangilanishi`,
       requiredAppVersion: "1.0.75"
     };
