@@ -1,7 +1,7 @@
 {
-  "version": "1.0.80",
-  "updatedAt": "2026-10-31T17:56:10.638Z",
+  "version": "1.0.81",
+  "updatedAt": "2026-10-31T18:19:33.226Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "AI Erkin Generator va multi-computer sinxronizatsiyasi",
+  "releaseNotes": "Fix AI Erkin Generator tugmasi va 3D/DXF CAD dvigateli",
   "requiredAppVersion": "1.0.75"
 }
