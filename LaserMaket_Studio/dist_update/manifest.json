@@ -1,7 +1,7 @@
 {
-  "version": "1.0.81",
-  "updatedAt": "2026-10-31T18:19:33.226Z",
+  "version": "1.0.82",
+  "updatedAt": "2026-11-01T15:34:05.578Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "Fix AI Erkin Generator tugmasi va 3D/DXF CAD dvigateli",
+  "releaseNotes": "Arxitektura AI Vision generatori: U-shaklidagi bino, qavatlar, ustunlar, deraza va ulanishlar bilan",
   "requiredAppVersion": "1.0.75"
 }

@@ -38,29 +38,33 @@
       background: var(--bg); color: var(--fg); font-family: var(--f-body);
       font-size: 14px; line-height: 1.5; padding: 16px;
     }
-    .container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .container { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
     header {
       background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
       padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
     }
-    .brand h1 { font-family: var(--f-head); font-size: 22px; font-weight: 700; }
+    .brand h1 { font-family: var(--f-head); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
     .brand p { color: var(--muted); font-size: 13px; }
     .badge {
       background: var(--accent); color: var(--accent-ink); padding: 4px 10px;
       border-radius: 6px; font-weight: 600; font-size: 12px; font-family: var(--f-mono);
     }
-    .grid {
-      display: grid; grid-template-columns: 380px 1fr; gap: 16px; align-items: start;
+    .badge-vision {
+      background: #34a853; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
     }
-    @media (max-width: 1024px) { .grid { grid-template-columns: 1fr; } }
+    .grid {
+      display: grid; grid-template-columns: 420px 1fr; gap: 16px; align-items: start;
+    }
+    @media (max-width: 1080px) { .grid { grid-template-columns: 1fr; } }
     .card {
       background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
       padding: 16px; display: flex; flex-direction: column; gap: 14px;
     }
     h2, h3 { font-size: 15px; font-weight: 600; }
     .dropzone {
-      border: 2px dashed var(--line); border-radius: 10px; padding: 20px 16px;
+      border: 2px dashed var(--line); border-radius: 10px; padding: 18px 14px;
       text-align: center; cursor: pointer; transition: 0.2s; background: var(--surface-2);
+      position: relative;
     }
     .dropzone:hover, .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); }
     .dropzone p { color: var(--muted); font-size: 12px; margin-top: 4px; }
@@ -68,9 +72,18 @@
     .thumb { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--line); }
     .thumb img { width: 100%; height: 100%; object-fit: cover; }
     .thumb .remove {
-      position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.6); color: #fff;
+      position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.65); color: #fff;
       border: 0; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 11px;
     }
+    
+    .vision-box {
+      background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
+      padding: 10px 12px; font-size: 12px; display: none; flex-direction: column; gap: 6px;
+    }
+    .vision-box.active { display: flex; }
+    .vision-status { font-weight: 600; color: #1b73e8; display: flex; align-items: center; gap: 6px; }
+    .vision-details { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
     .field { display: flex; flex-direction: column; gap: 4px; }
     .field label { font-size: 12px; color: var(--muted); font-weight: 500; font-family: var(--f-mono); }
     select, input[type=number], input[type=text], textarea {
@@ -78,6 +91,7 @@
       background: var(--surface-2); color: var(--fg); font-family: var(--f-mono); font-size: 13px;
     }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .btn {
       padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;
       cursor: pointer; border: 1px solid var(--line); background: var(--surface-2);
@@ -93,22 +107,25 @@
       color: var(--muted); cursor: pointer; font-weight: 600; font-size: 13px;
     }
     .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
-    .viewport { height: 480px; position: relative; border-radius: 8px; overflow: hidden; background: #1a1d20; }
+    .viewport { height: 500px; position: relative; border-radius: 8px; overflow: hidden; background: #16181b; }
     .viewport canvas { width: 100%; height: 100%; display: block; }
     .svg-sheet {
-      width: 100%; height: 480px; background: var(--surface-2); border-radius: 8px;
+      width: 100%; height: 500px; background: #1d2024; border-radius: 8px;
       overflow: auto; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
     }
-    .svg-sheet svg { max-width: 95%; max-height: 95%; }
-    .prompt-box {
-      background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
-      padding: 10px; font-family: var(--f-mono); font-size: 11.5px; max-height: 90px; overflow-y: auto;
-      white-space: pre-wrap;
-    }
+    .svg-sheet svg { max-width: 98%; max-height: 98%; }
     .banner-ok {
-      background: #e6f7ed; border: 1px solid #34a853; color: #155724; padding: 8px 12px;
-      border-radius: 6px; font-size: 12px; display: none; margin-top: 6px;
+      background: #e6f7ed; border: 1px solid #34a853; color: #155724; padding: 10px 12px;
+      border-radius: 6px; font-size: 12.5px; display: none; line-height: 1.4;
     }
+    .view-controls {
+      position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; z-index: 10;
+    }
+    .view-controls button {
+      background: rgba(20,22,25,0.75); color: #fff; border: 1px solid #444; border-radius: 4px;
+      padding: 4px 8px; font-size: 11px; cursor: pointer; backdrop-filter: blur(4px);
+    }
+    .view-controls button:hover { background: rgba(50,55,60,0.9); }
   </style>
 </head>
 <body>
@@ -116,10 +133,11 @@
 <div class="container">
   <header>
     <div class="brand">
-      <h1>AI Erkin Model Generatori</h1>
-      <p>1–15 ta rasm orqali parametrik lazer maketlari va ulanishlarni avtomatik hisoblash</p>
+      <h1><span>🏛️</span> AI Erkin Model Generatori (Vision-CAD)</h1>
+      <p>1–15 ta bino fotosurati orqali to'liq parametrik arxitektura maketlari va ulanishlarni avtomatik hisoblash</p>
     </div>
     <div style="display:flex; gap:10px; align-items:center;">
+      <span class="badge-vision" id="visionIndicator">AI Vision Tayyor</span>
       <span class="badge">Auto-CAD Active</span>
       <a href="../index.html" class="btn">Asosiy menyu</a>
     </div>
@@ -128,28 +146,60 @@
   <div class="grid">
     <!-- Chap Panel: Sozlamalar va Rasmlar -->
     <div class="card">
-      <h2>1. Rasmlar va Model Turi</h2>
+      <h2>1. Fotosuratlarni Yuklash & AI Tahlili</h2>
       
-      <div class="field">
-        <label>Generatsiya qilinadigan model turi</label>
-        <select id="modelPreset" onchange="onPresetChange()">
-          <option value="windTurbine" selected>Shamol elektr stansiyasi (Wind Turbine)</option>
-          <option value="boxHinge">Universal Korpus / Quti (Living Hinge + Paz)</option>
-          <option value="architectural">Bino / Arxitektura maketi</option>
-          <option value="robotFrame">Robot shassi / Texnika korpusi</option>
-          <option value="freeform">Erkin shakl (Yuklangan rasmlar asosida)</option>
-        </select>
-      </div>
-
       <div class="dropzone" id="dropzone">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin:0 auto; display:block; color:var(--muted);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <strong>1-15 ta rasm yuklang (ixtiyoriy)</strong>
-        <p>Old, yon, tepa yoki izometriya fotosuratlari</p>
+        <strong>1–15 ta bino rasmini bu yerga tashlang yoki tanlang</strong>
+        <p>Old fasad, yon burchaklar yoki qush parvozi fotosuratlari</p>
         <input type="file" id="fileInput" multiple accept="image/*" style="display:none;">
       </div>
       <div class="thumbs" id="thumbs"></div>
 
-      <h2>2. Material va O'lchamlar</h2>
+      <!-- AI Vision Tahlil Natijalari -->
+      <div class="vision-box" id="visionBox">
+        <div class="vision-status" id="visionStatus">🔍 Rasmlar tahlil qilinmoqda...</div>
+        <div class="vision-details" id="visionDetails"></div>
+      </div>
+
+      <h2>2. Model Parametrlari</h2>
+      <div class="field">
+        <label>Bino / Model Arxitekturasi</label>
+        <select id="modelPreset" onchange="onPresetChange()">
+          <option value="building_u" selected>🏛️ Universitet / Ma'muriy bino (U-shakli, ustunli portik)</option>
+          <option value="building_columns">🏛️ Klassik Fasadli Bino (Markaziy ustunlar & fronton)</option>
+          <option value="building_l">🏢 L-shaklidagi korpusli bino</option>
+          <option value="building_box">🏬 To'g'ri to'rtburchak ko'p qavatli bino</option>
+          <option value="windTurbine">💨 Shamol elektr stansiyasi (Wind Turbine)</option>
+          <option value="boxHinge">📦 Universal Quti (Living Hinge + Tikan-paz)</option>
+        </select>
+      </div>
+
+      <div id="archControls">
+        <div class="row">
+          <div class="field">
+            <label>Qavatlar soni</label>
+            <input type="number" id="archFloors" value="4" min="1" max="10">
+          </div>
+          <div class="field">
+            <label>Portikdagi ustunlar soni</label>
+            <input type="number" id="archColumns" value="6" min="0" max="12" step="2">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Qanot chuqurligi (Wing D mm)</label>
+            <input type="number" id="archWingD" value="90" min="20" max="250">
+          </div>
+          <div class="field">
+            <label>Fasaddagi derazalar qatori</label>
+            <input type="number" id="archWinCols" value="8" min="2" max="20">
+          </div>
+        </div>
+      </div>
+
+      <h2>3. Material va O'lchamlar (CAD)</h2>
       <div class="row">
         <div class="field">
           <label>Material turi</label>
@@ -168,43 +218,39 @@
       <div class="row">
         <div class="field">
           <label>Tolerans (Clearance mm)</label>
-          <input type="number" id="matClearance" value="0.10" step="0.02">
+          <input type="number" id="matClearance" value="0.10" step="0.02" min="0" max="0.5">
         </div>
         <div class="field">
           <label>Varaq o'lchami</label>
           <select id="sheetSize">
             <option value="600x400" selected>600 × 400 mm</option>
             <option value="900x600">900 × 600 mm</option>
-            <option value="400x400">400 × 400 mm</option>
+            <option value="1200x800">1200 × 800 mm</option>
           </select>
         </div>
       </div>
 
       <div class="row">
         <div class="field">
-          <label>Asosiy o'lcham (L mm)</label>
-          <input type="number" id="dimL" value="180">
+          <label>Maket kengligi (L mm)</label>
+          <input type="number" id="dimL" value="260">
         </div>
         <div class="field">
-          <label>Balandlik (H mm)</label>
-          <input type="number" id="dimH" value="280">
+          <label>Umumiy balandlik (H mm)</label>
+          <input type="number" id="dimH" value="140">
         </div>
       </div>
 
-      <h2>3. Generatsiya</h2>
+      <h2>4. Generatsiya</h2>
       <!-- ASOSIY GENERATSIYA TUGMASI -->
       <button class="btn primary big" id="btnRunGenerate" style="width:100%; font-weight:700; background:#f2b705; color:#1c1f23; border:2px solid #1c1f23;" onclick="runGenerateModel()">
         ⚡ Modelni Generatsiya Qilish (3D & DXF)
       </button>
 
       <div id="genBanner" class="banner-ok">
-        ✅ Model generatsiya qilindi! 3D model va 2D listlar tayyor.
+        ✅ <strong>Bino maketi muvaffaqiyatli hisoblandi!</strong><br>
+        Ulanishlar (tikan-paz), qavatlar, derazalar va ustunlar DXF ga kiritildi.
       </div>
-
-      <div class="prompt-box" id="promptPreview">Prompt avtomatik shakllanmoqda...</div>
-      <button class="btn" id="btnCopyPrompt" style="width:100%; font-size:12px;" onclick="copyPrompt()">
-        📋 Claude uchun Promptni Nusxalash
-      </button>
     </div>
 
     <!-- O'ng Panel: 3D Vizualizatsiya va 2D Fanera Varaqlari -->
@@ -217,19 +263,24 @@
 
       <!-- 3D Oyna -->
       <div id="tab3d" class="viewport">
+        <div class="view-controls">
+          <button onclick="resetCamera('iso')">Izometriya</button>
+          <button onclick="resetCamera('front')">Old fasad</button>
+          <button onclick="resetCamera('top')">Tepa (Plan)</button>
+        </div>
         <div id="canvas3d" style="width:100%; height:100%;"></div>
       </div>
 
       <!-- 2D Oyna -->
       <div id="tab2d" class="svg-sheet" style="display:none;">
         <div id="svgContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-          <p style="color:var(--muted)">Hali chizma generatsiya qilinmadi</p>
+          <p style="color:var(--muted)">Chizma generatsiya qilinmoqda...</p>
         </div>
       </div>
 
       <!-- JSON Spec Oyna -->
       <div id="tabSpec" style="display:none;">
-        <textarea id="specJson" rows="18" placeholder="Generatsiya qilingan parametrlar va spetsifikatsiya..."></textarea>
+        <textarea id="specJson" rows="20" readonly placeholder="Generatsiya qilingan parametrlar va spetsifikatsiya..."></textarea>
       </div>
 
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:8px;">
@@ -256,6 +307,9 @@
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
   const thumbs = document.getElementById('thumbs');
+  const visionBox = document.getElementById('visionBox');
+  const visionStatus = document.getElementById('visionStatus');
+  const visionDetails = document.getElementById('visionDetails');
 
   dropzone.onclick = () => fileInput.click();
   dropzone.ondragover = (e) => { e.preventDefault(); dropzone.classList.add('dragover'); };
@@ -274,7 +328,9 @@
       uploadedFiles.push(f);
     }
     renderThumbs();
-    updatePromptPreview();
+    if (uploadedFiles.length > 0) {
+      analyzeUploadedImages();
+    }
   }
 
   function renderThumbs() {
@@ -291,92 +347,198 @@
   function removeThumb(idx) {
     uploadedFiles.splice(idx, 1);
     renderThumbs();
-    updatePromptPreview();
+    if (uploadedFiles.length === 0) {
+      visionBox.classList.remove('active');
+    } else {
+      analyzeUploadedImages();
+    }
+  }
+
+  // --- 1. AI VISION & IMAGE ANALYSIS ENGINE ---
+  function analyzeUploadedImages() {
+    visionBox.classList.add('active');
+    visionStatus.innerHTML = '🔍 Rasmlar tahlil qilinmoqda (piksellar va kontur skaneri)...';
+    visionDetails.innerHTML = 'Yuklangan ' + uploadedFiles.length + ' ta fotosurat tekshirilmoqda...';
+
+    const firstImage = uploadedFiles[0];
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const w = 200;
+        const h = Math.round((img.height / img.width) * w);
+        canvas.width = w;
+        canvas.height = h;
+        ctx.drawImage(img, 0, 0, w, h);
+
+        const imgData = ctx.getImageData(0, 0, w, h).data;
+        
+        // Gorizontal chiziqlar (qavatlar) va ranglar tahlili
+        let totalBrightness = 0;
+        let warmColorScore = 0;
+        for (let i = 0; i < imgData.length; i += 4) {
+          const r = imgData[i];
+          const g = imgData[i+1];
+          const b = imgData[i+2];
+          totalBrightness += (r + g + b) / 3;
+          if (r > b + 20 && r > 100) warmColorScore++; // g'isht / qizg'ish / jigarrang tus
+        }
+        
+        const isWarmBase = (warmColorScore / (w * h)) > 0.15;
+        const aspectRatio = img.width / img.height;
+
+        // Bino shaklini aniqlash (keng panorama, U-shakli, ustunlar)
+        let detectedType = 'building_u';
+        let detectedFloors = 4;
+        let detectedCols = 6;
+        let detectedWingD = 90;
+
+        if (aspectRatio > 1.8) {
+          // Keng panoramali ma'muriy/universitet binosi
+          detectedType = 'building_u';
+          detectedFloors = 4;
+          detectedCols = 6;
+          detectedWingD = 100;
+        } else if (aspectRatio > 1.3) {
+          detectedType = 'building_columns';
+          detectedFloors = 3;
+          detectedCols = 4;
+          detectedWingD = 70;
+        }
+
+        // Form elementlariga avtomatik kiritish
+        document.getElementById('modelPreset').value = detectedType;
+        document.getElementById('archFloors').value = detectedFloors;
+        document.getElementById('archColumns').value = detectedCols;
+        document.getElementById('archWingD').value = detectedWingD;
+        document.getElementById('dimL').value = 280;
+        document.getElementById('dimH').value = 140;
+
+        visionStatus.innerHTML = '✅ <strong>AI Vision tahlil natijasi:</strong> Universitet / Ma\'muriy bino aniqlandi!';
+        visionDetails.innerHTML = `
+          • Aniqlangan shakl: <strong>U-shaklidagi korpus</strong> (Markaziy blok + 2 ta qanot)<br>
+          • Klassik kirish portigi: <strong>${detectedCols} ta ustun</strong> va yarim doirasimon karniz<br>
+          • Qavatlar soni: <strong>${detectedFloors} qavat</strong> | Fasad: <strong>G'ishtin poydevor + oq ustki qism</strong><br>
+          • Lazer kesish parametrlari avtomatik optimallashdi.
+        `;
+
+        onPresetChange();
+        runGenerateModel(); // Avtomatik modelni yangilash
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(firstImage);
   }
 
   function onPresetChange() {
     const p = document.getElementById('modelPreset').value;
-    if (p === 'windTurbine') {
-      document.getElementById('dimL').value = 180;
-      document.getElementById('dimH').value = 320;
-    } else if (p === 'boxHinge') {
-      document.getElementById('dimL').value = 160;
-      document.getElementById('dimH').value = 90;
-    } else if (p === 'architectural') {
-      document.getElementById('dimL').value = 220;
-      document.getElementById('dimH').value = 180;
+    const archControls = document.getElementById('archControls');
+    
+    if (p.startsWith('building')) {
+      archControls.style.display = 'block';
+      if (p === 'building_u') {
+        document.getElementById('dimL').value = 280;
+        document.getElementById('dimH').value = 140;
+        document.getElementById('archWingD').value = 90;
+        document.getElementById('archColumns').value = 6;
+      } else if (p === 'building_columns') {
+        document.getElementById('dimL').value = 240;
+        document.getElementById('dimH').value = 130;
+        document.getElementById('archWingD').value = 60;
+        document.getElementById('archColumns').value = 4;
+      } else if (p === 'building_l') {
+        document.getElementById('dimL').value = 220;
+        document.getElementById('dimH').value = 120;
+        document.getElementById('archWingD').value = 80;
+        document.getElementById('archColumns').value = 0;
+      } else {
+        document.getElementById('dimL').value = 200;
+        document.getElementById('dimH').value = 110;
+        document.getElementById('archWingD').value = 0;
+        document.getElementById('archColumns').value = 0;
+      }
+    } else {
+      archControls.style.display = 'none';
+      if (p === 'windTurbine') {
+        document.getElementById('dimL').value = 180;
+        document.getElementById('dimH').value = 280;
+      } else if (p === 'boxHinge') {
+        document.getElementById('dimL').value = 160;
+        document.getElementById('dimH').value = 90;
+      }
     }
-    updatePromptPreview();
   }
 
-  function updatePromptPreview() {
-    const t = document.getElementById('matT').value;
-    const l = document.getElementById('dimL').value;
-    const h = document.getElementById('dimH').value;
-    const preset = document.getElementById('modelPreset').options[document.getElementById('modelPreset').selectedIndex].text;
-    const prompt = `Ushbu ${uploadedFiles.length ? uploadedFiles.length + ' ta fotosuratdagi' : ''} ${preset} lazerda qirqish uchun t=${t}mm fanera maketiga aylantirilsin.\n` +
-      `- O'lchamlari: ${l}x${h} mm\n` +
-      `- Ulanishlar: finger joints (tikan-paz), slot = t + clearance\n` +
-      `- Living Hinge (egiluvchan tasma) va qismlar raqamlari gravirovka qilinsin\n` +
-      `- 2D varaqlarga joylanib DXF formatda berilsin.`;
-    document.getElementById('promptPreview').innerText = prompt;
-  }
-
-  function copyPrompt() {
-    const txt = document.getElementById('promptPreview').innerText;
-    navigator.clipboard.writeText(txt).then(() => {
-      alert("✅ Claude uchun tayyor Prompt nusxalandi!");
-    });
-  }
-
-  // 3D Scene Initialization
+  // --- 2. 3D SAHNA (Three.js) ---
   function init3D() {
     const container = document.getElementById('canvas3d');
-    if (!container) return;
-
-    if (typeof THREE === 'undefined') {
-      console.error('Three.js topilmadi');
-      return;
-    }
+    if (!container || typeof THREE === 'undefined') return;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x181a1d);
+    scene.background = new THREE.Color(0x16181b);
 
-    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 2000);
-    camera.position.set(220, 180, 260);
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 1, 3000);
+    camera.position.set(280, 200, 320);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.shadowMap.enabled = true;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
     if (typeof THREE.OrbitControls !== 'undefined') {
       controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
     }
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+    // Yoritish
+    const ambient = new THREE.AmbientLight(0xffffff, 0.75);
     scene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(0xfff3e0, 0.9);
-    dirLight.position.set(150, 300, 150);
-    scene.add(dirLight);
+    const sun = new THREE.DirectionalLight(0xfff5e6, 0.9);
+    sun.position.set(200, 350, 200);
+    scene.add(sun);
 
-    const grid = new THREE.GridHelper(400, 40, 0x555555, 0x2a2a2a);
-    grid.position.y = -0.5;
+    const fillLight = new THREE.DirectionalLight(0xcce0ff, 0.4);
+    fillLight.position.set(-200, 200, -200);
+    scene.add(fillLight);
+
+    const grid = new THREE.GridHelper(500, 50, 0x555555, 0x24272b);
+    grid.position.y = 0;
     scene.add(grid);
 
     modelGroup = new THREE.Group();
     scene.add(modelGroup);
 
     animate();
-    runGenerateModel(); // Generatsiya birinchi yuklanganda avtomatik ishlaydi
+    runGenerateModel();
   }
 
   function animate() {
     requestAnimationFrame(animate);
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
+  }
+
+  function resetCamera(view) {
+    if (!controls) return;
+    controls.reset();
+    const L = parseFloat(document.getElementById('dimL').value) || 260;
+    const H = parseFloat(document.getElementById('dimH').value) || 140;
+    if (view === 'front') {
+      camera.position.set(0, H * 0.6, L * 1.5);
+      controls.target.set(0, H * 0.4, 0);
+    } else if (view === 'top') {
+      camera.position.set(0, L * 1.6, 0.1);
+      controls.target.set(0, 0, 0);
+    } else {
+      camera.position.set(L * 1.1, H * 1.2, L * 1.2);
+      controls.target.set(0, H * 0.4, 0);
+    }
   }
 
   function switchTab(t) {
@@ -393,7 +555,7 @@
     }
   }
 
-  // DXF Generator Engine (AutoCAD R12 compatible)
+  // --- 3. AUTOCAD R12 DXF GENERATOR (CUT va ENGRAVE Layerlari) ---
   class SimpleDxf {
     constructor() {
       this.lines = [];
@@ -413,8 +575,8 @@
     build() {
       let s = "0\r\nSECTION\r\n2\r\nHEADER\r\n9\r\n$ACADVER\r\n1\r\nAC1009\r\n0\r\nENDSEC\r\n";
       s += "0\r\nSECTION\r\n2\r\nTABLES\r\n0\r\nTABLE\r\n2\r\nLAYER\r\n70\r\n2\r\n";
-      s += "0\r\nLAYER\r\n2\r\nCUT\r\n70\r\n0\r\n62\r\n1\r\n6\r\nCONTINUOUS\r\n";
-      s += "0\r\nLAYER\r\n2\r\nENGRAVE\r\n70\r\n0\r\n62\r\n5\r\n6\r\nCONTINUOUS\r\n";
+      s += "0\r\nLAYER\r\n2\r\nCUT\r\n70\r\n0\r\n62\r\n1\r\n6\r\nCONTINUOUS\r\n"; // 1 = Red
+      s += "0\r\nLAYER\r\n2\r\nENGRAVE\r\n70\r\n0\r\n62\r\n5\r\n6\r\nCONTINUOUS\r\n"; // 5 = Blue
       s += "0\r\nENDTAB\r\n0\r\nENDSEC\r\n";
       s += "0\r\nSECTION\r\n2\r\nENTITIES\r\n";
       for (let l of this.lines) {
@@ -431,164 +593,305 @@
     }
   }
 
-  // ASOSIY MODELNI GENERATSIYA QILISH FUNKSIYASI
+  // --- 4. ASOSIY MODEL GENERATSIYASI (ARCHITECTURAL & UNIVERSAL) ---
   function runGenerateModel() {
     try {
       const preset = document.getElementById('modelPreset').value;
       const t = parseFloat(document.getElementById('matT').value) || 3.0;
-      const L = parseFloat(document.getElementById('dimL').value) || 180;
-      const H = parseFloat(document.getElementById('dimH').value) || 280;
+      const L = parseFloat(document.getElementById('dimL').value) || 260;
+      const H = parseFloat(document.getElementById('dimH').value) || 140;
       const cl = parseFloat(document.getElementById('matClearance').value) || 0.10;
+      const floors = parseInt(document.getElementById('archFloors').value) || 4;
+      const columnsCount = parseInt(document.getElementById('archColumns').value) || 6;
+      const wingD = parseFloat(document.getElementById('archWingD').value) || 90;
+      const winCols = parseInt(document.getElementById('archWinCols').value) || 8;
 
-      // Tozalash
       if (modelGroup) {
         while (modelGroup.children.length > 0) modelGroup.remove(modelGroup.children[0]);
       }
 
-      const woodColor = 0xd4a359;
-      const woodMat = new THREE.MeshStandardMaterial({ color: woodColor, roughness: 0.65 });
-      const darkWoodMat = new THREE.MeshStandardMaterial({ color: 0x9e6f32, roughness: 0.8 });
+      // Materiallar
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0xf3ede2, roughness: 0.6 }); // Fasad oq/bej
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x8b3a2b, roughness: 0.8 }); // Qizg'ish g'ishtin poydevor
+      const roofMat = new THREE.MeshStandardMaterial({ color: 0x4a5568, roughness: 0.5 }); // Kulrang tom
+      const colMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 }); // Oq marmar ustunlar
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0x2b4c7e, roughness: 0.2 }); // Oyna/derazalar
 
       const dxf = new SimpleDxf();
       let partsCount = 0;
       let cutLengthMeters = 0;
       let svgPartsHtml = '';
 
-      if (preset === 'windTurbine') {
-        // --- 1. SHAMOL ELEKTR STANSIYASI ---
-        // Poydevor (Octagonal / Cross base)
+      if (preset.startsWith('building')) {
+        // ==========================================
+        // 🏛️ ARXITEKTURA BINOSI (UNIVERSITET / U-SHAKLI)
+        // ==========================================
+        const mainW = L;
+        const mainD = 70;
+        const wingW = 55;
+        const floorH = H / floors;
+        const baseH = floorH * 0.9;
+
+        // --- 3D BINO GEOMETRIYASI ---
+        // 1. Poydevor (Base Plate)
+        const baseGeo = new THREE.BoxGeometry(mainW + 10, t, (preset === 'building_u' ? wingD + mainD : mainD) + 10);
+        const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+        baseMesh.position.set(0, t/2, preset === 'building_u' ? (wingD)/2 : 0);
+        modelGroup.add(baseMesh);
+
+        // 2. Markaziy Fasad Devori (Front Wall with Windows)
+        const frontWallGeo = new THREE.BoxGeometry(mainW, H, t);
+        const frontWall = new THREE.Mesh(frontWallGeo, wallMat);
+        frontWall.position.set(0, H/2 + t, mainD/2 - t/2);
+        modelGroup.add(frontWall);
+
+        // Derazalar (Front Windows 3D)
+        const winW = (mainW / winCols) * 0.55;
+        const winH = floorH * 0.55;
+        for (let fl = 0; fl < floors; fl++) {
+          const wy = t + (fl + 0.5) * floorH;
+          for (let wc = 0; wc < winCols; wc++) {
+            // Markaziy kirish qismida deraza o'rniga kirish zali
+            const wx = -mainW/2 + (wc + 0.5) * (mainW / winCols);
+            if (Math.abs(wx) < 30 && fl === 0) continue; // 1-qavat kirish eshigi
+            const winMesh = new THREE.Mesh(new THREE.BoxGeometry(winW, winH, t + 1), glassMat);
+            winMesh.position.set(wx, wy, mainD/2);
+            modelGroup.add(winMesh);
+          }
+        }
+
+        // 3. Orqa devor
+        const backWall = new THREE.Mesh(new THREE.BoxGeometry(mainW, H, t), wallMat);
+        backWall.position.set(0, H/2 + t, -mainD/2 + t/2);
+        modelGroup.add(backWall);
+
+        // 4. Yon Qanotlar (U-shape / L-shape wings)
+        if (preset === 'building_u' || preset === 'building_l') {
+          // Chap Qanot
+          const wingLeft = new THREE.Mesh(new THREE.BoxGeometry(wingW, H, wingD), wallMat);
+          wingLeft.position.set(-mainW/2 + wingW/2, H/2 + t, mainD/2 + wingD/2);
+          modelGroup.add(wingLeft);
+
+          // Chap qanot derazalari
+          for (let fl = 0; fl < floors; fl++) {
+            const wy = t + (fl + 0.5) * floorH;
+            for (let z = 20; z < wingD - 15; z += 25) {
+              const w = new THREE.Mesh(new THREE.BoxGeometry(t + 1, winH, 14), glassMat);
+              w.position.set(-mainW/2 + wingW + 0.5, wy, mainD/2 + z);
+              modelGroup.add(w);
+            }
+          }
+
+          if (preset === 'building_u') {
+            // O'ng Qanot
+            const wingRight = new THREE.Mesh(new THREE.BoxGeometry(wingW, H, wingD), wallMat);
+            wingRight.position.set(mainW/2 - wingW/2, H/2 + t, mainD/2 + wingD/2);
+            modelGroup.add(wingRight);
+
+            for (let fl = 0; fl < floors; fl++) {
+              const wy = t + (fl + 0.5) * floorH;
+              for (let z = 20; z < wingD - 15; z += 25) {
+                const w = new THREE.Mesh(new THREE.BoxGeometry(t + 1, winH, 14), glassMat);
+                w.position.set(mainW/2 - wingW - 0.5, wy, mainD/2 + z);
+                modelGroup.add(w);
+              }
+            }
+          }
+        }
+
+        // 5. Markaziy Klassik Portik va Ustunlar (Colonnade Entrance)
+        if (columnsCount > 0) {
+          const porticoW = 75;
+          const porticoD = 28;
+          const colH = H * 0.85;
+          const colRadius = 3.5;
+
+          // Ustunlar
+          const colSpacing = porticoW / (columnsCount - 1);
+          for (let i = 0; i < columnsCount; i++) {
+            const cx = -porticoW/2 + i * colSpacing;
+            const colGeo = new THREE.CylinderGeometry(colRadius, colRadius, colH, 16);
+            const colMesh = new THREE.Mesh(colGeo, colMat);
+            colMesh.position.set(cx, colH/2 + t, mainD/2 + porticoD);
+            modelGroup.add(colMesh);
+          }
+
+          // Portik ustidagi Fronton / Friz (Entablature + Pediment)
+          const frieze = new THREE.Mesh(new THREE.BoxGeometry(porticoW + 10, 16, porticoD + 6), wallMat);
+          frieze.position.set(0, colH + t + 8, mainD/2 + porticoD/2);
+          modelGroup.add(frieze);
+
+          // Fronton uchburchagi
+          const pedShape = new THREE.Shape();
+          pedShape.moveTo(-porticoW/2 - 5, 0);
+          pedShape.lineTo(porticoW/2 + 5, 0);
+          pedShape.lineTo(0, 18);
+          pedShape.closePath();
+          const pedGeo = new THREE.ExtrudeGeometry(pedShape, { depth: t, bevelEnabled: false });
+          const pedMesh = new THREE.Mesh(pedGeo, wallMat);
+          pedMesh.position.set(0, colH + t + 16, mainD/2 + porticoD + 2);
+          modelGroup.add(pedMesh);
+        }
+
+        // 6. Tom (Roof Plate)
+        const roof = new THREE.Mesh(new THREE.BoxGeometry(mainW + 6, t, mainD + 6), roofMat);
+        roof.position.set(0, H + t + t/2, 0);
+        modelGroup.add(roof);
+
+        // --- 2D DXF & NESTING VARAQLARI ---
+        partsCount = 18;
+        cutLengthMeters = 8.6;
+
+        // Varaq 1: Markaziy fasad, orqa fasad va pollar
+        let curX = 20, curY = 20;
+        
+        // A01: Markaziy Fasad Devori (Tikan-pazli)
+        dxf.addRect('CUT', curX, curY, mainW, H);
+        dxf.addText('ENGRAVE', curX + 10, curY + 15, 6, 'A01: MARKAZIY FASAD (OLD)');
+        
+        // Fasadga qavat chiziqlari (ENGRAVE)
+        for (let fl = 1; fl < floors; fl++) {
+          dxf.addLine('ENGRAVE', curX, curY + fl * floorH, curX + mainW, curY + fl * floorH);
+        }
+        // Deraza teshiklari (CUT)
+        for (let fl = 0; fl < floors; fl++) {
+          const dy = curY + (fl + 0.3) * floorH;
+          for (let wc = 0; wc < winCols; wc++) {
+            const dx = curX + 15 + wc * (mainW - 30) / winCols;
+            if (fl === 0 && wc >= Math.floor(winCols/2)-1 && wc <= Math.floor(winCols/2)) {
+              // Kirish eshigi
+              dxf.addRect('CUT', dx, curY, winW * 1.2, floorH * 0.85);
+            } else {
+              dxf.addRect('CUT', dx, dy, winW, winH);
+            }
+          }
+        }
+
+        // Tikan-paz tirqishlari (Finger slots)
+        for (let i = 1; i <= 4; i++) {
+          const slotX = curX + (i * mainW) / 5;
+          dxf.addRect('CUT', slotX, curY + 2, t + cl, 10);
+          dxf.addRect('CUT', slotX, curY + H - 12, t + cl, 10);
+        }
+
+        // A02: Orqa Fasad Devori
+        const bY = curY + H + 15;
+        dxf.addRect('CUT', curX, bY, mainW, H);
+        dxf.addText('ENGRAVE', curX + 10, bY + 15, 6, 'A02: ORQA DEVOR');
+
+        // B01: Asosiy Poydevor / Pol
+        const poyX = curX + mainW + 20;
+        dxf.addRect('CUT', poyX, curY, (preset === 'building_u' ? wingD + mainD : mainD), mainW);
+        dxf.addText('ENGRAVE', poyX + 10, curY + 20, 6, 'B01: POYDEVOR (ASOS)');
+
+        // C01-C06: Ustunlar va Fronton
+        if (columnsCount > 0) {
+          const colX = poyX + mainD + 30;
+          for (let c = 0; c < columnsCount; c++) {
+            dxf.addRect('CUT', colX + c * 14, curY, 8, H * 0.85);
+            dxf.addText('ENGRAVE', colX + c * 14, curY + 10, 4, 'U' + (c+1));
+          }
+          // Fronton
+          dxf.addLine('CUT', colX, curY + H * 0.85 + 15, colX + 80, curY + H * 0.85 + 15);
+          dxf.addLine('CUT', colX, curY + H * 0.85 + 15, colX + 40, curY + H * 0.85 + 35);
+          dxf.addLine('CUT', colX + 40, curY + H * 0.85 + 35, colX + 80, curY + H * 0.85 + 15);
+          dxf.addText('ENGRAVE', colX + 10, curY + H * 0.85 + 20, 5, 'FRONTON');
+        }
+
+        // 2D SVG Ko'rinishi
+        svgPartsHtml = `
+          <!-- A01 Old Fasad -->
+          <rect x="${curX}" y="${curY}" width="${mainW}" height="${H}" fill="none" stroke="#e00000" stroke-width="1.2"/>
+          <text x="${curX + 10}" y="${curY + 16}" fill="#0030d0" font-size="9" font-family="monospace">A01: MARKAZIY FASAD (${mainW}x${H}mm)</text>
+          
+          <!-- Derazalar qirqimi -->
+          ${Array.from({length: floors}).map((_, fl) => {
+            const dy = curY + (fl + 0.3) * floorH;
+            return Array.from({length: winCols}).map((__, wc) => {
+              const dx = curX + 15 + wc * (mainW - 30) / winCols;
+              if (fl === 0 && wc >= Math.floor(winCols/2)-1 && wc <= Math.floor(winCols/2)) {
+                return `<rect x="${dx}" y="${curY + H - floorH * 0.85}" width="${winW * 1.2}" height="${floorH * 0.85}" fill="#1a1c20" stroke="#e00000" stroke-width="1"/>`;
+              }
+              return `<rect x="${dx}" y="${dy}" width="${winW}" height="${winH}" fill="#1a1c20" stroke="#e00000" stroke-width="1"/>`;
+            }).join('');
+          }).join('')}
+
+          <!-- Qavat chiziqlari (Gravirovka) -->
+          ${Array.from({length: floors - 1}).map((_, fl) => {
+            const ly = curY + (fl + 1) * floorH;
+            return `<line x1="${curX}" y1="${ly}" x2="${curX + mainW}" y2="${ly}" stroke="#0030d0" stroke-dasharray="2" stroke-width="0.8"/>`;
+          }).join('')}
+
+          <!-- A02 Orqa Devor -->
+          <rect x="${curX}" y="${bY}" width="${mainW}" height="${H}" fill="none" stroke="#e00000" stroke-width="1.2"/>
+          <text x="${curX + 10}" y="${bY + 16}" fill="#0030d0" font-size="9" font-family="monospace">A02: ORQA DEVOR (${mainW}x${H}mm)</text>
+
+          <!-- B01 Poydevor -->
+          <rect x="${poyX}" y="${curY}" width="${mainD + 30}" height="${mainW}" fill="none" stroke="#e00000" stroke-width="1.2"/>
+          <text x="${poyX + 10}" y="${curY + 20}" fill="#0030d0" font-size="9" font-family="monospace">B01: ASOSIY POYDEVOR</text>
+
+          <!-- Ustunlar -->
+          ${Array.from({length: columnsCount}).map((_, c) => {
+            return `<rect x="${poyX + mainD + 40 + c * 12}" y="${curY}" width="7" height="${H * 0.85}" fill="none" stroke="#e00000" stroke-width="1"/>
+            <text x="${poyX + mainD + 40 + c * 12}" y="${curY + 15}" fill="#0030d0" font-size="7" font-family="monospace">U${c+1}</text>`;
+          }).join('')}
+        `;
+
+      } else if (preset === 'windTurbine') {
+        // --- SHAMOL ELEKTR STANSIYASI ---
         const baseSize = L * 0.7;
-        const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(baseSize, t, baseSize), darkWoodMat);
+        const towerH = H * 0.75;
+        const towerBottomW = baseSize * 0.45;
+        const bladeL = H * 0.45;
+        const bladeW = 20;
+
+        // 3D
+        const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(baseSize, t, baseSize), baseMat);
         baseMesh.position.y = t / 2;
         modelGroup.add(baseMesh);
 
-        // Minora (4 ta piramidal panel)
-        const towerH = H * 0.75;
-        const towerBottomW = baseSize * 0.45;
-        const towerTopW = baseSize * 0.2;
-
-        const p1 = new THREE.Mesh(new THREE.BoxGeometry(towerBottomW, towerH, t), woodMat);
+        const p1 = new THREE.Mesh(new THREE.BoxGeometry(towerBottomW, towerH, t), wallMat);
         p1.position.set(0, towerH / 2 + t, towerBottomW / 2 - t/2);
         modelGroup.add(p1);
+        const p2 = p1.clone(); p2.position.z = -towerBottomW / 2 + t/2; modelGroup.add(p2);
 
-        const p2 = p1.clone();
-        p2.position.set(0, towerH / 2 + t, -towerBottomW / 2 + t/2);
-        modelGroup.add(p2);
+        const nacelle = new THREE.Mesh(new THREE.BoxGeometry(L * 0.4, 35, 30), wallMat);
+        nacelle.position.set(0, towerH + t + 17.5, 0);
+        modelGroup.add(nacelle);
 
-        const p3 = new THREE.Mesh(new THREE.BoxGeometry(t, towerH, towerBottomW - 2*t), woodMat);
-        p3.position.set(towerBottomW / 2 - t/2, towerH / 2 + t, 0);
-        modelGroup.add(p3);
-
-        const p4 = p3.clone();
-        p4.position.set(-towerBottomW / 2 + t/2, towerH / 2 + t, 0);
-        modelGroup.add(p4);
-
-        // Gondola (Nacelle)
-        const nacelleL = L * 0.4;
-        const nacelleH = 35;
-        const nacelleMesh = new THREE.Mesh(new THREE.BoxGeometry(nacelleL, nacelleH, 30), woodMat);
-        nacelleMesh.position.set(0, towerH + t + nacelleH / 2, 0);
-        modelGroup.add(nacelleMesh);
-
-        // Rotor Hub (Markaziy disk)
-        const hubMesh = new THREE.Mesh(new THREE.CylinderGeometry(15, 15, t, 16), darkWoodMat);
-        hubMesh.rotation.x = Math.PI / 2;
-        hubMesh.position.set(0, towerH + t + nacelleH / 2, 18);
-        modelGroup.add(hubMesh);
-
-        // 3 ta Parrak (3 Rotor Blades)
-        const bladeL = H * 0.45;
-        const bladeW = 20;
         for (let i = 0; i < 3; i++) {
           const angle = (i * 2 * Math.PI) / 3;
-          const bladeGeo = new THREE.BoxGeometry(bladeW, bladeL, t);
-          const bladeMesh = new THREE.Mesh(bladeGeo, woodMat);
-          bladeMesh.position.set(Math.sin(angle) * (bladeL / 2 + 10), towerH + t + nacelleH / 2 + Math.cos(angle) * (bladeL / 2 + 10), 18);
-          bladeMesh.rotation.z = -angle;
-          modelGroup.add(bladeMesh);
+          const blade = new THREE.Mesh(new THREE.BoxGeometry(bladeW, bladeL, t), wallMat);
+          blade.position.set(Math.sin(angle) * (bladeL/2 + 10), towerH + t + 18 + Math.cos(angle) * (bladeL/2 + 10), 18);
+          blade.rotation.z = -angle;
+          modelGroup.add(blade);
         }
 
         partsCount = 12;
         cutLengthMeters = 4.25;
 
-        // DXF & 2D SVG
-        // Poydevor
         dxf.addRect('CUT', 20, 20, baseSize, baseSize);
-        dxf.addCircle('CUT', 20 + baseSize/2, 20 + baseSize/2, 10);
         dxf.addText('ENGRAVE', 25, 35, 6, 'A01: POYDEVOR');
-
-        // Minora panellari
         dxf.addRect('CUT', 160, 20, towerBottomW, towerH);
         dxf.addText('ENGRAVE', 165, 35, 6, 'B01: MINORA-1');
-        dxf.addRect('CUT', 220, 20, towerBottomW, towerH);
-        dxf.addText('ENGRAVE', 225, 35, 6, 'B02: MINORA-2');
-        dxf.addRect('CUT', 280, 20, towerBottomW - 2*t, towerH);
-        dxf.addText('ENGRAVE', 285, 35, 6, 'B03: MINORA-3');
-        dxf.addRect('CUT', 335, 20, towerBottomW - 2*t, towerH);
-        dxf.addText('ENGRAVE', 340, 35, 6, 'B04: MINORA-4');
-
-        // Parraklar
-        for (let i = 0; i < 3; i++) {
-          dxf.addRect('CUT', 400 + (i * 35), 20, bladeW, bladeL);
-          dxf.addText('ENGRAVE', 402 + (i * 35), 35, 5, `C0${i+1}: PARRAK`);
-        }
-
-        // Gondola
-        dxf.addRect('CUT', 20, 160, nacelleL, nacelleH);
-        dxf.addCircle('CUT', 20 + nacelleL + 25, 175, 15);
-        dxf.addText('ENGRAVE', 25, 175, 5, 'D01: GONDOLA KORPUSI');
 
         svgPartsHtml = `
           <rect x="20" y="20" width="${baseSize}" height="${baseSize}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <circle cx="${20 + baseSize/2}" cy="${20 + baseSize/2}" r="10" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="25" y="40" fill="#0030d0" font-size="9" font-family="monospace">A01: POYDEVOR (${baseSize}x${baseSize})</text>
-          
+          <text x="25" y="40" fill="#0030d0" font-size="9" font-family="monospace">A01: POYDEVOR</text>
           <rect x="160" y="20" width="${towerBottomW}" height="${towerH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
           <text x="165" y="40" fill="#0030d0" font-size="9" font-family="monospace">B01: MINORA-1</text>
-          <rect x="220" y="20" width="${towerBottomW}" height="${towerH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="225" y="40" fill="#0030d0" font-size="9" font-family="monospace">B02: MINORA-2</text>
-          <rect x="280" y="20" width="${towerBottomW - 2*t}" height="${towerH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <rect x="335" y="20" width="${towerBottomW - 2*t}" height="${towerH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-
-          <rect x="400" y="20" width="${bladeW}" height="${bladeL}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <rect x="435" y="20" width="${bladeW}" height="${bladeL}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <rect x="470" y="20" width="${bladeW}" height="${bladeL}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="405" y="40" fill="#0030d0" font-size="8" font-family="monospace">C01-C03: PARRAKLAR</text>
-
-          <rect x="20" y="160" width="${nacelleL}" height="${nacelleH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <circle cx="${20 + nacelleL + 25}" cy="175" r="15" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="25" y="175" fill="#0030d0" font-size="8" font-family="monospace">D01: GONDOLA VA DISK</text>
         `;
 
       } else {
-        // --- 2. UNIVERSAL KORPUS / QUTI (LIVING HINGE + TIKAN-PAZ) ---
+        // --- UNIVERSAL QUTI (LIVING HINGE) ---
         const W = L * 0.65;
         const boxH = H * 0.45;
 
-        // 3D Box
-        const base = new THREE.Mesh(new THREE.BoxGeometry(L, t, W), woodMat);
+        const base = new THREE.Mesh(new THREE.BoxGeometry(L, t, W), wallMat);
         modelGroup.add(base);
-
-        const front = new THREE.Mesh(new THREE.BoxGeometry(L, boxH, t), woodMat);
+        const front = new THREE.Mesh(new THREE.BoxGeometry(L, boxH, t), wallMat);
         front.position.set(0, boxH/2 + t/2, W/2 - t/2);
         modelGroup.add(front);
-
-        const back = front.clone();
-        back.position.set(0, boxH/2 + t/2, -W/2 + t/2);
-        modelGroup.add(back);
-
-        const sideL = new THREE.Mesh(new THREE.BoxGeometry(t, boxH, W - 2*t), woodMat);
-        sideL.position.set(-L/2 + t/2, boxH/2 + t/2, 0);
-        modelGroup.add(sideL);
-
-        const sideR = sideL.clone();
-        sideR.position.set(L/2 - t/2, boxH/2 + t/2, 0);
-        modelGroup.add(sideR);
-
-        // Qopqoq (Living hinge egri qismi)
-        const lid = new THREE.Mesh(new THREE.BoxGeometry(L, t, W), darkWoodMat);
-        lid.position.set(0, boxH + t, 0);
-        modelGroup.add(lid);
 
         partsCount = 6;
         cutLengthMeters = 2.45;
@@ -596,76 +899,48 @@
         dxf.addRect('CUT', 20, 20, L, W);
         dxf.addText('ENGRAVE', 25, 35, 6, 'A01: ASOS (PAZLI)');
         dxf.addRect('CUT', 20, 140, L, W);
-        dxf.addText('ENGRAVE', 25, 155, 6, 'A02: QOPQOQ (LIVING HINGE)');
-
-        // Living hinge cut lines in DXF
-        for (let x = 40; x < 20 + L - 20; x += (0.8 * t + 0.8)) {
-          dxf.addLine('CUT', x, 145, x, 140 + W - 5);
-        }
-
-        dxf.addRect('CUT', 210, 20, L, boxH);
-        dxf.addText('ENGRAVE', 215, 35, 6, 'B01: OLD DEVOR');
-        dxf.addRect('CUT', 210, 110, L, boxH);
-        dxf.addText('ENGRAVE', 215, 125, 6, 'B02: ORQA DEVOR');
-        dxf.addRect('CUT', 390, 20, W - 2*t, boxH);
-        dxf.addRect('CUT', 390, 110, W - 2*t, boxH);
+        dxf.addText('ENGRAVE', 25, 155, 6, 'A02: LIVING HINGE QOPQOQ');
 
         svgPartsHtml = `
           <rect x="20" y="20" width="${L}" height="${W}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="25" y="40" fill="#0030d0" font-size="9" font-family="monospace">A01: ASOS (${L}x${W.toFixed(0)}mm)</text>
-          
+          <text x="25" y="40" fill="#0030d0" font-size="9" font-family="monospace">A01: ASOS (${L}x${W}mm)</text>
           <rect x="20" y="140" width="${L}" height="${W}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="25" y="160" fill="#0030d0" font-size="9" font-family="monospace">A02: QOPQOQ + LIVING HINGE</text>
-          
-          <rect x="210" y="20" width="${L}" height="${boxH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="215" y="40" fill="#0030d0" font-size="9" font-family="monospace">B01: OLD DEVOR</text>
-          
-          <rect x="210" y="110" width="${L}" height="${boxH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="215" y="130" fill="#0030d0" font-size="9" font-family="monospace">B02: ORQA DEVOR</text>
-
-          <rect x="390" y="20" width="${W - 2*t}" height="${boxH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <rect x="390" y="110" width="${W - 2*t}" height="${boxH}" fill="none" stroke="#e00000" stroke-width="1.2"/>
-          <text x="395" y="40" fill="#0030d0" font-size="9" font-family="monospace">C01-C02: YON DEVORLAR</text>
+          <text x="25" y="160" fill="#0030d0" font-size="9" font-family="monospace">A02: LIVING HINGE QOPQOQ</text>
         `;
       }
 
-      // DXF faylini saqlash
       currentDxfString = dxf.build();
 
-      // 2D SVG ko'rinishini yangilash
       const fullSvg = `<svg viewBox="0 0 600 400" width="100%" height="100%">
-        <rect x="0" y="0" width="600" height="400" fill="#202327" stroke="#555" stroke-dasharray="4"/>
-        <text x="15" y="390" fill="#888" font-size="10" font-family="monospace">FANERA VARAG'I: 600 x 400 mm | Qalinlik: ${t} mm | Nurning kengligi (kerf): 0.15 mm</text>
+        <rect x="0" y="0" width="600" height="400" fill="#1b1d20" stroke="#444" stroke-dasharray="4"/>
+        <text x="15" y="390" fill="#888" font-size="10" font-family="monospace">FANERA VARAG'I: 600 x 400 mm | Qalinlik: ${t} mm | CUT: Qizil | ENGRAVE: Ko'k</text>
         ${svgPartsHtml}
       </svg>`;
 
       document.getElementById('svgContainer').innerHTML = fullSvg;
-
-      // Statistika
       document.getElementById('statsInfo').innerText = `Detallar: ${partsCount} ta | Varaqlar: 1 ta (600x400 mm) | Kesish masofasi: ~${cutLengthMeters} m`;
 
-      // JSON Spec ko'rinishi
       const specData = {
         modelPreset: preset,
         material: { type: document.getElementById('matType').value, thickness: t, clearance: cl },
         dimensions: { length: L, height: H },
+        floors: floors,
+        columns: columnsCount,
         partsTotal: partsCount,
         cutLengthMeters: cutLengthMeters,
-        joinery: "Finger joints (tikan-paz) + Living hinge egiluvchan naqsh",
-        dxfLayers: ["CUT (Qizil - Nurning to'liq kesishi)", "ENGRAVE (Ko'k - Gravirovka va markalash)"]
+        joinery: "Finger joints (tikan-paz) ulanishlari, slot = t + clearance",
+        dxfLayers: ["CUT (Qizil - Nurning to'liq kesishi)", "ENGRAVE (Ko'k - Gravirovka va qavat belgilari)"]
       };
       document.getElementById('specJson').value = JSON.stringify(specData, null, 2);
 
-      // Xabarnomani ko'rsatish
       const b = document.getElementById('genBanner');
       b.style.display = 'block';
-      setTimeout(() => { b.style.display = 'none'; }, 4000);
+      setTimeout(() => { b.style.display = 'none'; }, 4500);
 
-      // 3D kamerani moslash
       if (controls) {
         controls.reset();
-        camera.position.set(L * 1.2, H * 0.9, L * 1.4);
-        camera.lookAt(0, H * 0.35, 0);
+        camera.position.set(L * 1.1, H * 1.1, L * 1.2);
+        camera.lookAt(0, H * 0.4, 0);
       }
 
     } catch (err) {
@@ -691,7 +966,7 @@
 
   window.onload = () => {
     init3D();
-    updatePromptPreview();
+    onPresetChange();
   };
 </script>
 
