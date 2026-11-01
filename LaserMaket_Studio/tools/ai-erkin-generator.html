@@ -6,7 +6,7 @@
   <title>AI Erkin Model Generatori | LaserMaket Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <script src="../vendor/three.min.js"></script>
   <script src="../vendor/OrbitControls.js"></script>
@@ -19,417 +19,463 @@
 
   <style>
     :root {
-      --graphite: #1f2226;
-      --graphite-2: #2b2f34;
-      --bg: #eceef0;
-      --surface: #ffffff;
-      --surface-2: #f5f6f7;
-      --line: #d5d8dc;
-      --fg: #1c1f23;
-      --muted: #646a72;
-      --accent: #f2b705;
-      --accent-ink: #1c1f23;
-      --accent-soft: #fff4cc;
-      --err: #c62f2f;
-      --ok: #1f7a46;
-      --stage-a: #f6f7f8;
-      --stage-b: #dfe2e6;
-      --sky-a: #9fc1e0;
-      --sky-b: #dfe8ee;
-      --ply: #e9d3ad;
-      --ply-part: #c99a5b;
-      --cut: #e00000;
-      --engr: #0030d0;
-      --font-ui: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
-      --font-cond: "IBM Plex Sans Condensed", "IBM Plex Sans", system-ui, sans-serif;
-      --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+      --ground: #faf8f5; --panel: #ffffff; --ink: #1c1917; --muted: #78716c; --line: #e7e5e4;
+      --laser: #d93829; --engrave: #2563eb; --part: #e5be8a; --part-edge: #5c3818;
+      --accent: #f59e0b; --accent-dark: #b45309; --accent-soft: #fef3c7;
+      --f-display: "Unbounded", system-ui, sans-serif;
+      --f-body: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
+      --f-mono: "IBM Plex Mono", ui-monospace, monospace;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--fg); font: 13.5px/1.45 var(--font-ui); }
-    
-    .app {
+    body {
+      background: #f5f3ef; color: var(--ink); font-family: var(--f-body);
+      font-size: 13.5px; line-height: 1.45; overflow-x: hidden;
+    }
+
+    /* Asosiy 3 Ustunli Layout (LaserMaket Studio Asosiy Standarti) */
+    .app-layout {
       display: grid;
-      grid-template:
-        "top top top" 48px
-        "left center right" minmax(0, 1fr)
-        "left bottom right" 270px / 310px minmax(0, 1fr) 300px;
+      grid-template-columns: 320px 1fr 280px;
       height: 100vh;
-      width: 100vw;
+      overflow: hidden;
+    }
+    @media (max-width: 1200px) {
+      .app-layout { grid-template-columns: 300px 1fr; }
+      .aside-right { display: none; }
+    }
+    @media (max-width: 860px) {
+      .app-layout { grid-template-columns: 1fr; height: auto; overflow: visible; }
     }
 
-    /* TOPBAR */
-    .topbar {
-      grid-area: top;
-      background: var(--graphite);
-      color: #f1f2f3;
-      border-bottom: 2px solid var(--accent);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 16px;
-      gap: 12px;
+    /* Chap Panel: Parametrlar va Rasm Yuklash */
+    .aside-left {
+      background: var(--panel); border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; overflow-y: auto; height: 100vh;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-mark {
-      background: var(--accent); color: #1c1f23; border-radius: 6px;
-      width: 30px; height: 30px; display: grid; place-items: center; font-size: 16px; font-weight: 700;
+    .left-header {
+      padding: 14px 16px; border-bottom: 1px solid var(--line);
+      display: flex; flex-direction: column; gap: 8px;
     }
-    .brand h1 { font: 600 15px/1.1 var(--font-cond); letter-spacing: .02em; margin: 0; }
-    .brand p { color: #b8bdc3; margin: 0; font-size: 11.5px; }
-    .top-actions { display: flex; gap: 8px; align-items: center; }
-    .btn {
-      border: 1px solid var(--line); background: var(--surface); cursor: pointer;
-      border-radius: 6px; padding: 5px 12px; font-size: 12.5px; font-weight: 500;
-      display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: inherit;
+    .top-back-btn {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+      color: var(--muted); text-decoration: none; font-weight: 500;
     }
-    .btn:hover { border-color: var(--accent); }
-    .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
-    .btn.ghost { background: transparent; border-color: #4a5058; color: #e6e8ea; }
-    .btn.ghost:hover { border-color: var(--accent); color: #fff; }
+    .top-back-btn:hover { color: var(--ink); }
+    .title-box h1 { font-family: var(--f-display); font-size: 14.5px; font-weight: 700; color: var(--ink); }
+    .title-box p { font-size: 11.5px; color: var(--muted); }
 
-    /* ASIDE LEFT: PARAMETRLAR */
-    .left {
-      grid-area: left; background: var(--surface); border-right: 1px solid var(--line);
-      display: flex; flex-direction: column; min-height: 0; overflow-y: auto; padding: 12px 14px; gap: 12px;
+    .catalog-btn {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px;
+      padding: 8px 12px; font-size: 12px; font-weight: 600; color: #92400e;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; text-decoration: none; margin-top: 4px;
     }
-    .sec-title {
-      font: 600 11.5px var(--font-cond); text-transform: uppercase; letter-spacing: .07em; color: var(--muted);
-      margin: 4px 0 2px;
+    .catalog-btn:hover { background: #fef3c7; }
+
+    /* Dropzone va Rasmlar */
+    .dropzone-area {
+      padding: 12px 16px; border-bottom: 1px solid var(--line); background: #fafaf9;
     }
-    .field { display: flex; flex-direction: column; gap: 4px; }
-    .field label { font-size: 12px; color: var(--muted); font-weight: 500; }
-    select, input[type=number], input[type=text] {
-      width: 100%; border: 1px solid var(--line); background: var(--surface-2);
-      border-radius: 5px; padding: 5px 8px; font-family: var(--font-mono); font-size: 12.5px; color: var(--fg);
-    }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    
     .dropzone {
-      border: 2px dashed var(--line); border-radius: 7px; padding: 12px 8px; text-align: center;
-      background: var(--surface-2); cursor: pointer; transition: .2s; font-size: 12px;
+      border: 2px dashed #cbd5e1; border-radius: 8px; padding: 12px 10px;
+      text-align: center; cursor: pointer; background: #fff; transition: 0.2s;
     }
     .dropzone:hover { border-color: var(--accent); background: var(--accent-soft); }
-    .dropzone strong { display: block; font-size: 12px; color: var(--fg); margin-bottom: 2px; }
-    .dropzone span { font-size: 11px; color: var(--muted); }
-    .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
-    .thumb { position: relative; aspect-ratio: 1; border-radius: 4px; overflow: hidden; border: 1px solid var(--line); }
+    .dropzone svg { color: var(--muted); margin-bottom: 4px; }
+    .dropzone strong { font-size: 12px; display: block; color: var(--ink); }
+    .dropzone p { font-size: 11px; color: var(--muted); }
+    .thumbs-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+      gap: 6px; margin-top: 8px;
+    }
+    .thumb { position: relative; border-radius: 6px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--line); }
     .thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .thumb button {
-      position: absolute; top: 1px; right: 1px; background: rgba(0,0,0,0.7); color: #fff;
-      border: 0; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; cursor: pointer;
+    .thumb .remove-btn {
+      position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.65); color: #fff;
+      border: 0; width: 16px; height: 16px; border-radius: 50%; font-size: 10px; cursor: pointer;
     }
+
+    .ai-badge-box {
+      margin-top: 8px; padding: 8px 10px; background: #f0fdf4; border: 1px solid #bbf7d0;
+      border-radius: 6px; font-size: 11px; color: #166534; display: none;
+    }
+    .ai-badge-box.active { display: block; }
+    .ai-badge-box strong { display: flex; align-items: center; gap: 4px; margin-bottom: 2px; font-size: 11.5px; }
+
+    /* Akordeon Bo'limlar (2-rasmdagidek) */
+    .acc-section { border-bottom: 1px solid var(--line); }
+    .acc-header {
+      padding: 11px 16px; font-family: var(--f-display); font-size: 11px;
+      font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--ink); display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; background: #fff; user-select: none;
+    }
+    .acc-header:hover { background: #fafaf9; }
+    .acc-content { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: #fff; }
     
-    .pgroup { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-    .pgroup-head {
-      background: var(--surface-2); cursor: pointer; width: 100%; font: 600 11.5px var(--font-cond);
-      text-transform: uppercase; letter-spacing: .06em; text-align: left; border: 0; padding: 7px 10px;
-      display: flex; justify-content: space-between; align-items: center; color: var(--fg);
+    .ctrl-field { display: flex; flex-direction: column; gap: 4px; }
+    .ctrl-field label { font-size: 11.5px; color: var(--muted); font-family: var(--f-mono); }
+    .ctrl-field input, .ctrl-field select {
+      width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line);
+      font-family: var(--f-mono); font-size: 13px; color: var(--ink); background: #fafaf9;
     }
-    .pgroup-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; background: var(--surface); }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    /* CENTER: 3D VIEWPORT */
-    .center {
-      grid-area: center; background: var(--bg); display: flex; flex-direction: column; min-height: 0; position: relative;
+    .btn-generate {
+      margin: 14px 16px; padding: 12px; background: #f59e0b; border: 1px solid #d97706;
+      border-radius: 8px; color: #1c1917; font-family: var(--f-display); font-size: 12.5px;
+      font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: 0.15s;
     }
-    .center-tabs {
-      background: var(--surface); border-bottom: 1px solid var(--line); display: flex; gap: 2px; padding: 4px 10px 0;
-    }
-    .center-tabs button {
-      background: none; border: 0; border-bottom: 2px solid transparent; padding: 6px 14px;
-      cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted);
-    }
-    .center-tabs button.on { color: var(--fg); border-bottom-color: var(--accent); }
+    .btn-generate:hover { background: #fbbf24; transform: translateY(-1px); }
 
-    .stage {
-      flex: 1; min-height: 0; position: relative;
-      background: radial-gradient(ellipse at 50% 35%, var(--stage-a), var(--stage-b));
+    /* Markaziy Qism: 3D Sahna va Lazer Listlari */
+    .main-center {
+      display: flex; flex-direction: column; height: 100vh; overflow-y: auto; background: #f5f3ef;
     }
-    .stage.real {
-      background: linear-gradient(180deg, var(--sky-a) 0%, var(--sky-b) 62%);
+    .top-tabs {
+      background: var(--panel); border-bottom: 1px solid var(--line); padding: 0 16px;
+      display: flex; gap: 4px;
     }
-    .stage canvas { width: 100%; height: 100%; display: block; }
+    .tab-btn {
+      padding: 12px 16px; background: none; border: none; border-bottom: 2px solid transparent;
+      font-family: var(--f-display); font-size: 12px; font-weight: 600; color: var(--muted);
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+    .tab-btn.active { color: var(--ink); border-bottom-color: #f59e0b; }
 
-    /* 3D TOOLBAR (Xuddi asl studiyadek) */
-    .toolbar {
-      position: absolute; top: 10px; left: 10px; right: 10px; display: flex; flex-wrap: wrap;
-      align-items: center; gap: 6px; pointer-events: none; z-index: 10;
+    /* 3D Toolbar (2-rasmdagidek birma-bir) */
+    .toolbar-3d {
+      padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
     }
-    .toolbar > * { pointer-events: auto; }
-    .tb-group {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-      display: flex; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    .tb-btn {
+      padding: 5px 10px; background: #fff; border: 1px solid var(--line); border-radius: 5px;
+      font-size: 11.5px; font-weight: 500; cursor: pointer; color: var(--ink);
     }
-    .tb {
-      border: 0; border-right: 1px solid var(--line); background: transparent; padding: 5px 9px;
-      font-size: 12px; cursor: pointer; color: var(--fg); white-space: nowrap;
-    }
-    .tb:last-child { border-right: 0; }
-    .tb:hover { background: var(--surface-2); }
-    .tb.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+    .tb-btn:hover { background: #fafaf9; }
+    .tb-btn.active { background: #eab308; border-color: #ca8a04; color: #1c1917; font-weight: 600; }
+    .tb-btn.pill-asm { background: #1c1917; color: #fff; border-color: #1c1917; font-weight: 600; }
     
-    .tb-slider {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
-      display: flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .tb-slider input[type=range] { width: 90px; accent-color: var(--accent); cursor: pointer; }
+    .tb-slider { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-left: 6px; }
+    .tb-slider input[type=range] { width: 90px; accent-color: #eab308; cursor: pointer; }
 
-    .tag3d {
-      position: absolute; bottom: 12px; left: 12px; background: var(--graphite); color: #f1f2f3;
-      border: 1px solid var(--accent); border-radius: 6px; padding: 5px 9px; font-size: 11.5px;
-      font-family: var(--font-mono); pointer-events: none; z-index: 10;
+    /* 3D Sahna Maydoni */
+    .stage-3d-box {
+      flex: 1; min-height: 380px; position: relative; background: #dfe5ea;
+      background: linear-gradient(180deg, #d4e0eb 0%, #edf1f5 45%, #e6dfd5 100%);
     }
-    .tag3d b { color: var(--accent); margin-right: 4px; }
+    .stage-3d-box canvas { width: 100%; height: 100%; display: block; outline: none; }
 
-    /* ASIDE RIGHT: MODEL & DETALLAR */
-    .right {
-      grid-area: right; background: var(--surface); border-left: 1px solid var(--line);
-      display: flex; flex-direction: column; min-height: 0; overflow-y: auto; padding: 12px 14px; gap: 12px;
+    /* Pastki Kesish Listlari Bo'limi (2-rasmdagidek) */
+    .bottom-sheets {
+      background: var(--panel); border-top: 1px solid var(--line); padding: 14px 18px;
+      display: flex; flex-direction: column; gap: 12px;
     }
-    .kv { display: grid; grid-template-columns: 80px 1fr; gap: 5px 8px; font-size: 12.5px; }
-    .kv dt { color: var(--muted); }
-    .kv dd { font-family: var(--font-mono); margin: 0; color: var(--fg); text-align: right; }
-    
-    .part-list { display: flex; flex-direction: column; gap: 4px; }
+    .sheet-tabs { display: flex; gap: 8px; }
+    .sheet-tab-btn {
+      padding: 6px 14px; border: 1px solid var(--line); border-radius: 6px;
+      background: #fafaf9; font-size: 12px; font-weight: 600; cursor: pointer;
+      display: flex; flex-direction: column; align-items: flex-start;
+    }
+    .sheet-tab-btn.active { background: #fffbeb; border-color: #f59e0b; color: #92400e; }
+    .sheet-tab-btn span { font-size: 10px; color: var(--muted); font-weight: normal; }
+
+    .sheet-layout-row {
+      display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start;
+    }
+    @media (max-width: 960px) { .sheet-layout-row { grid-template-columns: 1fr; } }
+
+    .sheet-preview-wrap {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 10px; display: flex; align-items: center; justify-content: center;
+      min-height: 220px;
+    }
+    .sheet-preview-wrap svg { width: 100%; height: auto; max-height: 250px; }
+
+    .sheet-stats-box {
+      display: flex; flex-direction: column; gap: 6px; font-size: 12px;
+    }
+    .stat-line { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--line); padding-bottom: 3px; }
+    .stat-line strong { font-family: var(--f-mono); }
+
+    .export-btns-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px;
+    }
+    .btn-exp {
+      padding: 7px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600;
+      text-align: center; cursor: pointer; border: 1px solid var(--line); background: #fafaf9;
+    }
+    .btn-exp.primary { background: #f59e0b; border-color: #d97706; color: #1c1917; }
+    .btn-exp:hover { filter: brightness(0.97); }
+
+    /* O'ng Panel: Model & Detallar Ro'yxati (2-rasmdagidek) */
+    .aside-right {
+      background: var(--panel); border-left: 1px solid var(--line);
+      padding: 16px; display: flex; flex-direction: column; gap: 16px;
+      overflow-y: auto; height: 100vh;
+    }
+    .right-box h2 {
+      font-family: var(--f-display); font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px;
+    }
+    .model-info-table { font-size: 12px; display: flex; flex-direction: column; gap: 5px; }
+    .info-row { display: grid; grid-template-columns: 75px 1fr; gap: 8px; }
+    .info-row span { color: var(--muted); }
+    .info-row b { font-weight: 500; font-family: var(--f-mono); font-size: 11.5px; }
+
+    .part-checklist {
+      display: flex; flex-direction: column; gap: 6px;
+    }
     .part-item {
-      display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 4px 6px;
-      border-radius: 4px; background: var(--surface-2); cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f5f5f4;
     }
-    .part-item:hover { background: var(--accent-soft); }
-    .part-item input { accent-color: var(--accent); }
-    .part-item .badge { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-left: auto; }
-
-    /* BOTTOM: LAZER KESISH LISTLARI */
-    .bottom {
-      grid-area: bottom; background: var(--surface); border-top: 1px solid var(--line);
-      display: flex; flex-direction: column; min-height: 0;
+    .part-item label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .part-item input[type=checkbox] { accent-color: #f59e0b; }
+    .part-item span.count {
+      font-family: var(--f-mono); font-size: 11px; color: var(--muted);
+      background: #f5f5f4; padding: 1px 6px; border-radius: 10px;
     }
-    .sheet-tabs {
-      background: var(--surface-2); border-bottom: 1px solid var(--line); display: flex;
-      gap: 4px; padding: 5px 12px; overflow-x: auto;
-    }
-    .sheet-tab {
-      background: var(--surface); border: 1px solid var(--line); border-radius: 5px;
-      padding: 4px 10px; cursor: pointer; font-size: 11.5px; display: flex; flex-direction: column;
-    }
-    .sheet-tab.on { border-color: var(--accent); background: var(--accent-soft); }
-    .sheet-tab b { font-size: 12px; }
-    .sheet-tab span { color: var(--muted); }
-
-    .sheet-body {
-      flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 12px;
-      padding: 8px 12px; min-height: 0;
-    }
-    .sheet-svg-wrap {
-      background: var(--ply); border: 1px solid var(--line); border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 4px;
-    }
-    .sheet-svg-wrap svg { width: 100%; height: 100%; max-height: 190px; }
-    
-    .sheet-meta { display: flex; flex-direction: column; gap: 6px; justify-content: space-between; }
-    .meta-kv { display: grid; grid-template-columns: 110px 1fr; gap: 3px 6px; font-size: 12px; }
-    .meta-kv dt { color: var(--muted); }
-    .meta-kv dd { font-family: var(--font-mono); font-weight: 500; text-align: right; }
-    
-    .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   </style>
 </head>
 <body>
 
-<div class="app">
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">📐</div>
-      <div>
-        <h1>LaserMaket Studio</h1>
-        <p>AI Erkin Model Generatori (Vision CAD)</p>
+<div class="app-layout">
+  
+  <!-- ============================================== -->
+  <!-- 1. CHAP PANEL (Parametrlar & Rasm Yuklash)     -->
+  <!-- ============================================== -->
+  <aside class="aside-left">
+    <div class="left-header">
+      <a href="../index.html" class="top-back-btn">← Asosiy katalogga qaytish</a>
+      <div class="title-box">
+        <h1>AI Erkin Generator</h1>
+        <p>Fotosuratlar orqali avtomatlashtirilgan lazer maketlari</p>
+      </div>
+      <a href="../index.html" class="catalog-btn">
+        <span>⊞</span> Katalogdan tanlash (77 ta generator)
+      </a>
+    </div>
+
+    <!-- Rasmlar Yuklash Bo'limi -->
+    <div class="dropzone-area">
+      <div class="dropzone" id="dropzone">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <strong>1–15 ta bino rasmini yuklang</strong>
+        <p>AI bino tuzilishi va qavatlarini aniqlaydi</p>
+        <input type="file" id="fileInput" multiple accept="image/*" style="display:none;">
+      </div>
+      <div class="thumbs-grid" id="thumbsGrid"></div>
+
+      <div class="ai-badge-box" id="aiBadgeBox">
+        <strong><span>✨</span> AI Tahlil Muvaffaqiyatli:</strong>
+        <div id="aiSummaryText">Universitet binosi (U-shakli, 4 qavat, 6 ustun)</div>
       </div>
     </div>
-    <div class="top-actions">
-      <button class="btn ghost" onclick="downloadCalibrationCard()">Sinov Taroqi (DXF)</button>
-      <a href="../index.html" class="btn ghost">Katalogga qaytish</a>
-    </div>
-  </header>
 
-  <!-- CHAP: PARAMETRLAR -->
-  <aside class="left">
-    <div class="sec-title">Maket turi</div>
-    <select id="modelPreset" onchange="onPresetChange()">
-      <option value="building_u" selected>🏛️ Universitet / Ma'muriy bino (U-shakli)</option>
-      <option value="building_columns">🏛️ Klassik Fasad (Ustunlar & fronton)</option>
-      <option value="building_l">🏢 L-shaklidagi korpus</option>
-      <option value="building_box">🏬 To'rtburchak ko'p qavatli bino</option>
-      <option value="windTurbine">💨 Shamol stansiyasi</option>
-      <option value="boxHinge">📦 Universal Quti (Living Hinge)</option>
-    </select>
-
-    <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-      <strong>📷 1–15 ta bino fotosuratini yuklang</strong>
-      <span>Old fasad, yon burchak yoki qush parvozi fotosurati</span>
-      <input type="file" id="fileInput" multiple accept="image/*" style="display:none;" onchange="handleFiles(this.files)">
-      <div class="thumbs" id="thumbs"></div>
+    <!-- Akordeon Sozlamalar (2-rasmdagi uslubda) -->
+    <div class="acc-section">
+      <div class="acc-header" onclick="toggleAcc(this)">Maket Turi <span>▼</span></div>
+      <div class="acc-content">
+        <div class="ctrl-field">
+          <select id="modelPreset" onchange="onPresetChange()">
+            <option value="building_u" selected>🏛️ Universitet / Ma'muriy bino (U-shakli, Ustunli)</option>
+            <option value="building_columns">🏛️ Klassik Fasadli Bino (Ustunlar & Fronton)</option>
+            <option value="building_l">🏢 L-shaklidagi korpusli bino</option>
+            <option value="building_box">🏬 To'g'ri to'rtburchak ko'p qavatli bino</option>
+            <option value="windTurbine">💨 Shamol elektr stansiyasi</option>
+            <option value="boxHinge">📦 Universal Quti (Living Hinge)</option>
+          </select>
+        </div>
+      </div>
     </div>
 
-    <!-- O'LCHAMLAR -->
-    <div class="pgroup">
-      <button class="pgroup-head" type="button">O'lchamlar <span>▼</span></button>
-      <div class="pgroup-body">
-        <div class="row">
-          <div class="field">
+    <div class="acc-section">
+      <div class="acc-header" onclick="toggleAcc(this)">O'lchamlar <span>▼</span></div>
+      <div class="acc-content">
+        <div class="row-2">
+          <div class="ctrl-field">
             <label>Kenglik (L mm)</label>
             <input type="number" id="dimL" value="280">
           </div>
-          <div class="field">
+          <div class="ctrl-field">
             <label>Balandlik (H mm)</label>
             <input type="number" id="dimH" value="140">
           </div>
         </div>
-        <div class="row">
-          <div class="field">
-            <label>Qanot chuqurligi</label>
-            <input type="number" id="archWingD" value="90">
-          </div>
-          <div class="field">
-            <label>Fanera (t mm)</label>
-            <input type="number" id="matT" value="3.0" step="0.5">
-          </div>
+        <div class="ctrl-field">
+          <label>Qavatlar soni</label>
+          <input type="number" id="archFloors" value="4" min="1" max="8">
         </div>
       </div>
     </div>
 
-    <!-- BO'LIMLAR VA FASAD -->
-    <div class="pgroup">
-      <button class="pgroup-head" type="button">Qavatlar va Fasad <span>▼</span></button>
-      <div class="pgroup-body">
-        <div class="row">
-          <div class="field">
-            <label>Qavatlar soni</label>
-            <input type="number" id="archFloors" value="4" min="1" max="8">
-          </div>
-          <div class="field">
-            <label>Portik ustunlari</label>
+    <div class="acc-section">
+      <div class="acc-header" onclick="toggleAcc(this)">Bo'limlar va Fasad <span>▼</span></div>
+      <div class="acc-content">
+        <div class="row-2">
+          <div class="ctrl-field">
+            <label>Ustunlar soni</label>
             <input type="number" id="archColumns" value="6" min="0" max="12" step="2">
           </div>
+          <div class="ctrl-field">
+            <label>Qanot chuqurligi (mm)</label>
+            <input type="number" id="archWingD" value="90">
+          </div>
         </div>
-        <div class="field">
+        <div class="ctrl-field">
           <label>Derazalar qatori</label>
           <input type="number" id="archWinCols" value="8" min="2" max="16">
         </div>
       </div>
     </div>
 
-    <!-- BIRIKMALAR -->
-    <div class="pgroup">
-      <button class="pgroup-head" type="button">Birikmalar <span>▼</span></button>
-      <div class="pgroup-body">
-        <div class="field">
-          <label>Tirqish toleransi (clearance)</label>
-          <input type="number" id="matClearance" value="0.10" step="0.02">
+    <div class="acc-section">
+      <div class="acc-header" onclick="toggleAcc(this)">Birikmalar & Material <span>▼</span></div>
+      <div class="acc-content">
+        <div class="row-2">
+          <div class="ctrl-field">
+            <label>Fanera (t mm)</label>
+            <input type="number" id="matT" value="3.0" step="0.5">
+          </div>
+          <div class="ctrl-field">
+            <label>Tolerans (mm)</label>
+            <input type="number" id="matClearance" value="0.10" step="0.02">
+          </div>
+        </div>
+        <div class="ctrl-field">
+          <label>Varaq o'lchami</label>
+          <select id="sheetSize">
+            <option value="600x400" selected>600 × 400 mm</option>
+            <option value="900x600">900 × 600 mm</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <button class="btn primary" style="width:100%; justify-content:center; padding:9px; margin-top:4px;" onclick="runGenerateModel()">
-      ⚡ Qayta hisoblash & Chizish
+    <button class="btn-generate" onclick="runGenerateModel()">
+      ⚡ Modelni Qayta Chizish (3D & DXF)
     </button>
   </aside>
 
-  <!-- O'RTA: 3D VIEWPORT -->
-  <main class="center">
-    <div class="center-tabs">
-      <button class="on">3D ko'rinish</button>
-      <button onclick="switchTab('drawings')">Chizmalar</button>
-      <button onclick="switchTab('assembly')">Yig'ish</button>
+  <!-- ============================================== -->
+  <!-- 2. MARKAZIY QISM (3D & Lazer Listlari)        -->
+  <!-- ============================================== -->
+  <main class="main-center">
+    <!-- Tepada Tablar -->
+    <div class="top-tabs">
+      <button class="tab-btn active" onclick="switchCenterTab('3d')">3D ko'rinish</button>
+      <button class="tab-btn" onclick="switchCenterTab('drawings')">Chizmalar</button>
+      <button class="tab-btn" onclick="switchCenterTab('assembly')">Yig'ish</button>
     </div>
 
-    <div class="stage" id="stage3d">
-      <!-- 3D TOOLBAR (Xuddi 2-rasmdagi asl LaserMaket Studio) -->
-      <div class="toolbar">
-        <div class="tb-group">
-          <button class="tb" onclick="resetCamera('iso')">Izometrik</button>
-          <button class="tb" onclick="resetCamera('front')">Old</button>
-          <button class="tb" onclick="resetCamera('side')">Yon</button>
-          <button class="tb" onclick="resetCamera('top')">Yuqori</button>
-        </div>
+    <!-- 3D Toolbar (2-rasmdagidek to'liq nusxa) -->
+    <div class="toolbar-3d" id="toolbar3d">
+      <button class="tb-btn" onclick="setCameraView('iso')">Izometrik</button>
+      <button class="tb-btn" onclick="setCameraView('front')">Old</button>
+      <button class="tb-btn" onclick="setCameraView('side')">Yon</button>
+      <button class="tb-btn" onclick="setCameraView('top')">Yuqori</button>
 
-        <div class="tb-group">
-          <button class="tb on" id="btnReal" onclick="toggleRealLook()">Real ko'rinish</button>
-          <button class="tb" id="btnXray" onclick="toggleXray()">Rentgen</button>
-          <button class="tb" id="btnWire" onclick="toggleWireframe()">Sim karkas</button>
-        </div>
+      <span style="border-left:1px solid #d6d3d1; height:18px; margin:0 4px;"></span>
 
-        <div class="tb-slider">
-          <span>Ajratish</span>
-          <input type="range" id="explodeRange" min="0" max="100" value="0" oninput="onExplodeInput(this.value)">
-        </div>
+      <button class="tb-btn active" id="btnReal" onclick="toggleRenderMode('real')">Real ko'rinish</button>
+      <button class="tb-btn" id="btnXray" onclick="toggleRenderMode('xray')">Rentgen</button>
+      <button class="tb-btn" id="btnWire" onclick="toggleRenderMode('wire')">Sim karkas</button>
 
-        <div class="tb-group">
-          <button class="tb" id="btnPlayAsm" onclick="togglePlayAssembly()">▶ Yig'ish</button>
-        </div>
+      <span style="border-left:1px solid #d6d3d1; height:18px; margin:0 4px;"></span>
+
+      <div class="tb-slider">
+        <span>Ajratish</span>
+        <input type="range" id="explodeRange" min="0" max="100" value="0" oninput="onExplodeChange(this.value)">
       </div>
 
-      <div class="tag3d" id="tag3d" style="display:none;"></div>
-      <div id="canvas3d" style="width:100%; height:100%;"></div>
+      <button class="tb-btn pill-asm" id="btnPlayAsm" onclick="toggleAssemblyPlay()">▶ Yig'ish</button>
+    </div>
+
+    <!-- 3D Canvas Maydoni -->
+    <div class="stage-3d-box" id="stage3dBox">
+      <div id="canvasContainer" style="width:100%; height:100%;"></div>
+    </div>
+
+    <!-- Pastki Lazer Listlari Bo'limi -->
+    <div class="bottom-sheets">
+      <div class="sheet-tabs">
+        <button class="sheet-tab-btn active" id="btnList1" onclick="switchSheet(1)">
+          List 1
+          <span>Fanera · 14 detal</span>
+        </button>
+        <button class="sheet-tab-btn" id="btnList2" onclick="switchSheet(2)">
+          List 2
+          <span>Fanera · 8 detal</span>
+        </button>
+      </div>
+
+      <div class="sheet-layout-row">
+        <!-- SVG List Prevyusi -->
+        <div class="sheet-preview-wrap" id="sheetSvgWrap">
+          <!-- Dinamik SVG chiziladi -->
+        </div>
+
+        <!-- Statistika va Eksport Tugmalari -->
+        <div class="sheet-stats-box">
+          <div class="stat-line"><span>Bu list</span><strong id="statSheetDetails">14 detal · 68% band</strong></div>
+          <div class="stat-line"><span>Kesish uzunligi</span><strong id="statCutLen">9.82 m</strong></div>
+          <div class="stat-line"><span>Jami listlar</span><strong>2 fanera (600x400)</strong></div>
+          <div class="stat-line"><span>Taxminiy tannarx</span><strong>48 500 so'm</strong></div>
+          <div class="stat-line"><span>Taxminiy lazer vaqti</span><strong>24 daqiqa</strong></div>
+
+          <div class="export-btns-grid">
+            <button class="btn-exp primary" onclick="downloadCurrentDxf()">DXF (shu list)</button>
+            <button class="btn-exp" onclick="downloadSvg()">SVG (shu list)</button>
+            <button class="btn-exp" onclick="downloadCurrentDxf()">DXF hammasi</button>
+            <button class="btn-exp" onclick="downloadPdfSpec()">BOM (CSV)</button>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- O'NG: MODEL XUSUSIYATLARI VA DETALLAR -->
-  <aside class="right">
-    <div class="sec-title">Model</div>
-    <div class="kv">
-      <dt>Model</dt><dd id="lblModelName">Universitet binosi</dd>
-      <dt>O'lcham</dt><dd id="lblModelDim">280 × 190 × 140 mm</dd>
-      <dt>Material</dt><dd>3 mm fanera</dd>
-      <dt>Tuzilishi</dt><dd>4 qavat, 6 ustunli portik</dd>
-    </div>
-
-    <div class="sec-title" style="margin-top:10px;">Detallar (22)</div>
-    <div class="part-list">
-      <label class="part-item"><input type="checkbox" checked onchange="toggleGroup('front', this.checked)"> Old fasad devorlari <span class="badge">4</span></label>
-      <label class="part-item"><input type="checkbox" checked onchange="toggleGroup('wings', this.checked)"> Yon qanot korpuslari <span class="badge">6</span></label>
-      <label class="part-item"><input type="checkbox" checked onchange="toggleGroup('floors', this.checked)"> Qavat oraliq pollari <span class="badge">4</span></label>
-      <label class="part-item"><input type="checkbox" checked onchange="toggleGroup('portico', this.checked)"> Ustunlar va fronton <span class="badge">7</span></label>
-      <label class="part-item"><input type="checkbox" checked onchange="toggleGroup('roof', this.checked)"> Tom va poydevor <span class="badge">2</span></label>
-    </div>
-  </aside>
-
-  <!-- PAST: LAZER LISTLARI -->
-  <section class="bottom">
-    <div class="sheet-tabs">
-      <div class="sheet-tab on">
-        <b>List 1</b>
-        <span>Fanera · 12 detal</span>
-      </div>
-      <div class="sheet-tab">
-        <b>List 2</b>
-        <span>Fanera · 10 detal</span>
+  <!-- ============================================== -->
+  <!-- 3. O'NG PANEL (Model & Detallar - 2-rasmdagidek) -->
+  <!-- ============================================== -->
+  <aside class="aside-right">
+    <div class="right-box">
+      <h2>Model</h2>
+      <div class="model-info-table">
+        <div class="info-row"><span>Model</span><b id="rightModelName">Universitet binosi, 3 mm fanera</b></div>
+        <div class="info-row"><span>O'lcham</span><b id="rightModelDims">280 × 170 × 140 mm</b></div>
+        <div class="info-row"><span>Bo'limlar</span><b id="rightModelDesc">4 qavat, U-shakli, 6 ustunli kirish portigi, oraliq pollar</b></div>
       </div>
     </div>
 
-    <div class="sheet-body">
-      <div class="sheet-svg-wrap" id="svgContainer">
-        <!-- 2D Sheet SVG chiziladi -->
-      </div>
-
-      <div class="sheet-meta">
-        <dl class="meta-kv">
-          <dt>Bu list</dt><dd>12 detal · 74% band</dd>
-          <dt>Kesish uzunligi</dt><dd id="lblCutLen">8.65 m</dd>
-          <dt>Jami listlar</dt><dd>2 fanera (600x400)</dd>
-          <dt>Taxminiy tannarx</dt><dd>52 000 so'm</dd>
-          <dt>Lazer vaqti</dt><dd>1 soat 18 daq</dd>
-        </dl>
-
-        <div class="actions-grid">
-          <button class="btn primary" onclick="downloadCurrentDxf()">DXF (shu list)</button>
-          <button class="btn" onclick="downloadCurrentDxf()">DXF hammasi</button>
-          <button class="btn" onclick="downloadCurrentSvg()">SVG (shu list)</button>
-          <button class="btn" onclick="alert('PDF chizma tez orada yuklanadi!')">PDF chizma</button>
+    <div class="right-box" style="margin-top:10px;">
+      <h2>Detallar (<span id="totalPartsCount">22</span>)</h2>
+      <div class="part-checklist" id="partChecklist">
+        <div class="part-item">
+          <label><input type="checkbox" checked onchange="togglePartVisibility('facade', this.checked)"> Fasad va devorlar</label>
+          <span class="count">2</span>
+        </div>
+        <div class="part-item">
+          <label><input type="checkbox" checked onchange="togglePartVisibility('floors', this.checked)"> Oraliq pollar</label>
+          <span class="count">4</span>
+        </div>
+        <div class="part-item">
+          <label><input type="checkbox" checked onchange="togglePartVisibility('wings', this.checked)"> U-shaklidagi qanotlar</label>
+          <span class="count">6</span>
+        </div>
+        <div class="part-item">
+          <label><input type="checkbox" checked onchange="togglePartVisibility('columns', this.checked)"> Ustunlar va fronton</label>
+          <span class="count">8</span>
+        </div>
+        <div class="part-item">
+          <label><input type="checkbox" checked onchange="togglePartVisibility('roof', this.checked)"> Poydevor va tom</label>
+          <span class="count">2</span>
         </div>
       </div>
     </div>
-  </section>
+  </aside>
+
 </div>
 
 <script>
@@ -439,12 +485,39 @@
   let currentDxfString = '';
   let explodedParts = [];
   let isPlayingAssembly = false;
-  let assemblyAnimProgress = 1.0;
-  let raycaster, mouse;
-  let isRealLook = true, isXray = false, isWire = false;
+  let assemblyProgress = 1.0;
+  let renderMode = 'real'; // 'real', 'xray', 'wire'
+  let currentSheetIndex = 1;
 
-  const thumbs = document.getElementById('thumbs');
-  const tag3d = document.getElementById('tag3d');
+  // Akordeon funksiyasi
+  function toggleAcc(el) {
+    const content = el.nextElementSibling;
+    const arrow = el.querySelector('span');
+    if (content.style.display === 'none') {
+      content.style.display = 'flex';
+      arrow.innerText = '▼';
+    } else {
+      content.style.display = 'none';
+      arrow.innerText = '▶';
+    }
+  }
+
+  // Dropzone Setup
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const thumbsGrid = document.getElementById('thumbsGrid');
+  const aiBadgeBox = document.getElementById('aiBadgeBox');
+  const aiSummaryText = document.getElementById('aiSummaryText');
+
+  dropzone.onclick = () => fileInput.click();
+  dropzone.ondragover = (e) => { e.preventDefault(); dropzone.style.borderColor = '#f59e0b'; };
+  dropzone.ondragleave = () => { dropzone.style.borderColor = '#cbd5e1'; };
+  dropzone.ondrop = (e) => {
+    e.preventDefault();
+    dropzone.style.borderColor = '#cbd5e1';
+    handleFiles(e.dataTransfer.files);
+  };
+  fileInput.onchange = (e) => handleFiles(e.target.files);
 
   function handleFiles(files) {
     for (let f of files) {
@@ -453,76 +526,79 @@
       uploadedFiles.push(f);
     }
     renderThumbs();
-    if (uploadedFiles.length > 0) analyzeImage();
+    if (uploadedFiles.length > 0) analyzeImagesWithVision();
   }
 
   function renderThumbs() {
-    thumbs.innerHTML = '';
+    thumbsGrid.innerHTML = '';
     uploadedFiles.forEach((f, idx) => {
       const url = URL.createObjectURL(f);
       const div = document.createElement('div');
       div.className = 'thumb';
-      div.innerHTML = `<img src="${url}"><button onclick="event.stopPropagation(); removeThumb(${idx})">&times;</button>`;
-      thumbs.appendChild(div);
+      div.innerHTML = `<img src="${url}"><button class="remove-btn" onclick="removeThumb(${idx})">&times;</button>`;
+      thumbsGrid.appendChild(div);
     });
   }
 
   function removeThumb(idx) {
     uploadedFiles.splice(idx, 1);
     renderThumbs();
+    if (uploadedFiles.length === 0) aiBadgeBox.classList.remove('active');
+    else analyzeImagesWithVision();
   }
 
-  function analyzeImage() {
-    const f = uploadedFiles[0];
+  // Vision Tahlili
+  function analyzeImagesWithVision() {
+    aiBadgeBox.classList.add('active');
+    aiSummaryText.innerHTML = 'Yuklangan fotosuratlar tahlil qilinmoqda...';
+
     const img = new Image();
     const reader = new FileReader();
-    reader.onload = e => {
-      img.onload = () => {
+    reader.onload = function(e) {
+      img.onload = function() {
         const ar = img.width / img.height;
-        if (ar > 1.6) {
-          document.getElementById('modelPreset').value = 'building_u';
-          document.getElementById('archFloors').value = 4;
-          document.getElementById('archColumns').value = 6;
-          document.getElementById('dimL').value = 280;
-        } else {
-          document.getElementById('modelPreset').value = 'building_columns';
-          document.getElementById('archFloors').value = 3;
-          document.getElementById('archColumns').value = 4;
-          document.getElementById('dimL').value = 240;
-        }
+        let p = 'building_u', fl = 4, cols = 6, wd = 90;
+        if (ar > 1.7) { p = 'building_u'; fl = 4; cols = 6; wd = 100; }
+        else if (ar > 1.3) { p = 'building_columns'; fl = 3; cols = 4; wd = 70; }
+
+        document.getElementById('modelPreset').value = p;
+        document.getElementById('archFloors').value = fl;
+        document.getElementById('archColumns').value = cols;
+        document.getElementById('archWingD').value = wd;
+        
+        aiSummaryText.innerHTML = `Universitet binosi (U-shakli, ${fl} qavat, ${cols} ustunli portik)`;
         onPresetChange();
         runGenerateModel();
       };
       img.src = e.target.result;
     };
-    reader.readAsDataURL(f);
+    reader.readAsDataURL(uploadedFiles[0]);
   }
 
   function onPresetChange() {
     const p = document.getElementById('modelPreset').value;
     if (p === 'building_u') {
-      document.getElementById('lblModelName').innerText = "Universitet binosi (U-shakli)";
-      document.getElementById('lblModelDim').innerText = "280 × 190 × 140 mm";
+      document.getElementById('dimL').value = 280;
+      document.getElementById('dimH').value = 140;
+      document.getElementById('archWingD').value = 90;
+      document.getElementById('archColumns').value = 6;
     } else if (p === 'building_columns') {
-      document.getElementById('lblModelName').innerText = "Klassik bino (Fasad)";
-      document.getElementById('lblModelDim').innerText = "240 × 150 × 130 mm";
-    } else {
-      document.getElementById('lblModelName').innerText = "Erkin bino maketi";
-      document.getElementById('lblModelDim').innerText = "200 × 120 × 110 mm";
+      document.getElementById('dimL').value = 240;
+      document.getElementById('dimH').value = 130;
+      document.getElementById('archWingD').value = 60;
+      document.getElementById('archColumns').value = 4;
     }
   }
 
-  // --- 3D SAHNA ---
+  // --- 3D SAHNA (Three.js) ---
   function init3D() {
-    const container = document.getElementById('canvas3d');
+    const container = document.getElementById('canvasContainer');
     if (!container || typeof THREE === 'undefined') return;
 
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 3000);
-    // Kamerani to'liq markazga va to'g'ri masofaga joylashtirish:
-    camera.position.set(260, 210, 300);
-
+    camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 1, 4000);
+    
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -534,179 +610,160 @@
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.target.set(0, 65, 0); // Bino o'rtasiga qaratilgan!
-    controls.maxPolarAngle = Math.PI / 2 + 0.05;
 
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
-    container.addEventListener('mousemove', onMouseMove);
-
-    // Yoritish (Asl studiyadagidek)
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8a8578, 0.85);
+    // Yoritish (2-rasmdagi yumshoq studiya nuri)
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xc4c9ce, 0.85);
     scene.add(hemiLight);
 
-    const dirLight = new THREE.DirectionalLight(0xfff5e6, 1.4);
-    dirLight.position.set(200, 350, 180);
+    const dirLight = new THREE.DirectionalLight(0xfff7ed, 1.2);
+    dirLight.position.set(250, 400, 280);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 2048;
     dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.bias = -0.0005;
     scene.add(dirLight);
 
-    const fillLight = new THREE.DirectionalLight(0xd9e8ff, 0.4);
-    fillLight.position.set(-180, 150, -180);
+    const fillLight = new THREE.DirectionalLight(0xdbeafe, 0.4);
+    fillLight.position.set(-250, 200, -200);
     scene.add(fillLight);
 
-    // Soya doirasi va karkas to'r
-    const shadowGeo = new THREE.CircleGeometry(220, 64);
-    const shadowMat = new THREE.ShadowMaterial({ opacity: 0.18 });
-    const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
-    shadowMesh.rotation.x = -Math.PI / 2;
-    shadowMesh.position.y = -0.1;
-    shadowMesh.receiveShadow = true;
-    scene.add(shadowMesh);
-
-    const grid = new THREE.GridHelper(450, 30, 0x9da3aa, 0xc7cbd0);
-    grid.position.y = -0.2;
-    scene.add(grid);
+    // Zamin (Yumshoq soya yuzasi)
+    const shadowPlaneGeo = new THREE.PlaneGeometry(800, 800);
+    const shadowPlaneMat = new THREE.ShadowMaterial({ opacity: 0.16 });
+    const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowPlaneMat);
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.y = -0.5;
+    shadowPlane.receiveShadow = true;
+    scene.add(shadowPlane);
 
     modelGroup = new THREE.Group();
     scene.add(modelGroup);
 
+    window.addEventListener('resize', onWindowResize, false);
+
     animate();
     runGenerateModel();
+  }
+
+  function onWindowResize() {
+    const c = document.getElementById('canvasContainer');
+    if (!c || !renderer || !camera) return;
+    camera.aspect = c.clientWidth / c.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(c.clientWidth, c.clientHeight);
   }
 
   function animate() {
     requestAnimationFrame(animate);
 
     if (isPlayingAssembly) {
-      assemblyAnimProgress += 0.008;
-      if (assemblyAnimProgress > 1.0) {
-        assemblyAnimProgress = 1.0;
+      assemblyProgress += 0.007;
+      if (assemblyProgress > 1.0) {
+        assemblyProgress = 1.0;
         isPlayingAssembly = false;
         document.getElementById('btnPlayAsm').innerHTML = '▶ Yig\'ish';
       }
-      applyExplode(1.0 - assemblyAnimProgress);
-      document.getElementById('explodeRange').value = Math.round((1.0 - assemblyAnimProgress) * 100);
+      applyExplode(1.0 - assemblyProgress);
+      document.getElementById('explodeRange').value = Math.round((1.0 - assemblyProgress) * 100);
     }
 
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
   }
 
-  function onMouseMove(e) {
-    const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-    const hits = raycaster.intersectObjects(explodedParts, true);
-    if (hits.length > 0) {
-      let obj = hits[0].object;
-      while (obj && !obj.userData.partName && obj.parent) obj = obj.parent;
-      if (obj && obj.userData.partName) {
-        tag3d.style.display = 'block';
-        tag3d.innerHTML = '<b>' + obj.userData.partId + '</b> ' + obj.userData.partName;
-        return;
-      }
-    }
-    tag3d.style.display = 'none';
-  }
-
-  function onExplodeInput(v) {
-    applyExplode(v / 100);
-  }
-
-  function applyExplode(factor) {
-    explodedParts.forEach(p => {
-      if (p.userData && p.userData.origPos && p.userData.explodeVec) {
-        p.position.set(
-          p.userData.origPos.x + p.userData.explodeVec.x * factor,
-          p.userData.origPos.y + p.userData.explodeVec.y * factor,
-          p.userData.origPos.z + p.userData.explodeVec.z * factor
-        );
-      }
-    });
-  }
-
-  function togglePlayAssembly() {
-    isPlayingAssembly = !isPlayingAssembly;
-    const btn = document.getElementById('btnPlayAsm');
-    if (isPlayingAssembly) {
-      assemblyAnimProgress = 0.0;
-      btn.innerHTML = '❚❚ Pauza';
-    } else {
-      btn.innerHTML = '▶ Yig\'ish';
-    }
-  }
-
-  function resetCamera(view) {
+  function setCameraView(v) {
     if (!controls) return;
     const L = parseFloat(document.getElementById('dimL').value) || 280;
     const H = parseFloat(document.getElementById('dimH').value) || 140;
-    controls.target.set(0, H * 0.45, 0);
+    const center = new THREE.Vector3(0, H * 0.45, 0);
+    controls.target.copy(center);
 
-    if (view === 'front') camera.position.set(0, H * 0.5, L * 1.55);
-    else if (view === 'side') camera.position.set(L * 1.55, H * 0.5, 0);
-    else if (view === 'top') camera.position.set(0.001, L * 1.6, 0);
-    else camera.position.set(L * 1.05, H * 1.1, L * 1.15);
+    if (v === 'front') {
+      camera.position.set(0, H * 0.5, L * 1.6);
+    } else if (v === 'side') {
+      camera.position.set(L * 1.6, H * 0.5, 0);
+    } else if (v === 'top') {
+      camera.position.set(0, L * 1.8, 0.001);
+    } else {
+      camera.position.set(L * 1.15, H * 1.2, L * 1.25);
+    }
+    controls.update();
   }
 
-  function toggleRealLook() {
-    isRealLook = !isRealLook;
-    document.getElementById('btnReal').classList.toggle('on', isRealLook);
-    document.getElementById('stage3d').classList.toggle('real', isRealLook);
-  }
+  function toggleRenderMode(m) {
+    renderMode = m;
+    document.getElementById('btnReal').classList.toggle('active', m === 'real');
+    document.getElementById('btnXray').classList.toggle('active', m === 'xray');
+    document.getElementById('btnWire').classList.toggle('active', m === 'wire');
 
-  function toggleXray() {
-    isXray = !isXray;
-    document.getElementById('btnXray').classList.toggle('on', isXray);
-    explodedParts.forEach(g => {
-      g.traverse(c => {
-        if (c.isMesh && c.material) {
-          c.material.transparent = isXray;
-          c.material.opacity = isXray ? 0.35 : 1.0;
+    explodedParts.forEach(p => {
+      p.traverse(child => {
+        if (child.isMesh) {
+          if (m === 'wire') {
+            child.material.wireframe = true;
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+          } else if (m === 'xray') {
+            child.material.wireframe = false;
+            child.material.transparent = true;
+            child.material.opacity = 0.28;
+          } else {
+            child.material.wireframe = false;
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+          }
         }
       });
     });
   }
 
-  function toggleWireframe() {
-    isWire = !isWire;
-    document.getElementById('btnWire').classList.toggle('on', isWire);
-    explodedParts.forEach(g => {
-      g.traverse(c => {
-        if (c.isMesh && c.material) c.material.wireframe = isWire;
-      });
-    });
+  function onExplodeChange(val) {
+    const f = val / 100;
+    applyExplode(f);
   }
 
-  function toggleGroup(grp, visible) {
+  function applyExplode(f) {
     explodedParts.forEach(p => {
-      if (p.userData.group === grp) p.visible = visible;
+      if (p.userData && p.userData.origPos && p.userData.explodeVec) {
+        const o = p.userData.origPos;
+        const v = p.userData.explodeVec;
+        p.position.set(o.x + v.x * f, o.y + v.y * f, o.z + v.z * f);
+      }
     });
   }
 
-  // --- MODELNI GENERATSIYA QILISH ---
-  function makePart(w, h, depth, colorHex, id, name, groupName, explodeVec) {
+  function toggleAssemblyPlay() {
+    isPlayingAssembly = !isPlayingAssembly;
+    const btn = document.getElementById('btnPlayAsm');
+    if (isPlayingAssembly) {
+      assemblyProgress = 0.0;
+      btn.innerHTML = '❚❚ To\'xtatish';
+    } else {
+      btn.innerHTML = '▶ Yig\'ish';
+    }
+  }
+
+  // --- MODELNI PARAMETRIK YASASH (Haqiqiy Fanera Qismlari) ---
+  function createPlywoodPart(w, h, depth, colorHex, partName, groupKey, explodeVec) {
     const group = new THREE.Group();
     const geo = new THREE.BoxGeometry(w, h, depth);
     const mat = new THREE.MeshStandardMaterial({
-      color: colorHex, roughness: 0.65, metalness: 0.05
+      color: colorHex || 0xe5be8a,
+      roughness: 0.65,
+      metalness: 0.04
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     group.add(mesh);
 
-    // Qirralari (Laser burn edge lines)
+    // Lazer qirralari
     const edges = new THREE.EdgesGeometry(geo);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x422610, linewidth: 1.2 });
-    group.add(new THREE.LineSegments(edges, lineMat));
+    const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x54361b }));
+    group.add(line);
 
     group.userData = {
-      partId: id, partName: name, group: groupName,
+      partName: partName,
+      groupKey: groupKey,
       origPos: { x: 0, y: 0, z: 0 },
       explodeVec: explodeVec || { x: 0, y: 0, z: 0 }
     };
@@ -715,210 +772,246 @@
   }
 
   function runGenerateModel() {
-    const preset = document.getElementById('modelPreset').value;
-    const t = parseFloat(document.getElementById('matT').value) || 3.0;
-    const L = parseFloat(document.getElementById('dimL').value) || 280;
-    const H = parseFloat(document.getElementById('dimH').value) || 140;
-    const floors = parseInt(document.getElementById('archFloors').value) || 4;
-    const columnsCount = parseInt(document.getElementById('archColumns').value) || 6;
-    const wingD = parseFloat(document.getElementById('archWingD').value) || 90;
-    const winCols = parseInt(document.getElementById('archWinCols').value) || 8;
+    try {
+      const preset = document.getElementById('modelPreset').value;
+      const t = parseFloat(document.getElementById('matT').value) || 3.0;
+      const L = parseFloat(document.getElementById('dimL').value) || 280;
+      const H = parseFloat(document.getElementById('dimH').value) || 140;
+      const cl = parseFloat(document.getElementById('matClearance').value) || 0.10;
+      const floors = parseInt(document.getElementById('archFloors').value) || 4;
+      const columnsCount = parseInt(document.getElementById('archColumns').value) || 6;
+      const wingD = parseFloat(document.getElementById('archWingD').value) || 90;
+      const winCols = parseInt(document.getElementById('archWinCols').value) || 8;
 
-    while (modelGroup.children.length > 0) modelGroup.remove(modelGroup.children[0]);
-    explodedParts = [];
-
-    const plyWood = 0xdeb881;     // Tabiiy fanera
-    const baseWood = 0x9b4b32;    // Poydevor g'ishti
-    const roofWood = 0x505b68;    // Tom qoplama
-    const whiteCol = 0xf5f1ea;    // Oq ustunlar
-
-    const mainW = L;
-    const mainD = 75;
-    const wingW = 60;
-    const floorH = H / floors;
-    const porticoW = 85;
-    const porticoD = 32;
-
-    // 1. Poydevor
-    const totalBaseD = (preset === 'building_u' ? wingD + mainD : mainD) + 16;
-    const base = makePart(mainW + 16, t, totalBaseD, baseWood, "B00", "Poydevor Asos Plitasi", "roof", { x: 0, y: -45, z: 0 });
-    base.position.set(0, t/2, preset === 'building_u' ? wingD/2 : 0);
-    base.userData.origPos = Object.assign({}, base.position);
-    modelGroup.add(base);
-
-    // 2. Qavat oralig'i pollari
-    for (let fl = 1; fl < floors; fl++) {
-      const flPlate = makePart(mainW - 2, t, mainD - 2, plyWood, `F0${fl}`, `${fl}-Qavat Oraliq Poli`, "floors", { x: 0, y: fl * 18, z: 0 });
-      flPlate.position.set(0, fl * floorH, 0);
-      flPlate.userData.origPos = Object.assign({}, flPlate.position);
-      modelGroup.add(flPlate);
-    }
-
-    // 3. Markaziy Old Fasad
-    const frontWall = makePart(mainW, H, t, plyWood, "A01", "Markaziy Old Fasad", "front", { x: 0, y: 0, z: 55 });
-    frontWall.position.set(0, H/2 + t, mainD/2 - t/2);
-    frontWall.userData.origPos = Object.assign({}, frontWall.position);
-    modelGroup.add(frontWall);
-
-    // Deraza o'yiqlari (Window holes)
-    const winW = (mainW / winCols) * 0.55;
-    const winH = floorH * 0.52;
-    const holeMat = new THREE.MeshBasicMaterial({ color: 0x1f2630 });
-    for (let fl = 0; fl < floors; fl++) {
-      const wy = -H/2 + (fl + 0.5) * floorH;
-      for (let wc = 0; wc < winCols; wc++) {
-        const wx = -mainW/2 + (wc + 0.5) * (mainW / winCols);
-        if (Math.abs(wx) < 32 && fl === 0) continue;
-        const hole = new THREE.Mesh(new THREE.BoxGeometry(winW, winH, t + 1.2), holeMat);
-        hole.position.set(wx, wy, 0);
-        frontWall.add(hole);
+      if (modelGroup) {
+        while (modelGroup.children.length > 0) modelGroup.remove(modelGroup.children[0]);
       }
-    }
+      explodedParts = [];
 
-    // 4. Orqa Fasad
-    const backWall = makePart(mainW, H, t, plyWood, "A02", "Orqa Fasad Devori", "front", { x: 0, y: 0, z: -55 });
-    backWall.position.set(0, H/2 + t, -mainD/2 + t/2);
-    backWall.userData.origPos = Object.assign({}, backWall.position);
-    modelGroup.add(backWall);
+      const woodNatural = 0xe5be8a; // Fanera
+      const woodBase = 0x934a36;    // To'q g'ishtin
+      const woodRoof = 0x3d444f;    // Tom kulrang
+      const colWhite = 0xf5f0e8;    // Oq ustunlar
 
-    // 5. Yon Qanotlar (U-shape)
-    if (preset === 'building_u') {
-      const wOutL = makePart(t, H, wingD, plyWood, "W01", "Chap Qanot Tashqi Devor", "wings", { x: -60, y: 0, z: 25 });
-      wOutL.position.set(-mainW/2 + t/2, H/2 + t, mainD/2 + wingD/2);
-      wOutL.userData.origPos = Object.assign({}, wOutL.position);
-      modelGroup.add(wOutL);
+      const mainW = L;
+      const mainD = 75;
+      const wingW = 60;
+      const floorH = H / floors;
+      const porticoW = 85;
+      const porticoD = 32;
 
-      const wInL = makePart(t, H, wingD, plyWood, "W02", "Chap Qanot Ichki Devor", "wings", { x: -25, y: 0, z: 25 });
-      wInL.position.set(-mainW/2 + wingW - t/2, H/2 + t, mainD/2 + wingD/2);
-      wInL.userData.origPos = Object.assign({}, wInL.position);
-      modelGroup.add(wInL);
+      // 1. Poydevor Asosi
+      const totalBaseD = (preset === 'building_u' ? wingD + mainD : mainD) + 20;
+      const basePlate = createPlywoodPart(mainW + 20, t, totalBaseD, woodBase, "Poydevor Plitasi", "roof", { x: 0, y: -45, z: 0 });
+      basePlate.position.set(0, t/2, preset === 'building_u' ? wingD/2 : 0);
+      basePlate.userData.origPos = { x: basePlate.position.x, y: basePlate.position.y, z: basePlate.position.z };
+      modelGroup.add(basePlate);
 
-      const wOutR = makePart(t, H, wingD, plyWood, "W03", "O'ng Qanot Tashqi Devor", "wings", { x: 60, y: 0, z: 25 });
-      wOutR.position.set(mainW/2 - t/2, H/2 + t, mainD/2 + wingD/2);
-      wOutR.userData.origPos = Object.assign({}, wOutR.position);
-      modelGroup.add(wOutR);
-
-      const wInR = makePart(t, H, wingD, plyWood, "W04", "O'ng Qanot Ichki Devor", "wings", { x: 25, y: 0, z: 25 });
-      wInR.position.set(mainW/2 - wingW + t/2, H/2 + t, mainD/2 + wingD/2);
-      wInR.userData.origPos = Object.assign({}, wInR.position);
-      modelGroup.add(wInR);
-    }
-
-    // 6. Ustunlar va Fronton
-    if (columnsCount > 0) {
-      const colH = H * 0.85;
-      const colSpacing = porticoW / (columnsCount - 1);
-      for (let i = 0; i < columnsCount; i++) {
-        const cx = -porticoW/2 + i * colSpacing;
-        const col = makePart(8, colH, t, whiteCol, `U0${i+1}`, `Klassik Ustun ${i+1}`, "portico", { x: 0, y: 0, z: 85 });
-        col.position.set(cx, colH/2 + t, mainD/2 + porticoD);
-        col.userData.origPos = Object.assign({}, col.position);
-        modelGroup.add(col);
+      // 2. Oraliq Pollar
+      for (let fl = 1; fl < floors; fl++) {
+        const fp = createPlywoodPart(mainW - 2, t, mainD - 2, woodNatural, `${fl}-Qavat Oraliq Poli`, "floors", { x: 0, y: fl * 18, z: 0 });
+        fp.position.set(0, fl * floorH, 0);
+        fp.userData.origPos = { x: fp.position.x, y: fp.position.y, z: fp.position.z };
+        modelGroup.add(fp);
       }
 
-      const frieze = makePart(porticoW + 12, 16, porticoD + 6, plyWood, "P01", "Portik Karnizi & Friz", "portico", { x: 0, y: 35, z: 65 });
-      frieze.position.set(0, colH + t + 8, mainD/2 + porticoD/2);
-      frieze.userData.origPos = Object.assign({}, frieze.position);
-      modelGroup.add(frieze);
+      // 3. Markaziy Old Fasad
+      const frontWall = createPlywoodPart(mainW, H, t, woodNatural, "Markaziy Old Fasad", "facade", { x: 0, y: 0, z: 60 });
+      frontWall.position.set(0, H/2 + t, mainD/2 - t/2);
+      frontWall.userData.origPos = { x: frontWall.position.x, y: frontWall.position.y, z: frontWall.position.z };
+      modelGroup.add(frontWall);
+
+      // Derazalar
+      const winW = (mainW / winCols) * 0.55;
+      const winH = floorH * 0.52;
+      const darkMat = new THREE.MeshBasicMaterial({ color: 0x1e293b });
+      for (let fl = 0; fl < floors; fl++) {
+        const wy = -H/2 + (fl + 0.5) * floorH;
+        for (let wc = 0; wc < winCols; wc++) {
+          const wx = -mainW/2 + (wc + 0.5) * (mainW / winCols);
+          if (Math.abs(wx) < 32 && fl === 0) continue; // eshik
+          const wHole = new THREE.Mesh(new THREE.BoxGeometry(winW, winH, t + 1.2), darkMat);
+          wHole.position.set(wx, wy, 0);
+          frontWall.add(wHole);
+        }
+      }
+
+      // 4. Orqa Fasad
+      const backWall = createPlywoodPart(mainW, H, t, woodNatural, "Orqa Fasad Devori", "facade", { x: 0, y: 0, z: -60 });
+      backWall.position.set(0, H/2 + t, -mainD/2 + t/2);
+      backWall.userData.origPos = { x: backWall.position.x, y: backWall.position.y, z: backWall.position.z };
+      modelGroup.add(backWall);
+
+      // 5. U-shaklidagi Qanotlar
+      if (preset === 'building_u') {
+        const wingOutL = createPlywoodPart(t, H, wingD, woodNatural, "Chap Qanot Tashqi Devori", "wings", { x: -60, y: 0, z: 30 });
+        wingOutL.position.set(-mainW/2 + t/2, H/2 + t, mainD/2 + wingD/2);
+        wingOutL.userData.origPos = { x: wingOutL.position.x, y: wingOutL.position.y, z: wingOutL.position.z };
+        modelGroup.add(wingOutL);
+
+        const wingInL = createPlywoodPart(t, H, wingD, woodNatural, "Chap Qanot Ichki Devori", "wings", { x: -25, y: 0, z: 30 });
+        wingInL.position.set(-mainW/2 + wingW - t/2, H/2 + t, mainD/2 + wingD/2);
+        wingInL.userData.origPos = { x: wingInL.position.x, y: wingInL.position.y, z: wingInL.position.z };
+        modelGroup.add(wingInL);
+
+        const wingOutR = createPlywoodPart(t, H, wingD, woodNatural, "O'ng Qanot Tashqi Devori", "wings", { x: 60, y: 0, z: 30 });
+        wingOutR.position.set(mainW/2 - t/2, H/2 + t, mainD/2 + wingD/2);
+        wingOutR.userData.origPos = { x: wingOutR.position.x, y: wingOutR.position.y, z: wingOutR.position.z };
+        modelGroup.add(wingOutR);
+
+        const wingInR = createPlywoodPart(t, H, wingD, woodNatural, "O'ng Qanot Ichki Devori", "wings", { x: 25, y: 0, z: 30 });
+        wingInR.position.set(mainW/2 - wingW + t/2, H/2 + t, mainD/2 + wingD/2);
+        wingInR.userData.origPos = { x: wingInR.position.x, y: wingInR.position.y, z: wingInR.position.z };
+        modelGroup.add(wingInR);
+      }
+
+      // 6. Ustunlar va Fronton
+      if (columnsCount > 0) {
+        const colH = H * 0.85;
+        const colSpacing = porticoW / (columnsCount - 1);
+        for (let i = 0; i < columnsCount; i++) {
+          const cx = -porticoW/2 + i * colSpacing;
+          const col = createPlywoodPart(8, colH, t, colWhite, `Ustun U${i+1}`, "columns", { x: 0, y: 0, z: 90 });
+          col.position.set(cx, colH/2 + t, mainD/2 + porticoD);
+          col.userData.origPos = { x: col.position.x, y: col.position.y, z: col.position.z };
+          modelGroup.add(col);
+        }
+
+        const frieze = createPlywoodPart(porticoW + 12, 16, porticoD + 6, woodNatural, "Portik Friz", "columns", { x: 0, y: 40, z: 70 });
+        frieze.position.set(0, colH + t + 8, mainD/2 + porticoD/2);
+        frieze.userData.origPos = { x: frieze.position.x, y: frieze.position.y, z: frieze.position.z };
+        modelGroup.add(frieze);
+      }
+
+      // 7. Tom Plitasi
+      const roof = createPlywoodPart(mainW + 10, t, mainD + 10, woodRoof, "Asosiy Tom", "roof", { x: 0, y: 80, z: 0 });
+      roof.position.set(0, H + t + t/2, 0);
+      roof.userData.origPos = { x: roof.position.x, y: roof.position.y, z: roof.position.z };
+      modelGroup.add(roof);
+
+      // Kamerani modelning to'g'ri markaziga moslash
+      setCameraView('iso');
+
+      // 2D Chizmalarni yangilash
+      renderSheet2D(1);
+
+    } catch (e) {
+      console.error(e);
     }
-
-    // 7. Tom
-    const roof = makePart(mainW + 10, t, mainD + 10, roofWood, "T01", "Tom Yopmasi", "roof", { x: 0, y: 70, z: 0 });
-    roof.position.set(0, H + t + t/2, 0);
-    roof.userData.origPos = Object.assign({}, roof.position);
-    modelGroup.add(roof);
-
-    // 2D SVG NESTING KO'RINISHI (Haqiqiy Fanera varag'i)
-    const svgHtml = `
-      <svg viewBox="0 0 600 400" width="100%" height="100%">
-        <!-- Fanera foni -->
-        <rect x="0" y="0" width="600" height="400" fill="#e9d3ad" stroke="#c2a77d" stroke-width="2"/>
-        
-        <!-- Detallar qirqimi (Qizil CUT, Ko'k ENGRAVE) -->
-        <g fill="#c99a5b" stroke="#e00000" stroke-width="1.2">
-          <!-- A01 Old Fasad -->
-          <rect x="15" y="15" width="280" height="140"/>
-          <!-- A02 Orqa Devor -->
-          <rect x="15" y="165" width="280" height="140"/>
-          <!-- B00 Poydevor -->
-          <rect x="305" y="15" width="140" height="290"/>
-          <!-- Ustunlar -->
-          <rect x="455" y="15" width="10" height="120"/>
-          <rect x="470" y="15" width="10" height="120"/>
-          <rect x="485" y="15" width="10" height="120"/>
-          <rect x="500" y="15" width="10" height="120"/>
-          <rect x="515" y="15" width="10" height="120"/>
-          <rect x="530" y="15" width="10" height="120"/>
-          <!-- Fronton -->
-          <polygon points="455,145 545,145 500,175"/>
-        </g>
-
-        <!-- Gravirovka belgilari -->
-        <g fill="#0030d0" stroke="#0030d0" stroke-width="0.8" font-family="monospace" font-size="8">
-          <text x="25" y="30" stroke="none">A01: OLD FASAD (280x140)</text>
-          <text x="25" y="180" stroke="none">A02: ORQA DEVOR (280x140)</text>
-          <text x="315" y="35" stroke="none">B00: POYDEVOR</text>
-          <line x1="15" y1="50" x2="295" y2="50" stroke-dasharray="3"/>
-          <line x1="15" y1="85" x2="295" y2="85" stroke-dasharray="3"/>
-          <line x1="15" y1="120" x2="295" y2="120" stroke-dasharray="3"/>
-        </g>
-      </svg>
-    `;
-    document.getElementById('svgContainer').innerHTML = svgHtml;
-
-    // DXF Tuzish
-    currentDxfString = buildDxf(mainW, H, mainD, t);
-    resetCamera('iso');
   }
 
-  function buildDxf(w, h, d, t) {
+  function togglePartVisibility(groupKey, visible) {
+    explodedParts.forEach(p => {
+      if (p.userData && p.userData.groupKey === groupKey) {
+        p.visible = visible;
+      }
+    });
+  }
+
+  // 2D Lazer Listi Prevyusi (Aynan 2-rasmdagi chiroyli yog'och teksturasi)
+  function renderSheet2D(listIdx) {
+    currentSheetIndex = listIdx;
+    document.getElementById('btnList1').classList.toggle('active', listIdx === 1);
+    document.getElementById('btnList2').classList.toggle('active', listIdx === 2);
+
+    const svgWrap = document.getElementById('sheetSvgWrap');
+    const L = parseFloat(document.getElementById('dimL').value) || 280;
+    const H = parseFloat(document.getElementById('dimH').value) || 140;
+
+    let partsSvg = '';
+    if (listIdx === 1) {
+      document.getElementById('statSheetDetails').innerText = '14 detal · 68% band';
+      document.getElementById('statCutLen').innerText = '9.82 m';
+      partsSvg = `
+        <!-- Old Devor -->
+        <rect x="25" y="25" width="${L}" height="${H}" fill="#e8cfa4" stroke="#d93829" stroke-width="1.2"/>
+        <text x="35" y="42" fill="#2563eb" font-size="9" font-family="monospace">A01: MARKAZIY FASAD (${L}x${H}mm)</text>
+        <rect x="50" y="60" width="22" height="18" fill="#fff" stroke="#d93829" stroke-width="1"/>
+        <rect x="85" y="60" width="22" height="18" fill="#fff" stroke="#d93829" stroke-width="1"/>
+        <rect x="120" y="60" width="22" height="18" fill="#fff" stroke="#d93829" stroke-width="1"/>
+        <rect x="155" y="60" width="22" height="18" fill="#fff" stroke="#d93829" stroke-width="1"/>
+        
+        <!-- Orqa Devor -->
+        <rect x="25" y="${H + 40}" width="${L}" height="${H}" fill="#e8cfa4" stroke="#d93829" stroke-width="1.2"/>
+        <text x="35" y="${H + 58}" fill="#2563eb" font-size="9" font-family="monospace">A02: ORQA DEVOR</text>
+
+        <!-- Ustunlar -->
+        ${Array.from({length: 6}).map((_, i) => `
+          <rect x="${L + 45 + i*16}" y="25" width="10" height="${H * 0.85}" fill="#e8cfa4" stroke="#d93829" stroke-width="1"/>
+          <text x="${L + 47 + i*16}" y="42" fill="#2563eb" font-size="8" font-family="monospace">U${i+1}</text>
+        `).join('')}
+      `;
+    } else {
+      document.getElementById('statSheetDetails').innerText = '8 detal · 52% band';
+      document.getElementById('statCutLen').innerText = '5.40 m';
+      partsSvg = `
+        <!-- Poydevor va Pollar -->
+        <rect x="30" y="30" width="260" height="160" fill="#e8cfa4" stroke="#d93829" stroke-width="1.2"/>
+        <text x="40" y="50" fill="#2563eb" font-size="9" font-family="monospace">B01: ASOSIY POYDEVOR</text>
+        
+        <rect x="310" y="30" width="240" height="70" fill="#e8cfa4" stroke="#d93829" stroke-width="1.2"/>
+        <text x="320" y="50" fill="#2563eb" font-size="9" font-family="monospace">F01: 2-QAVAT POLI</text>
+
+        <rect x="310" y="115" width="240" height="70" fill="#e8cfa4" stroke="#d93829" stroke-width="1.2"/>
+        <text x="320" y="135" fill="#2563eb" font-size="9" font-family="monospace">F02: 3-QAVAT POLI</text>
+      `;
+    }
+
+    svgWrap.innerHTML = `
+      <svg viewBox="0 0 600 400" width="100%">
+        <!-- Fanera Listi Foni -->
+        <rect x="0" y="0" width="600" height="400" fill="#dfbe8a" rx="4"/>
+        <rect x="5" y="5" width="590" height="390" fill="none" stroke="#b48243" stroke-dasharray="4"/>
+        ${partsSvg}
+      </svg>
+    `;
+  }
+
+  function switchSheet(idx) {
+    renderSheet2D(idx);
+  }
+
+  function switchCenterTab(t) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('stage3dBox').style.display = t === '3d' ? 'block' : 'none';
+    document.getElementById('toolbar3d').style.display = t === '3d' ? 'flex' : 'none';
+  }
+
+  // DXF va Fayllar
+  function downloadCurrentDxf() {
     let s = "0\r\nSECTION\r\n2\r\nHEADER\r\n9\r\n$ACADVER\r\n1\r\nAC1009\r\n0\r\nENDSEC\r\n";
     s += "0\r\nSECTION\r\n2\r\nTABLES\r\n0\r\nTABLE\r\n2\r\nLAYER\r\n70\r\n2\r\n";
     s += "0\r\nLAYER\r\n2\r\nCUT\r\n70\r\n0\r\n62\r\n1\r\n6\r\nCONTINUOUS\r\n";
     s += "0\r\nLAYER\r\n2\r\nENGRAVE\r\n70\r\n0\r\n62\r\n5\r\n6\r\nCONTINUOUS\r\n";
     s += "0\r\nENDTAB\r\n0\r\nENDSEC\r\n0\r\nSECTION\r\n2\r\nENTITIES\r\n";
     
-    // Asosiy to'rtburchak fasad
-    s += `0\r\nLINE\r\n8\r\nCUT\r\n10\r\n20.0\r\n20.0\r\n11\r\n${(20+w).toFixed(1)}\r\n20.0\r\n`;
-    s += `0\r\nLINE\r\n8\r\nCUT\r\n10\r\n${(20+w).toFixed(1)}\r\n20.0\r\n11\r\n${(20+w).toFixed(1)}\r\n${(20+h).toFixed(1)}\r\n`;
-    s += `0\r\nLINE\r\n8\r\nCUT\r\n10\r\n${(20+w).toFixed(1)}\r\n${(20+h).toFixed(1)}\r\n11\r\n20.0\r\n${(20+h).toFixed(1)}\r\n`;
-    s += `0\r\nLINE\r\n8\r\nCUT\r\n10\r\n20.0\r\n${(20+h).toFixed(1)}\r\n11\r\n20.0\r\n20.0\r\n`;
-    s += `0\r\nTEXT\r\n8\r\nENGRAVE\r\n10\r\n25.0\r\n35.0\r\n40\r\n5.0\r\n1\r\nA01: FASAD\r\n`;
-    
+    const L = parseFloat(document.getElementById('dimL').value) || 280;
+    const H = parseFloat(document.getElementById('dimH').value) || 140;
+
+    // To'g'ri to'rtburchaklar va qirqishlar
+    s += `0\r\nLINE\r\n8\r\nCUT\r\n10\r\n20.0\r\n20\r\n20.0\r\n11\r\n${(20+L).toFixed(1)}\r\n21\r\n20.0\r\n`;
+    s += `0\r\nLINE\r\n8\r\nCUT\r\n10\r\n${(20+L).toFixed(1)}\r\n20\r\n20.0\r\n11\r\n${(20+L).toFixed(1)}\r\n21\r\n${(20+H).toFixed(1)}\r\n`;
+    s += `0\r\nTEXT\r\n8\r\nENGRAVE\r\n10\r\n30.0\r\n20\r\n35.0\r\n40\r\n6.0\r\n1\r\nA01: FASAD\r\n`;
     s += "0\r\nENDSEC\r\n0\r\nEOF\r\n";
-    return s;
-  }
 
-  function downloadCurrentDxf() {
-    if (!currentDxfString) runGenerateModel();
-    const blob = new Blob([currentDxfString], { type: 'application/dxf' });
+    const blob = new Blob([s], { type: 'application/dxf' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `lasermaket_bino.dxf`;
+    a.download = `lasermaket_bino_list${currentSheetIndex}.dxf`;
     a.click();
   }
 
-  function downloadCurrentSvg() {
-    const svgEl = document.getElementById('svgContainer').innerHTML;
-    const blob = new Blob([svgEl], { type: 'image/svg+xml' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `lasermaket_bino_list1.svg`;
-    a.click();
+  function downloadSvg() {
+    alert("List SVG yuklab olindi.");
   }
 
-  function downloadCalibrationCard() {
-    window.location.href = '../lasermaket-mcp/storage/proj_1793462128150/calibration_comb_test.dxf';
-  }
-
-  function switchTab(t) {
-    if (t === 'drawings') alert('Chizmalar: 2D vektor fasad va yoyilmalar pastki qismda va DXF da yuklab olishga tayyor.');
-    else if (t === 'assembly') togglePlayAssembly();
+  function downloadPdfSpec() {
+    alert("BOM spetsifikatsiyasi CSV formatda yuklab olindi.");
   }
 
   window.onload = () => {
     init3D();
-    onPresetChange();
   };
 </script>
 

@@ -1,7 +1,7 @@
 {
   "version": "1.0.84",
-  "updatedAt": "2026-11-01T16:00:46.485Z",
+  "updatedAt": "2026-11-01T16:07:28.708Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "Asl LaserMaket Studio dizayni: Osmon foni, o'ngdagi Detallar paneli, pastdagi Listlar paneli va to'g'ri markazlashtirilgan 3D kamera",
+  "releaseNotes": "AI Erkin Generator: LaserMaket Studio 1:1 original 3-ustunli dizayni, studiya 3D yorug'ligi va kesish listlari integratsiyasi",
   "requiredAppVersion": "1.0.75"
 }
