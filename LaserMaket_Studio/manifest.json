@@ -1,7 +1,7 @@
 {
-  "version": "1.0.82",
-  "updatedAt": "2026-11-01T15:34:05.578Z",
+  "version": "1.0.83",
+  "updatedAt": "2026-11-01T15:54:32.224Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "Arxitektura AI Vision generatori: U-shaklidagi bino, qavatlar, ustunlar, deraza va ulanishlar bilan",
+  "releaseNotes": "3D ko'rish: Boshqa tayyor generatorlar kabi Yig'ilgan/Ajratilgan (Exploded view), Yig'ish animatsiyasi, haqiqiy fanera plitalari va lazer qirralari qo'shildi",
   "requiredAppVersion": "1.0.75"
 }
