@@ -1,7 +1,7 @@
 {
-  "version": "1.0.83",
-  "updatedAt": "2026-11-01T15:54:32.224Z",
+  "version": "1.0.84",
+  "updatedAt": "2026-11-01T16:00:46.485Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "3D ko'rish: Boshqa tayyor generatorlar kabi Yig'ilgan/Ajratilgan (Exploded view), Yig'ish animatsiyasi, haqiqiy fanera plitalari va lazer qirralari qo'shildi",
+  "releaseNotes": "Asl LaserMaket Studio dizayni: Osmon foni, o'ngdagi Detallar paneli, pastdagi Listlar paneli va to'g'ri markazlashtirilgan 3D kamera",
   "requiredAppVersion": "1.0.75"
 }
