@@ -58,8 +58,61 @@ class ProjectManager {
   }
 
   saveProjectToDisk(project) {
-    const filePath = path.join(this.storageDir, `${project.id}.json`);
-    fs.writeFileSync(filePath, JSON.stringify(project, null, 2), 'utf-8');
+    const jsonStr = JSON.stringify(project, null, 2);
+    
+    // 1. Asosiy MCP storage
+    const primaryFile = path.join(this.storageDir, `${project.id}.json`);
+    fs.writeFileSync(primaryFile, jsonStr, 'utf-8');
+
+    // 2. LaserMaket Studio lokal projects papkasi
+    const studioProjectsDir = path.join(__dirname, '..', 'LaserMaket_Studio', 'projects');
+    try {
+      if (!fs.existsSync(studioProjectsDir)) fs.mkdirSync(studioProjectsDir, { recursive: true });
+      fs.writeFileSync(path.join(studioProjectsDir, `${project.id}.json`), jsonStr, 'utf-8');
+      
+      // Loyihalar indeks faylini yangilash (Ilova tez o'qishi uchun)
+      this.updateProjectsIndex(studioProjectsDir, project);
+    } catch (e) {
+      console.error('Studio projects papkasiga saqlashda xato:', e.message);
+    }
+
+    // 3. O'rnatilgan ilovalar (LOCALAPPDATA)
+    const localAppData = process.env.LOCALAPPDATA;
+    if (localAppData) {
+      const targetPaths = [
+        path.join(localAppData, 'Programs', 'LaserMaket Studio', 'resources', 'app', 'site', 'projects'),
+        path.join(localAppData, 'Programs', 'LaserMaket Studio', 'projects'),
+        path.join(localAppData, 'Programs', 'LaserMaket', 'projects')
+      ];
+      targetPaths.forEach(dir => {
+        try {
+          if (fs.existsSync(path.dirname(dir))) {
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            fs.writeFileSync(path.join(dir, `${project.id}.json`), jsonStr, 'utf-8');
+            this.updateProjectsIndex(dir, project);
+          }
+        } catch (err) {}
+      });
+    }
+  }
+
+  updateProjectsIndex(dir, project) {
+    const indexPath = path.join(dir, 'projects_index.json');
+    let list = [];
+    if (fs.existsSync(indexPath)) {
+      try { list = JSON.parse(fs.readFileSync(indexPath, 'utf-8')); } catch (e) {}
+    }
+    const existingIdx = list.findIndex(p => p.id === project.id);
+    const summary = {
+      id: project.id,
+      name: project.name,
+      updatedAt: project.updatedAt || new Date().toISOString(),
+      partsCount: project.processedParts ? project.processedParts.length : 0,
+      material: project.material
+    };
+    if (existingIdx >= 0) list[existingIdx] = summary;
+    else list.unshift(summary);
+    fs.writeFileSync(indexPath, JSON.stringify(list, null, 2), 'utf-8');
   }
 
   addImages(projectId, imageList) {
