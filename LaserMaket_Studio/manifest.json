@@ -1,7 +1,7 @@
 {
-  "version": "1.0.92",
-  "updatedAt": "2026-11-02T03:47:43.560671+00:00",
+  "version": "1.0.94",
+  "updatedAt": "2026-11-02T04:03:31.114800+00:00",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "Barcha custom modellar va fayllarni toliq sinxronlash",
+  "releaseNotes": "AI bilan tuzatish bo'limi, rasm bilan vizual solishtirish, versiyaga qaytarish; Universitet binolari majmuasi modeli",
   "requiredAppVersion": "1.0.75"
 }

@@ -164,28 +164,29 @@ function handleToolCall(name, args) {
     if (name === 'lasermaket_sync_app_update') {
       if (args && args.action === 'publish') {
         const pubRes = updater.publishUpdate(args.version, args.releaseNotes);
-        let gitRes = 'Push qilindi';
-        try {
-          const rootDir = path.resolve(__dirname, '..');
-          const { execSync } = require('child_process');
-          execSync('git add .', { cwd: rootDir, stdio: 'ignore' });
-          try {
-            execSync('git commit -m "Yangilanish v' + pubRes.version + ': ' + (args.releaseNotes || 'Claude AI yangilanishi') + '"', { cwd: rootDir, stdio: 'ignore' });
-          } catch(e) {}
-          gitRes = execSync('git push origin main', { cwd: rootDir, encoding: 'utf8' }).trim();
-        } catch(e) {
-          gitRes = 'Git xatosi: ' + e.message;
+        if (!pubRes.success) {
+          return {
+            status: 'error',
+            success: false,
+            message: `Yangilanishni nashr qilishda yoki Git pushda xatolik yuz berdi: ${pubRes.error}`,
+            error: pubRes.error,
+            git: pubRes.git
+          };
         }
         return {
           status: 'success',
-          message: `LaserMaket ${pubRes.version} barcha 4 ta kompyuter uchun muvaffaqiyatli nashr qilindi va GitHub'ga yuklandi!`,
+          success: true,
+          version: pubRes.version,
+          commitHash: pubRes.commitHash,
+          message: `LaserMaket v${pubRes.version} barcha 4 ta kompyuter uchun muvaffaqiyatli nashr qilindi va GitHub'ga yuklandi! Commit: ${pubRes.commitHash}`,
           details: pubRes,
-          git: gitRes
+          git: pubRes.git
         };
       }
       const res = updater.syncToInstalledApps();
       return {
         status: 'success',
+        success: true,
         message: 'LaserMaket Studio ilovasi muvaffaqiyatli sinxronizatsiya qilindi!',
         syncDetails: res
       };

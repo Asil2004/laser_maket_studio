@@ -319,8 +319,16 @@ class LaserMaketUpdater {
    */
   publishUpdate(newVersion = null, releaseNotes = '') {
     this.config = this.loadConfig();
-    if (!newVersion) {
-      const parts = this.config.currentVersion.split('.');
+    const diskVersion = this.config.currentVersion || '1.0.80';
+
+    if (newVersion) {
+      if (this.compareVersions(newVersion, diskVersion) <= 0) {
+        const errMsg = `Kiritilgan versiya (${newVersion}) diskdagi joriy versiyadan (${diskVersion}) kichik yoki teng! Versiyani pasaytirish taqiqlanadi.`;
+        this.log(errMsg);
+        return { success: false, error: errMsg };
+      }
+    } else {
+      const parts = diskVersion.split('.');
       parts[parts.length - 1] = parseInt(parts[parts.length - 1] || 0, 10) + 1;
       newVersion = parts.join('.');
     }
@@ -333,10 +341,10 @@ class LaserMaketUpdater {
 
     this.log(`Yangi yangilanish to'plami tayyorlanmoqda: ${newVersion}...`);
 
-    // Create zip of index.html, custom, tools, claude_bridge.js, launch_studio.js, updater-config.json, manifest.json
+    // Create zip of index.html, custom, tools, claude_bridge.js, launch_studio.js, updater-config.json, manifest.json, claude_guide.md, claude_examples
     try {
       let zipTargets = ['index.html', 'updater-config.json', 'manifest.json'];
-      for (const item of ['custom', 'tools', 'vendor', 'claude_bridge.js', 'launch_studio.js', 'updater.js', 'auto_sync_claude.py']) {
+      for (const item of ['custom', 'tools', 'vendor', 'claude_bridge.js', 'launch_studio.js', 'updater.js', 'auto_sync_claude.py', 'claude_guide.md', 'claude_examples']) {
         if (fs.existsSync(path.join(this.workspaceDir, item))) {
           zipTargets.push(item);
         }
@@ -376,24 +384,33 @@ class LaserMaketUpdater {
     this.log(`2. Manifest: ${manifestPath}`);
 
     // Avtomatik GitHub'ga push qilish
-    let gitLog = 'Bajarilmadi';
+    let gitLog = '';
+    let commitHash = '';
     try {
       const rootDir = path.resolve(this.workspaceDir, '..');
       this.log(`GitHub'ga commit va push qilinmoqda (origin main)...`);
-      execSync('git add .', { cwd: rootDir, stdio: 'ignore' });
+      execSync('git add -A', { cwd: rootDir, stdio: 'ignore' });
       try {
         execSync(`git commit -m "Yangilanish v${newVersion}: ${releaseNotes || 'Claude AI yangilanishi'}"`, { cwd: rootDir, stdio: 'ignore' });
       } catch(e) {}
       gitLog = execSync('git push origin main', { cwd: rootDir, encoding: 'utf8' }).trim();
-      this.log(`✅ GitHub'ga muvaffaqiyatli push qilindi: v${newVersion}!`);
+      commitHash = execSync('git rev-parse --short HEAD', { cwd: rootDir, encoding: 'utf8' }).trim();
+      this.log(`✅ GitHub'ga muvaffaqiyatli push qilindi: v${newVersion} (${commitHash})!`);
     } catch(err) {
-      gitLog = 'Git push xatosi: ' + err.message;
-      this.log(`Git push xatoligi: ${err.message}`);
+      const errMsg = (err.stderr ? err.stderr.toString() : '') || err.message;
+      this.log(`Git push xatoligi: ${errMsg}`);
+      return {
+        success: false,
+        version: newVersion,
+        error: `Git push xatosi: ${errMsg}`,
+        git: errMsg
+      };
     }
 
     return {
       success: true,
       version: newVersion,
+      commitHash,
       zipPath,
       manifestPath,
       manifest,

@@ -196,7 +196,7 @@ def git_push_updates(version, note="Claude AI yangilanishi"):
     """GitHub omboriga commit va push qilish"""
     try:
         log("GitHub'ga yuklash (git add & commit)...")
-        subprocess.run(["git", "add", "."], cwd=str(ROOT_DIR), check=True, capture_output=True)
+        subprocess.run(["git", "add", "-A"], cwd=str(ROOT_DIR), check=True, capture_output=True)
         
         msg = f"Yangilanish v{version}: {note}"
         commit_res = subprocess.run(["git", "commit", "-m", msg], cwd=str(ROOT_DIR), capture_output=True, text=True)
