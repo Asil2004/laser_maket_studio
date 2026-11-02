@@ -19,21 +19,33 @@ const MIME_TYPES = {
   '.zip': 'application/zip'
 };
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   let reqPath = decodeURI(req.url.split('?')[0]);
 
-  // API endpoint for web-based update trigger
-  if (reqPath === '/api/check-update') {
+  // API endpoint: Yangilanishni tekshirish va o'rnatish
+  if (reqPath === '/api/update-now' || reqPath === '/api/check-update') {
     try {
       const LaserMaketUpdater = require('./updater.js');
       const updater = new LaserMaketUpdater();
-      const resData = updater.syncToInstalledApps();
+      const result = await updater.checkInternetUpdate();
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(resData));
+      res.end(JSON.stringify(result));
     } catch (err) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: err.message }));
     }
+    return;
+  }
+
+  // API endpoint: Joriy versiyani olish
+  if (reqPath === '/api/version') {
+    let ver = '1.0.87';
+    try {
+      const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'updater-config.json'), 'utf8'));
+      if (cfg && cfg.currentVersion) ver = cfg.currentVersion;
+    } catch (e) {}
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ version: ver }));
     return;
   }
 

@@ -1,7 +1,7 @@
 {
-  "version": "1.0.87",
-  "updatedAt": "2026-11-02T03:11:55.784574Z",
+  "version": "1.0.88",
+  "updatedAt": "2026-11-02T03:15:05.393483+00:00",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "Avtomatik yangilash skripti sinovi",
+  "releaseNotes": "Ilovada yangilanish tugmasi, versiya belgisi va Claude avto-push tizimi qoshildi",
   "requiredAppVersion": "1.0.75"
 }

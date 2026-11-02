@@ -13,7 +13,7 @@ import json
 import zipfile
 import shutil
 import subprocess
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 # UTF-8 chiqishini ta'minlash
@@ -60,10 +60,10 @@ def get_current_version():
                     return d["version"]
         except Exception:
             pass
-    return "1.0.86"
+    return "1.0.87"
 
 def bump_version(ver_str):
-    """Versiya raqamini 1 qadam oshirish (1.0.86 -> 1.0.87)"""
+    """Versiya raqamini 1 qadam oshirish (1.0.87 -> 1.0.88)"""
     parts = ver_str.strip().split(".")
     if len(parts) >= 3:
         try:
@@ -94,7 +94,14 @@ def sync_to_installed(src_dir):
                 shutil.copy2(src_index, target / "index.html")
                 copied_count += 1
 
-            # 3. tools
+            # 3. launch_studio.js va updater
+            for f in ["launch_studio.js", "updater.js", "updater-config.json", "manifest.json"]:
+                sp = src_dir / f
+                if sp.exists():
+                    shutil.copy2(sp, target / f)
+                    copied_count += 1
+
+            # 4. tools
             src_tools = src_dir / "tools"
             if src_tools.exists():
                 t_tools = target / "tools"
@@ -102,6 +109,7 @@ def sync_to_installed(src_dir):
                 for item in src_tools.glob("*.*"):
                     shutil.copy2(item, t_tools / item.name)
                     copied_count += 1
+
             log(f"O'rnatilgan papka yangilandi: {target.name}")
         except Exception as e:
             log(f"O'rnatilgan papkaga ko'chirishda xatolik ({target}): {e}")
@@ -117,8 +125,15 @@ def package_update(new_version, release_notes="Claude AI orqali yangilanish"):
         "launch_studio.js",
         "updater.js",
         "updater-config.json",
-        "manifest.json"
+        "manifest.json",
+        "auto_sync_claude.py"
     ]
+
+    # auto_sync_claude.py ni Studio papkasiga ham nusxalash
+    try:
+        shutil.copy2(ROOT_DIR / "auto_sync_claude.py", STUDIO_DIR / "auto_sync_claude.py")
+    except Exception:
+        pass
 
     with zipfile.ZipFile(DIST_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
         for fname in files_to_zip:
@@ -141,10 +156,11 @@ def package_update(new_version, release_notes="Claude AI orqali yangilanish"):
                     z.write(p, str(p.relative_to(STUDIO_DIR)))
 
     # 2. manifest.json yangilash
+    iso_time = datetime.now(timezone.utc).isoformat()
     manifest_data = {
         "version": new_version,
-        "updatedAt": datetime.utcnow().isoformat() + "Z",
-        "downloadUrl": f"https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
+        "updatedAt": iso_time,
+        "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
         "releaseNotes": release_notes,
         "requiredAppVersion": "1.0.75"
     }
@@ -160,7 +176,7 @@ def package_update(new_version, release_notes="Claude AI orqali yangilanish"):
         "currentVersion": new_version,
         "updateManifestUrl": manifest_data["downloadUrl"].replace("update.zip", "manifest.json"),
         "autoCheckOnStartup": True,
-        "lastChecked": datetime.utcnow().isoformat() + "Z"
+        "lastChecked": iso_time
     }
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(cfg_data, f, indent=2, ensure_ascii=False)
@@ -196,14 +212,14 @@ def run_push_now(note=None):
     cur_ver = get_current_version()
     new_ver = bump_version(cur_ver)
     if not note:
-        note = f"Claude AI avtomatik sinxronizatsiya va model yangilanishi"
+        note = "Claude AI avtomatik sinxronizatsiya va model yangilanishi"
 
     log(f"Joriy versiya: {cur_ver} -> Yangi versiya: {new_ver}")
     package_update(new_ver, note)
     sync_to_installed(STUDIO_DIR)
     ok = git_push_updates(new_ver, note)
     if ok:
-        log(f"✅ Barcha 4 ta kompyuter endi v{new_ver} yangilanishini avtomatik oladi!")
+        log(f"✅ Barcha 4 ta kompyuter endi v{new_ver} yangilanishini ilova orqali avtomatik oladi!")
     return ok
 
 def get_dir_mtime_hash():
