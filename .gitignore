@@ -8,3 +8,6 @@ storage/
 # Claude API kaliti (hech qachon GitHubga yuklanmasin)
 LaserMaket_Studio/claude-config.json
 LaserMaket_Studio/custom/*.images.json
+
+# AI navbati (foydalanuvchi rasmlari)
+LaserMaket_Studio/ai_queue/

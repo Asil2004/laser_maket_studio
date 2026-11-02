@@ -1,7 +1,7 @@
 {
-  "version": "1.0.94",
-  "updatedAt": "2026-11-02T04:03:31.114800+00:00",
+  "version": "1.0.95",
+  "updatedAt": "2026-11-02T16:26:43.436Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "AI bilan tuzatish bo'limi, rasm bilan vizual solishtirish, versiyaga qaytarish; Universitet binolari majmuasi modeli",
+  "releaseNotes": "Yangi: Qog'oz maket studiyasi (CityBuilder uslubi, teksturali razvyortka, PDF/SVG); 5 ta boyitish uskunasi generatori; Quyosh trekeri; AI generator: Claude Code (kalitsiz) va Claude Desktop navbati.",
   "requiredAppVersion": "1.0.75"
 }

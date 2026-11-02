@@ -85,3 +85,24 @@ Foydalanuvchi quyidagi skriptni ham ishga tushirishi mumkin:
   - Odatiy holat: `[ v1.0.88 ] 🔄 Yangilanish`
   - Yangi versiya chiqqanda: `[ v1.0.89 ] ⚡ Yangilash!` (sariq miltillab yonadi).
 - Qolgan 3 ta kompyuter ilovani ochganda shu tugmani bitta bosish bilan yangilanishni qabul qiladi.
+
+---
+
+## 4. AI so'rovlar navbati (API kalitsiz, Claude Desktop orqali)
+
+Ilovada (`launch_studio.js`, localhost:3800) API kalit ham, Claude Code ham bo'lmasa, «🤖 AI generator» va «✏️ AI bilan tuzatish» so'rovlari navbatga yoziladi:
+`LaserMaket_Studio/ai_queue/q_xxxx/`
+- `request.json` — `kind` (`new` | `edit` | `review`), `target` (tuzatiladigan generator id), `prompt`, `remark`, `thickness`, `images`, `status`;
+- `prompt.md` — Claude uchun to'liq vazifa (qo'llanma + joriy kod + talablar);
+- `current.js` — tuzatishda joriy generator kodi;
+- `rasm_1.jpg`… — asl rasmlar, 3D renderlar, skrinshotlar (tartibi `prompt.md` da yozilgan).
+
+Foydalanuvchi «LaserMaket AI navbatini bajar» desa, Claude:
+1. `ai_queue/` dagi `result.json` i yo'q papkalarni topadi, `request.json`, `prompt.md` va rasmlarni o'qiydi.
+2. Rasmlarni diqqat bilan ko'rib, `prompt.md` dagi talablar bo'yicha to'liq parametrik generator yozadi (tuzatishda id o'zgarmaydi), uni sinaydi (validate/generate, detallar, 3D render).
+3. Kodni `LaserMaket_Studio/custom/<id>.js` ga (+ `<id>.json` meta) yozadi.
+4. Oxirida `ai_queue/q_xxxx/result.json` yozadi: `{"status":"done","id":"<id>","name":"<nom>","note":"nima qilindi"}` (bajara olmasa: `{"status":"error","message":"..."}`).
+5. Ilova `result.json` ni 5 soniyada sezadi, `custom/all.js` ni qayta yig'adi va modelni o'zi ochadi.
+6. So'ng `lasermaket_sync_app_update(action='publish')` bilan boshqa kompyuterlarga tarqatadi.
+
+`ai_queue/` GitHub'ga yuklanmaydi (.gitignore).

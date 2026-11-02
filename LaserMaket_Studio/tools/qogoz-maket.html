@@ -1,0 +1,204 @@
+<!doctype html><html lang="uz"><head><script>(function(){try{var P=window.parent;if(!P||P===window||!P.__lmSave)return;var sv=function(n,d,t){var b=d instanceof Blob?d:new Blob([d],{type:t||"application/octet-stream"});return P.__lmSave(n,b)};var dl={save:function(o){return Promise.resolve(sv(o.filename,o.data,o.mimeType))}};var C=window.claude||{};var ou=C.use;C.use=function(n){return n==="downloads"?Promise.resolve(dl):(ou?ou.apply(C,arguments):Promise.reject(new Error("unavailable")))};window.claude=C;var oc=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){var a=this,h=a.href||"";if(a.hasAttribute("download")&&(h.indexOf("blob:")===0||h.indexOf("data:")===0)){var nm=a.getAttribute("download")||"fayl";fetch(h).then(function(r){return r.blob()}).then(function(b){P.__lmSave(nm,b)}).catch(function(){oc.call(a)});return}return oc.call(a)}}catch(e){}})();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qog‘oz maket studiyasi</title>
+<style>
+:root{--bg:#f4f1ea;--surface:#fffdf8;--sunken:#ece6d9;--fg:#1d1b17;--muted:#6d665a;--line:#dcd3c2;--accent:#e2a812;--accent-fg:#1d1b17;--blue:#3d7cc0;--warn:#b4541c;--ok:#2f7a4f;--stage1:#2b3138;--stage2:#171b20}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17191c;--surface:#1f2226;--sunken:#262a2f;--fg:#ece8df;--muted:#a59e90;--line:#363b42;--accent:#f0b928;--accent-fg:#1d1b17}}
+:root[data-theme="dark"]{--bg:#17191c;--surface:#1f2226;--sunken:#262a2f;--fg:#ece8df;--muted:#a59e90;--line:#363b42}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#1d1b17;color:#fff;border-bottom:3px solid var(--accent)}
+header b{font-size:17px}header span{color:#cfc6b4;font-size:12.5px}
+.wrap{display:grid;grid-template-columns:340px 1fr;gap:14px;padding:14px;max-width:1500px;margin:0 auto}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}}
+:where(main){min-width:0}#stage canvas{width:100%!important;height:100%!important}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.card h3{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+label.f{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:5px 0;font-size:13px}
+label.f input,label.f select{width:110px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg);font:inherit}
+button{font:inherit;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:7px 11px;cursor:pointer}
+button.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:700}
+button:hover{filter:brightness(.97)}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.items{max-height:230px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.it{display:flex;justify-content:space-between;align-items:center;padding:6px 9px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.it.sel{background:var(--sunken);font-weight:700}.it small{color:var(--muted)}
+#stage{position:relative;height:520px;border-radius:12px;overflow:hidden;background:linear-gradient(var(--stage1),var(--stage2))}
+#stage canvas{display:block}
+.hint{position:absolute;left:12px;bottom:10px;color:#cfd6dd;font-size:12px}
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0;font-size:13px}.stats b{font-size:16px}
+.pages{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.pages canvas{height:300px;border:1px solid var(--line);background:#fff;border-radius:4px;flex:none}
+.note{font-size:12.5px;color:var(--muted)}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+</style></head><body>
+<header><b>Qog‘oz maket studiyasi</b><span>CityBuilder uslubi: teksturali razvyortka — chop eting, kesing, buking, yelimlang</span></header>
+<div class="wrap">
+<aside>
+<div class="card"><h3>1. Tayyor sahna</h3>
+<div class="row" id="presets"></div>
+<p class="note" style="margin:8px 0 0">Har bir bino real o‘lchamda (metrda) beriladi va tanlangan masshtabda qog‘ozga tushiriladi.</p></div>
+<div class="card"><h3>2. Masshtab va qog‘oz</h3>
+<label class="f">Masshtab 1:<select id="scale"><option>100</option><option>150</option><option selected>200</option><option>250</option><option>300</option><option>400</option><option>500</option></select></label>
+<label class="f">Qog‘oz<select id="paper"><option value="A4">A4</option><option value="A3">A3</option></select></label>
+<label class="f">Yelim qanotchasi, mm<input id="tab" type="number" value="6" min="4" max="12" step="1"></label>
+<label class="f">Eskirish (zang, dog‘), %<input id="wear" type="number" value="55" min="0" max="100" step="5"></label>
+<label class="f">Asos maydoni, m<input id="baseW" type="number" value="64" min="10" max="400" step="1" style="width:52px"> × <input id="baseD" type="number" value="56" min="10" max="400" step="1" style="width:52px"></label></div>
+<div class="card"><h3>3. Elementlar</h3>
+<div class="row" style="margin-bottom:8px"><button data-add="bld">+ Bino</button><button data-add="shed">+ Sex (tomli)</button><button data-add="silo">+ Silos</button><button data-add="gal">+ Galereya</button></div>
+<div class="items" id="items"></div>
+<div id="form" style="margin-top:8px"></div></div>
+</aside>
+<main>
+<div id="stage"><div class="hint">Sichqoncha bilan aylantiring · g‘ildirak — yaqinlashtirish</div></div>
+<div class="stats" id="stats"></div>
+<div class="card"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">4. Razvyortka sahifalari</h3>
+<div class="row"><button class="pri" id="pdf">PDF — chop etish uchun</button><button id="svgc">SVG — kesish/bukish chiziqlari (plotter, lazer)</button><button id="svgb">Fanera asos (lazer SVG)</button></div></div>
+<div class="pages" id="pages"></div>
+<p class="note">Qora chiziq — kesish, shtrix — bukish (avval chizg‘ich bilan bosib chiqing), kulrang qanotcha — yelim. Raqamlar asosdagi belgilar bilan mos. 160–220 g/m² qog‘oz yoki yupqa karton tavsiya etiladi; asosni karton yoki 3 mm faneraga yopishtiring.</p></div>
+<div class="card"><h3>Qanday ishlaydi</h3><p class="note" style="margin:0">Har bir element (to‘rtburchak bino, ikki nishabli tomli sex, silindr silos, osma galereya) avtomatik ravishda tekis razvyortkaga yoyiladi: devorlar bitta lenta bo‘lib, tom old devorga ulanadi, silosga tishli yelim qanotchalar va alohida qopqoq qo‘shiladi. Har bir yuzaga masshtabga mos tekstura chiziladi — qavatlar bo‘yicha derazalar, ko‘k profnastil, beton, zang va oqish izlari, eshiklar, shotilar. Sahifaga sig‘magan lentalar ikkiga bo‘linadi, katta asos varaqlarga taqsimlanadi.</p></div>
+</main></div>
+<script src="../vendor/three.min.js"></script>
+<script src="../vendor/OrbitControls.js"></script>
+<script src="../vendor/jspdf.umd.min.js"></script>
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+function rng(seed){let a=seed>>>0||1;return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const PRESETS={
+ elevator:{name:'Don elevatori (rasmdagidek)',scale:250,base:[64,56],items:[
+  {type:'bld',name:'Elevator minorasi',x:0,z:-4,w:12,d:10,h:46,roof:'flat',wall:'concrete',roofTex:'concrete'},
+  {type:'bld',name:'Minora old bloki',x:0,z:3.5,w:7,d:5,h:30,roof:'flat',wall:'concrete',roofTex:'concrete'},
+  {type:'silo',name:'Silos (chap)',x:-10.5,z:-7,r:5,h:38,top:'flat',tex:'white'},
+  {type:'silo',name:'Silos (o‘ng)',x:11,z:1,r:6,h:35,top:'flat',tex:'white'},
+  {type:'bld',name:'Silos usti kabinasi 1',x:-10.5,z:-7,w:6,d:4,h:3.5,y0:38,roof:'flat',wall:'bluemetal',roofTex:'bluemetal'},
+  {type:'bld',name:'Silos usti kabinasi 2',x:11,z:1,w:7,d:4,h:3.5,y0:35,roof:'flat',wall:'bluemetal',roofTex:'bluemetal'},
+  {type:'shed',name:'Chap sex',x:-17,z:13,w:20,d:13,h:10,roof:'gable',wall:'concrete',roofTex:'bluemetal'},
+  {type:'gal',name:'Galereya',x:-6,z:9,w:9,d:3.5,h:3.5,y0:11,roof:'flat',wall:'bluemetal',roofTex:'bluemetal'},
+  {type:'shed',name:'O‘rta sex',x:6,z:17,w:12,d:18,h:8,roof:'gable',wall:'concrete',roofTex:'bluemetal',rot:90},
+  {type:'shed',name:'O‘ng sex',x:23,z:10,w:9,d:14,h:8,roof:'gable',wall:'concrete',roofTex:'bluemetal',rot:90},
+  {type:'bld',name:'O‘ng yordamchi bino',x:16,z:13,w:7,d:9,h:6,roof:'flat',wall:'concrete',roofTex:'concrete'},
+  {type:'silo',name:'Suv rezervuari',x:-4,z:20,r:3.6,h:7,top:'flat',tex:'concrete',rings:1}]},
+ factory:{name:'Zavod sexi va mo‘ri',scale:200,base:[50,40],items:[
+  {type:'shed',name:'Asosiy sex',x:-4,z:4,w:28,d:16,h:11,roof:'gable',wall:'brick',roofTex:'rust'},
+  {type:'bld',name:'Ma’muriy bino',x:14,z:10,w:10,d:8,h:12,roof:'flat',wall:'white',roofTex:'concrete'},
+  {type:'silo',name:'Mo‘ri',x:14,z:-10,r:1.6,h:36,top:'flat',tex:'brick'},
+  {type:'silo',name:'Bak',x:-14,z:-12,r:4,h:9,top:'cone',tex:'metal',rings:1}]},
+ block:{name:'Ko‘p qavatli uy',scale:200,base:[34,26],items:[
+  {type:'bld',name:'Turar joy',x:0,z:0,w:24,d:12,h:27,roof:'flat',wall:'white',roofTex:'concrete'},
+  {type:'bld',name:'Do‘kon',x:0,z:9,w:10,d:5,h:4,roof:'flat',wall:'brick',roofTex:'concrete'}]},
+ warehouse:{name:'Ombor',scale:150,base:[34,26],items:[
+  {type:'shed',name:'Ombor',x:0,z:0,w:24,d:14,h:7,roof:'gable',wall:'bluemetal',roofTex:'rust'},
+  {type:'bld',name:'Qorovulxona',x:12,z:9,w:4,d:4,h:3,roof:'flat',wall:'white',roofTex:'concrete'}]}};
+let S={scale:200,paper:'A4',tab:6,wear:.55,base:[64,56],items:[],sel:0};
+function load(k){const p=PRESETS[k];S.scale=p.scale;S.base=p.base.slice();S.items=JSON.parse(JSON.stringify(p.items));S.items.forEach((it,i)=>it.id=i+1);S.sel=0;$('#scale').value=String(p.scale);$('#baseW').value=p.base[0];$('#baseD').value=p.base[1];refresh()}
+const WALL={concrete:'#e8e2d6',white:'#f1f0ec',brick:'#b8664a',bluemetal:'#4d88c4'},ROOF={concrete:'#cdbea2',bluemetal:'#4a86c5',rust:'#9a5b34'};
+function M(m){return m*1000/S.scale}
+function wearSpots(ctx,w,h,R,k,col){const n=Math.round((w*h)/180*k*S.wear);for(let i=0;i<n;i++){const x=R()*w,y=R()*h,r=.15+R()*R()*Math.min(1.6,Math.max(.4,Math.min(w,h)*.025));ctx.fillStyle=col(R);ctx.beginPath();ctx.ellipse(x,y,r*(1+R()),r*(.4+R()*.6),R()*3,0,7);ctx.fill()}}
+function streaks(ctx,w,h,R,col,from){const n=Math.round(w/3*S.wear);for(let i=0;i<n;i++){const x=R()*w,L=h*(.08+R()*.35),y0=from==='bottom'?h-L:0;const g=ctx.createLinearGradient(0,y0,0,y0+L);g.addColorStop(from==='bottom'?1:0,col);g.addColorStop(from==='bottom'?0:1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x,y0,.25+R()*1.2,L)}}
+function paintWall(ctx,w,h,o){const R=rng(o.seed),top=o.top||0,wh=h-top,kind=o.wall;ctx.fillStyle=WALL[kind]||WALL.concrete;ctx.fillRect(0,0,w,h);
+ if(kind==='bluemetal'){ctx.strokeStyle='rgba(20,50,90,.35)';ctx.lineWidth=.12;for(let x=.4;x<w;x+=Math.max(.5,M(.25)))line(ctx,x,0,x,h);}
+ if(kind==='brick'){ctx.strokeStyle='rgba(80,35,20,.45)';ctx.lineWidth=.1;const bh=Math.max(.35,M(.25)),bw=bh*3;for(let y=h,r=0;y>0;y-=bh,r++){line(ctx,0,y,w,y);for(let x=(r%2)*bw/2;x<w;x+=bw)line(ctx,x,y,x,y-bh)}}
+ if(kind==='concrete'||kind==='white'){ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=.1;const ph=M(3);for(let y=h-ph;y>top;y-=ph)line(ctx,0,y,w,y);for(let x=M(6);x<w;x+=M(6))line(ctx,x,top,x,h)}
+ const fl=Math.max(1,Math.round((wh)/M(o.floorH||3.3))),fh=wh/fl,ww=M(o.winW||1.4),wn=Math.max(1,Math.floor(w/M(o.winSp||3.6)));
+ if(o.windows!==false&&w>ww*1.6){for(let f=0;f<fl;f++){const yb=h-f*fh;for(let i=0;i<wn;i++){const cx=(i+.5)*w/wn,wy=yb-fh*.72,wH=fh*.45;if(f===0&&o.door&&i===Math.floor(wn/2))continue;if(o.band&&f>0){continue}ctx.fillStyle='#2c3e55';ctx.fillRect(cx-ww/2,wy,ww,wH);ctx.fillStyle='rgba(170,200,230,.55)';ctx.fillRect(cx-ww/2+ww*.1,wy+wH*.1,ww*.3,wH*.35);ctx.strokeStyle='#f5f2ea';ctx.lineWidth=Math.max(.12,ww*.07);ctx.strokeRect(cx-ww/2,wy,ww,wH);line(ctx,cx,wy,cx,wy+wH)}}
+  if(o.band){const by=h-wh*.82,bh=wh*.12;ctx.fillStyle='#2c3e55';ctx.fillRect(w*.06,by,w*.88,bh);ctx.strokeStyle='#e8e2d6';ctx.lineWidth=.15;for(let x=w*.06;x<w*.94;x+=M(1.2))line(ctx,x,by,x,by+bh)}}
+ if(o.door){const dw=Math.min(w*.4,M(o.big?4.5:1.4)),dh=Math.min(fh*.85,M(o.big?4.2:2.3)),dx=w/2-dw/2;ctx.fillStyle=o.big?'#6f8fa8':'#5b4a3a';ctx.fillRect(dx,h-dh,dw,dh);if(o.big){ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=.1;for(let y=h-dh;y<h;y+=Math.max(.35,dh/14))line(ctx,dx,y,dx+dw,y)}}
+ if(o.ladder){ctx.strokeStyle='#8a7a66';ctx.lineWidth=.15;const lx=w*.82;line(ctx,lx,top+1,lx,h);line(ctx,lx+M(.5),top+1,lx+M(.5),h);for(let y=top+1;y<h;y+=Math.max(.5,M(.35)))line(ctx,lx,y,lx+M(.5),y)}
+ streaks(ctx,w,h,R,'rgba(110,80,50,.28)','top');wearSpots(ctx,w,h,R,1,R2=>R2()<.5?'rgba(160,90,40,.18)':'rgba(70,60,50,.10)');streaks(ctx,w,h,R,'rgba(120,70,30,.22)','bottom');
+ if(kind==='bluemetal'){wearSpots(ctx,w,h,R,.5,()=> 'rgba(255,255,255,.35)')}}
+function paintRoof(ctx,w,h,o){const R=rng(o.seed),kind=o.roofTex;ctx.fillStyle=ROOF[kind]||ROOF.concrete;ctx.fillRect(0,0,w,h);
+ if(kind==='bluemetal'||kind==='rust'){ctx.strokeStyle=kind==='rust'?'rgba(60,30,15,.35)':'rgba(20,45,80,.35)';ctx.lineWidth=.12;const st=Math.max(.6,M(.3));if(o.ridgeAlongX)for(let y=.3;y<h;y+=st)line(ctx,0,y,w,y);else for(let x=.3;x<w;x+=st)line(ctx,x,0,x,h)}
+ else{ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=.12;ctx.strokeRect(.6,.6,w-1.2,h-1.2);const n=Math.round(w*h/900)+1;for(let i=0;i<n;i++){const bw=M(1.5+R()*2),bh=M(1+R()*1.5),x=R()*(w-bw),y=R()*(h-bh);ctx.fillStyle='#b9b4aa';ctx.fillRect(x,y,bw,bh);ctx.strokeStyle='rgba(0,0,0,.3)';ctx.strokeRect(x,y,bw,bh)}}
+ wearSpots(ctx,w,h,R,1.6,R2=>R2()<.55?'rgba(150,80,30,.25)':'rgba(255,255,255,.22)');if(kind!=='concrete')wearSpots(ctx,w,h,R,.4,()=> 'rgba(255,255,255,.4)')}
+function paintSilo(ctx,w,h,o){const R=rng(o.seed),kind=o.tex;ctx.fillStyle=kind==='metal'?'#c9cdd0':kind==='brick'?'#b8664a':kind==='concrete'?'#ddd6c8':'#efede6';ctx.fillRect(0,0,w,h);
+ if(kind==='brick'){paintWall(ctx,w,h,{seed:o.seed,wall:'brick',windows:false})}
+ ctx.strokeStyle='rgba(0,0,0,.18)';ctx.lineWidth=.12;if(o.rings||kind==='metal'){const st=M(kind==='metal'?1.5:3);for(let y=h-st;y>0;y-=st)line(ctx,0,y,w,y);for(let x=0;x<w;x+=M(2.5))line(ctx,x,0,x,h)}
+ ctx.strokeStyle='#8a7a66';ctx.lineWidth=.15;const lx=w*.3;line(ctx,lx,1,lx,h);line(ctx,lx+M(.5),1,lx+M(.5),h);for(let y=1;y<h;y+=Math.max(.5,M(.35)))line(ctx,lx,y,lx+M(.5),y);
+ streaks(ctx,w,h,R,'rgba(110,80,50,.25)','top');wearSpots(ctx,w,h,R,1,R2=>R2()<.5?'rgba(160,90,40,.16)':'rgba(70,60,50,.08)')}
+function paintGround(ctx,w,h,seed){const R=rng(seed);ctx.fillStyle='#c4b89f';ctx.fillRect(0,0,w,h);ctx.strokeStyle='rgba(0,0,0,.1)';ctx.lineWidth=.12;const pl=M(6);for(let x=pl;x<w;x+=pl)line(ctx,x,0,x,h);for(let y=pl;y<h;y+=pl)line(ctx,0,y,w,y);
+ wearSpots(ctx,w,h,R,3,R2=>{const v=R2();return v<.35?'rgba(60,50,40,.18)':v<.7?'rgba(150,90,40,.2)':'rgba(255,255,255,.18)'});ctx.strokeStyle='rgba(80,70,60,.25)';ctx.lineWidth=.15;for(let i=0;i<Math.round(w*h/3000*S.wear)+2;i++){let x=R()*w,y=R()*h;ctx.beginPath();ctx.moveTo(x,y);for(let k=0;k<5;k++){x+=(R()-.5)*8;y+=(R()-.5)*8;ctx.lineTo(x,y)}ctx.stroke()}
+ ctx.fillStyle='#e7e0d0';ctx.fillRect(0,0,w,1.2);ctx.fillRect(0,h-1.2,w,1.2);ctx.fillRect(0,0,1.2,h);ctx.fillRect(w-1.2,0,1.2,h)}
+function line(c,a,b,x,y){c.beginPath();c.moveTo(a,b);c.lineTo(x,y);c.stroke()}
+function wallOpts(it,face){const sh=it.type==='shed',gal=it.type==='gal';return{seed:it.id*31+face,wall:it.wall,door:face===0&&!gal&&!(it.y0>0),big:sh,band:sh&&face%2===1,ladder:it.type==='bld'&&face===1&&M(it.h)>40,winSp:sh?5:3.6,winW:sh?2.2:1.4,windows:true}}
+function rect(x,y,w,h){return[[x,y],[x+w,y],[x+w,y+h],[x,y+h]]}
+function tabPoly(a,b,d){const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy),nx=dy/L,ny=-dx/L,c=Math.min(d,L*.3),ux=dx/L,uy=dy/L;return[a,b,[b[0]+nx*d-ux*c,b[1]+ny*d-uy*c],[a[0]+nx*d+ux*c,a[1]+ny*d+uy*c]]}
+function pieces(){const P=[],T=S.tab;let num=0;
+ S.items.forEach(it=>{const nm=it.name||('Element '+it.id);
+  if(it.type==='silo'){const r=M(it.r),h=M(it.h),C=2*Math.PI*r,parts=C+T>usable()[0]*0.98?2:1,cw=C/parts;
+   for(let p=0;p<parts;p++){num++;const faces=[{poly:rect(0,0,cw,h),x:0,y:0,w:cw,h,paint:(c,w,hh)=>{c.save();c.translate(-p*cw,0);paintSilo(c,C,hh,{seed:it.id*17,tex:it.tex,rings:it.rings});c.restore()}}],tabs=[];
+    tabs.push(tabPoly([cw,0],[cw,h],T));const nT=Math.max(6,Math.round(cw/Math.max(4,r*.5)));for(let i=0;i<nT;i++){const a=i*cw/nT,b=(i+1)*cw/nT;tabs.push(tri([a,0],[b,0],Math.min(T,(b-a)*.9)));tabs.push(tri([b,h],[a,h],Math.min(T,(b-a)*.9)))}
+    P.push({num,item:it,label:`${it.id}${parts>1?String.fromCharCode(97+p):''} · ${nm} — silindr${parts>1?` (${p+1}/2)`:''}`,faces,tabs})}
+   num++;if(it.top==='cone'){const ch=r*.45,L=Math.hypot(r,ch),ang=2*Math.PI*r/L,pts=[[0,0]];for(let i=0;i<=40;i++){const a=-Math.PI/2-ang/2+ang*i/40;pts.push([L*Math.cos(a),L*Math.sin(a)+L])}const t2=tabPoly(pts[pts.length-1],[0,L],T*.8);P.push({num,item:it,label:`${it.id}q · ${nm} — konus qopqoq`,faces:[{poly:pts.map(q=>[q[0]+L,q[1]]),x:0,y:0,w:2*L,h:2*L,paint:(c,w,hh)=>paintRoof(c,w,hh,{seed:it.id*7,roofTex:it.tex==='metal'?'concrete':'rust'})}],tabs:[t2.map(q=>[q[0]+L,q[1]])]})}
+   else{const pts=[];for(let i=0;i<48;i++){const a=i/48*2*Math.PI;pts.push([r+r*Math.cos(a),r+r*Math.sin(a)])}P.push({num,item:it,label:`${it.id}q · ${nm} — qopqoq`,faces:[{poly:pts,x:0,y:0,w:2*r,h:2*r,paint:(c,w,hh)=>{paintRoof(c,w,hh,{seed:it.id*7,roofTex:'concrete'});c.strokeStyle='rgba(0,0,0,.25)';c.lineWidth=.15;c.beginPath();c.arc(r,r,r*.25,0,7);c.stroke()}}],tabs:[]})}
+   if(it.y0>0){num++;const pts=[];for(let i=0;i<48;i++){const a=i/48*2*Math.PI;pts.push([r+r*Math.cos(a),r+r*Math.sin(a)])}P.push({num,item:it,label:`${it.id}t · ${nm} — tag`,faces:[{poly:pts,x:0,y:0,w:2*r,h:2*r,paint:(c,w,hh)=>{c.fillStyle='#9d968a';c.fillRect(0,0,w,hh)}}],tabs:[]})}
+   return}
+  const w=M(it.w),d=M(it.d),h=M(it.h),gable=it.roof==='gable',rh=gable?Math.min(d,w)*.28:0,elev=it.y0>0,seq=[[w,0,'old'],[d,1,'o‘ng'],[w,2,'orqa'],[d,3,'chap']],total=2*w+2*d+T,split=total>usable()[0]*.98;
+  const groups=split?[[0,1],[2,3]]:[[0,1,2,3]],detach=!gable&&(h+d+2*T+6>usable()[1]*.98);if(detach){num++;P.push({num,item:it,label:`${it.id}t · ${nm} — tom (qanotchalari ichkariga)`,faces:[{poly:rect(0,0,w,d),x:0,y:0,w,h:d,paint:(c,ww,hh)=>paintRoof(c,ww,hh,{seed:it.id*13,roofTex:it.roofTex})}],tabs:[]})}
+  groups.forEach((g,gi)=>{num++;let x=0;const faces=[],tabs=[],ext=[];const H=h+rh;g.forEach(k=>{const[fw,fi,fn]=seq[k],gab=gable&&(fi===1||fi===3);let poly=gab?[[x,rh],[x+fw/2,0],[x+fw,rh],[x+fw,H],[x,H]]:rect(x,rh,fw,h);faces.push({poly,x,y:gab?0:rh,w:fw,h:gab?H:h,paint:(c,ww,hh)=>paintWall(c,ww,hh,{...wallOpts(it,fi),top:gab?rh:0})});
+    if(!elev)tabs.push(tri([x+fw,H],[x,H],T,1));
+    if(gab){tabs.push(tri([x,rh],[x+fw/2,0],T*.8,1),tri([x+fw/2,0],[x+fw,rh],T*.8,1))}else if(!(fi===0&&!gable&&!detach)){tabs.push(tri([x,rh],[x+fw,rh],T,1))}
+    if(fi===0&&!gable&&!detach){const ry=rh-d;faces.push({poly:rect(x,ry,fw,d),x,y:ry,w:fw,h:d,roof:1,paint:(c,ww,hh)=>paintRoof(c,ww,hh,{seed:it.id*13,roofTex:it.roofTex})})}
+    if(fi===0&&elev){faces.push({poly:rect(x,H,fw,d),x,y:H,w:fw,h:d,paint:(c,ww,hh)=>{c.fillStyle='#8e877b';c.fillRect(0,0,ww,hh)}})}
+    x+=fw});
+   tabs.push(tabPoly([x,rh],[x,H],T));
+   P.push({num,item:it,label:`${it.id}${split?String.fromCharCode(97+gi):''} · ${nm} — devorlar${split?` (${gi+1}/2)`:''}`,faces,tabs})});
+  if(gable){num++;const sl=Math.hypot(d/2,rh),ov=Math.max(1,M(.4)),L=w+2*ov;P.push({num,item:it,label:`${it.id}t · ${nm} — tom (o‘rtadan buking)`,faces:[{poly:rect(0,0,L,sl+ov),x:0,y:0,w:L,h:sl+ov,roof:1,paint:(c,ww,hh)=>paintRoof(c,ww,hh,{seed:it.id*13,roofTex:it.roofTex,ridgeAlongX:false})},{poly:rect(0,sl+ov,L,sl+ov),x:0,y:sl+ov,w:L,h:sl+ov,roof:1,paint:(c,ww,hh)=>paintRoof(c,ww,hh,{seed:it.id*13+1,roofTex:it.roofTex,ridgeAlongX:false})}],tabs:[]})}
+ });return P}
+function tri(a,b,d,trap){const t=tabPoly(a,b,d);return t}
+function usable(){const p=S.paper==='A3'?[297,420]:[210,297];return[p[0]-16,p[1]-22]}
+function bbox(pc){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;[...pc.faces.map(f=>f.poly),...pc.tabs].forEach(P=>P.forEach(([x,y])=>{x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)}));return{x0,y0,x1,y1,w:x1-x0,h:y1-y0+5}}
+function layout(P){const[UW,UH]=usable(),pages=[];let cur=null;const items=P.map(pc=>{const b=bbox(pc);let rot=0;if(b.w>UW&&b.h<=UW&&b.w<=UH)rot=1;return{pc,b,rot,w:rot?b.h:b.w,h:rot?b.w:b.h}}).sort((a,b)=>b.h-a.h);
+ const newPage=()=>{cur={items:[],x:0,y:0,rowH:0};pages.push(cur)};newPage();
+ items.forEach(o=>{if(o.w>UW||o.h>UH)o.over=1;if(cur.x+o.w>UW){cur.x=0;cur.y+=cur.rowH+4;cur.rowH=0}if(cur.y+o.h>UH&&cur.items.length){newPage()}o.px=cur.x;o.py=cur.y;cur.items.push(o);cur.x+=o.w+4;cur.rowH=Math.max(cur.rowH,o.h)});return pages}
+function baseTiles(){const[UW,UH]=usable(),W=M(S.base[0]),D=M(S.base[1]),nx=Math.ceil(W/UW),nz=Math.ceil(D/(UH-8)),tw=W/nx,td=D/nz,T=[];for(let j=0;j<nz;j++)for(let i=0;i<nx;i++)T.push({i,j,x0:i*tw,z0:j*td,w:tw,h:td,W,D,nx,nz});return T}
+function edgeKey(a,b){const f=p=>Math.round(p[0]*20)+','+Math.round(p[1]*20);const k1=f(a),k2=f(b);return k1<k2?k1+'|'+k2:k2+'|'+k1}
+function drawPiece(c,pc,o,k,mode){const b=o.b;c.save();c.translate(o.px,o.py);if(o.rot){c.translate(o.w,0);c.rotate(Math.PI/2)}c.translate(-b.x0,-b.y0+4);
+ if(mode!=='lines'){pc.faces.forEach(f=>{c.save();c.beginPath();f.poly.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.closePath();c.clip();c.translate(f.x,f.y);f.paint(c,f.w,f.h);c.restore()});pc.tabs.forEach(t=>{c.fillStyle='#ebe7df';c.beginPath();t.forEach((p,i)=>i?c.lineTo(p[0],p[1]):c.moveTo(p[0],p[1]));c.closePath();c.fill()})}
+ const cnt={},segs=[];[...pc.faces.map(f=>f.poly),...pc.tabs].forEach(P=>P.forEach((p,i)=>{const q=P[(i+1)%P.length];if(Math.hypot(q[0]-p[0],q[1]-p[1])<.05)return;const key=edgeKey(p,q);cnt[key]=(cnt[key]||0)+1;segs.push([p,q,key])}));
+ const seen={};segs.forEach(([p,q,key])=>{if(seen[key])return;seen[key]=1;const fold=cnt[key]>1;if(mode==='lines'){k.push({p:tf(c,p),q:tf(c,q),fold})}else{c.strokeStyle=fold?'#7a7368':'#111';c.lineWidth=fold?.18:.25;c.setLineDash(fold?[1.2,.9]:[]);line(c,p[0],p[1],q[0],q[1])}});c.setLineDash([]);
+ if(mode!=='lines'){c.restore();c.save();c.translate(o.px,o.py);c.fillStyle='#333';c.font='bold 3.2px system-ui';c.fillText(pc.label,0,3);}
+ c.restore()}
+function tf(c,p){const m=c.getTransform();return[m.a*p[0]+m.c*p[1]+m.e,m.b*p[0]+m.d*p[1]+m.f]}
+function drawBaseTile(c,t,showMarks){c.save();c.translate(0,6);c.beginPath();c.rect(0,0,t.w,t.h);c.clip();c.translate(-t.x0,-t.z0);paintGround(c,t.W,t.D,99);if(showMarks)marks(c,t.W,t.D);c.restore();c.strokeStyle='#111';c.lineWidth=.25;c.strokeRect(0,6,t.w,t.h);c.fillStyle='#333';c.font='bold 3.2px system-ui';c.fillText(`Asos — varaq ${t.j*t.nx+t.i+1}/${t.nx*t.nz} (qator ${t.j+1}, ustun ${t.i+1}) — qo‘shni varaqlar bilan uchma-uch yopishtiring`,0,3.5)}
+function marks(c,W,D){c.save();c.translate(W/2,D/2);S.items.forEach(it=>{if(it.y0>0)return;c.save();c.translate(M(it.x),M(it.z));c.rotate((it.rot||0)*Math.PI/180);c.strokeStyle='rgba(0,0,0,.55)';c.lineWidth=.2;c.setLineDash([1,.8]);if(it.type==='silo'){c.beginPath();c.arc(0,0,M(it.r),0,7);c.stroke()}else{c.strokeRect(-M(it.w)/2,-M(it.d)/2,M(it.w),M(it.d))}c.setLineDash([]);c.restore();c.fillStyle='rgba(0,0,0,.7)';c.font='bold 3px system-ui';c.fillText(String(it.id),M(it.x)-1,M(it.z)+1)});c.restore()}
+function renderPages(dpm){const P=pieces(),pages=layout(P),tiles=baseTiles(),[UW,UH]=usable(),pw=S.paper==='A3'?297:210,ph=S.paper==='A3'?420:297,out=[];
+ const mk=()=>{const cv=document.createElement('canvas');cv.width=Math.round(pw*dpm);cv.height=Math.round(ph*dpm);const c=cv.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,cv.width,cv.height);c.scale(dpm,dpm);c.translate(8,11);return{cv,c}};
+ pages.forEach((pg,i)=>{const{cv,c}=mk();pg.items.forEach(o=>drawPiece(c,o.pc,o));foot(c,`${i+1}`,pages.length+tiles.length);out.push({cv,pg})});
+ tiles.forEach((t,i)=>{const{cv,c}=mk();drawBaseTile(c,t,1);foot(c,`A${i+1}`,pages.length+tiles.length);out.push({cv,tile:t})});return{out,pages,tiles,P}}
+function foot(c,n,tot){const[UW,UH]=usable();c.fillStyle='#888';c.font='2.6px system-ui';c.fillText(`LaserMaket · Qog‘oz maket studiyasi · 1:${S.scale} · varaq ${n} · qora — kesish, shtrix — bukish, kulrang — yelim`,0,UH+6)}
+function stats(r){const n=r.P.length,ov=r.pages.some(p=>p.items.some(o=>o.over));$('#stats').innerHTML=`<span>Detallar: <b>${n}</b></span><span>Varaqlar: <b>${r.pages.length}</b> + asos <b>${r.tiles.length}</b> (${S.paper})</span><span>Asos: <b>${Math.round(M(S.base[0]))} × ${Math.round(M(S.base[1]))} mm</b></span><span>Eng baland: <b>${Math.round(Math.max(...S.items.map(it=>M((it.y0||0)+it.h))))} mm</b></span>`+(ov?`<span style="color:var(--warn)"><b>Ba’zi detallar varaqqa sig‘madi</b> — masshtabni kichraytiring yoki A3 tanlang</span>`:'')}
+let pv=null;function previewPages(){const r=renderPages(2.2);const box=$('#pages');box.innerHTML='';r.out.forEach(o=>box.appendChild(o.cv));stats(r)}
+const ren=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});ren.setClearColor(0x000000,0);ren.setPixelRatio(Math.min(2,devicePixelRatio));ren.shadowMap.enabled=true;$('#stage').appendChild(ren.domElement);
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1,1,20000);scene.add(new THREE.HemisphereLight(0xffffff,0x8a7f6a,.75));const sun=new THREE.DirectionalLight(0xffffff,.75);sun.position.set(300,600,400);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-400,right:400,top:400,bottom:-400});scene.add(sun);
+const ctl=new THREE.OrbitControls(cam,ren.domElement);ctl.enableDamping=true;const grp=new THREE.Group();scene.add(grp);
+function resize(){const el=$('#stage'),w=el.clientWidth,h=el.clientHeight;ren.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()}addEventListener('resize',resize);
+function tex(w,h,paint,ppm){ppm=ppm||4;const cv=document.createElement('canvas');cv.width=Math.max(8,Math.min(2048,Math.round(w*ppm)));cv.height=Math.max(8,Math.min(2048,Math.round(h*ppm)));const c=cv.getContext('2d');c.scale(cv.width/w,cv.height/h);paint(c,w,h);const t=new THREE.CanvasTexture(cv);t.anisotropy=4;return new THREE.MeshLambertMaterial({map:t})}
+function build3D(){while(grp.children.length){const o=grp.children.pop();o.geometry&&o.geometry.dispose()}const W=M(S.base[0]),D=M(S.base[1]);const g=new THREE.Mesh(new THREE.BoxGeometry(W,2,D),[0,1,2,3,4,5].map(i=>i===2?tex(W,D,(c,w,h)=>{paintGround(c,w,h,99);marks(c,w,h)},3):new THREE.MeshLambertMaterial({color:0xd8cdb6})));g.position.y=-1;g.receiveShadow=true;grp.add(g);
+ S.items.forEach(it=>{const o=new THREE.Group();o.position.set(M(it.x),M(it.y0||0),M(it.z));o.rotation.y=-(it.rot||0)*Math.PI/180;grp.add(o);
+  if(it.type==='silo'){const r=M(it.r),h=M(it.h),C=2*Math.PI*r;const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,40,1,true),tex(C,h,(c,w,hh)=>paintSilo(c,w,hh,{seed:it.id*17,tex:it.tex,rings:it.rings})));m.position.y=h/2;m.castShadow=m.receiveShadow=true;o.add(m);
+   if(it.top==='cone'){const cm=new THREE.Mesh(new THREE.ConeGeometry(r,r*.45,40),new THREE.MeshLambertMaterial({color:0x8c6a50}));cm.position.y=h+r*.225;cm.castShadow=true;o.add(cm)}else{const cp=new THREE.Mesh(new THREE.CircleGeometry(r,40),tex(2*r,2*r,(c,w,hh)=>paintRoof(c,w,hh,{seed:it.id*7,roofTex:'concrete'})));cp.rotation.x=-Math.PI/2;cp.position.y=h+.05;o.add(cp)}return}
+  const w=M(it.w),d=M(it.d),h=M(it.h),gable=it.roof==='gable',rh=gable?Math.min(d,w)*.28:0;
+  const mats=[tex(d,h,(c,a,b)=>paintWall(c,a,b,wallOpts(it,1))),tex(d,h,(c,a,b)=>paintWall(c,a,b,wallOpts(it,3))),gable?new THREE.MeshLambertMaterial({color:WALL[it.wall]}):tex(w,d,(c,a,b)=>paintRoof(c,a,b,{seed:it.id*13,roofTex:it.roofTex})),new THREE.MeshLambertMaterial({color:0x8e877b}),tex(w,h,(c,a,b)=>paintWall(c,a,b,wallOpts(it,0))),tex(w,h,(c,a,b)=>paintWall(c,a,b,wallOpts(it,2)))];
+  const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mats);b.position.y=h/2;b.castShadow=b.receiveShadow=true;o.add(b);
+  if(gable){const sh=new THREE.Shape();sh.moveTo(-d/2,0);sh.lineTo(d/2,0);sh.lineTo(0,rh);sh.lineTo(-d/2,0);const gm=new THREE.MeshLambertMaterial({color:WALL[it.wall]||'#e8e2d6'});[-1,1].forEach(sg=>{const gg=new THREE.Mesh(new THREE.ShapeGeometry(sh),gm);gg.rotation.y=Math.PI/2*sg;gg.position.set(sg*w/2,h,0);o.add(gg)});
+   const sl=Math.hypot(d/2,rh),ov=Math.max(1,M(.4)),ang=Math.atan2(rh,d/2);[-1,1].forEach(sg=>{const rm=tex(w+2*ov,sl+ov,(c,a,bb)=>paintRoof(c,a,bb,{seed:it.id*13+(sg>0?0:1),roofTex:it.roofTex}));rm.side=THREE.DoubleSide;const pg=new THREE.Group();pg.position.set(0,h+rh,0);pg.rotation.x=sg*ang;const p=new THREE.Mesh(new THREE.PlaneGeometry(w+2*ov,sl+ov),rm);p.rotation.x=-Math.PI/2;p.position.z=sg*(sl+ov)/2;p.castShadow=true;pg.add(p);o.add(pg)})}});
+ const R=Math.max(W,D);cam.position.set(R*.9,R*.95,R*1.1);ctl.target.set(0,R*.15,0);ctl.update()}
+function loop(){requestAnimationFrame(loop);ctl.update();ren.render(scene,cam)}
+const FIELDS={bld:[['name','Nomi','text'],['x','X, m'],['z','Z, m'],['w','Eni, m'],['d','Chuqurligi, m'],['h','Balandligi, m'],['y0','Ko‘tarilgan, m'],['rot','Burilish°','sel',[0,90]],['roof','Tom','sel',['flat','gable']],['wall','Devor','sel',['concrete','white','brick','bluemetal']],['roofTex','Tom qoplamasi','sel',['concrete','bluemetal','rust']]],silo:[['name','Nomi','text'],['x','X, m'],['z','Z, m'],['r','Radius, m'],['h','Balandligi, m'],['y0','Ko‘tarilgan, m'],['top','Qopqoq','sel',['flat','cone']],['tex','Sirt','sel',['white','concrete','metal','brick']],['rings','Halqalar','sel',[0,1]]]};
+const UZ={flat:'tekis',gable:'ikki nishab',concrete:'beton',white:'oq suvoq',brick:'g‘isht',bluemetal:'ko‘k profnastil',rust:'zangli tunuka',cone:'konus',metal:'metall'};
+function renderList(){$('#items').innerHTML=S.items.map((it,i)=>`<div class="it ${i===S.sel?'sel':''}" data-i="${i}"><span>${it.id}. ${esc(it.name||it.type)}</span><small>${it.type==='silo'?`Ø${it.r*2}×${it.h} m`:`${it.w}×${it.d}×${it.h} m`}</small></div>`).join('');document.querySelectorAll('.it').forEach(el=>el.onclick=()=>{S.sel=+el.dataset.i;renderList();renderForm()});renderForm()}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function renderForm(){const it=S.items[S.sel];if(!it){$('#form').innerHTML='';return}const F=FIELDS[it.type==='silo'?'silo':'bld'];$('#form').innerHTML=F.map(([k,l,t,o])=>t==='sel'?`<label class="f">${l}<select data-k="${k}">${o.map(v=>`<option value="${v}" ${String(it[k]??(k==='rot'?0:''))===String(v)?'selected':''}>${UZ[v]||v}</option>`).join('')}</select></label>`:`<label class="f">${l}<input data-k="${k}" ${t==='text'?'':'type=number step=0.5'} value="${esc(it[k]??0)}"></label>`).join('')+`<div class="row" style="margin-top:6px"><button id="dup">Nusxa</button><button id="del">O‘chirish</button></div>`;
+ $('#form').querySelectorAll('[data-k]').forEach(el=>el.onchange=()=>{const k=el.dataset.k;it[k]=el.tagName==='SELECT'?(isNaN(+el.value)?el.value:+el.value):(el.type==='number'?+el.value:el.value);refresh(1)});$('#del').onclick=()=>{S.items.splice(S.sel,1);S.sel=Math.max(0,S.sel-1);refresh()};$('#dup').onclick=()=>{const c=JSON.parse(JSON.stringify(it));c.id=Math.max(0,...S.items.map(q=>q.id))+1;c.x+=4;c.name=(c.name||'')+' (nusxa)';S.items.push(c);S.sel=S.items.length-1;refresh()}}
+let tm=0;function refresh(keepForm){S.scale=+$('#scale').value;S.paper=$('#paper').value;S.tab=+$('#tab').value;S.wear=+$('#wear').value/100;S.base=[+$('#baseW').value,+$('#baseD').value];if(!keepForm)renderList();else{const el=document.querySelectorAll('.it')[S.sel];el&&renderList()}clearTimeout(tm);tm=setTimeout(()=>{build3D();previewPages()},120)}
+['#scale','#paper','#tab','#wear','#baseW','#baseD'].forEach(s=>$(s).onchange=()=>refresh(1));
+document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const t=b.dataset.add,id=Math.max(0,...S.items.map(q=>q.id))+1,base={id,x:0,z:0};const it=t==='silo'?{...base,type:'silo',name:'Silos',r:4,h:20,top:'flat',tex:'white'}:t==='shed'?{...base,type:'shed',name:'Sex',w:16,d:12,h:8,roof:'gable',wall:'concrete',roofTex:'bluemetal'}:t==='gal'?{...base,type:'gal',name:'Galereya',w:8,d:3,h:3,y0:10,roof:'flat',wall:'bluemetal',roofTex:'bluemetal'}:{...base,type:'bld',name:'Bino',w:10,d:8,h:12,roof:'flat',wall:'concrete',roofTex:'concrete'};S.items.push(it);S.sel=S.items.length-1;refresh()});
+$('#presets').innerHTML=Object.entries(PRESETS).map(([k,p])=>`<button data-p="${k}">${p.name}</button>`).join('');document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>load(b.dataset.p));
+function save(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
+$('#pdf').onclick=()=>{const b=$('#pdf');b.textContent='Tayyorlanmoqda…';setTimeout(()=>{try{const r=renderPages(8),pw=S.paper==='A3'?297:210,ph=S.paper==='A3'?420:297,doc=new jspdf.jsPDF({unit:'mm',format:S.paper.toLowerCase()});r.out.forEach((o,i)=>{if(i)doc.addPage();doc.addImage(o.cv.toDataURL('image/jpeg',.9),'JPEG',0,0,pw,ph)});save(`qogoz_maket_1-${S.scale}_${S.paper}.pdf`,doc.output('blob'))}catch(e){alert('PDF xatosi: '+e.message)}b.textContent='PDF — chop etish uchun'},30)};
+$('#svgc').onclick=()=>{const P=pieces(),pages=layout(P),pw=S.paper==='A3'?297:210,ph=S.paper==='A3'?420:297;let svg='';pages.forEach((pg,i)=>{const cv=document.createElement('canvas');const c=cv.getContext('2d');c.translate(8,11);const L=[];pg.items.forEach(o=>drawPiece(c,o.pc,o,L,'lines'));svg+=`<g id="varaq_${i+1}" transform="translate(${i*(pw+10)},0)"><rect x="0" y="0" width="${pw}" height="${ph}" fill="none" stroke="#00AA00" stroke-width="0.2"/>`+L.map(s=>`<line x1="${s.p[0].toFixed(2)}" y1="${s.p[1].toFixed(2)}" x2="${s.q[0].toFixed(2)}" y2="${s.q[1].toFixed(2)}" stroke="${s.fold?'#0000FF':'#FF0000'}" stroke-width="0.1"${s.fold?' stroke-dasharray="1.5 1"':''}/>`).join('')+`</g>`});
+ const W=pages.length*(pw+10);save(`qogoz_maket_kesish_1-${S.scale}.svg`,new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n<!-- LaserMaket Qog‘oz maket studiyasi. Qizil — kesish, ko‘k shtrix — bukish (lazerda past quvvat yoki plotterda bosish). Yashil — varaq chegarasi (kesilmaydi). Chop etilgan varaq bilan ustma-ust tushadi (1 birlik = 1 mm). -->\n<svg xmlns="http://www.w3.org/2000/svg" width="${W}mm" height="${ph}mm" viewBox="0 0 ${W} ${ph}">${svg}</svg>`],{type:'image/svg+xml'}))};
+$('#svgb').onclick=()=>{const W=M(S.base[0]),D=M(S.base[1]);let e='';S.items.forEach(it=>{if(it.y0>0)return;const x=W/2+M(it.x),z=D/2+M(it.z),r=it.rot||0;if(it.type==='silo')e+=`<circle cx="${x.toFixed(2)}" cy="${z.toFixed(2)}" r="${M(it.r).toFixed(2)}" fill="none" stroke="#0000FF" stroke-width="0.1"/>`;else e+=`<rect x="${(x-M(it.w)/2).toFixed(2)}" y="${(z-M(it.d)/2).toFixed(2)}" width="${M(it.w).toFixed(2)}" height="${M(it.d).toFixed(2)}" transform="rotate(${r} ${x.toFixed(2)} ${z.toFixed(2)})" fill="none" stroke="#0000FF" stroke-width="0.1"/>`;e+=`<text x="${(x-1).toFixed(2)}" y="${(z+1.5).toFixed(2)}" font-size="4" fill="#0000FF" font-family="Arial">${it.id}</text>`});
+ save(`qogoz_maket_asos_fanera_${Math.round(W)}x${Math.round(D)}.svg`,new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n<!-- Fanera asos: qizil — kesish, ko‘k — gravyura (binolar o‘rni va raqamlari). Chop etilgan asos varaqlarini shu fanera ustiga yopishtiring. -->\n<svg xmlns="http://www.w3.org/2000/svg" width="${W.toFixed(1)}mm" height="${D.toFixed(1)}mm" viewBox="0 0 ${W.toFixed(2)} ${D.toFixed(2)}"><rect x="0" y="0" width="${W.toFixed(2)}" height="${D.toFixed(2)}" rx="3" fill="none" stroke="#FF0000" stroke-width="0.1"/>${e}</svg>`],{type:'image/svg+xml'}))};
+resize();load('elevator');loop();window.__qm={S,pieces,layout,renderPages};
+})();
+</script></body></html>

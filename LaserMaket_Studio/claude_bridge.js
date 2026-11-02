@@ -6,6 +6,9 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const vm = require('vm');
+const os = require('os');
+const cp = require('child_process');
+const QUEUE = path.join(__dirname, 'ai_queue');
 
 const ROOT = __dirname;
 const CFG = path.join(ROOT, 'claude-config.json');
@@ -117,6 +120,70 @@ function userContent(prompt, images, thickness, extra) {
   return c;
 }
 
+
+/* ---- Claude Code CLI (obuna orqali, API kalitsiz) ---- */
+let cliState = null;
+function cliCmd() { const c = readCfg(); return c.cliPath || 'claude'; }
+function cliAvailable() {
+  if (cliState && Date.now() - cliState.at < 60000) return cliState.ok;
+  let ok = false, ver = '';
+  try { ver = cp.execSync(`"${cliCmd()}" --version`, { timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'], shell: true, windowsHide: true }).toString().trim(); ok = /\d+\.\d+/.test(ver); } catch (e) {}
+  cliState = { ok, ver, at: Date.now() }; return ok;
+}
+function killTree(ch) { try { if (process.platform === 'win32') cp.exec(`taskkill /pid ${ch.pid} /T /F`); else ch.kill('SIGTERM'); } catch (e) {} }
+function flatten(messages, dir) {
+  let imgs = [], parts = [];
+  messages.forEach((m, mi) => {
+    let t = '';
+    if (typeof m.content === 'string') t = m.content;
+    else (m.content || []).forEach(c => {
+      if (c.type === 'image' && c.source && c.source.data) {
+        const f = path.join(dir, `rasm_${imgs.length + 1}.${/png/.test(c.source.media_type) ? 'png' : 'jpg'}`);
+        fs.writeFileSync(f, Buffer.from(c.source.data, 'base64')); imgs.push(f);
+      } else if (c.type === 'text') t += c.text;
+    });
+    parts.push(messages.length > 1 ? `=== ${m.role === 'user' ? 'FOYDALANUVCHI' : 'SIZNING OLDINGI JAVOBINGIZ'} ===\n${t}` : t);
+  });
+  let head = imgs.length ? `Ilova qilingan rasmlar (Read vositasi bilan har birini ko'rib chiqing, tartib muhim):\n${imgs.map((f, i) => `${i + 1}. ${f}`).join('\n')}\n\n` : '';
+  let tail = messages.length > 1 ? `\n\nOxirgi FOYDALANUVCHI xabariga javob bering. Javob faqat bitta \`\`\`js blokidan iborat bo'lsin.` : '';
+  return head + parts.join('\n\n') + tail;
+}
+function runCli(req, res, messages) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lmai-'));
+  const prompt = flatten(messages, dir), c = readCfg();
+  const args = ['-p', '--output-format', 'text', '--allowedTools', 'Read', '--add-dir', `"${dir}"`];
+  if (c.cliModel) args.push('--model', c.cliModel);
+  const ch = cp.spawn(`"${cliCmd()}"`, args, { cwd: dir, shell: true, windowsHide: true, env: Object.assign({}, process.env, { ANTHROPIC_API_KEY: '' }) });
+  res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache' });
+  const ev = o => { try { res.write('data: ' + JSON.stringify(o) + '\n\n'); } catch (e) {} };
+  ev({ type: 'message_start' });
+  let err = '', got = false, done = false;
+  const ping = setInterval(() => ev({ type: 'ping' }), 15000);
+  ch.stdout.on('data', d => { got = true; ev({ type: 'content_block_delta', delta: { type: 'text_delta', text: d.toString('utf8') } }); });
+  ch.stderr.on('data', d => { err += d.toString('utf8'); });
+  ch.on('close', code => {
+    done = true; clearInterval(ping);
+    if (code !== 0 && !got) ev({ type: 'error', error: { type: 'claude_code', message: (err || `Claude Code ${code} kod bilan tugadi`).slice(0, 600) } });
+    ev({ type: 'message_delta', delta: { stop_reason: 'end_turn' } }); ev({ type: 'message_stop' });
+    try { res.end(); } catch (e) {}
+    try { fs.rmSync(dir, { recursive: true, force: true }); } catch (e) {}
+  });
+  ch.on('error', e => { err += e.message; });
+  req.on('close', () => { if (!done) killTree(ch); });
+  ch.stdin.write(prompt); ch.stdin.end();
+}
+
+/* ---- AI navbati (Claude Desktop orqali, MCP/fayl) ---- */
+function qList() {
+  if (!fs.existsSync(QUEUE)) return [];
+  return fs.readdirSync(QUEUE).filter(d => /^q_\w+$/.test(d)).map(d => {
+    let r = {}, o = null;
+    try { r = JSON.parse(fs.readFileSync(path.join(QUEUE, d, 'request.json'), 'utf8')); } catch (e) {}
+    try { o = JSON.parse(fs.readFileSync(path.join(QUEUE, d, 'result.json'), 'utf8')); } catch (e) {}
+    return { qid: d, kind: r.kind, target: r.target, prompt: r.prompt, createdAt: r.createdAt, status: o ? (o.status || 'done') : 'pending', result: o };
+  });
+}
+
 let busy = false;
 async function generate(p) {
   const cfg = readCfg();
@@ -170,7 +237,7 @@ function readBody(req) {
 async function handle(req, res, reqPath) {
   const send = (code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(obj)); };
   try {
-    if (reqPath === '/api/claude/status') { const c = readCfg(); return send(200, { configured: !!c.apiKey, model: c.model, busy, custom: listCustom() }); }
+    if (reqPath === '/api/claude/status') { const c = readCfg(); return send(200, { configured: !!c.apiKey, cli: !c.apiKey && cliAvailable(), cliVersion: cliState && cliState.ver, model: c.model, busy, custom: listCustom(), queue: qList().filter(q => q.status === 'pending').length }); }
     if (reqPath === '/api/claude/config' && req.method === 'POST') {
       const p = await readBody(req), c = readCfg();
       if (p.apiKey) c.apiKey = String(p.apiKey).trim();
@@ -184,10 +251,34 @@ async function handle(req, res, reqPath) {
       try { const r = reqPath.endsWith('fix') ? await fix(p) : await generate(p); return send(200, r); }
       finally { busy = false; }
     }
+    if (reqPath === '/api/claude/queue' && req.method === 'GET') return send(200, { items: qList() });
+    if (reqPath === '/api/claude/queue' && req.method === 'POST') {
+      const p = await readBody(req), qid = 'q_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), d = path.join(QUEUE, qid);
+      fs.mkdirSync(d, { recursive: true });
+      const imgs = (p.images || []).slice(0, 20).map((b, i) => { const f = `rasm_${i + 1}.jpg`; fs.writeFileSync(path.join(d, f), Buffer.from(String(b), 'base64')); return f; });
+      fs.writeFileSync(path.join(d, 'prompt.md'), String(p.p0 || ''));
+      if (p.code) fs.writeFileSync(path.join(d, 'current.js'), String(p.code));
+      fs.writeFileSync(path.join(d, 'request.json'), JSON.stringify({ qid, kind: p.kind || 'new', target: p.target || null, prompt: String(p.prompt || ''), remark: String(p.remark || ''), thickness: p.thickness || 3, images: imgs, imageNote: String(p.imageNote || ''), review: !!p.review, createdAt: new Date().toISOString(), status: 'pending' }, null, 2));
+      return send(200, { qid });
+    }
+    if (reqPath === '/api/claude/queue/status') {
+      const qid = new URL(req.url, 'http://x').searchParams.get('id') || '';
+      if (!/^q_\w+$/.test(qid)) return send(400, { error: 'id' });
+      const it = qList().find(q => q.qid === qid);
+      if (!it) return send(404, { status: 'missing' });
+      if (it.status !== 'pending' && !it.result.rebuilt) { rebuildAll(); try { it.result.rebuilt = true; fs.writeFileSync(path.join(QUEUE, qid, 'result.json'), JSON.stringify(it.result, null, 2)); } catch (e) {} }
+      return send(200, it);
+    }
+    if (reqPath === '/api/claude/queue/cancel' && req.method === 'POST') {
+      const p = await readBody(req), qid = String(p.qid || '');
+      if (!/^q_\w+$/.test(qid)) return send(400, { error: 'id' });
+      try { fs.rmSync(path.join(QUEUE, qid), { recursive: true, force: true }); } catch (e) {}
+      return send(200, { ok: true });
+    }
     if (reqPath === '/api/claude/rebuild') return send(200, { count: rebuildAll() });
     if (reqPath === '/api/claude/messages' && req.method === 'POST') {
       const p = await readBody(req), cfg = readCfg();
-      if (!cfg.apiKey) return send(400, { error: 'Claude API kaliti kiritilmagan (AI generator oynasida kiriting)' });
+      if (!cfg.apiKey) { if (cliAvailable()) return runCli(req, res, p.messages || []); return send(400, { error: 'Claude API kaliti ham, Claude Code ham topilmadi — so\'rov navbatga qo\'yiladi' }); }
       const body = JSON.stringify({ model: cfg.model, max_tokens: cfg.maxTokens, stream: true, messages: p.messages || [] });
       const base = cfg.apiBase ? new URL(cfg.apiBase) : null, lib = base && base.protocol === 'http:' ? require('http') : https;
       const up = lib.request({ hostname: base ? base.hostname : 'api.anthropic.com', port: base ? base.port || undefined : undefined, path: '/v1/messages', method: 'POST',
