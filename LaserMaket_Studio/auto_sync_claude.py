@@ -80,13 +80,14 @@ def sync_to_installed(src_dir):
         if not target.exists():
             continue
         try:
-            # 1. custom/all.js
-            src_custom = src_dir / "custom" / "all.js"
+            # 1. custom/ papkasi (barcha generatorlar va modellar)
+            src_custom = src_dir / "custom"
             if src_custom.exists():
                 t_custom = target / "custom"
                 t_custom.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(src_custom, t_custom / "all.js")
-                copied_count += 1
+                for c_item in src_custom.glob("*.*"):
+                    shutil.copy2(c_item, t_custom / c_item.name)
+                    copied_count += 1
 
             # 2. index.html
             src_index = src_dir / "index.html"
