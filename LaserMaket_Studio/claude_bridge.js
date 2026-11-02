@@ -33,14 +33,28 @@ function systemPrompt() {
   return s;
 }
 
+const AUTO_A = '/* ==== AI-AUTO-START: bu blok custom/*.js fayllaridan avtomatik yig\'iladi, qo\'lda tahrirlamang ==== */';
+const AUTO_B = '/* ==== AI-AUTO-END ==== */';
 function rebuildAll() {
   if (!fs.existsSync(CUSTOM)) fs.mkdirSync(CUSTOM, { recursive: true });
+  const allF = path.join(CUSTOM, 'all.js');
+  let manual = '';
+  try { manual = fs.readFileSync(allF, 'utf8'); } catch (e) {}
+  const i = manual.indexOf(AUTO_A), j = manual.indexOf(AUTO_B);
+  if (i >= 0 && j > i) manual = manual.slice(0, i) + manual.slice(j + AUTO_B.length);
+  manual = manual.replace(/\s+$/, '');
+  if (!/__lmCustomF\s*=\s*window\.__lmCustomF/.test(manual)) manual = 'window.__lmCustomF=window.__lmCustomF||[];\n' + manual;
   const files = fs.readdirSync(CUSTOM).filter(f => f.endsWith('.js') && f !== 'all.js').sort();
-  let out = 'window.__lmCustomF=window.__lmCustomF||[];\n';
+  let block = '';
   files.forEach(f => {
-    out += `\n/* ${f} */\ntry{\n${fs.readFileSync(path.join(CUSTOM, f), 'utf8')}\n}catch(e){console.error('custom ${f}',e);window.__lmCustomErr=(window.__lmCustomErr||[]).concat(String(e&&e.stack||e))}\n`;
+    block += `\n/* ${f} */\ntry{\n${fs.readFileSync(path.join(CUSTOM, f), 'utf8')}\n}catch(e){console.error('custom ${f}',e);window.__lmCustomErr=(window.__lmCustomErr||[]).concat(String(e&&e.stack||e))}\n`;
   });
-  fs.writeFileSync(path.join(CUSTOM, 'all.js'), out);
+  const out = manual + '\n\n' + AUTO_A + '\n' + block + AUTO_B + '\n';
+  let old = ''; try { old = fs.readFileSync(allF, 'utf8'); } catch (e) {}
+  if (old !== out) {
+    if (old && !fs.existsSync(path.join(CUSTOM, 'all.backup.txt'))) fs.writeFileSync(path.join(CUSTOM, 'all.backup.txt'), old);
+    fs.writeFileSync(allF, out);
+  }
   return files.length;
 }
 
@@ -171,6 +185,38 @@ async function handle(req, res, reqPath) {
       finally { busy = false; }
     }
     if (reqPath === '/api/claude/rebuild') return send(200, { count: rebuildAll() });
+    if (reqPath === '/api/claude/messages' && req.method === 'POST') {
+      const p = await readBody(req), cfg = readCfg();
+      if (!cfg.apiKey) return send(400, { error: 'Claude API kaliti kiritilmagan (AI generator oynasida kiriting)' });
+      const body = JSON.stringify({ model: cfg.model, max_tokens: cfg.maxTokens, stream: true, messages: p.messages || [] });
+      const base = cfg.apiBase ? new URL(cfg.apiBase) : null, lib = base && base.protocol === 'http:' ? require('http') : https;
+      const up = lib.request({ hostname: base ? base.hostname : 'api.anthropic.com', port: base ? base.port || undefined : undefined, path: '/v1/messages', method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-api-key': cfg.apiKey, 'anthropic-version': '2023-06-01', 'content-length': Buffer.byteLength(body) }, timeout: 30 * 60 * 1000 }, ur => {
+        res.writeHead(ur.statusCode, { 'Content-Type': ur.statusCode === 200 ? 'text/event-stream; charset=utf-8' : 'application/json; charset=utf-8', 'Cache-Control': 'no-cache' });
+        ur.pipe(res);
+      });
+      up.on('timeout', () => up.destroy(new Error('Claude API vaqti tugadi')));
+      up.on('error', e => { try { if (!res.headersSent) send(502, { error: e.message }); else res.end(); } catch (x) {} });
+      req.on('close', () => { if (!res.writableEnded) up.destroy(); });
+      up.write(body); up.end(); return;
+    }
+    if (reqPath === '/api/claude/save' && req.method === 'POST') {
+      const p = await readBody(req), id = String(p.id || '');
+      if (!/^ai[A-Za-z0-9]{2,60}$/.test(id)) return send(400, { error: 'Noto\'g\'ri id: ' + id });
+      const code = String(p.code || '');
+      if (!/__lmCustomF/.test(code)) return send(400, { error: 'Generator kodi emas' });
+      new vm.Script(code, { filename: id + '.js' });
+      if (!fs.existsSync(CUSTOM)) fs.mkdirSync(CUSTOM, { recursive: true });
+      fs.writeFileSync(path.join(CUSTOM, id + '.js'), code);
+      fs.writeFileSync(path.join(CUSTOM, id + '.json'), JSON.stringify({ id, name: String(p.name || id), prompt: String(p.prompt || ''), createdAt: new Date().toISOString(), source: 'studio-ai' }, null, 2));
+      return send(200, { ok: true, count: rebuildAll() });
+    }
+    if (reqPath === '/api/claude/delete' && req.method === 'POST') {
+      const p = await readBody(req), id = String(p.id || '');
+      if (!/^ai[A-Za-z0-9]{2,60}$/.test(id)) return send(400, { error: 'Noto\'g\'ri id' });
+      ['.js', '.json', '.images.json'].forEach(x => { try { fs.unlinkSync(path.join(CUSTOM, id + x)); } catch (e) {} });
+      return send(200, { ok: true, count: rebuildAll() });
+    }
     return send(404, { error: 'not found' });
   } catch (e) { return send(500, { error: e.message }); }
 }

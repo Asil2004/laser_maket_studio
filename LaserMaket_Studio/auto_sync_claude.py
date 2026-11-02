@@ -126,7 +126,9 @@ def package_update(new_version, release_notes="Claude AI orqali yangilanish"):
         "updater.js",
         "updater-config.json",
         "manifest.json",
-        "auto_sync_claude.py"
+        "auto_sync_claude.py",
+        "claude_bridge.js",
+        "claude_guide.md"
     ]
 
     # auto_sync_claude.py ni Studio papkasiga ham nusxalash
@@ -145,8 +147,14 @@ def package_update(new_version, release_notes="Claude AI orqali yangilanish"):
         custom_dir = STUDIO_DIR / "custom"
         if custom_dir.exists():
             for p in custom_dir.rglob("*"):
-                if p.is_file():
+                if p.is_file() and not p.name.endswith(".images.json") and p.name != "all.backup.txt":
                     z.write(p, str(p.relative_to(STUDIO_DIR)))
+
+        # claude_examples papkasi (AI generator namunalari)
+        ex_dir = STUDIO_DIR / "claude_examples"
+        if ex_dir.exists():
+            for p in ex_dir.rglob("*.js"):
+                z.write(p, str(p.relative_to(STUDIO_DIR)))
 
         # tools papkasi
         tools_dir = STUDIO_DIR / "tools"

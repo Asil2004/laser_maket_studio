@@ -1,7 +1,7 @@
 {
-  "version": "1.0.89",
-  "updatedAt": "2026-11-02T03:19:32.158998+00:00",
+  "version": "1.0.91",
+  "updatedAt": "2026-11-02T03:46:49.846781+00:00",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "CLAUDE.md va MCP avto-push imkoniyati ulandi",
+  "releaseNotes": "Yangilanish v1.0.91: updater va MCP toliq tuzatildi, custom/ va claude_bridge.js arxivga qoshildi va git push qilindi",
   "requiredAppVersion": "1.0.75"
 }

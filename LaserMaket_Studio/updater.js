@@ -121,6 +121,22 @@ class LaserMaketUpdater {
           this.copyDirRecursive(srcVendor, destVendor, stats);
         }
 
+        // Copy custom/ papkasi (AI generatorlar va modellar)
+        const srcCustom = path.join(sourceDir, 'custom');
+        const destCustom = path.join(targetDir, 'custom');
+        if (fs.existsSync(srcCustom)) {
+          this.copyDirRecursive(srcCustom, destCustom, stats);
+        }
+
+        // Copy claude_bridge.js va launch_studio.js
+        for (const fname of ['claude_bridge.js', 'launch_studio.js', 'manifest.json']) {
+          const sp = path.join(sourceDir, fname);
+          if (fs.existsSync(sp)) {
+            fs.copyFileSync(sp, path.join(targetDir, fname));
+            stats.copied++;
+          }
+        }
+
         // Copy config
         if (fs.existsSync(this.configFile)) {
           fs.copyFileSync(this.configFile, path.join(targetDir, 'updater-config.json'));
@@ -302,6 +318,7 @@ class LaserMaketUpdater {
    * Run when you or Claude makes changes!
    */
   publishUpdate(newVersion = null, releaseNotes = '') {
+    this.config = this.loadConfig();
     if (!newVersion) {
       const parts = this.config.currentVersion.split('.');
       parts[parts.length - 1] = parseInt(parts[parts.length - 1] || 0, 10) + 1;
@@ -316,12 +333,19 @@ class LaserMaketUpdater {
 
     this.log(`Yangi yangilanish to'plami tayyorlanmoqda: ${newVersion}...`);
 
-    // Create zip of index.html, tools, updater-config.json
+    // Create zip of index.html, custom, tools, claude_bridge.js, launch_studio.js, updater-config.json, manifest.json
     try {
-      execSync(`tar -a -cf "${zipPath}" index.html tools updater-config.json`, {
+      let zipTargets = ['index.html', 'updater-config.json', 'manifest.json'];
+      for (const item of ['custom', 'tools', 'vendor', 'claude_bridge.js', 'launch_studio.js', 'updater.js', 'auto_sync_claude.py']) {
+        if (fs.existsSync(path.join(this.workspaceDir, item))) {
+          zipTargets.push(item);
+        }
+      }
+      execSync(`tar -a -cf "${zipPath}" ${zipTargets.join(' ')}`, {
         cwd: this.workspaceDir,
         stdio: 'inherit'
       });
+      this.log(`Arxiv yaratildi: ${zipTargets.join(', ')}`);
     } catch (e) {
       this.log(`Zip yaratishda xato: ${e.message}`);
       return { success: false, error: e.message };
@@ -351,12 +375,29 @@ class LaserMaketUpdater {
     this.log(`1. Zip: ${zipPath}`);
     this.log(`2. Manifest: ${manifestPath}`);
 
+    // Avtomatik GitHub'ga push qilish
+    let gitLog = 'Bajarilmadi';
+    try {
+      const rootDir = path.resolve(this.workspaceDir, '..');
+      this.log(`GitHub'ga commit va push qilinmoqda (origin main)...`);
+      execSync('git add .', { cwd: rootDir, stdio: 'ignore' });
+      try {
+        execSync(`git commit -m "Yangilanish v${newVersion}: ${releaseNotes || 'Claude AI yangilanishi'}"`, { cwd: rootDir, stdio: 'ignore' });
+      } catch(e) {}
+      gitLog = execSync('git push origin main', { cwd: rootDir, encoding: 'utf8' }).trim();
+      this.log(`✅ GitHub'ga muvaffaqiyatli push qilindi: v${newVersion}!`);
+    } catch(err) {
+      gitLog = 'Git push xatosi: ' + err.message;
+      this.log(`Git push xatoligi: ${err.message}`);
+    }
+
     return {
       success: true,
       version: newVersion,
       zipPath,
       manifestPath,
-      manifest
+      manifest,
+      git: gitLog
     };
   }
 }

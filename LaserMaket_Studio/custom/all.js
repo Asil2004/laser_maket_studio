@@ -687,3 +687,70 @@ window.__lmCustomF.push(function(__LMH) {
     }
   };
 });
+
+/* ==== AI-AUTO-START: bu blok custom/*.js fayllaridan avtomatik yig'iladi, qo'lda tahrirlamang ==== */
+
+/* aiUniversitetMajmua.js */
+try{
+window.__lmCustomF=window.__lmCustomF||[];
+window.__lmCustomF.push(function(LM){
+const {F,te,de,fe,U,plCcw,ctClip,ctMk,De,M,N,j,G,dy,A,k,ny,uy,fy,W}=LM;
+const P0=[{key:`scale`,label:`Masshtab`,group:`Umumiy`,type:`select`,options:[{value:`400`,label:`1:400 (katta)`},{value:`500`,label:`1:500 (rasmdagidek)`},{value:`600`,label:`1:600 (ixcham)`}],help:`1 m haqiqiy o‘lcham = 1000/masshtab mm.`},
+{key:`floorsMain`,label:`Bosh bino qavatlari`,group:`Binolar`,type:`int`,min:3,max:6,step:1},
+{key:`floorsRear`,label:`Orqa korpuslar qavatlari`,group:`Binolar`,type:`int`,min:3,max:7,step:1},
+{key:`floorsWing`,label:`O‘ng qanot qavatlari`,group:`Binolar`,type:`int`,min:2,max:5,step:1},
+{key:`columns`,label:`Portik ustunlari soni`,group:`Portik`,type:`int`,min:4,max:8,step:1},
+{key:`attic`,label:`Yarim doira attika (2 qatlam)`,group:`Portik`,type:`bool`},
+{key:`windows`,label:`Deraza gravyurasi`,group:`Fasad`,type:`bool`},
+{key:`slotClearance`,label:`Tirqish toleransi`,group:`Birikmalar`,type:`number`,unit:`mm`,min:-.3,max:1,step:.05}];
+const D={scale:`500`,floorsMain:4,floorsRear:5,floorsWing:3,columns:6,attic:!0,windows:!0,slotClearance:.1,...A},PA=[...P0,...k];
+const PRE=[{name:`Rasmdagidek (1:500)`,hint:`4 qavatli portikli bosh bino, 3 qavatli o‘ng qanot, 5 qavatli orqa korpuslar`,values:{scale:`500`,floorsMain:4,floorsRear:5,floorsWing:3,columns:6,attic:!0,windows:!0}},{name:`Ixcham (1:600)`,hint:`kichik list uchun`,values:{scale:`600`}},{name:`Katta ko‘rgazma (1:400)`,hint:`katta list kerak`,values:{scale:`400`}},{name:`Soddalashtirilgan`,hint:`4 ustun, attikasiz, derazasiz`,values:{columns:4,attic:!1,windows:!1}}];
+const BL=e=>{let nF=Math.round(j(e,`floorsMain`)),nR=Math.round(j(e,`floorsRear`)),nW=Math.round(j(e,`floorsWing`));return[
+{id:`F`,nm:`Bosh bino (portikli)`,g:`01 Bosh bino`,b:[-45,0,35,24],n:nF,st:1,door:-5},
+{id:`R`,nm:`O‘ng qanot`,g:`02 O‘ng qanot`,b:[35,3,90,21],n:nW,st:2,door:62},
+{id:`L`,nm:`Chap uzun korpus`,g:`03 Orqa korpuslar`,b:[-45,-108,-27,0],n:nR,st:3},
+{id:`C1`,nm:`Orqa korpus 1`,g:`03 Orqa korpuslar`,b:[-27,-42,25,-26],n:nR,st:3},
+{id:`C2`,nm:`Orqa korpus 2`,g:`03 Orqa korpuslar`,b:[-27,-78,30,-62],n:nR,st:3},
+{id:`C3`,nm:`Orqa korpus 3`,g:`03 Orqa korpuslar`,b:[-27,-108,15,-92],n:Math.max(2,nR-1),st:3}]};
+function V(e){let q=M(PA,e);if(q.some(x=>x.severity===`error`))return q;q.push(...N(e));let sc=1000/(Number(e.scale)||500),sw=j(e,`sheetWidth`)||600,sh=j(e,`sheetHeight`)||400,em=j(e,`edgeMargin`)||0,a=Math.max(sw,sh)-2*em,b=Math.min(sw,sh)-2*em,fit=(u,v)=>Math.max(u,v)<=a&&Math.min(u,v)<=b;
+[[`Old asos (AS1)`,135*sc+16,38*sc+8],[`Orqa asos (AS2)`,75*sc+16,108*sc+8],[`Uzun yon devor`,108*sc,(j(e,`floorsRear`)*3.8+1.2)*sc+2*j(e,`thickness`)]].forEach(([n,u,v])=>{fit(u,v)||q.push({severity:`error`,field:`scale`,message:`${n} ${G(u,0)}×${G(v,0)} mm — listga sig‘maydi, masshtabni kichraytiring.`})});
+sc<1.8&&q.push({severity:`warning`,field:`scale`,message:`1:600 da derazalar juda mayda — gravyura tezligini kamaytiring.`});return q}
+function GEN(e){let t=j(e,`thickness`),cl=j(e,`slotClearance`),s=t+cl,tw=5,i=3,sc=1000/(Number(e.scale)||500),fm=3.8*sc,X=m=>(m-22.5)*sc,Z=m=>(m+33.5)*sc,y=[],BS=[],
+minus=(rg,P)=>P.length?de(`difference`,rg,P):rg,plus=(rg,P)=>P.length?de(`union`,rg,P):rg,R0=(a,b,c,d)=>[{outer:plCcw(te(a,b,c,d)),holes:[]}],cl5=P=>[...P,P[0]],EL=(rg,L)=>L.flatMap(q=>ctClip(rg,q,.3)),
+push=o=>y.push({material:`plywood`,thickness:t,look:`concrete`,...o}),
+tabs=(a,b)=>{let L=b-a;if(L<20)return[(a+b)/2];let n=Math.max(2,Math.round(L/45)),r=[];for(let q=0;q<n;q++)r.push(a+(q+.5)*L/n);return r},
+wall=(a,b,H,bt,tt,et)=>{let P=[F(a,0)];bt.forEach(c=>P.push(F(c-tw/2,0),F(c-tw/2,-t),F(c+tw/2,-t),F(c+tw/2,0)));P.push(F(b,0));et.forEach(v=>P.push(F(b,v-tw/2),F(b+t,v-tw/2),F(b+t,v+tw/2),F(b,v+tw/2)));P.push(F(b,H));[...tt].reverse().forEach(c=>P.push(F(c+tw/2,H),F(c+tw/2,H+t),F(c-tw/2,H+t),F(c-tw/2,H)));P.push(F(a,H));[...et].reverse().forEach(v=>P.push(F(a,v+tw/2),F(a-t,v+tw/2),F(a-t,v-tw/2),F(a,v-tw/2)));return plCcw(P)},
+wins=(a,b,n,dc)=>{let L=[],bay=3.6*sc,nb=Math.max(1,Math.floor((b-a-6)/bay)),o=a+(b-a-nb*bay)/2,ww=bay*.5,wh=fm*.5;if(e.windows!==!1)for(let f=0;f<n;f++)for(let q=0;q<nb;q++){let x=o+(q+.5)*bay;if(dc!=null&&f==0&&Math.abs(x-dc)<bay*1.3)continue;let yy=f*fm+fm*.45;L.push(cl5(te(x-ww/2,yy-wh/2,x+ww/2,yy+wh/2)))}L.push([F(a,fm),F(b,fm)],[F(a,n*fm+.3*sc),F(b,n*fm+.3*sc)]);if(dc!=null){let P=[F(dc-bay,0),F(dc-bay,fm*.6)];for(let q=0;q<=12;q++){let a2=Math.PI*(1-q/12);P.push(F(dc+bay*Math.cos(a2),fm*.6+bay*.6*Math.sin(a2)))}P.push(F(dc+bay,0));L.push(P)}return L},
+half=(cx,cz,r,bk)=>{let P=[];for(let q=0;q<=32;q++){let a=Math.PI*q/32;P.push(F(cx+r*Math.cos(a),cz+r*Math.sin(a)))}P.push(F(cx-r,cz-bk),F(cx+r,cz-bk));return plCcw(P)},
+ring=(rg,d)=>fe(rg,-d,`miter`).map(q=>cl5(q.outer)),maxH=0,Bs=BL(e);
+let box=B=>{let[m0,n0,m1,n1]=B.b,x0=X(m0),x1=X(m1),z0=Z(n0),z1=Z(n1),n=B.n,H=(n*3.8+1.2)*sc,zf=z1-i-t/2,zb=z0+i+t/2,xl=x0+i+t/2,xr=x1-i-t/2,et=[H*.3,H*.7],RS=[],SS=[];maxH=Math.max(maxH,H);
+let bt=tabs(x0+i+t+5,x1-i-t-5);[x0+i,x1-i-t].forEach(u=>et.forEach(v=>SS.push(te(u-cl/2,v-tw/2-cl/2,u+t+cl/2,v+tw/2+cl/2))));
+[[zf,`old`,1],[zb,`orqa`,-1]].forEach(([zz,w,sg],q)=>{let rg=minus([{outer:wall(x0,x1,H,bt,bt,[]),holes:[]}],SS);bt.forEach(c=>{let sl=te(c-tw/2-cl/2,zz-s/2,c+tw/2+cl/2,zz+s/2);BS.push(sl);RS.push(sl)});push({id:`${B.id}${q?`B`:`A`}`,name:`${B.nm} — ${w} fasad`,group:B.g,regions:rg,engraveLines:EL(rg,wins(x0+i+t,x1-i-t,n,B.door!=null&&!q?X(B.door):null)),placement:{kind:`free`,ex:[1,0,0],ey:[0,1,0],ez:[0,0,1],pos:[0,0,zz]},explode:[0,0,sg*25],stage:B.st,order:q,info:[{label:`O‘lcham`,value:`${G(x1-x0,1)} × ${G(H,1)} mm, ${n} qavat`},{label:`Birikma`,value:`pastki tishlar asosga, yuqorisi tomga; chetdagi yopiq tirqishlarga yon devor tishlari kiradi`}]})});
+let a=z0+i+t,b=z1-i-t,st=tabs(a+5,b-5);
+[[xl,`chap`,-1],[xr,`o‘ng`,1]].forEach(([xx,w,sg],q)=>{let rg=[{outer:wall(a,b,H,st,st,et),holes:[]}];st.forEach(c=>{let sl=te(xx-s/2,c-tw/2-cl/2,xx+s/2,c+tw/2+cl/2);BS.push(sl);RS.push(sl)});push({id:`${B.id}${q?`D`:`C`}`,name:`${B.nm} — ${w} yon devor`,group:B.g,regions:rg,engraveLines:EL(rg,wins(a,b,n,null)),placement:{kind:`free`,ex:[0,0,1],ey:[0,1,0],ez:[-1,0,0],pos:[xx,0,0]},explode:[sg*25,0,0],stage:B.st,order:2+q,info:[{label:`O‘lcham`,value:`${G(b-a+2*t,1)} × ${G(H,1)} mm`},{label:`Birikma`,value:`uchlaridagi tishlar fasadlarning yopiq tirqishlariga kiradi`}]})});
+return{x0,x1,z0,z1,H,RS}};
+let RES=Bs.map(box),rF=RES[0],Xc=X(-5),zF=rF.z1,Rp=11*sc,HF=rF.H,nc=Math.round(j(e,`columns`)),cw=6,rc=Rp-Math.max(2.4*sc,4),CS=[],HS=[];
+for(let q=0;q<nc;q++){let a=Math.PI*(.85-.7*q/(nc-1)),cx=Xc+rc*Math.cos(a),cz=zF+rc*Math.sin(a);
+let rA=minus(plus(R0(-cw/2,0,cw/2,HF),[te(-2,-t,2,0)]),[te(-s/2,HF/2,s/2,HF+1)]),rB=minus(plus(R0(-cw/2,0,cw/2,HF),[te(-2,HF-.01,2,HF+t)]),[te(-s/2,-1,s/2,HF/2)]);
+BS.push(te(cx-2-cl/2,cz-s/2,cx+2+cl/2,cz+s/2));CS.push(te(cx-s/2,cz-2-cl/2,cx+s/2,cz+2+cl/2));HS.push(te(cx-cw/2-.3,cz-t/2-.3,cx+cw/2+.3,cz+t/2+.3),te(cx-t/2-.3,cz-cw/2-.3,cx+t/2+.3,cz+cw/2+.3));
+push({id:`US${dy(q+1)}a`,name:`Ustun ${q+1} (A, pastdan tishli)`,group:`04 Portik`,regions:rA,placement:{kind:`free`,ex:[1,0,0],ey:[0,1,0],ez:[0,0,1],pos:[cx,0,cz]},explode:[0,0,30],stage:4,order:q*2,info:[{label:`Birikma`,value:`krest: A ustidan o‘yiq, tishi asosga`}]});
+push({id:`US${dy(q+1)}b`,name:`Ustun ${q+1} (B, tepadan tishli)`,group:`04 Portik`,regions:rB,placement:{kind:`free`,ex:[0,0,1],ey:[0,1,0],ez:[-1,0,0],pos:[cx,0,cz]},explode:[0,0,30],stage:4,order:q*2+1,info:[{label:`Birikma`,value:`krest: B pastdan o‘yiq, tishi portik tomiga`}]})}
+{let Rr=Rp+2.5*sc,rg=minus([{outer:half(Xc,zF-1.5,Rr,.01),holes:[]}],HS);push({id:`ZN`,name:`Portik zinapoyasi`,group:`04 Portik`,regions:rg,engraveLines:EL(rg,[cl5(half(Xc,zF-1.5,Rr-1.2*sc,.01))]),placement:{kind:`horizontal`,y:t/2},explode:[0,10,20],stage:4,order:-1,look:`earth`,info:[{label:`O‘rnatish`,value:`asos ustiga yelimlanadi, ustunlar teshiklardan o‘tadi`}]})}
+RES.forEach((r,q)=>{let B=Bs[q],rg=R0(r.x0,r.z0,r.x1,r.z1);B.id==`F`&&(rg=plus(rg,[half(Xc,zF,Rp,1)]));rg=minus(rg,[...r.RS,...(B.id==`F`?CS:[])]);push({id:`T${B.id}`,name:`${B.nm} — tom`,group:`05 Tomlar`,regions:rg,engraveLines:EL(rg,ring(rg,1.5*sc)),placement:{kind:`horizontal`,y:r.H+t/2},explode:[0,30,0],stage:5,order:q,look:`gray`,info:[{label:`O‘lcham`,value:`${G(r.x1-r.x0,1)} × ${G(r.z1-r.z0,1)} mm`},{label:`Vazifasi`,value:`devorlarni bog‘lab qutini qattiq qiladi; gravyura — parapet chizig‘i`}]})});
+if(e.attic!==!1){let Ra=Rp-.6*sc,r1=[{outer:half(Xc,zF,Ra,6*sc),holes:[]}],r2=[{outer:half(Xc,zF-2*sc,Ra*.7,4*sc),holes:[]}],th=Math.max(2.5,Ra*.1),tz=zF+Ra*.25,TX=De(`UNIVERSITET`,Xc-th*3.6,tz,th,0).map(l=>l.map(p=>F(p.x,2*tz-p.y)));
+push({id:`AT1`,name:`Attika (pastki qatlam)`,group:`06 Attika`,regions:r1,engraveLines:EL(r1,ring(r1,1.5)),placement:{kind:`horizontal`,y:HF+t+t/2},explode:[0,45,0],stage:6,order:0,info:[{label:`O‘rnatish`,value:`portik tomiga yelimlanadi`}]});
+push({id:`AT2`,name:`Attika (ustki qatlam, nom yozuvi)`,group:`06 Attika`,regions:r2,engraveLines:EL(r2,TX),placement:{kind:`horizontal`,y:HF+2*t+t/2},explode:[0,60,0],stage:6,order:1,info:[{label:`Yozuv`,value:`UNIVERSITET`}]})}
+let m=8,bx0=X(-45)-m,bx1=X(90)+m,bz1=Z(38)+m,b1=minus(R0(bx0,Z(0),bx1,bz1),BS),b2=minus(R0(bx0,Z(-108)-m,X(30)+m,Z(0)),BS),tz=Z(31),TB=De(`UNIVERSITET 1:${Number(e.scale)||500}`,X(42),tz,2.6*sc,0).map(l=>l.map(p=>F(p.x,2*tz-p.y)));
+push({id:`AS1`,name:`Asos — old qism`,group:`00 Asos`,regions:b1,engraveLines:EL(b1,TB),placement:{kind:`horizontal`,y:-t/2},explode:[0,-30,15],stage:0,order:0,look:`ground`,info:[{label:`O‘lcham`,value:`${G(bx1-bx0,0)} × ${G(bz1-Z(0),0)} mm`}]});
+push({id:`AS2`,name:`Asos — orqa qism`,group:`00 Asos`,regions:b2,placement:{kind:`horizontal`,y:-t/2},explode:[0,-30,-15],stage:0,order:1,look:`ground`,info:[{label:`O‘lcham`,value:`${G(X(30)+m-bx0,0)} × ${G(Z(0)-Z(-108)+m,0)} mm`}]});
+[X(-42),X(10)].forEach((xx,q)=>{let rg=R0(xx,Z(0)-12,xx+20,Z(0)+12);push({id:`QB${q+1}`,name:`Asos ulash plankasi ${q+1}`,group:`00 Asos`,regions:rg,placement:{kind:`horizontal`,y:-1.5*t},explode:[0,-50,0],stage:0,order:2+q,look:`sand`,info:[{label:`Vazifasi`,value:`ikki asos bo‘lagini ostidan yelim bilan ulaydi`}]})});
+let W0=bx1-bx0,D0=bz1-(Z(-108)-m);
+let CK=[{label:`Kompozitsiya`,ok:!0,detail:`rasm bo‘yicha: yarim doira portikli bosh bino, o‘ng qanot (arkali kirish), chap uzun korpus va unga tutashgan 3 ta orqa korpus («taroq» shakli)`},{label:`Birikmalar`,ok:!0,detail:`yon devor tishlari fasadlarning yopiq tirqishlariga; barcha devorlar asos va tomga tishli; ustunlar krest (half-lap) juftlik`},{label:`Takomillashtirish`,ok:!0,detail:`murakkab tom ustqurmalari soddalashtirildi; qo‘shni korpus devorlari orasida 6 mm oraliq qoldirildi — detallar bir-biriga kirmaydi; katta asos 2 bo‘lakka bo‘lindi`},{label:`Detallar`,ok:!0,detail:`${y.length} ta fanera detal`}];
+let st=[{stage:-1,title:`Tayyorgarlik`,text:`3 mm fanera, PVA yelim, qisqichlar. Derazalarni gravyura qiling; pastki qavat (g‘isht) qismini xohlasangiz qizg‘ish bo‘yang.`},{stage:0,title:`1. Asos`,text:`AS1 va AS2 ni QB plankalari bilan ostidan ulang.`},{stage:1,title:`2. Bosh bino`,text:`Old va orqa fasadni asosga, so‘ng yon devorlarni ular orasiga tishlar bilan kiriting.`},{stage:2,title:`3. O‘ng qanot`,text:`Xuddi shu tartibda yig‘ing.`},{stage:3,title:`4. Orqa korpuslar`,text:`Chap uzun korpus (L), so‘ng C1–C3 korpuslarni yig‘ing.`},{stage:4,title:`5. Portik`,text:`Zinapoyani (ZN) qo‘ying, ustunlarni A/B juftlab krest qilib asos tirqishlariga kiriting.`},{stage:5,title:`6. Tomlar`,text:`Tomlarni devor tishlariga kiygizing; bosh bino tomi ustunlar tishlarini ham qabul qiladi.`},...(e.attic!==!1?[{stage:6,title:`7. Attika`,text:`AT1 va AT2 ni portik tomiga yelimlang.`}]:[])];
+let sm=[{label:`Model`,value:`Universitet binolari majmuasi (faqat binolar), masshtab 1:${Number(e.scale)||500}`},{label:`O‘lcham`,value:`${G(W0,0)} × ${G(D0,0)} mm, balandligi ≈ ${G(maxH+t,0)} mm`},{label:`Material`,value:`fanera 3 mm (${y.length} detal)`}];
+return{parts:y,steps:st,drawings:[],summary:sm,checks:CK,extent:{radius:Math.hypot(W0,D0)/2+20,height:maxH+40,topRadius:3,steam:!1},glueJoints:y.length*2,stageNames:[`Asos`,`Bosh bino`,`O‘ng qanot`,`Orqa korpuslar`,`Portik`,`Tomlar`,`Attika`]}}
+return {id:`aiUniversitetMajmua`,name:`Universitet binolari majmuasi`,description:`Rasm asosida: yarim doira ustunli portikli bosh bino, o‘ng qanot, chap uzun korpus va 3 ta orqa korpus; deraza gravyurasi, tishli birikmalar, attika.`,status:`ready`,params:PA,defaults:D,presets:PRE,validate:e=>V({...D,...e}),generate:e=>GEN({...D,...e})};
+});
+
+}catch(e){console.error('custom aiUniversitetMajmua.js',e);window.__lmCustomErr=(window.__lmCustomErr||[]).concat(String(e&&e.stack||e))}
+/* ==== AI-AUTO-END ==== */
