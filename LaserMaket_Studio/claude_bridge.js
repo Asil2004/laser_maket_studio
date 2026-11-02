@@ -1,0 +1,178 @@
+/* LaserMaket Studio <-> Claude API ko'prigi.
+   Ilovadagi "Claude bilan yaratish" tugmasi rasmlar va ko'rsatmani shu yerga yuboradi,
+   bu modul ularni Claude'ga (Anthropic API) jo'natadi, javobdagi parametrik generatorni
+   custom/<id>.js ga saqlaydi va custom/all.js ni qayta yig'adi. */
+const fs = require('fs');
+const path = require('path');
+const https = require('https');
+const vm = require('vm');
+
+const ROOT = __dirname;
+const CFG = path.join(ROOT, 'claude-config.json');
+const CUSTOM = path.join(ROOT, 'custom');
+const EXAMPLES = path.join(ROOT, 'claude_examples');
+const GUIDE = path.join(ROOT, 'claude_guide.md');
+
+function readCfg() {
+  let c = {};
+  try { c = JSON.parse(fs.readFileSync(CFG, 'utf8')); } catch (e) {}
+  if (!c.apiKey && process.env.ANTHROPIC_API_KEY) c.apiKey = process.env.ANTHROPIC_API_KEY;
+  c.model = c.model || 'claude-opus-5-5';
+  c.maxTokens = c.maxTokens || 32000;
+  return c;
+}
+function saveCfg(c) { fs.writeFileSync(CFG, JSON.stringify(c, null, 2)); }
+
+function systemPrompt() {
+  let s = fs.readFileSync(GUIDE, 'utf8');
+  try {
+    fs.readdirSync(EXAMPLES).filter(f => f.endsWith('.js')).forEach(f => {
+      s += `\n\n### Misol: ${f}\n\`\`\`js\n${fs.readFileSync(path.join(EXAMPLES, f), 'utf8')}\n\`\`\`\n`;
+    });
+  } catch (e) {}
+  return s;
+}
+
+function rebuildAll() {
+  if (!fs.existsSync(CUSTOM)) fs.mkdirSync(CUSTOM, { recursive: true });
+  const files = fs.readdirSync(CUSTOM).filter(f => f.endsWith('.js') && f !== 'all.js').sort();
+  let out = 'window.__lmCustomF=window.__lmCustomF||[];\n';
+  files.forEach(f => {
+    out += `\n/* ${f} */\ntry{\n${fs.readFileSync(path.join(CUSTOM, f), 'utf8')}\n}catch(e){console.error('custom ${f}',e);window.__lmCustomErr=(window.__lmCustomErr||[]).concat(String(e&&e.stack||e))}\n`;
+  });
+  fs.writeFileSync(path.join(CUSTOM, 'all.js'), out);
+  return files.length;
+}
+
+function listCustom() {
+  if (!fs.existsSync(CUSTOM)) return [];
+  return fs.readdirSync(CUSTOM).filter(f => f.endsWith('.json')).map(f => {
+    try { const m = JSON.parse(fs.readFileSync(path.join(CUSTOM, f), 'utf8')); return { id: m.id, name: m.name, createdAt: m.createdAt, model: m.model }; } catch (e) { return null; }
+  }).filter(Boolean).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+}
+
+function callClaude(cfg, messages, onProgress) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify({ model: cfg.model, max_tokens: cfg.maxTokens, stream: true, system: systemPrompt(), messages });
+    const base = cfg.apiBase ? new URL(cfg.apiBase) : null, lib = base && base.protocol === 'http:' ? require('http') : https;
+    const req = lib.request({
+      hostname: base ? base.hostname : 'api.anthropic.com', port: base ? base.port || undefined : undefined, path: '/v1/messages', method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-api-key': cfg.apiKey, 'anthropic-version': '2023-06-01', 'content-length': Buffer.byteLength(body) },
+      timeout: 20 * 60 * 1000
+    }, res => {
+      if (res.statusCode !== 200) {
+        let e = ''; res.on('data', d => e += d); res.on('end', () => reject(new Error(`Claude API ${res.statusCode}: ${e.slice(0, 600)}`))); return;
+      }
+      let buf = '', text = '', stop = null;
+      res.on('data', d => {
+        buf += d.toString('utf8');
+        let i;
+        while ((i = buf.indexOf('\n')) >= 0) {
+          const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+          if (!line.startsWith('data:')) continue;
+          try {
+            const ev = JSON.parse(line.slice(5).trim());
+            if (ev.type === 'content_block_delta' && ev.delta && ev.delta.type === 'text_delta') { text += ev.delta.text; onProgress && onProgress(text.length); }
+            if (ev.type === 'message_delta' && ev.delta && ev.delta.stop_reason) stop = ev.delta.stop_reason;
+            if (ev.type === 'error') reject(new Error(JSON.stringify(ev.error)));
+          } catch (e) {}
+        }
+      });
+      res.on('end', () => resolve({ text, stop }));
+    });
+    req.on('timeout', () => { req.destroy(new Error('Claude API vaqti tugadi')); });
+    req.on('error', reject);
+    req.write(body); req.end();
+  });
+}
+
+function extractCode(text) {
+  const m = text.match(/```(?:js|javascript)?\s*\n([\s\S]*?)```/);
+  const code = (m ? m[1] : text).trim();
+  if (!/__lmCustomF/.test(code)) throw new Error('Javobda generator kodi topilmadi');
+  new vm.Script(code, { filename: 'custom.js' });
+  const idm = code.match(/id:\s*`(ai[A-Za-z0-9]+)`/) || code.match(/id:\s*['"](ai[A-Za-z0-9]+)['"]/);
+  const nm = code.match(/name:\s*`([^`]{3,80})`/);
+  return { code, id: idm ? idm[1] : 'aiModel' + Date.now(), name: nm ? nm[1] : 'AI model' };
+}
+
+function userContent(prompt, images, thickness, extra) {
+  const c = [];
+  (images || []).slice(0, 15).forEach(im => c.push({ type: 'image', source: { type: 'base64', media_type: im.media_type || 'image/jpeg', data: im.data } }));
+  c.push({ type: 'text', text: `Ko'rsatma: ${prompt || 'Rasmdagi obyektning lazer maketini yasang.'}\nMaterial qalinligi: ${thickness || 3} mm fanera.\nRasmlar soni: ${(images || []).length}.\n${extra || ''}\nQo'llanmadagi format va qoidalarga qat'iy amal qiling. Faqat bitta \`\`\`js kod bloki qaytaring.` });
+  return c;
+}
+
+let busy = false;
+async function generate(p) {
+  const cfg = readCfg();
+  if (!cfg.apiKey) throw new Error('Claude API kaliti kiritilmagan');
+  const messages = [{ role: 'user', content: userContent(p.prompt, p.images, p.thickness) }];
+  const r = await callClaude(cfg, messages);
+  let x = extractCode(r.text);
+  if (fs.existsSync(path.join(CUSTOM, x.id + '.js')) && !p.replaceId) {
+    const nid = x.id + Date.now().toString(36);
+    x.code = x.code.split('`' + x.id + '`').join('`' + nid + '`'); x.id = nid;
+  }
+  if (p.replaceId) { x.code = x.code.split('`' + x.id + '`').join('`' + p.replaceId + '`'); x.id = p.replaceId; }
+  if (!fs.existsSync(CUSTOM)) fs.mkdirSync(CUSTOM, { recursive: true });
+  fs.writeFileSync(path.join(CUSTOM, x.id + '.js'), x.code);
+  fs.writeFileSync(path.join(CUSTOM, x.id + '.json'), JSON.stringify({ id: x.id, name: x.name, prompt: p.prompt, thickness: p.thickness, model: cfg.model, createdAt: new Date().toISOString(), stop: r.stop }, null, 2));
+  if (p.images && p.images.length) fs.writeFileSync(path.join(CUSTOM, x.id + '.images.json'), JSON.stringify(p.images.slice(0, 15)));
+  rebuildAll();
+  return { id: x.id, name: x.name, stop: r.stop };
+}
+
+async function fix(p) {
+  const cfg = readCfg();
+  const id = p.id, f = path.join(CUSTOM, id + '.js');
+  if (!fs.existsSync(f)) throw new Error('Generator topilmadi: ' + id);
+  const meta = JSON.parse(fs.readFileSync(path.join(CUSTOM, id + '.json'), 'utf8'));
+  let images = []; try { images = JSON.parse(fs.readFileSync(path.join(CUSTOM, id + '.images.json'), 'utf8')); } catch (e) {}
+  const old = fs.readFileSync(f, 'utf8');
+  const messages = [
+    { role: 'user', content: userContent(meta.prompt, images, meta.thickness) },
+    { role: 'assistant', content: '```js\n' + old + '\n```' },
+    { role: 'user', content: [{ type: 'text', text: `Bu generator ilovada xato berdi yoki natija noto'g'ri:\n${p.error}\n${p.note ? 'Foydalanuvchi izohi: ' + p.note : ''}\nXatoni tuzatib, to'liq generatorni qaytadan bitta \`\`\`js blokida bering. id \`${id}\` o'zgarmasin.` }] }
+  ];
+  const r = await callClaude(cfg, messages);
+  const x = extractCode(r.text);
+  const code = x.code.split('`' + x.id + '`').join('`' + id + '`');
+  fs.writeFileSync(f, code);
+  meta.fixedAt = new Date().toISOString(); meta.fixes = (meta.fixes || 0) + 1; meta.lastError = p.error;
+  fs.writeFileSync(path.join(CUSTOM, id + '.json'), JSON.stringify(meta, null, 2));
+  rebuildAll();
+  return { id, name: x.name, stop: r.stop };
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let b = []; let n = 0;
+    req.on('data', d => { n += d.length; if (n > 80 * 1024 * 1024) { reject(new Error('Juda katta so\'rov')); req.destroy(); } else b.push(d); });
+    req.on('end', () => { try { resolve(b.length ? JSON.parse(Buffer.concat(b).toString('utf8')) : {}); } catch (e) { reject(e); } });
+  });
+}
+
+async function handle(req, res, reqPath) {
+  const send = (code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(obj)); };
+  try {
+    if (reqPath === '/api/claude/status') { const c = readCfg(); return send(200, { configured: !!c.apiKey, model: c.model, busy, custom: listCustom() }); }
+    if (reqPath === '/api/claude/config' && req.method === 'POST') {
+      const p = await readBody(req), c = readCfg();
+      if (p.apiKey) c.apiKey = String(p.apiKey).trim();
+      if (p.model) c.model = String(p.model).trim();
+      const save = { apiKey: c.apiKey, model: c.model, maxTokens: c.maxTokens }; if (c.apiBase) save.apiBase = c.apiBase; saveCfg(save);
+      return send(200, { ok: true, model: c.model });
+    }
+    if ((reqPath === '/api/claude/generate' || reqPath === '/api/claude/fix') && req.method === 'POST') {
+      if (busy) return send(429, { error: 'Claude hozir boshqa modelni yozmoqda, biroz kuting' });
+      const p = await readBody(req); busy = true;
+      try { const r = reqPath.endsWith('fix') ? await fix(p) : await generate(p); return send(200, r); }
+      finally { busy = false; }
+    }
+    if (reqPath === '/api/claude/rebuild') return send(200, { count: rebuildAll() });
+    return send(404, { error: 'not found' });
+  } catch (e) { return send(500, { error: e.message }); }
+}
+
+module.exports = { handle, rebuildAll };

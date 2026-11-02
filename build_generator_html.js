@@ -1020,6 +1020,7 @@ const htmlContent = `<!doctype html>
   };
 </script>
 
+<script src="lm-pro-bridge.js"></script>
 </body>
 </html>
 `;

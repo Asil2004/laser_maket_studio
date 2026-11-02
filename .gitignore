@@ -4,3 +4,7 @@ Thumbs.db
 *.log
 *.tmp
 storage/
+
+# Claude API kaliti (hech qachon GitHubga yuklanmasin)
+LaserMaket_Studio/claude-config.json
+LaserMaket_Studio/custom/*.images.json

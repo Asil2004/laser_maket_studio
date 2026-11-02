@@ -37,9 +37,21 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Claude API ko'prigi (AI generator -> Claude -> professional generator)
+  if (reqPath.startsWith('/api/claude/')) {
+    require('./claude_bridge.js').handle(req, res, reqPath);
+    return;
+  }
+  if (/claude-config|\.images\.json$/i.test(reqPath)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403');
+    return;
+  }
+
   if (reqPath === '/' || reqPath === '') reqPath = '/index.html';
 
   const filePath = path.join(ROOT, reqPath);
+  if (!path.resolve(filePath).startsWith(path.resolve(ROOT))) { res.writeHead(403); res.end('403'); return; }
 
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -54,6 +66,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(filePath).pipe(res);
 });
 
+try { require('./claude_bridge.js').rebuildAll(); } catch (e) { console.error('custom/all.js:', e.message); }
 server.listen(PORT, () => {
   console.log(`LaserMaket Studio ishga tushdi: http://localhost:${PORT}`);
   console.log(`AI Erkin Generator: http://localhost:${PORT}/tools/ai-erkin-generator.html`);
