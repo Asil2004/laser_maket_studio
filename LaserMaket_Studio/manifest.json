@@ -1,7 +1,7 @@
 {
-  "version": "1.0.86",
-  "updatedAt": "2026-11-02T03:04:54.917Z",
+  "version": "1.0.87",
+  "updatedAt": "2026-11-02T03:11:55.784574Z",
   "downloadUrl": "https://raw.githubusercontent.com/Asil2004/laser_maket_studio/main/LaserMaket_Studio/dist_update/update.zip",
-  "releaseNotes": "AI Erkin generator 77 ta tayyor generator kabi toliq CAM va 3D tizimga integratsiya qilindi",
+  "releaseNotes": "Avtomatik yangilash skripti sinovi",
   "requiredAppVersion": "1.0.75"
 }
